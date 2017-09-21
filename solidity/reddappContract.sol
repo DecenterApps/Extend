@@ -1029,6 +1029,7 @@ contract OraclizeTest is usingOraclize {
     event Log(string tekst);
     event LogNeededBalance(uint num);
     event LogBalance(uint num);
+    event LogAddress(address myAddress);
     event CreatedUser(string username);
     event AddressDoNotMatch(address parseAddress, address neededAddress);
     event UsernameDoesNotMatch(string username, string neededUsername);
@@ -1041,6 +1042,7 @@ contract OraclizeTest is usingOraclize {
         _;
     }
 
+    mapping(bytes32 => address) usernameToAddress;
     mapping(bytes32 => address) queryToAddress;
     mapping(address => User) users;
 
@@ -1075,6 +1077,7 @@ contract OraclizeTest is usingOraclize {
             }
 
             users[queryAddress].verifiedUsername = true;
+            usernameToAddress[stringToBytes32(result)] = queryAddress;
             VerifiedUsername(result);
         }
     }
@@ -1096,6 +1099,7 @@ contract OraclizeTest is usingOraclize {
 
         CreatedUser(username);
     }
+
 
     /**
      * Verify username based on address
@@ -1149,6 +1153,21 @@ contract OraclizeTest is usingOraclize {
         //TODO: final link must be api.reddit.com/*
 
         users[msg.sender].link = link;
+    }
+
+    function getAddressFromUsername(string username) returns (address userAddress) {
+        LogAddress(usernameToAddress[stringToBytes32(username)]);
+        return usernameToAddress[stringToBytes32(username)];
+    }
+    
+    /**
+     * Convert string to bytes32
+     * @param source string to convert
+     */
+    function stringToBytes32(string memory source) returns internal (bytes32 result) {
+        assembly {
+            result := mload(add(source, 32))
+        }
     }
     
 }

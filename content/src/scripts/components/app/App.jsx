@@ -1,5 +1,6 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { count } from '../../../../../actions/countActions'
 
 class App extends Component {
   constructor(props) {
@@ -10,9 +11,7 @@ class App extends Component {
 
   componentDidMount() {
     document.addEventListener('click', () => {
-      this.props.dispatch({
-        type: 'ADD_COUNT'
-      });
+      this.props.dispatch(count());
     });
 
     $('.flat-list.buttons')
@@ -35,10 +34,8 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    count: state.count
-  };
-};
+const mapStateToProps = (state) => ({
+  count: state.count
+});
 
 export default connect(mapStateToProps)(App);

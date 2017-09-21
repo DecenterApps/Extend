@@ -4,9 +4,7 @@
   "description": "React, Chrome, and Redux example",
   "version": "0.0.0.1",
   "background": {
-    "scripts": [
-      "event.js"
-    ],
+    "scripts": ["web3.min.js", "event.js"],
     "persistent": true
   },
   "browser_action": {

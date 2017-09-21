@@ -1,0 +1,5 @@
+{
+  "contractAddress": "0x122a86660Ea8c5bE0Afb5AABC2dfCe0aB449e855",
+  "startingBlock": 3614787,
+  "abi": [{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"pixels","outputs":[{"name":"color","type":"bytes32"},{"name":"amount","type":"uint256"},{"name":"holder","type":"address"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_coordinates","type":"uint256"},{"name":"_color","type":"bytes32"}],"name":"buyPixel","outputs":[{"name":"","type":"bool"}],"payable":true,"type":"function"},{"anonymous":false,"inputs":[{"indexed":false,"name":"coordinates","type":"uint256"},{"indexed":false,"name":"color","type":"bytes32"},{"indexed":false,"name":"amount","type":"uint256"},{"indexed":false,"name":"holder","type":"address"},{"indexed":false,"name":"boughtFrom","type":"address"}],"name":"PixelBought","type":"event"}]
+}

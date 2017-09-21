@@ -55,11 +55,16 @@ gulp.task('copy-jquery', ['clean'], () => {
     .pipe(gulp.dest('./build'));
 });
 
+gulp.task('copy-web3', ['clean'], () => {
+  return gulp.src('web3.min.js')
+    .pipe(gulp.dest('./build'));
+});
+
 gulp.task('clean', (cb) => {
   rimraf('./build', cb);
 });
 
-gulp.task('build', ['copy-jquery', 'copy-manifest', 'popup-js', 'popup-html', 'event-js', 'content-js']);
+gulp.task('build', ['copy-manifest', 'copy-jquery', 'copy-web3', 'popup-js', 'popup-html', 'event-js', 'content-js']);
 
 gulp.task('watch', ['default'], () => {
   gulp.watch('popup/**/*', ['build']);

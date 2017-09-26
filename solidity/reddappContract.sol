@@ -1026,6 +1026,11 @@ contract OraclizeTest is usingOraclize {
         bool verifiedAddress;
     }
     
+    struct Vote{
+        uint8 ups;
+        uint8 downs;
+    }
+
     event Log(string tekst);
     event LogNeededBalance(uint num);
     event LogBalance(uint num);
@@ -1045,6 +1050,10 @@ contract OraclizeTest is usingOraclize {
     mapping(bytes32 => address) usernameToAddress;
     mapping(bytes32 => address) queryToAddress;
     mapping(address => User) users;
+    mapping(uint => Vote) posts;
+    mapping(uint => Vote) comments;
+    mapping(uint => mapping(address => bool)) userVotedPost;
+    mapping(uint => mapping(address => bool)) userVotedComment;
 
     /**
      * Function called when API gets results
@@ -1159,15 +1168,56 @@ contract OraclizeTest is usingOraclize {
         LogAddress(usernameToAddress[stringToBytes32(username)]);
         return usernameToAddress[stringToBytes32(username)];
     }
-    
+
+    function votePost(uint postId, bool vote) returns (bool) {
+        var user = users[msg.sender];
+
+        if (!user.verifiedAddress && !user.verifiedUsername)
+            return false;
+
+        if (userVotedPost[postId][msg.sender])
+            return false;
+
+        userVotedPost[postId][msg.sender] = true;
+        if (vote)
+            posts[postId].ups++;
+        else
+            posts[postId].downs++;
+
+        //TODO: send eth to post author
+
+        return true;
+    }
+
+
+    function voteComment(uint commentId, bool vote) returns (bool) {
+        var user = users[msg.sender];
+
+        if (!user.verifiedAddress && !user.verifiedUsername)
+            return false;
+
+        if (userVotedComment[commentId][msg.sender])
+            return false;
+
+        userVotedComment[commentId][msg.sender] = true;
+        if (vote)
+            comments[commentId].ups++;
+        else
+            comments[commentId].downs++;
+
+        //TODO: send eth to comment author
+
+        return true;
+    }
+
     /**
      * Convert string to bytes32
      * @param source string to convert
      */
-    function stringToBytes32(string memory source) returns internal (bytes32 result) {
+    function stringToBytes32(string memory source) internal returns (bytes32 result) {
         assembly {
             result := mload(add(source, 32))
         }
     }
-    
+
 }

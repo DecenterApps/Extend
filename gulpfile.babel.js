@@ -5,9 +5,9 @@ import rimraf from 'rimraf';
 
 const plugins = loadPlugins();
 
-import popupWebpackConfig from './popup/webpack.config';
-import eventWebpackConfig from './event/webpack.config';
-import contentWebpackConfig from './content/webpack.config';
+import popupWebpackConfig from './app/popup/webpack.config';
+import eventWebpackConfig from './app/background/webpack.config';
+import contentWebpackConfig from './app/page/webpack.config';
 
 gulp.task('popup-js', ['clean'], (cb) => {
   webpack(popupWebpackConfig, (err, stats) => {
@@ -40,7 +40,7 @@ gulp.task('content-js', ['clean'], (cb) => {
 });
 
 gulp.task('popup-html', ['clean'], () => {
-  return gulp.src('popup/src/index.html')
+  return gulp.src('./app/popup/src/index.html')
     .pipe(plugins.rename('popup.html'))
     .pipe(gulp.dest('./build'))
 });
@@ -51,12 +51,12 @@ gulp.task('copy-manifest', ['clean'], () => {
 });
 
 gulp.task('copy-jquery', ['clean'], () => {
-  return gulp.src('jquery-slim.js')
+  return gulp.src('./app/modules/jquery-slim.js')
     .pipe(gulp.dest('./build'));
 });
 
 gulp.task('copy-web3', ['clean'], () => {
-  return gulp.src('web3.min.js')
+  return gulp.src('./app/modules/web3.min.js')
     .pipe(gulp.dest('./build'));
 });
 

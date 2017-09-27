@@ -1,5 +1,5 @@
 import React from 'react';
-import { SET_ADDRESS, SET_NETWORK } from '../../../actions/types';
+import { SET_ADDRESS, SET_NETWORK } from '../../../constants/actionTypes';
 
 const INITIAL_STATE = {
   address: '',

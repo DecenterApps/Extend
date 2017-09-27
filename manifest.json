@@ -4,7 +4,7 @@
   "description": "React, Chrome, and Redux example",
   "version": "0.0.0.1",
   "background": {
-    "scripts": ["web3.min.js", "event.js"],
+    "scripts": ["web3.min.js", "background.js"],
     "persistent": true
   },
   "browser_action": {
@@ -15,7 +15,7 @@
     {
       "matches": ["https://www.reddit.com/*"],
       "css": [],
-      "js": ["jquery-slim.js", "content.js"]
+      "js": ["jquery-slim.js", "page.js"]
     }
   ]
 }

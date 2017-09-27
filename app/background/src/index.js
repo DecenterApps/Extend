@@ -1,14 +1,13 @@
 import { createStore } from 'redux';
-import rootReducer from './reducers';
+import rootReducer from './reducers/index';
 import { wrapStore } from 'react-chrome-redux';
-import { SET_ADDRESS, SET_NETWORK } from '../../actions/types';
+import { SET_ADDRESS, SET_NETWORK } from '../../constants/actionTypes';
+import { STORE_PORT } from '../../constants/general';
 
 const store = createStore(rootReducer, {});
 const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 
-wrapStore(store, {
-  portName: 'example'
-});
+wrapStore(store, { portName: STORE_PORT });
 
 web3.version.getNetwork((err, netId) => {
   switch (netId) {
@@ -30,7 +29,7 @@ web3.version.getNetwork((err, netId) => {
     default:
       store.dispatch({ type: SET_NETWORK, payload: 'unknown' });
   }
-})
+});
 
 /**
  * Listens for posible user change of metaMask account/address

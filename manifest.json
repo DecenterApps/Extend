@@ -17,5 +17,10 @@
       "css": [],
       "js": ["jquery-slim.js", "page.js"]
     }
+  ],
+  "permissions": [
+    "identity",
+    "*://*.google.com/*",
+    "*://*.reddit.com/*"
   ]
 }

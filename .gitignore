@@ -1,5 +1,5 @@
 yarn.lock
 .DS_Store
 .idea/
-./build
+build/
 node_modules/

@@ -1021,9 +1021,7 @@ contract OraclizeTest is usingOraclize {
 
     struct User{
         string username;
-        string link;
-        bool verifiedUsername;
-        bool verifiedAddress;
+        bool verified;
     }
     
     struct Vote{
@@ -1032,18 +1030,15 @@ contract OraclizeTest is usingOraclize {
     }
 
     event Log(string tekst);
-    event LogNeededBalance(uint num);
-    event LogBalance(uint num);
-    event LogAddress(address myAddress);
+    event LogQuery(bytes32 query, address userAddress);
+    event LogBalance(uint balance);
+    event LogNeededBalance(uint balance);
     event CreatedUser(string username);
-    event AddressDoNotMatch(address parseAddress, address neededAddress);
     event UsernameDoesNotMatch(string username, string neededUsername);
-    event VerifiedAddress(address userAddress);
-    event VerifiedUsername(string username);
-    event BuiltString(string url);
-
-    modifier onlyWithLink {
-        require(strCompare(users[msg.sender].link, "") != 0);
+    event VerifiedUser(string username);
+    
+    modifier onlyVerified() {
+        require(users[msg.sender].verified);
         _;
     }
 
@@ -1061,119 +1056,55 @@ contract OraclizeTest is usingOraclize {
      * @param result string returned from api
      */
     function __callback(bytes32 myid, string result) {
-        //TODO: add struct to follow if query is username verification or address verification so we don't have to verify address first
 
-        Log("Callback called");
-        if (msg.sender != oraclize_cbAddress()) revert();
+        require(msg.sender == oraclize_cbAddress());
         
         address queryAddress = queryToAddress[myid];
-
-        if (!users[queryAddress].verifiedAddress){
-
-            address parsedAddress = parseAddr(result);
-            if (queryAddress != parsedAddress) {
-                AddressDoNotMatch(parsedAddress, queryAddress);
-                return;
-            }
-
-            users[parsedAddress].verifiedAddress = true;
-            VerifiedAddress(parsedAddress);
-        }else if (!users[queryAddress].verifiedUsername){
-
-            if (strCompare(users[queryAddress].username, result) != 0) { 
-                UsernameDoesNotMatch(result, users[queryAddress].username);
-                return;
-            }
-
-            users[queryAddress].verifiedUsername = true;
-            usernameToAddress[stringToBytes32(result)] = queryAddress;
-            VerifiedUsername(result);
+        if (strCompare(users[queryAddress].username, result) != 0) {
+            UsernameDoesNotMatch(result, users[queryAddress].username);
+            return;
         }
+
+        users[queryAddress].verified = true;
+        usernameToAddress[stringToBytes32(result)] = queryAddress;
+        VerifiedUser(result);
     }
 
     /**
      * Creates user with username and address
      * @param username reddit username from user
+     * @param token reddit oauth access token (should be encrypted with oraclize public key)
      */
-    function createUser(string username) {
+    function createUser(string username, string token) payable {
         //TODO: what happens if user with that address exists (verified or not)
         //TODO: what happens if that username is already registered with another address
 
         users[msg.sender] = User({
                 username: username,
-                link: "",
-                verifiedUsername: false,
-                verifiedAddress: false
+                verified: false
             });
 
+        if (oraclize_getPrice("computation") > this.balance) {
+            Log("Oraclize query was NOT sent, please add some ETH to cover for the query fee");
+            LogBalance(this.balance);
+            LogNeededBalance(oraclize_getPrice("computation"));
+            return;
+        } 
+        
+        //TODO: decrypt token using oraclize nested
+        bytes32 queryId = oraclize_query("computation", ["QmdhV48wmZXoSrQN8ncGNDSq5CWzrvPZ86Wp43wLAJ2wCa", token]);
+        queryToAddress[queryId] = msg.sender;
+
+        LogQuery(queryId, msg.sender);
         CreatedUser(username);
     }
 
-
-    /**
-     * Verify username based on address
-     */
-    function verifyUsername() payable onlyWithLink {
-
-        if (oraclize_getPrice("URL") > msg.value) {
-            Log("Oraclize query was NOT sent, please add some ETH to cover for the query fee");
-            LogBalance(msg.value);
-            LogNeededBalance(oraclize_getPrice("URL"));
-            return;
-        } else{
-            Log("We have enough balance for username");
-        }
-
-        //author should be same as registered username
-        string memory fullUrl = strConcat("json(", users[msg.sender].link, ").0.data.children.0.data.author");
-        BuiltString(fullUrl);
-        bytes32 queryId = oraclize_query("URL", fullUrl);
-        queryToAddress[queryId] = msg.sender;
-    }
-
-    /**
-     * Verify address based on address
-     */
-    function verifyAddress() payable onlyWithLink {
-
-        if (oraclize_getPrice("URL") > msg.value) {
-            Log("Oraclize query was NOT sent, please add some ETH to cover for the query fee");
-            LogBalance(msg.value);
-            LogNeededBalance(oraclize_getPrice("URL"));
-            return;
-        } else{
-            Log("We have enough balance for address");
-        }
-
-        //first verify address
-        string memory fullUrl = strConcat("json(", users[msg.sender].link, ").0.data.children.0.data.title");
-        BuiltString(fullUrl);
-        bytes32 queryId = oraclize_query("URL", fullUrl);
-        queryToAddress[queryId] = msg.sender;
-    }
-
-    /**
-     * Add verification link for user
-     * @param link where we should check address and username
-     */
-    function addLink(string link) {
-        //TODO: Link must be reddit link (if not it is possible that someone makes exactly same json on his domain and set author and address whatever he wants)
-        //TODO: If reddit link is with www.reddit then change www->api
-        //TODO: final link must be api.reddit.com/*
-
-        users[msg.sender].link = link;
-    }
-
     function getAddressFromUsername(string username) returns (address userAddress) {
-        LogAddress(usernameToAddress[stringToBytes32(username)]);
         return usernameToAddress[stringToBytes32(username)];
     }
 
-    function votePost(uint postId, bool vote) returns (bool) {
+    function votePost(uint postId, bool vote) onlyVerified returns (bool) {
         var user = users[msg.sender];
-
-        if (!user.verifiedAddress && !user.verifiedUsername)
-            return false;
 
         if (userVotedPost[postId][msg.sender])
             return false;
@@ -1184,17 +1115,12 @@ contract OraclizeTest is usingOraclize {
         else
             posts[postId].downs++;
 
-        //TODO: send eth to post author
-
         return true;
     }
 
 
-    function voteComment(uint commentId, bool vote) returns (bool) {
+    function voteComment(uint commentId, bool vote) onlyVerified returns (bool) {
         var user = users[msg.sender];
-
-        if (!user.verifiedAddress && !user.verifiedUsername)
-            return false;
 
         if (userVotedComment[commentId][msg.sender])
             return false;
@@ -1205,9 +1131,15 @@ contract OraclizeTest is usingOraclize {
         else
             comments[commentId].downs++;
 
-        //TODO: send eth to comment author
-
         return true;
+    }
+
+    function getPostScore(uint postId) returns (uint) {
+        return posts[postId].ups - posts[postId].downs;
+    }
+
+    function getCommentScore(uint commentId) returns (uint) {
+        return comments[commentId].ups - comments[commentId].downs;
     }
 
     /**

@@ -20,10 +20,8 @@ const mapStateToProps = (state) => ({
   count: state.count
 });
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    onClick: () => { dispatch(count()); }
-  }
-};
+// const mapDispatchToProps = {
+//   onClick: () => { dispatch(count()); }
+// };
 
-export default connect(mapStateToProps, mapDispatchToProps)(UpvoteDownvote);
+export default connect(mapStateToProps)(UpvoteDownvote);

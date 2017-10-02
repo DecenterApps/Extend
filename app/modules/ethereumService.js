@@ -3,19 +3,13 @@ import contract from './config.json';
 let ethPixelContract;
 
 window.onload = () => {
-  ethPixelContract = web3.eth.contract(contract.abi).at(contract.contractAddress);
-};
-
-
-export const getAccount = () => {
-  if (!web3.eth.accounts || !web3.eth.accounts.length) return false;
-
-  return web3.eth.accounts[0];
+  window.web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+  ethPixelContract = window.web3.eth.contract(contract.abi).at(contract.contractAddress);
 };
 
 export const getBlockNumber = () =>
   new Promise((resolve, reject) => {
-    web3.eth.getBlockNumber((error, latestBlock) => {
+    window.web3.eth.getBlockNumber((error, latestBlock) => {
       if (error) {
         return reject(error);
       }
@@ -23,3 +17,7 @@ export const getBlockNumber = () =>
       return resolve(latestBlock);
     });
   });
+
+export const createUser = () => {
+
+};

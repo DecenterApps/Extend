@@ -4,12 +4,10 @@ import { STORE_PORT } from '../../constants/general';
 
 import App from './components/app/App';
 
-import {Store} from 'react-chrome-redux';
+import { Store } from '../../modules/react-chrome-redux/index';
 import {Provider} from 'react-redux';
 
 const proxyStore = new Store({ portName: STORE_PORT });
-
-console.log('PROXY STORE', 'TEST');
 
 render(
     <Provider store={proxyStore}>

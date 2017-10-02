@@ -1,4 +1,4 @@
-import { Store } from 'react-chrome-redux';
+import { Store } from '../../modules/react-chrome-redux/index';
 import { STORE_PORT } from '../../constants/general';
 import insertUpvoteDownvote from './components/UpvoteDownvote/insertUpvoteDownvote';
 

@@ -1134,12 +1134,16 @@ contract OraclizeTest is usingOraclize {
         return true;
     }
 
-    function getPostScore(uint postId) returns (uint) {
+    function getPostScore(uint postId) constant returns (uint) {
         return posts[postId].ups - posts[postId].downs;
     }
 
-    function getCommentScore(uint commentId) returns (uint) {
+    function getCommentScore(uint commentId) constant returns (uint) {
         return comments[commentId].ups - comments[commentId].downs;
+    }
+
+    function checkIfUserVerified() constant returns (bool) {
+        return users[msg.sender].verified;
     }
 
     /**

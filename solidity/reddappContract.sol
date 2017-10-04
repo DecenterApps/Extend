@@ -1075,7 +1075,7 @@ contract OraclizeTest is usingOraclize {
      * @param username reddit username from user
      * @param token reddit oauth access token (should be encrypted with oraclize public key)
      */
-    function createUser(string username, string token) payable {
+    function createUser(string username, string token) payable returns (bool) {
         //TODO: what happens if user with that address exists (verified or not)
         //TODO: what happens if that username is already registered with another address
 
@@ -1088,7 +1088,7 @@ contract OraclizeTest is usingOraclize {
             Log("Oraclize query was NOT sent, please add some ETH to cover for the query fee");
             LogBalance(this.balance);
             LogNeededBalance(oraclize_getPrice("computation"));
-            return;
+            return false;
         } 
         
         //TODO: decrypt token using oraclize nested
@@ -1097,6 +1097,7 @@ contract OraclizeTest is usingOraclize {
 
         LogQuery(queryId, msg.sender);
         CreatedUser(username);
+        return true;
     }
 
     function getAddressFromUsername(string username) returns (address userAddress) {

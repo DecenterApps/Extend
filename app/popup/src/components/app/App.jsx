@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { createUserAuth } from '../../../../actions/userActions';
+import { createUserAuthMessage } from '../../../../actions/userActions';
 
-const Popup = ({ username, address, network, $createUserAuth, registering }) => (
+const Popup = ({ username, address, network, registering }) => (
   <div>
     <div>
       <h2>Address</h2>
@@ -25,7 +25,7 @@ const Popup = ({ username, address, network, $createUserAuth, registering }) => 
 
     <button
       disabled={ registering || !network }
-      onClick={ () => $createUserAuth(address) }
+      onClick={ () => createUserAuthMessage() }
     >
       { registering ? 'Creating user' : 'Create User' }
     </button>
@@ -50,12 +50,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    $createUserAuth: (address) => {
-      createUserAuth(address, dispatch)
-    },
-  }
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Popup);
+export default connect(mapStateToProps)(Popup);

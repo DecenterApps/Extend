@@ -1,5 +1,261 @@
 {
-  "contractAddress": "0x45AA061Ef3a33e7fBBc7f34069A10a35822B34D4",
-  "startingBlock": 4067813,
-  "abi": [{"constant":false,"inputs":[{"name":"myid","type":"bytes32"},{"name":"result","type":"string"}],"name":"__callback","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"postId","type":"uint256"},{"name":"vote","type":"bool"}],"name":"votePost","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"myid","type":"bytes32"},{"name":"result","type":"string"},{"name":"proof","type":"bytes"}],"name":"__callback","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"username","type":"string"}],"name":"getAddressFromUsername","outputs":[{"name":"userAddress","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"postId","type":"uint256"}],"name":"getPostScore","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"checkIfUserVerified","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"username","type":"string"},{"name":"token","type":"string"}],"name":"createUser","outputs":[],"payable":true,"stateMutability":"payable","type":"function"},{"constant":true,"inputs":[{"name":"commentId","type":"uint256"}],"name":"getCommentScore","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"commentId","type":"uint256"},{"name":"vote","type":"bool"}],"name":"voteComment","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"anonymous":false,"inputs":[{"indexed":false,"name":"tekst","type":"string"}],"name":"Log","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"query","type":"bytes32"},{"indexed":false,"name":"userAddress","type":"address"}],"name":"LogQuery","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"balance","type":"uint256"}],"name":"LogBalance","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"balance","type":"uint256"}],"name":"LogNeededBalance","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"username","type":"string"}],"name":"CreatedUser","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"username","type":"string"},{"indexed":false,"name":"neededUsername","type":"string"}],"name":"UsernameDoesNotMatch","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"username","type":"string"}],"name":"VerifiedUser","type":"event"}]
+  "contractAddress": "0x00B5387721230f6142409Fa73a317C7ba0a468FF",
+  "startingBlock": 4134926,
+  "abi": [
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "myid",
+          "type": "bytes32"
+        },
+        {
+          "name": "result",
+          "type": "string"
+        }
+      ],
+      "name": "__callback",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "postId",
+          "type": "uint256"
+        },
+        {
+          "name": "vote",
+          "type": "bool"
+        }
+      ],
+      "name": "votePost",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "myid",
+          "type": "bytes32"
+        },
+        {
+          "name": "result",
+          "type": "string"
+        },
+        {
+          "name": "proof",
+          "type": "bytes"
+        }
+      ],
+      "name": "__callback",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "username",
+          "type": "string"
+        }
+      ],
+      "name": "getAddressFromUsername",
+      "outputs": [
+        {
+          "name": "userAddress",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "postId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getPostScore",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "username",
+          "type": "string"
+        },
+        {
+          "name": "token",
+          "type": "string"
+        }
+      ],
+      "name": "createUser",
+      "outputs": [],
+      "payable": true,
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "commentId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getCommentScore",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "commentId",
+          "type": "uint256"
+        },
+        {
+          "name": "vote",
+          "type": "bool"
+        }
+      ],
+      "name": "voteComment",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "tekst",
+          "type": "string"
+        }
+      ],
+      "name": "Log",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "query",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "name": "userAddress",
+          "type": "address"
+        }
+      ],
+      "name": "LogQuery",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "balance",
+          "type": "uint256"
+        }
+      ],
+      "name": "LogBalance",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "balance",
+          "type": "uint256"
+        }
+      ],
+      "name": "LogNeededBalance",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "username",
+          "type": "string"
+        }
+      ],
+      "name": "CreatedUser",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "username",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "name": "neededUsername",
+          "type": "string"
+        }
+      ],
+      "name": "UsernameDoesNotMatch",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "username",
+          "type": "string"
+        }
+      ],
+      "name": "VerifiedUser",
+      "type": "event"
+    }
+  ]
 }

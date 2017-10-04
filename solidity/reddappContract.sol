@@ -1021,6 +1021,7 @@ contract OraclizeTest is usingOraclize {
 
     struct User{
         string username;
+        uint balance;
         bool verified;
     }
     
@@ -1036,6 +1037,8 @@ contract OraclizeTest is usingOraclize {
     event CreatedUser(string username);
     event UsernameDoesNotMatch(string username, string neededUsername);
     event VerifiedUser(string username);
+    event UserTipped(string username);
+    event WithdrawSuccessful(string username);
     
     modifier onlyVerified() {
         require(users[msg.sender].verified);
@@ -1071,37 +1074,54 @@ contract OraclizeTest is usingOraclize {
     }
 
     /**
+     * Tip user for his post/comment 
+     * @param username reddit username for user
+     */
+    function tipUser(string username) payable {
+        require(users[usernameToAddress[stringToBytes32(username)]].verified);
+
+        users[usernameToAddress[stringToBytes32(username)]].balance += msg.value;
+
+        UserTipped(username);
+    }
+
+    /**
+     * Withdraw collected eth 
+     */
+    function withdraw() onlyVerified {
+        msg.sender.transfer(users[msg.sender].balance);
+
+        WithdrawSuccessful(users[msg.sender].username);
+    }
+
+    /**
      * Creates user with username and address
      * @param username reddit username from user
      * @param token reddit oauth access token (should be encrypted with oraclize public key)
      */
-    function createUser(string username, string token) payable returns (bool) {
+    function createUser(string username, string token) payable {
         //TODO: what happens if user with that address exists (verified or not)
         //TODO: what happens if that username is already registered with another address
 
         users[msg.sender] = User({
                 username: username,
-                verified: false
+                verified: false,
+                balance: 0
             });
 
         if (oraclize_getPrice("computation") > this.balance) {
             Log("Oraclize query was NOT sent, please add some ETH to cover for the query fee");
             LogBalance(this.balance);
             LogNeededBalance(oraclize_getPrice("computation"));
-            return false;
+            return;
         } 
         
-        //TODO: decrypt token using oraclize nested
-        bytes32 queryId = oraclize_query("computation", ["QmdhV48wmZXoSrQN8ncGNDSq5CWzrvPZ86Wp43wLAJ2wCa", token]);
+        string memory test = strConcat("[computation] ['QmdhV48wmZXoSrQN8ncGNDSq5CWzrvPZ86Wp43wLAJ2wCa', '${[decrypt] ", token, "}']");
+        bytes32 queryId = oraclize_query("nested", test);
         queryToAddress[queryId] = msg.sender;
 
         LogQuery(queryId, msg.sender);
         CreatedUser(username);
-        return true;
-    }
-
-    function getAddressFromUsername(string username) returns (address userAddress) {
-        return usernameToAddress[stringToBytes32(username)];
     }
 
     function votePost(uint postId, bool vote) onlyVerified returns (bool) {
@@ -1119,7 +1139,6 @@ contract OraclizeTest is usingOraclize {
         return true;
     }
 
-
     function voteComment(uint commentId, bool vote) onlyVerified returns (bool) {
         var user = users[msg.sender];
 
@@ -1135,16 +1154,20 @@ contract OraclizeTest is usingOraclize {
         return true;
     }
 
+    function getAddressFromUsername(string username) constant returns (address userAddress) {
+        return usernameToAddress[stringToBytes32(username)];
+    }
+
+    function checkIfUserVerified() constant returns (bool) {
+        return users[msg.sender].verified;
+    }
+
     function getPostScore(uint postId) constant returns (uint) {
         return posts[postId].ups - posts[postId].downs;
     }
 
     function getCommentScore(uint commentId) constant returns (uint) {
         return comments[commentId].ups - comments[commentId].downs;
-    }
-
-    function checkIfUserVerified() constant returns (bool) {
-        return users[msg.sender].verified;
     }
 
     /**
@@ -1156,5 +1179,4 @@ contract OraclizeTest is usingOraclize {
             result := mload(add(source, 32))
         }
     }
-
 }

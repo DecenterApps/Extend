@@ -20,12 +20,9 @@ module.exports = {
     loaders: [
       {
         test: /\.(js)?$/,
-        loader: 'babel-loader',
+        loaders: ['babel-loader', 'eslint-loader'],
         exclude: /(node_modules)/,
-        include: path.join(__dirname, 'src'),
-        query: {
-          presets: ['es2015', 'react']
-        }
+        include: path.join(__dirname, 'src')
       }
     ]
   }

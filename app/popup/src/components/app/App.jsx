@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { createUserAuthMessage } from '../../../../actions/userActionsMessages';
 
@@ -29,11 +30,11 @@ const Popup = ({ username, address, network, registering, verified }) => (
     {
       !verified &&
       <button
-        disabled={ registering || !network }
-        onClick={ () => createUserAuthMessage() }
+        disabled={registering || !network}
+        onClick={() => createUserAuthMessage()}
       >
         <br />
-        { registering ? 'Creating user' : 'Create User' }
+        {registering ? 'Creating user' : 'Create User'}
       </button>
     }
   </div>
@@ -45,6 +46,14 @@ Popup.defaultProps = {
   registering: false,
   username: '',
   verified: false,
+};
+
+Popup.propTypes = {
+  address: PropTypes.string,
+  network: PropTypes.string,
+  registering: PropTypes.bool,
+  username: PropTypes.string,
+  verified: PropTypes.bool,
 };
 
 const mapStateToProps = (state) => {

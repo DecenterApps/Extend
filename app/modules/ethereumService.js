@@ -11,7 +11,6 @@ export const getBlockNumber = () =>
 
 export const checkIfUserVerified = (contract) =>
   new Promise((resolve, reject) => {
-    console.log('contract', contract);
     contract.checkIfUserVerified((error, result) => {
       if (error) return reject({ message: error, });
 

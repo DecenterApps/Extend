@@ -1,6 +1,8 @@
 import { _createUser, checkIfUserVerified } from '../modules/ethereumService';
 import { getParameterByName } from './utils';
-import { SET_NETWORK, SET_ADDRESS, REGISTER_USER, REGISTER_USER_SUCCESS, REGISTER_USER_ERROR, } from '../constants/actionTypes';
+import {
+  SET_NETWORK, SET_ADDRESS, REGISTER_USER, REGISTER_USER_SUCCESS, REGISTER_USER_ERROR, SET_IS_USER_VERIFIED
+} from '../constants/actionTypes';
 
 /**
  * Sets Ethereum network if it found it
@@ -41,13 +43,9 @@ export const setNetwork = (web3, dispatch) => {
 /**
  * Checks if the users address is associated to a Reddit username on the contract
  */
-export const checkIfAddressHasUser = async (contract) => {
-  try {
-    const resp = await checkIfUserVerified(contract);
-    console.log('RESPONSE IS VERIFIED', resp);
-  } catch (err) {
-    console.log('CHECK IF VERIFIED ERROR', err);
-  }
+export const checkIfAddressHasUser = async (contract, dispatch) => {
+  const isUserVerified = await checkIfUserVerified(contract);
+  dispatch({ type: SET_IS_USER_VERIFIED, payload: isUserVerified });
 };
 
 /**
@@ -65,7 +63,7 @@ export const setAddress = (contract, currentAddress, dispatch, web3) => {
   if (newAddress === currentAddress) return currentAddress;
 
   web3.eth.defaultAccount = newAddress;
-  checkIfAddressHasUser(contract);
+  checkIfAddressHasUser(contract, dispatch);
   dispatch({ type: SET_ADDRESS, payload: newAddress });
 };
 

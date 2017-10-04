@@ -1,6 +1,6 @@
-import React from 'react';
 import {
-  SET_ADDRESS, SET_NETWORK, REGISTER_USER, REGISTER_USER_ERROR, REGISTER_USER_SUCCESS
+  SET_ADDRESS, SET_NETWORK, REGISTER_USER, REGISTER_USER_ERROR, REGISTER_USER_SUCCESS,
+  SET_IS_USER_VERIFIED
 } from '../../../constants/actionTypes';
 
 const INITIAL_STATE = {
@@ -8,7 +8,8 @@ const INITIAL_STATE = {
   network: '',
   registering: false,
   registeringError: '',
-  username: ''
+  username: '',
+  verified: ''
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -29,6 +30,9 @@ export default (state = INITIAL_STATE, action) => {
 
     case REGISTER_USER_SUCCESS:
       return { ...state, registering: false, registeringError: '', username: payload };
+
+    case SET_IS_USER_VERIFIED:
+      return { ...state, verified: payload };
 
     default:
       return state;

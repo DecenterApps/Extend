@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { count } from '../../../../actions/voteActions'
 
 class App extends Component {
   constructor(props) {
@@ -34,8 +32,4 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
-  count: state.count
-});
-
-export default connect(mapStateToProps)(App);
+export default App;

@@ -23,7 +23,6 @@ class Store {
     this.readyPromise = new Promise(resolve => this.readyResolve = resolve);
 
     this.extensionId = extensionId; // keep the extensionId as an instance variable
-    console.log('EXTENSION ID', this.extensionId);
     this.port = chrome.runtime.connect(this.extensionId, {name: portName});
     this.listeners = [];
     this.state = state;

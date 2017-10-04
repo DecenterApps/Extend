@@ -1,6 +1,6 @@
 {
-  "contractAddress": "0x00B5387721230f6142409Fa73a317C7ba0a468FF",
-  "startingBlock": 4134926,
+  "contractAddress": "0xF181Bc715bA4A3204aF7944F96F733Fc35692bAB",
+  "startingBlock": 4145732,
   "abi": [
     {
       "constant": false,
@@ -67,6 +67,15 @@
     },
     {
       "constant": false,
+      "inputs": [],
+      "name": "withdraw",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
       "inputs": [
         {
           "name": "username",
@@ -81,11 +90,11 @@
         }
       ],
       "payable": false,
-      "stateMutability": "nonpayable",
+      "stateMutability": "view",
       "type": "function"
     },
     {
-      "constant": false,
+      "constant": true,
       "inputs": [
         {
           "name": "postId",
@@ -100,7 +109,35 @@
         }
       ],
       "payable": false,
-      "stateMutability": "nonpayable",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "username",
+          "type": "string"
+        }
+      ],
+      "name": "tipUser",
+      "outputs": [],
+      "payable": true,
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "checkIfUserVerified",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
       "type": "function"
     },
     {
@@ -122,7 +159,7 @@
       "type": "function"
     },
     {
-      "constant": false,
+      "constant": true,
       "inputs": [
         {
           "name": "commentId",
@@ -137,7 +174,7 @@
         }
       ],
       "payable": false,
-      "stateMutability": "nonpayable",
+      "stateMutability": "view",
       "type": "function"
     },
     {
@@ -255,6 +292,30 @@
         }
       ],
       "name": "VerifiedUser",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "username",
+          "type": "string"
+        }
+      ],
+      "name": "UserTipped",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "username",
+          "type": "string"
+        }
+      ],
+      "name": "WithdrawSuccessful",
       "type": "event"
     }
   ]

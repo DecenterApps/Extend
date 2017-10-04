@@ -8,7 +8,7 @@ export default (proxyStore) => {
 
   const divs = document.getElementsByClassName('react-testing');
 
-  for (let i = 0 ; i < divs.length; i++) {
+  for (let i = 0; i < divs.length; i++) {
     render(<Provider store={proxyStore}><UpvoteDownvote /></Provider>, divs[i]);
   }
 };

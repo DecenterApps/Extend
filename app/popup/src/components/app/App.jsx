@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { createUserAuthMessage } from '../../../../actions/userActions';
+import { createUserAuthMessage } from '../../../../actions/userActionsMessages';
 
 const Popup = ({ username, address, network, registering }) => (
   <div>

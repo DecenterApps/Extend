@@ -1,12 +1,3 @@
-import contractConfig from './config.json';
-
-let contract;
-
-window.onload = () => {
-  window.web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
-  contract = window.web3.eth.contract(contractConfig.abi).at(contractConfig.contractAddress);
-};
-
 export const getBlockNumber = () =>
   new Promise((resolve, reject) => {
     window.web3.eth.getBlockNumber((error, latestBlock) => {
@@ -18,8 +9,9 @@ export const getBlockNumber = () =>
     });
   });
 
-export const checkIfUserVerified = () =>
+export const checkIfUserVerified = (contract) =>
   new Promise((resolve, reject) => {
+    console.log('contract', contract);
     contract.checkIfUserVerified((error, result) => {
       if (error) return reject({ message: error, });
 
@@ -28,7 +20,7 @@ export const checkIfUserVerified = () =>
   });
 
 
-export const _createUser = (username, token, address) =>
+export const _createUser = (username, token, address, contract) =>
   new Promise(async (resolve, reject) => {
     try {
       const oreclizeResponse = await fetch('https://api.oraclize.it/v1/platform/info?_pretty=1');

@@ -1,9 +1,6 @@
 import { _createUser, checkIfUserVerified } from '../modules/ethereumService';
 import { getParameterByName } from './utils';
 import { SET_NETWORK, SET_ADDRESS, REGISTER_USER, REGISTER_USER_SUCCESS, REGISTER_USER_ERROR, } from '../constants/actionTypes';
-import { STORE_PORT } from '../constants/general';
-
-const port = chrome.runtime.connect('', {name: STORE_PORT});
 
 /**
  * Sets Ethereum network if it found it
@@ -44,9 +41,9 @@ export const setNetwork = (web3, dispatch) => {
 /**
  * Checks if the users address is associated to a Reddit username on the contract
  */
-export const checkIfAddressHasUser = async () => {
+export const checkIfAddressHasUser = async (contract) => {
   try {
-    const resp = await checkIfUserVerified();
+    const resp = await checkIfUserVerified(contract);
     console.log('RESPONSE IS VERIFIED', resp);
   } catch (err) {
     console.log('CHECK IF VERIFIED ERROR', err);
@@ -57,7 +54,7 @@ export const checkIfAddressHasUser = async () => {
  * Checks if the current user has an address and sets
  * @return {String|Boolean} address
  */
-export const setAddress = (currentAddress, dispatch, web3) => {
+export const setAddress = (contract, currentAddress, dispatch, web3) => {
   if (!web3.eth.accounts[0]) {
     dispatch({ type: SET_ADDRESS, payload: '' });
     return false;
@@ -68,17 +65,14 @@ export const setAddress = (currentAddress, dispatch, web3) => {
   if (newAddress === currentAddress) return currentAddress;
 
   web3.eth.defaultAccount = newAddress;
-  checkIfAddressHasUser();
+  checkIfAddressHasUser(contract);
   dispatch({ type: SET_ADDRESS, payload: newAddress });
 };
 
 /**
  * Opens Reddit oauth window and receives user access_token. Access_token and user address are sent to the contract
  */
-export const createUserAuthMessage = () => {
-  port.postMessage({action: 'createUserAuth'});
-};
-export const createUserAuth = (address, dispatch) => {
+export const createUserAuth = (contract, address, dispatch) => {
   const redirectUri = chrome.identity.getRedirectURL("oauth2");
 
   dispatch({ type: REGISTER_USER });
@@ -105,7 +99,7 @@ export const createUserAuth = (address, dispatch) => {
 
       dispatch({ type: REGISTER_USER_SUCCESS, payload: me.name });
 
-      const contractResponse = await _createUser(me.name, accessToken, address);
+      const contractResponse = await _createUser(contract, me.name, accessToken, address);
       // Uspesno otislo na contract
       // dispatch({ type: REGISTER_USER_ERROR });
 

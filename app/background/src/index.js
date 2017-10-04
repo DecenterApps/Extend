@@ -23,7 +23,7 @@ chrome.runtime.onConnect.addListener(function(port) {
 
     switch (funcName) {
       case 'createUserAuth':
-        userActions[funcName](contract, getState().user.address, dispatch);
+        userActions[funcName](contract, web3, getState().user.address, dispatch);
         return;
 
       default:

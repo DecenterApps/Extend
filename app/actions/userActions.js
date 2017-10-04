@@ -72,7 +72,7 @@ export const setAddress = (contract, currentAddress, dispatch, web3) => {
 /**
  * Opens Reddit oauth window and receives user access_token. Access_token and user address are sent to the contract
  */
-export const createUserAuth = (contract, address, dispatch) => {
+export const createUserAuth = (contract, web3, address, dispatch) => {
   const redirectUri = chrome.identity.getRedirectURL("oauth2");
 
   dispatch({ type: REGISTER_USER });
@@ -99,11 +99,12 @@ export const createUserAuth = (contract, address, dispatch) => {
 
       dispatch({ type: REGISTER_USER_SUCCESS, payload: me.name });
 
-      const contractResponse = await _createUser(contract, me.name, accessToken, address);
+      const contractResponse = await _createUser(contract, web3, me.name, accessToken, address);
       // Uspesno otislo na contract
       // dispatch({ type: REGISTER_USER_ERROR });
 
     } catch (err) {
+      console.log('create user error', err);
       return dispatch({ type: REGISTER_USER_ERROR });
     }
   });

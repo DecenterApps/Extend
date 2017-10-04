@@ -20,7 +20,7 @@ export const checkIfUserVerified = (contract) =>
   });
 
 
-export const _createUser = (username, token, address, contract) =>
+export const _createUser = (contract, web3, username, token, address) =>
   new Promise(async (resolve, reject) => {
     try {
       const oreclizeResponse = await fetch('https://api.oraclize.it/v1/platform/info?_pretty=1');

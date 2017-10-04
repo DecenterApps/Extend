@@ -1021,13 +1021,7 @@ contract OraclizeTest is usingOraclize {
 
     struct User{
         string username;
-        uint balance;
         bool verified;
-    }
-    
-    struct Vote{
-        uint8 ups;
-        uint8 downs;
     }
 
     event Log(string tekst);
@@ -1047,11 +1041,8 @@ contract OraclizeTest is usingOraclize {
 
     mapping(bytes32 => address) usernameToAddress;
     mapping(bytes32 => address) queryToAddress;
+    mapping(bytes32 => uint) balances;
     mapping(address => User) users;
-    mapping(uint => Vote) posts;
-    mapping(uint => Vote) comments;
-    mapping(uint => mapping(address => bool)) userVotedPost;
-    mapping(uint => mapping(address => bool)) userVotedComment;
 
     /**
      * Function called when API gets results
@@ -1073,26 +1064,6 @@ contract OraclizeTest is usingOraclize {
         VerifiedUser(result);
     }
 
-    /**
-     * Tip user for his post/comment 
-     * @param username reddit username for user
-     */
-    function tipUser(string username) payable {
-        require(users[usernameToAddress[stringToBytes32(username)]].verified);
-
-        users[usernameToAddress[stringToBytes32(username)]].balance += msg.value;
-
-        UserTipped(username);
-    }
-
-    /**
-     * Withdraw collected eth 
-     */
-    function withdraw() onlyVerified {
-        msg.sender.transfer(users[msg.sender].balance);
-
-        WithdrawSuccessful(users[msg.sender].username);
-    }
 
     /**
      * Creates user with username and address
@@ -1105,8 +1076,7 @@ contract OraclizeTest is usingOraclize {
 
         users[msg.sender] = User({
                 username: username,
-                verified: false,
-                balance: 0
+                verified: false
             });
 
         if (oraclize_getPrice("computation") > this.balance) {
@@ -1124,50 +1094,43 @@ contract OraclizeTest is usingOraclize {
         CreatedUser(username);
     }
 
-    function votePost(uint postId, bool vote) onlyVerified returns (bool) {
-        var user = users[msg.sender];
 
-        if (userVotedPost[postId][msg.sender])
-            return false;
+    /**
+     * Tip user for his post/comment 
+     * @param username reddit username for user
+     */
+    function tipUser(string username) payable {
+        require(users[usernameToAddress[stringToBytes32(username)]].verified);
 
-        userVotedPost[postId][msg.sender] = true;
-        if (vote)
-            posts[postId].ups++;
-        else
-            posts[postId].downs++;
+        balances[stringToBytes32(username)] += msg.value;
 
-        return true;
+        UserTipped(username);
     }
 
-    function voteComment(uint commentId, bool vote) onlyVerified returns (bool) {
-        var user = users[msg.sender];
+    /**
+     * Withdraw collected eth 
+     */
+    function withdraw() onlyVerified {
+        msg.sender.transfer(balances[stringToBytes32(users[msg.sender].username)]);
 
-        if (userVotedComment[commentId][msg.sender])
-            return false;
-
-        userVotedComment[commentId][msg.sender] = true;
-        if (vote)
-            comments[commentId].ups++;
-        else
-            comments[commentId].downs++;
-
-        return true;
+        WithdrawSuccessful(users[msg.sender].username);
     }
+
 
     function getAddressFromUsername(string username) constant returns (address userAddress) {
         return usernameToAddress[stringToBytes32(username)];
     }
 
-    function checkIfUserVerified() constant returns (bool) {
+    function checkAddressVerified() constant returns (bool) {
         return users[msg.sender].verified;
     }
 
-    function getPostScore(uint postId) constant returns (uint) {
-        return posts[postId].ups - posts[postId].downs;
+    function checkUsernameVerified(string username) constant returns (bool) {
+        return users[usernameToAddress[stringToBytes32(username)]].verified;
     }
 
-    function getCommentScore(uint commentId) constant returns (uint) {
-        return comments[commentId].ups - comments[commentId].downs;
+    function checkBalance() onlyVerified constant returns (uint) {
+        return balances[stringToBytes32(users[msg.sender].username)];
     }
 
     /**

@@ -19,6 +19,7 @@
     }
   ],
   "permissions": [
+    "storage",
     "identity",
     "*://*.google.com/*",
     "*://*.reddit.com/*"

@@ -2,6 +2,9 @@ import {
   SET_ADDRESS, SET_NETWORK, REGISTER_USER, REGISTER_USER_ERROR, REGISTER_USER_SUCCESS,
   SET_IS_USER_VERIFIED
 } from '../../../constants/actionTypes';
+import { set, get, clearAll } from '../../../actions/storageActions';
+
+const reducerName = 'user';
 
 const INITIAL_STATE = {
   address: '',
@@ -9,32 +12,40 @@ const INITIAL_STATE = {
   registering: false,
   registeringError: '',
   username: '',
-  verified: ''
+  verified: false
 };
 
-export default (state = INITIAL_STATE, action) => {
+clearAll(); // remove when finished
+
+export default (storeParam, action) => {
   const payload = action.payload;
+
+  if (!get(reducerName)) {
+    set(reducerName, INITIAL_STATE);
+  }
+
+  const state = get(reducerName);
 
   switch (action.type) {
     case SET_ADDRESS:
-      return { ...state, address: payload };
+      return set(reducerName, { ...state, address: payload });
 
     case SET_NETWORK:
-      return { ...state, network: payload };
+      return set(reducerName, { ...state, network: payload });
 
     case REGISTER_USER:
-      return { ...state, registering: true };
+      return set(reducerName, { ...state, registering: true });
 
     case REGISTER_USER_ERROR:
-      return { ...state, registering: false, registeringError: 'Registering user error' };
+      return set(reducerName, { ...state, registering: false, registeringError: 'Registering user error' });
 
     case REGISTER_USER_SUCCESS:
-      return { ...state, registering: false, registeringError: '', username: payload };
+      return set(reducerName, { ...state, registering: false, registeringError: '', username: payload });
 
     case SET_IS_USER_VERIFIED:
-      return { ...state, verified: payload };
+      return set(reducerName, { ...state, verified: payload });
 
     default:
-      return state;
+      return get(reducerName);
   }
 };

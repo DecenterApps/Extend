@@ -19,7 +19,9 @@ module.exports = {
     'prefer-template': 0,
     'keyword-spacing': 0,
     'no-plusplus': 0,
-    'prefer-const': 0
+    'prefer-const': 0,
+    'new-cap': ['error', { "properties": false }],
+    'quote-props': ["error", "consistent"]
   },
   'plugins': [
     'react', 'import'
@@ -29,6 +31,8 @@ module.exports = {
     'chrome': false,
     'Web3': false,
     'fetch': false,
-    '$': false
+    '$': false,
+    'lightwallet': false,
+    'prompt': false
   }
 };

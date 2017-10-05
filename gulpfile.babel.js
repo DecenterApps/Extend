@@ -60,6 +60,11 @@ gulp.task('copy-web3', ['clean'], () => {
     .pipe(gulp.dest('./build'));
 });
 
+// gulp.task('copy-lightwallet', ['clean'], () => {
+//   return gulp.src('./app/modules/lightwallet.min.js')
+//     .pipe(gulp.dest('./build'));
+// });
+
 gulp.task('clean', (cb) => {
   rimraf('./build', cb);
 });

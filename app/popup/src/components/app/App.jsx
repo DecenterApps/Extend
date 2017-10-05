@@ -59,6 +59,7 @@ Popup.propTypes = {
 const mapStateToProps = (state) => {
   if (Object.keys(state).length === 0 && state.constructor === Object) return {};
 
+  console.log('POPUP STATE', state);
   return {
     network: state.user.network,
     address: state.user.address,

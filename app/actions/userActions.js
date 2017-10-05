@@ -1,7 +1,8 @@
 import { _createUser, checkIfUserVerified } from '../modules/ethereumService';
 import { getParameterByName } from './utils';
 import {
-  SET_NETWORK, SET_ADDRESS, REGISTER_USER, REGISTER_USER_SUCCESS, REGISTER_USER_ERROR, SET_IS_USER_VERIFIED
+  SET_NETWORK, SET_ADDRESS, REGISTER_USER, REGISTER_USER_SUCCESS, REGISTER_USER_ERROR,
+  SET_IS_USER_VERIFIED
 } from '../constants/actionTypes';
 
 /**
@@ -17,19 +18,19 @@ export const setNetwork = (web3, dispatch) => {
     let networkName = '';
 
     switch (netId) {
-      case "1":
+      case '1':
         networkName = 'mainnet';
         break;
-      case "2":
-        networkName= 'morden';
+      case '2':
+        networkName = 'morden';
         break;
-      case "3":
+      case '3':
         networkName = 'ropsten';
         break;
-      case "4":
+      case '4':
         networkName = 'rinkeby';
         break;
-      case "42":
+      case '42':
         networkName = 'kovan';
         break;
       default:
@@ -53,6 +54,7 @@ export const checkIfAddressHasUser = async (contract, dispatch) => {
  * @return {String|Boolean} address
  */
 export const setAddress = (contract, currentAddress, dispatch, web3) => {
+  console.log('accounts', web3.eth.accounts);
   if (!web3.eth.accounts[0]) {
     dispatch({ type: SET_ADDRESS, payload: '' });
     return false;
@@ -64,28 +66,29 @@ export const setAddress = (contract, currentAddress, dispatch, web3) => {
 
   web3.eth.defaultAccount = newAddress;
   checkIfAddressHasUser(contract, dispatch);
-  dispatch({ type: SET_ADDRESS, payload: newAddress });
+  return dispatch({ type: SET_ADDRESS, payload: newAddress });
 };
 
 /**
- * Opens Reddit oauth window and receives user access_token. Access_token and user address are sent to the contract
+ * Opens Reddit oauth window and receives user access_token. Access_token and
+ * user address are sent to the contract
  */
 export const createUserAuth = (contract, web3, address, dispatch) => {
-  const redirectUri = chrome.identity.getRedirectURL("oauth2");
+  const redirectUri = chrome.identity.getRedirectURL('oauth2');
 
   dispatch({ type: REGISTER_USER });
 
   chrome.identity.launchWebAuthFlow({
     url: `https://www.reddit.com/api/v1/authorize?client_id=AFH0yVxKuLUlVQ&response_type=token&state=asdf&redirect_uri=${redirectUri}&scope=identity`,
     interactive: true
-  }, async (response) => {
-    console.log('RESPONSE AUTH', response);
-    response = response.replace(/#/g, "?");
+  }, async (authResponse) => {
+    console.log('RESPONSE AUTH', authResponse);
+    const response = authResponse.replace(/#/g, '?');
     const accessToken = getParameterByName('access_token', response);
 
     const request = new Request('https://oauth.reddit.com/api/v1/me', {
       headers: new Headers({
-        "Authorization": `bearer ${accessToken}`
+        'Authorization': `bearer ${accessToken}`
       })
     });
 
@@ -100,7 +103,7 @@ export const createUserAuth = (contract, web3, address, dispatch) => {
       const contractResponse = await _createUser(contract, web3, me.name, accessToken, address);
       // Uspesno otislo na contract
       // dispatch({ type: REGISTER_USER_ERROR });
-
+      return contractResponse;
     } catch (err) {
       console.log('create user error', err);
       return dispatch({ type: REGISTER_USER_ERROR });

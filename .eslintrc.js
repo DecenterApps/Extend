@@ -21,7 +21,8 @@ module.exports = {
     'no-plusplus': 0,
     'prefer-const': 0,
     'new-cap': ['error', { "properties": false }],
-    'quote-props': ["error", "consistent"]
+    'quote-props': ["error", "consistent"],
+    'import/prefer-default-export': 0
   },
   'plugins': [
     'react', 'import'

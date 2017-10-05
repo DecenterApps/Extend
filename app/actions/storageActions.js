@@ -3,7 +3,7 @@ import store from 'store';
 export const clearAll = () => { store.clearAll(); };
 
 export const set = (key, data) => {
-  store.set('user', data);
+  store.set(key, data);
   return data;
 };
 

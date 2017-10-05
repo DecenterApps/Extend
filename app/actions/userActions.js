@@ -54,7 +54,6 @@ export const checkIfAddressHasUser = async (contract, dispatch) => {
  * @return {String|Boolean} address
  */
 export const setAddress = (contract, currentAddress, dispatch, web3) => {
-  console.log('accounts', web3.eth.accounts);
   if (!web3.eth.accounts[0]) {
     dispatch({ type: SET_ADDRESS, payload: '' });
     return false;

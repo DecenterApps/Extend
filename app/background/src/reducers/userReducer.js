@@ -2,6 +2,7 @@ import {
   SET_ADDRESS, SET_NETWORK, REGISTER_USER, REGISTER_USER_ERROR, REGISTER_USER_SUCCESS,
   SET_IS_USER_VERIFIED
 } from '../../../constants/actionTypes';
+import { NETWORKS } from '../../../constants/general';
 import { set, get, clearAll } from '../../../actions/storageActions';
 
 const reducerName = 'user';
@@ -12,7 +13,9 @@ const INITIAL_STATE = {
   registering: false,
   registeringError: '',
   username: '',
-  verified: false
+  verified: false,
+  networks: NETWORKS,
+  selectedNetwork: NETWORKS[0]
 };
 
 clearAll(); // remove when finished

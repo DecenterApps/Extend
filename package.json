@@ -22,7 +22,8 @@
     "react-dom": "^15.5.0",
     "react-redux": "^4.0.0",
     "redux": "^3.0.4",
-    "store": "^2.0.12"
+    "store": "^2.0.12",
+    "svg-jsx-loader": "^0.0.17"
   },
   "devDependencies": {
     "babel-core": "^6.24.1",

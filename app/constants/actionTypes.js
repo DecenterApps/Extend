@@ -10,3 +10,4 @@ export const SET_IS_USER_VERIFIED = 'set_is_user_verified';
 
 // NETWORK
 export const TOGGLE_DROPDOWN = 'toggle_dropdown';
+export const SELECT_NETWORK = 'select_network';

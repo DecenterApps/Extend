@@ -1,7 +1,7 @@
 import { createStore } from 'redux';
 import rootReducer from './reducers/index';
 import { wrapStore } from '../../modules/react-chrome-redux/index';
-import { STORE_PORT } from '../../constants/general';
+import { STORE_PORT, NETWORKS } from '../../constants/general';
 import * as userActions from '../../actions/userActions';
 import * as accountActions from '../../actions/accountActions';
 import * as dropdownActions from '../../actions/dropdownActions';
@@ -13,8 +13,8 @@ const getState = store.getState;
 
 wrapStore(store, { portName: STORE_PORT });
 
-const web3 = new Web3(new Web3.providers.HttpProvider(getState().user.selectedNetwork.url));
-const contract = web3.eth.contract(contractConfig.abi).at(contractConfig.contractAddress);
+let web3 = new Web3(new Web3.providers.HttpProvider(getState().user.selectedNetwork.url));
+let contract = web3.eth.contract(contractConfig.abi).at(contractConfig.contractAddress);
 
 userActions.setAddress(contract, getState().user.address, dispatch, web3);
 userActions.setNetwork(web3, dispatch);
@@ -25,6 +25,21 @@ chrome.runtime.onConnect.addListener((port) => {
     const payload = msg.payload;
 
     switch (funcName) {
+      case 'selectNetwork': {
+        try {
+          console.log('TRY');
+          web3 = new Web3(new Web3.providers.HttpProvider(NETWORKS[payload].url));
+          contract = web3.eth.contract(contractConfig.abi).at(contractConfig.contractAddress);
+        } catch (err) {
+          console.log('COULD NOT CONNECT TO NETWORK', err);
+          return false;
+        }
+
+        userActions.setNetwork(web3, dispatch);
+
+        return userActions[funcName](dispatch, payload);
+      }
+
       case 'createUserAuth':
         return userActions[funcName](contract, web3, getState().user.address, dispatch);
 

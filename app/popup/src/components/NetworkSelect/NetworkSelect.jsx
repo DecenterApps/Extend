@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import OutsideAlerter from './OutsideAlerter';
 import DownIcon from '../Decorative/DownIcon/DownIcon';
+import UpIcon from '../Decorative/UpIcon/UpIcon';
 import { toggleDropdownMessage } from '../../../../actions/dropdownActionMessages';
+import { selectedNetworkMessage } from '../../../../actions/userActionsMessages';
 
 const NetworkSelect = ({ selectedNetwork, networks, dropdownVisible }) => (
   <OutsideAlerter>
@@ -15,7 +17,8 @@ const NetworkSelect = ({ selectedNetwork, networks, dropdownVisible }) => (
           role="button"
           tabIndex={0}
         >
-          <DownIcon />
+          { !dropdownVisible && <DownIcon /> }
+          { dropdownVisible && <UpIcon /> }
         </span>
       </div>
 
@@ -24,9 +27,12 @@ const NetworkSelect = ({ selectedNetwork, networks, dropdownVisible }) => (
         dropdownVisible &&
         <div>
           {
-            networks.map((network) => (
+            networks.map((network, index) => (
               <div
                 key={network.name}
+                role="button"
+                tabIndex={index + 1}
+                onClick={() => selectedNetworkMessage(index)}
               >
                 { network.name }
               </div>

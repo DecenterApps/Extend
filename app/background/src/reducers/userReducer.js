@@ -1,6 +1,6 @@
 import {
   SET_ADDRESS, SET_NETWORK, REGISTER_USER, REGISTER_USER_ERROR, REGISTER_USER_SUCCESS,
-  SET_IS_USER_VERIFIED
+  SET_IS_USER_VERIFIED, SELECT_NETWORK
 } from '../../../constants/actionTypes';
 import { NETWORKS } from '../../../constants/general';
 import { set, get, clearAll } from '../../../actions/storageActions';
@@ -47,6 +47,9 @@ export default (storeParam, action) => {
 
     case SET_IS_USER_VERIFIED:
       return set(reducerName, { ...state, verified: payload });
+
+    case SELECT_NETWORK:
+      return set(reducerName, { ...state, selectedNetwork: NETWORKS[payload] });
 
     default:
       return get(reducerName);

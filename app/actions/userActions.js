@@ -2,7 +2,7 @@ import { _createUser, checkIfUserVerified } from '../modules/ethereumService';
 import { getParameterByName } from './utils';
 import {
   SET_NETWORK, SET_ADDRESS, REGISTER_USER, REGISTER_USER_SUCCESS, REGISTER_USER_ERROR,
-  SET_IS_USER_VERIFIED
+  SET_IS_USER_VERIFIED, SELECT_NETWORK
 } from '../constants/actionTypes';
 
 /**
@@ -37,6 +37,8 @@ export const setNetwork = (web3, dispatch) => {
         networkName = 'unknown';
     }
 
+    console.log('selected network', networkName);
+
     dispatch({ type: SET_NETWORK, payload: networkName });
   });
 };
@@ -66,6 +68,14 @@ export const setAddress = (contract, currentAddress, dispatch, web3) => {
   web3.eth.defaultAccount = newAddress;
   checkIfAddressHasUser(contract, dispatch);
   return dispatch({ type: SET_ADDRESS, payload: newAddress });
+};
+
+/**
+ * Dispatches action to change the current selected network
+ * @param {number} index of network in the constant NETWORKS array
+ */
+export const selectNetwork = (dispatch, index) => {
+  dispatch({ type: SELECT_NETWORK, payload: index });
 };
 
 /**

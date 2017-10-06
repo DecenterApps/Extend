@@ -2,30 +2,30 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import OutsideAlerter from './OutsideAlerter';
-import DownIcon from '../Decorative/DownIcon/DownIcon';
-import UpIcon from '../Decorative/UpIcon/UpIcon';
+import AnimatedCaret from '../AnimatedCaret/AnimatedCaret';
 import { toggleDropdownMessage } from '../../../../actions/dropdownActionMessages';
 import { selectedNetworkMessage } from '../../../../actions/userActionsMessages';
 
+import './network-select.scss';
+
 const NetworkSelect = ({ selectedNetwork, networks, dropdownVisible }) => (
   <OutsideAlerter>
-    <div>
-      <div style={{ width: '200px' }}>
+    <div styleName="network-select-wrapper">
+      <div styleName="active-network-wrapper">
         <span>{ selectedNetwork }</span>
         <span
           onClick={() => { toggleDropdownMessage(!dropdownVisible); }}
           role="button"
           tabIndex={0}
         >
-          { !dropdownVisible && <DownIcon /> }
-          { dropdownVisible && <UpIcon /> }
+          <AnimatedCaret active={dropdownVisible} />
         </span>
       </div>
 
       {
         networks.length > 0 &&
         dropdownVisible &&
-        <div>
+        <div styleName="network-select-dropdown">
           {
             networks.map((network, index) => (
               <div

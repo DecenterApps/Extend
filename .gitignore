@@ -3,3 +3,4 @@ yarn.lock
 .idea/
 build/
 node_modules/
+server/TSOTD.log

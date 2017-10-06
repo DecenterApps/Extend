@@ -2,8 +2,10 @@ import React from 'react';
 import { createWalletMessage } from '../../../../actions/accountActionMessages';
 import NetworkSelect from '../NetworkSelect/NetworkSelect';
 
+import './app2.scss';
+
 const App2 = () => (
-  <div>
+  <div styleName="app2">
     <NetworkSelect />
     <button onClick={() => createWalletMessage()}>
       Generate wallet

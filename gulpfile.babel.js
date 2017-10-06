@@ -39,12 +39,6 @@ gulp.task('content-js', ['clean'], (cb) => {
   });
 });
 
-gulp.task('popup-html', ['clean'], () => {
-  return gulp.src('./app/popup/src/index.html')
-    .pipe(plugins.rename('popup.html'))
-    .pipe(gulp.dest('./build'))
-});
-
 gulp.task('copy-manifest', ['clean'], () => {
   return gulp.src('manifest.json')
     .pipe(gulp.dest('./build'));
@@ -69,7 +63,7 @@ gulp.task('clean', (cb) => {
   rimraf('./build', cb);
 });
 
-gulp.task('build', ['copy-manifest', 'copy-jquery', 'copy-web3', 'popup-js', 'popup-html', 'event-js', 'content-js']);
+gulp.task('build', ['copy-manifest', 'copy-jquery', 'copy-web3', 'popup-js', 'event-js', 'content-js']);
 
 gulp.task('watch', ['default'], () => {
   gulp.watch('popup/**/*', ['build']);

@@ -25,8 +25,13 @@ module.exports = {
   module: {
     loaders: [
       {
-        test: /\.jsx?$/,
-        include: path.join(__dirname, 'src'),
+        test: /\.(js|jsx)$/,
+
+        include: [
+          path.join(__dirname, 'src'),
+          path.join(__dirname, '../', 'actions'),
+          path.join(__dirname, '../background/src/', 'reducers'),
+        ],
         use: [
           {
             loader: 'babel-loader',

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import customConnect from '../customConnect';
 import OutsideAlerter from './OutsideAlerter';
 import AnimatedCaret from '../AnimatedCaret/AnimatedCaret';
 import { toggleDropdownMessage } from '../../../../actions/dropdownActionMessages';
@@ -62,8 +62,8 @@ const mapStateToProps = (state) => {
   return {
     selectedNetwork: state.user.selectedNetwork.name,
     networks: state.user.networks,
-    dropdownVisible: state.dropdown.visible
+    dropdownVisible: state.networkDropdown.visible
   };
 };
 
-export default connect(mapStateToProps)(NetworkSelect);
+export default customConnect(mapStateToProps)(NetworkSelect);

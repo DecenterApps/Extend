@@ -1,9 +1,14 @@
 import { combineReducers } from 'redux';
 
-import user from './userReducer';
-import dropdown from './dropdownReducer';
+import * as userReducer from './userReducer';
+import * as dropdownReducer from './dropdownReducer';
 
-export default combineReducers({
-  user,
-  dropdown
+export const reducersData = [
+  userReducer.reducerData,
+  dropdownReducer.reducerData
+];
+
+export const combinedReducer = () => combineReducers({
+  [userReducer.reducerName]: userReducer.reducer,
+  [dropdownReducer.reducerName]: dropdownReducer.reducer,
 });

@@ -1,3 +1,9 @@
+import { get, set, clearReducer } from './storageActions';
+
+Object.resolve = (path, obj) => (
+  path.split('.').reduce((prev, curr) => (prev ? prev[curr] : undefined), obj || self)
+);
+
 const swap = (arr, i, j) => {
     let temp = arr[i];
     arr[i] = arr[j];
@@ -41,3 +47,35 @@ export const getParameterByName = (name, url) => {
   if (!results[2]) return '';
   return decodeURIComponent(results[2].replace(/\+/g, " "));
 };
+
+const initReducer = async (reducerData) =>
+  new Promise(async (resolve) => {
+    await clearReducer(reducerData.name); // remove when finished
+
+    if ((await get(reducerData.name)) === undefined) {
+      await set(reducerData.name, reducerData.initialState);
+      resolve();
+    }
+
+    resolve();
+  });
+
+export const createReducerData = (name, initialState) => ({
+  name, initialState
+});
+
+export const getState = async (reducer, path) => {
+  const reducerState = await get(reducer);
+
+  if (!path) return reducerState;
+  return Object.resolve(path, reducerState);
+};
+
+export const initReducers = (reducersData) =>
+  new Promise((resolve) => {
+    reducersData.forEach(async (reducerData, index) => {
+      await initReducer(reducerData);
+
+      if (index === reducersData.length - 1) resolve();
+    });
+  });

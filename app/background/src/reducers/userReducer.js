@@ -3,9 +3,10 @@ import {
   SET_IS_USER_VERIFIED, SELECT_NETWORK
 } from '../../../constants/actionTypes';
 import { NETWORKS } from '../../../constants/general';
-import { set, get, clearAll } from '../../../actions/storageActions';
+import { set, get } from '../../../actions/storageActions';
+import { createReducerData } from '../../../actions/utils';
 
-const reducerName = 'user';
+export const reducerName = 'user';
 
 const INITIAL_STATE = {
   address: '',
@@ -18,40 +19,43 @@ const INITIAL_STATE = {
   selectedNetwork: NETWORKS[0]
 };
 
-clearAll(); // remove when finished
+export const reducerData = createReducerData(reducerName, INITIAL_STATE);
 
-export default (storeParam, action) => {
+export const reducer = async (storeParam, action) => {
   const payload = action.payload;
 
-  if (!get(reducerName)) {
-    set(reducerName, INITIAL_STATE);
-  }
-
-  const state = get(reducerName);
+  const state = await get(reducerName);
 
   switch (action.type) {
     case SET_ADDRESS:
-      return set(reducerName, { ...state, address: payload });
+      await set(reducerName, { ...state, address: payload });
+      break;
 
     case SET_NETWORK:
-      return set(reducerName, { ...state, network: payload });
+      await set(reducerName, { ...state, network: payload });
+      break;
 
     case REGISTER_USER:
-      return set(reducerName, { ...state, registering: true });
+      await set(reducerName, { ...state, registering: true });
+      break;
 
     case REGISTER_USER_ERROR:
-      return set(reducerName, { ...state, registering: false, registeringError: 'Registering user error' });
+      await set(reducerName, { ...state, registering: false, registeringError: 'Registering user error' });
+      break;
 
     case REGISTER_USER_SUCCESS:
-      return set(reducerName, { ...state, registering: false, registeringError: '', username: payload });
+      await set(reducerName, { ...state, registering: false, registeringError: '', username: payload });
+      break;
 
     case SET_IS_USER_VERIFIED:
-      return set(reducerName, { ...state, verified: payload });
+      await set(reducerName, { ...state, verified: payload });
+      break;
 
     case SELECT_NETWORK:
-      return set(reducerName, { ...state, selectedNetwork: NETWORKS[payload] });
+      await set(reducerName, { ...state, selectedNetwork: NETWORKS[payload] });
+      break;
 
     default:
-      return get(reducerName);
+      break;
   }
 };

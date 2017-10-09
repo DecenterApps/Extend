@@ -1,4 +1,5 @@
-import { set, get, clearAll } from '../../../actions/storageActions';
+import { set, get } from '../../../actions/storageActions';
+import { createReducerData } from '../../../actions/utils';
 import { TOGGLE_DROPDOWN } from '../../../constants/actionTypes';
 
 const reducerName = 'networkDropdown';
@@ -7,22 +8,20 @@ const INITIAL_STATE = {
   visible: false
 };
 
-clearAll(); // remove when finished
+export const reducerData = createReducerData(reducerName, INITIAL_STATE);
 
-export default (storeParam, action) => {
+export const reducer = async (storeParam, action) => {
   const payload = action.payload;
 
-  if (!get(reducerName)) {
-    set(reducerName, INITIAL_STATE);
-  }
-
-  const state = get(reducerName);
+  const state = await get(reducerName);
 
   switch (action.type) {
     case TOGGLE_DROPDOWN:
-      return set(reducerName, { ...state, visible: payload });
+      await set(reducerName, { ...state, visible: payload });
+      break;
 
     default:
-      return get(reducerName);
+      await get(reducerName);
+      break;
   }
 };

@@ -25,3 +25,9 @@ export const reducer = async (storeParam, action) => {
       break;
   }
 };
+
+export const data = {
+  name: reducerName,
+  initialState: INITIAL_STATE,
+  handle: reducer
+};

@@ -22,7 +22,8 @@ module.exports = {
     'prefer-const': 0,
     'new-cap': ['error', { "properties": false }],
     'quote-props': ["error", "consistent"],
-    'import/prefer-default-export': 0
+    'import/prefer-default-export': 0,
+    'no-return-await': 0
   },
   'plugins': [
     'react', 'import'

@@ -3,7 +3,7 @@ import {
   SET_IS_USER_VERIFIED, SELECT_NETWORK
 } from '../../../constants/actionTypes';
 import { NETWORKS } from '../../../constants/general';
-import { set, get } from '../../../customRedux/store';
+import { set } from '../../../customRedux/store';
 import { createReducerData } from '../../../actions/utils';
 
 export const reducerName = 'user';
@@ -21,41 +21,38 @@ const INITIAL_STATE = {
 
 export const reducerData = createReducerData(reducerName, INITIAL_STATE);
 
-export const reducer = async (storeParam, action) => {
+export const reducer = (state, action) => {
   const payload = action.payload;
-
-  const state = await get(reducerName);
 
   switch (action.type) {
     case SET_ADDRESS:
-      await set(reducerName, { ...state, address: payload });
-      break;
+      return { ...state, address: payload };
 
     case SET_NETWORK:
-      await set(reducerName, { ...state, network: payload });
-      break;
+      return { ...state, network: payload };
 
     case REGISTER_USER:
-      await set(reducerName, { ...state, registering: true });
-      break;
+      return { ...state, registering: true };
 
     case REGISTER_USER_ERROR:
-      await set(reducerName, { ...state, registering: false, registeringError: 'Registering user error' });
-      break;
+      return { ...state, registering: false, registeringError: 'Registering user error' };
 
     case REGISTER_USER_SUCCESS:
-      await set(reducerName, { ...state, registering: false, registeringError: '', username: payload });
-      break;
+      return { ...state, registering: false, registeringError: '', username: payload };
 
     case SET_IS_USER_VERIFIED:
-      await set(reducerName, { ...state, verified: payload });
-      break;
+      return { ...state, verified: payload };
 
     case SELECT_NETWORK:
-      await set(reducerName, { ...state, selectedNetwork: NETWORKS[payload] });
-      break;
+      return { ...state, selectedNetwork: NETWORKS[payload] };
 
     default:
-      break;
+      return false
   }
+};
+
+export const data = {
+  name: reducerName,
+  initialState: INITIAL_STATE,
+  handle: reducer
 };

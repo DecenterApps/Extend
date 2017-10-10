@@ -1,4 +1,4 @@
-import { reducersData } from '../background/src/reducers/index';
+import reducersData from '../background/src/reducers/index';
 
 export const subscribe = (callback) => {
   chrome.storage.onChanged.addListener(callback);

@@ -1,25 +1,21 @@
-import { createStore } from 'redux';
-import { combinedReducer, reducersData } from './reducers/index';
-import { wrapStore } from '../../modules/react-chrome-redux/index';
-import { STORE_PORT, NETWORKS } from '../../constants/general';
+import createStore2 from '../../customRedux/createStore';
+import reducersData from './reducers/index';
+import { NETWORKS } from '../../constants/general';
 import * as userActions from '../../actions/userActions';
 import * as accountActions from '../../actions/accountActions';
 import * as dropdownActions from '../../actions/dropdownActions';
 import contractConfig from '../../modules/config.json';
-import { initReducers, getReducerState } from '../../actions/utils';
-
-const store = createStore(combinedReducer(), {});
-const dispatch = store.dispatch;
 
 const startApp = async () => {
-  await initReducers(reducersData);
+  const store2 = await createStore2(reducersData);
 
-  wrapStore(store, { portName: STORE_PORT });
+  const dispatch = store2.dispatch;
+  const getState = store2.getState;
 
-  let web3 = new Web3(new Web3.providers.HttpProvider(await getReducerState('user', 'selectedNetwork.url')));
+  let web3 = new Web3(new Web3.providers.HttpProvider(getState().user.selectedNetwork.url));
   let contract = web3.eth.contract(contractConfig.abi).at(contractConfig.contractAddress);
 
-  userActions.setAddress(contract, await getReducerState('user', 'address'), dispatch, web3);
+  userActions.setAddress(contract, getState().user.address, dispatch, web3);
   userActions.setNetwork(web3, dispatch);
 
   chrome.runtime.onConnect.addListener((port) => {
@@ -43,7 +39,7 @@ const startApp = async () => {
         }
 
         case 'createUserAuth': {
-          return userActions[funcName](contract, web3, await getReducerState('user', 'address'), dispatch);
+          return userActions[funcName](contract, web3, getState().user.address, dispatch);
         }
 
         case 'createWallet':

@@ -1,4 +1,4 @@
-import { set, get } from '../../../actions/storageActions';
+import { set, get } from '../../../customRedux/store';
 import { createReducerData } from '../../../actions/utils';
 import { TOGGLE_DROPDOWN } from '../../../constants/actionTypes';
 

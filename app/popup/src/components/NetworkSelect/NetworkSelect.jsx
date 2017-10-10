@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import customConnect from '../customConnect';
+import customConnect from '../../../../customRedux/connect';
 import OutsideAlerter from './OutsideAlerter';
 import AnimatedCaret from '../AnimatedCaret/AnimatedCaret';
 import { toggleDropdownMessage } from '../../../../actions/dropdownActionMessages';
@@ -44,26 +44,22 @@ const NetworkSelect = ({ selectedNetwork, networks, dropdownVisible }) => (
   </OutsideAlerter>
 );
 
-NetworkSelect.defaultProps = {
-  selectedNetwork: '',
-  networks: [],
-  dropdownVisible: false
-};
+// NetworkSelect.defaultProps = {
+//   selectedNetwork: '',
+//   networks: [],
+//   dropdownVisible: false
+// };
 
 NetworkSelect.propTypes = {
-  selectedNetwork: PropTypes.string,
-  networks: PropTypes.array,
+  selectedNetwork: PropTypes.string.isRequired,
+  networks: PropTypes.array.isRequired,
   dropdownVisible: PropTypes.bool
 };
 
-const mapStateToProps = (state) => {
-  if (Object.keys(state).length === 0 && state.constructor === Object) return {};
+const mapStateToProps = (state) => ({
+  selectedNetwork: state.user.selectedNetwork.name,
+  networks: state.user.networks,
+  dropdownVisible: state.networkDropdown.visible
+});
 
-  return {
-    selectedNetwork: state.user.selectedNetwork.name,
-    networks: state.user.networks,
-    dropdownVisible: state.networkDropdown.visible
-  };
-};
-
-export default customConnect(mapStateToProps)(NetworkSelect);
+export default customConnect(NetworkSelect, mapStateToProps);

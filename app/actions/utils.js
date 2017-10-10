@@ -1,4 +1,4 @@
-import { get, set, clearReducer } from './storageActions';
+import { get, set, clearReducer } from '../customRedux/store';
 
 Object.resolve = (path, obj) => (
   path.split('.').reduce((prev, curr) => (prev ? prev[curr] : undefined), obj || self)
@@ -64,7 +64,7 @@ export const createReducerData = (name, initialState) => ({
   name, initialState
 });
 
-export const getState = async (reducer, path) => {
+export const getReducerState = async (reducer, path) => {
   const reducerState = await get(reducer);
 
   if (!path) return reducerState;

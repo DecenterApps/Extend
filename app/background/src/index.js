@@ -6,7 +6,7 @@ import * as userActions from '../../actions/userActions';
 import * as accountActions from '../../actions/accountActions';
 import * as dropdownActions from '../../actions/dropdownActions';
 import contractConfig from '../../modules/config.json';
-import { initReducers, getState } from '../../actions/utils';
+import { initReducers, getReducerState } from '../../actions/utils';
 
 const store = createStore(combinedReducer(), {});
 const dispatch = store.dispatch;
@@ -16,10 +16,10 @@ const startApp = async () => {
 
   wrapStore(store, { portName: STORE_PORT });
 
-  let web3 = new Web3(new Web3.providers.HttpProvider(await getState('user', 'selectedNetwork.url')));
+  let web3 = new Web3(new Web3.providers.HttpProvider(await getReducerState('user', 'selectedNetwork.url')));
   let contract = web3.eth.contract(contractConfig.abi).at(contractConfig.contractAddress);
 
-  userActions.setAddress(contract, await getState('user', 'address'), dispatch, web3);
+  userActions.setAddress(contract, await getReducerState('user', 'address'), dispatch, web3);
   userActions.setNetwork(web3, dispatch);
 
   chrome.runtime.onConnect.addListener((port) => {
@@ -30,7 +30,6 @@ const startApp = async () => {
       switch (funcName) {
         case 'selectNetwork': {
           try {
-            console.log('TRY');
             web3 = new Web3(new Web3.providers.HttpProvider(NETWORKS[payload].url));
             contract = web3.eth.contract(contractConfig.abi).at(contractConfig.contractAddress);
           } catch (err) {
@@ -44,7 +43,7 @@ const startApp = async () => {
         }
 
         case 'createUserAuth': {
-          return userActions[funcName](contract, web3, await getState('user', 'address'), dispatch);
+          return userActions[funcName](contract, web3, await getReducerState('user', 'address'), dispatch);
         }
 
         case 'createWallet':

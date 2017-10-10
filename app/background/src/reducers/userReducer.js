@@ -3,7 +3,7 @@ import {
   SET_IS_USER_VERIFIED, SELECT_NETWORK
 } from '../../../constants/actionTypes';
 import { NETWORKS } from '../../../constants/general';
-import { set, get } from '../../../actions/storageActions';
+import { set, get } from '../../../customRedux/store';
 import { createReducerData } from '../../../actions/utils';
 
 export const reducerName = 'user';

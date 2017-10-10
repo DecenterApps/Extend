@@ -26,12 +26,13 @@ module.exports = {
     loaders: [
       {
         test: /\.(js|jsx)$/,
-
         include: [
           path.join(__dirname, 'src'),
           path.join(__dirname, '../', 'actions'),
+          path.join(__dirname, '../', 'customRedux'),
           path.join(__dirname, '../background/src/', 'reducers'),
         ],
+        exclude: /node_modules/,
         use: [
           {
             loader: 'babel-loader',
@@ -57,8 +58,7 @@ module.exports = {
             }
           },
           { loader: 'eslint-loader' }
-        ],
-        exclude: /node_modules/
+        ]
       },
       {
         include: path.join(__dirname, 'src'),

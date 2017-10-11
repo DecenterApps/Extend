@@ -32,7 +32,7 @@ class OutsideAlerter extends Component {
    */
   handleClickOutside(event) {
     if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
-      console.log('YOu clicked outside of me');
+      this.props.onClickOutside();
     }
   }
 
@@ -46,7 +46,8 @@ class OutsideAlerter extends Component {
 }
 
 OutsideAlerter.propTypes = {
-  children: PropTypes.element.isRequired
+  children: PropTypes.element.isRequired,
+  onClickOutside: PropTypes.func.isRequired
 };
 
 export default OutsideAlerter;

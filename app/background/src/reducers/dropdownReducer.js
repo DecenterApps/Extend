@@ -1,5 +1,3 @@
-import { set, get } from '../../../customRedux/store';
-import { createReducerData } from '../../../actions/utils';
 import { TOGGLE_DROPDOWN } from '../../../constants/actionTypes';
 
 const reducerName = 'networkDropdown';
@@ -8,21 +6,15 @@ const INITIAL_STATE = {
   visible: false
 };
 
-export const reducerData = createReducerData(reducerName, INITIAL_STATE);
-
-export const reducer = async (storeParam, action) => {
+export const reducer = (state, action) => {
   const payload = action.payload;
-
-  const state = await get(reducerName);
 
   switch (action.type) {
     case TOGGLE_DROPDOWN:
-      await set(reducerName, { ...state, visible: payload });
-      break;
+      return { ...state, visible: payload };
 
     default:
-      await get(reducerName);
-      break;
+      return false;
   }
 };
 

@@ -1,16 +1,17 @@
-import createStore2 from '../../customRedux/createStore';
+import createStore from '../../customRedux/createStore';
 import reducersData from './reducers/index';
 import { NETWORKS } from '../../constants/general';
-import * as userActions from '../../actions/userActions';
-import * as accountActions from '../../actions/accountActions';
-import * as dropdownActions from '../../actions/dropdownActions';
 import contractConfig from '../../modules/config.json';
+import * as userActions from '../../actions/userActions';
+import accountHandler from '../../handlers/accountActionsHandler';
+import dropdownHandler from '../../handlers/dropdownActionsHandler';
+import userHandler from '../../handlers/userActionsHandler';
 
 const startApp = async () => {
-  const store2 = await createStore2(reducersData);
+  const store = await createStore(reducersData);
 
-  const dispatch = store2.dispatch;
-  const getState = store2.getState;
+  const dispatch = store.dispatch;
+  const getState = store.getState;
 
   let web3 = new Web3(new Web3.providers.HttpProvider(getState().user.selectedNetwork.url));
   let contract = web3.eth.contract(contractConfig.abi).at(contractConfig.contractAddress);
@@ -21,37 +22,31 @@ const startApp = async () => {
   chrome.runtime.onConnect.addListener((port) => {
     port.onMessage.addListener(async (msg) => {
       const funcName = msg.action;
+      const handler = msg.handler;
       const payload = msg.payload;
 
-      switch (funcName) {
-        case 'selectNetwork': {
-          try {
-            web3 = new Web3(new Web3.providers.HttpProvider(NETWORKS[payload].url));
-            contract = web3.eth.contract(contractConfig.abi).at(contractConfig.contractAddress);
-          } catch (err) {
-            console.log('COULD NOT CONNECT TO NETWORK', err);
-            return false;
-          }
+      // Only action that is handled here
+      if (funcName === 'selectNetwork') {
+        try {
+          web3 = new Web3(new Web3.providers.HttpProvider(NETWORKS[payload].url));
+          contract = web3.eth.contract(contractConfig.abi).at(contractConfig.contractAddress);
 
           userActions.setNetwork(web3, dispatch);
-
           return userActions[funcName](dispatch, payload);
+        } catch (err) {
+          throw Error('Cound not connect to the http provider', NETWORKS[payload].url, err);
         }
+      }
 
-        case 'createUserAuth': {
-          return userActions[funcName](contract, web3, getState().user.address, dispatch);
-        }
-
-        case 'createWallet':
-          return accountActions[funcName]();
-
-        case 'toggleDropdown':
-          console.log('toggle dropdown', payload);
-          return dropdownActions[funcName](dispatch, payload);
-
+      switch (handler) {
+        case 'account':
+          return accountHandler(web3, contract, getState, dispatch, funcName, payload);
+        case 'dropdown':
+          return dropdownHandler(web3, contract, getState, dispatch, funcName, payload);
+        case 'user':
+          return userHandler(web3, contract, getState, dispatch, funcName, payload);
         default:
-          console.log('action is not handled', funcName);
-          return false;
+          throw Error('Action Handler not defined', handler);
       }
     });
   });

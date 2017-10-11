@@ -71,7 +71,7 @@ const createStore = async (reducersData) => {
 
           if (index === reducers.length - 1) {
             if (resolved) resolve(state[reducerName]);
-            console.error('ACTION WAS NOT HANDLED', action);
+            throw Error('Dispatch was not handled in any reducer', action);
           }
         });
       })

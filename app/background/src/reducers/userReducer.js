@@ -3,8 +3,6 @@ import {
   SET_IS_USER_VERIFIED, SELECT_NETWORK
 } from '../../../constants/actionTypes';
 import { NETWORKS } from '../../../constants/general';
-import { set } from '../../../customRedux/store';
-import { createReducerData } from '../../../actions/utils';
 
 export const reducerName = 'user';
 
@@ -18,8 +16,6 @@ const INITIAL_STATE = {
   networks: NETWORKS,
   selectedNetwork: NETWORKS[0]
 };
-
-export const reducerData = createReducerData(reducerName, INITIAL_STATE);
 
 export const reducer = (state, action) => {
   const payload = action.payload;
@@ -47,7 +43,7 @@ export const reducer = (state, action) => {
       return { ...state, selectedNetwork: NETWORKS[payload] };
 
     default:
-      return false
+      return false;
   }
 };
 

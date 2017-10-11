@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { createUserAuthMessage } from '../../../../actions/userActionsMessages';
+import { createUserAuthMessage } from '../../../../messages/userActionsMessages';
 
 const Popup = ({ username, address, network, registering, verified }) => (
   <div>

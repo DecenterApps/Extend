@@ -1,5 +1,5 @@
 import React from 'react';
-import { createWalletMessage } from '../../../../actions/accountActionMessages';
+import { createWalletMessage } from '../../../../messages/accountActionMessages';
 import NetworkSelect from '../NetworkSelect/NetworkSelect';
 
 import './app2.scss';

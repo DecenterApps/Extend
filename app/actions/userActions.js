@@ -6,14 +6,14 @@ import {
 } from '../constants/actionTypes';
 
 /**
- * Sets Ethereum network if it found it
+ * Sets Ethereum network if it is defined
+ *
+ * @param {Object} web3
+ * @param {Function} dispatch
  */
 export const setNetwork = (web3, dispatch) => {
   web3.version.getNetwork((err, netId) => {
-    if (err) {
-      dispatch({ type: SET_NETWORK, payload: '' });
-      return;
-    }
+    if (err) return dispatch({ type: SET_NETWORK, payload: '' });
 
     let networkName = '';
 
@@ -37,14 +37,15 @@ export const setNetwork = (web3, dispatch) => {
         networkName = 'unknown';
     }
 
-    console.log('selected network', networkName);
-
-    dispatch({ type: SET_NETWORK, payload: networkName });
+    return dispatch({ type: SET_NETWORK, payload: networkName });
   });
 };
 
 /**
  * Checks if the users address is associated to a Reddit username on the contract
+ *
+ * @param {Object} contract
+ * @param {Function} dispatch
  */
 export const checkIfAddressHasUser = async (contract, dispatch) => {
   const isUserVerified = await checkIfUserVerified(contract);
@@ -52,8 +53,13 @@ export const checkIfAddressHasUser = async (contract, dispatch) => {
 };
 
 /**
- * Checks if the current user has an address and sets
- * @return {String|Boolean} address
+ * Checks if the current node has an address, if it does, checks if it is same
+ * as the current address in the state. If it is different sets it as the new state address
+ *
+ * @param {Object} contract
+ * @param {String} currentAddress
+ * @param {Function} dispatch
+ * @param {Object} web3
  */
 export const setAddress = (contract, currentAddress, dispatch, web3) => {
   if (!web3.eth.accounts[0]) {
@@ -63,16 +69,19 @@ export const setAddress = (contract, currentAddress, dispatch, web3) => {
 
   const newAddress = web3.eth.accounts[0];
 
-  if (newAddress === currentAddress) return currentAddress;
+  if (newAddress !== currentAddress) return false;
 
   web3.eth.defaultAccount = newAddress;
   checkIfAddressHasUser(contract, dispatch);
-  return dispatch({ type: SET_ADDRESS, payload: newAddress });
+  dispatch({ type: SET_ADDRESS, payload: newAddress });
+  return true;
 };
 
 /**
  * Dispatches action to change the current selected network
- * @param {number} index of network in the constant NETWORKS array
+ *
+ * @param {Function} dispatch
+ * @param {Number} index - index of network in the constant NETWORKS array
  */
 export const selectNetwork = (dispatch, index) => {
   dispatch({ type: SELECT_NETWORK, payload: index });
@@ -81,6 +90,11 @@ export const selectNetwork = (dispatch, index) => {
 /**
  * Opens Reddit oauth window and receives user access_token. Access_token and
  * user address are sent to the contract
+ *
+ * @param {Object} contract
+ * @param {String} address
+ * @param {Function} dispatch
+ * @param {Object} web3
  */
 export const createUserAuth = (contract, web3, address, dispatch) => {
   const redirectUri = chrome.identity.getRedirectURL('oauth2');

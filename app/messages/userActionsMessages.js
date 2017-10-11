@@ -3,11 +3,15 @@ import { toggleDropdownMessage } from './dropdownActionMessages';
 
 const port = chrome.runtime.connect('', { name: STORE_PORT });
 
-export const createUserAuthMessage = () => {
-  port.postMessage({ action: 'createUserAuth' });
+const pm = (actionParam) => {
+  let action = actionParam;
+  action.handler = 'user';
+  port.postMessage(action);
 };
 
+export const createUserAuthMessage = () => { pm({ action: 'createUserAuth' }); };
+
 export const selectedNetworkMessage = (index) => {
-  port.postMessage({ action: 'selectNetwork', payload: index });
+  pm({ action: 'selectNetwork', payload: index });
   toggleDropdownMessage(false);
 };

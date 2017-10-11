@@ -1,7 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
-const { generateScopedName } = require('../buildTools');
+const { generateScopedName } = require('../modules/buildTools');
 
 const context = path.join(__dirname, 'src');
 
@@ -29,6 +29,7 @@ module.exports = {
         include: [
           path.join(__dirname, 'src'),
           path.join(__dirname, '../', 'actions'),
+          path.join(__dirname, '../', 'commonComponents'),
           path.join(__dirname, '../', 'customRedux'),
           path.join(__dirname, '../background/src/', 'reducers'),
         ],

@@ -1,23 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import customConnect from '../../../../customRedux/connect';
-import OutsideAlerter from './OutsideAlerter';
+import OutsideAlerter from '../../../../commonComponents/OutsideAlerter';
 import AnimatedCaret from '../AnimatedCaret/AnimatedCaret';
-import { toggleDropdownMessage } from '../../../../actions/dropdownActionMessages';
-import { selectedNetworkMessage } from '../../../../actions/userActionsMessages';
+import { toggleDropdownMessage } from '../../../../messages/dropdownActionMessages';
+import { selectedNetworkMessage } from '../../../../messages/userActionsMessages';
 
 import './network-select.scss';
 
 const NetworkSelect = ({ selectedNetwork, networks, dropdownVisible }) => (
-  <OutsideAlerter>
+  <OutsideAlerter onClickOutside={() => { toggleDropdownMessage(false); }}>
     <div styleName="network-select-wrapper">
       <div styleName="active-network-wrapper">
         <span>{ selectedNetwork }</span>
-        <span
-          onClick={() => { toggleDropdownMessage(!dropdownVisible); }}
-          role="button"
-          tabIndex={0}
-        >
+        <span onClick={() => { toggleDropdownMessage(!dropdownVisible); }}>
           <AnimatedCaret active={dropdownVisible} />
         </span>
       </div>
@@ -28,12 +24,7 @@ const NetworkSelect = ({ selectedNetwork, networks, dropdownVisible }) => (
         <div styleName="network-select-dropdown">
           {
             networks.map((network, index) => (
-              <div
-                key={network.name}
-                role="button"
-                tabIndex={index + 1}
-                onClick={() => selectedNetworkMessage(index)}
-              >
+              <div key={network.name} onClick={() => selectedNetworkMessage(index)}>
                 { network.name }
               </div>
             ))
@@ -44,16 +35,10 @@ const NetworkSelect = ({ selectedNetwork, networks, dropdownVisible }) => (
   </OutsideAlerter>
 );
 
-// NetworkSelect.defaultProps = {
-//   selectedNetwork: '',
-//   networks: [],
-//   dropdownVisible: false
-// };
-
 NetworkSelect.propTypes = {
   selectedNetwork: PropTypes.string.isRequired,
   networks: PropTypes.array.isRequired,
-  dropdownVisible: PropTypes.bool
+  dropdownVisible: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = (state) => ({

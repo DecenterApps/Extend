@@ -1,81 +1,55 @@
-import { get, set, clearReducer } from '../customRedux/store';
-
-Object.resolve = (path, obj) => (
-  path.split('.').reduce((prev, curr) => (prev ? prev[curr] : undefined), obj || self)
-);
-
 const swap = (arr, i, j) => {
-    let temp = arr[i];
-    arr[i] = arr[j];
-    arr[j] = temp;
+  let temp = arr[i];
+  arr[i] = arr[j]; // eslint-disable-line
+  arr[j] = temp; // eslint-disable-line
 };
 
 const partition = (arr, pivot, left, right) => {
-    let pivotValue = arr[pivot],
-        partitionIndex = left;
+  let pivotValue = arr[pivot];
+  let partitionIndex = left;
 
-    for(let i = left; i < right; i++){
-        if(arr[i] < pivotValue){
-            swap(arr, i, partitionIndex);
-            partitionIndex++;
-        }
+  for (let i = left; i < right; i++) {
+    if (arr[i] < pivotValue) {
+      swap(arr, i, partitionIndex);
+      partitionIndex++;
     }
-    swap(arr, right, partitionIndex);
-    return partitionIndex;
+  }
+  swap(arr, right, partitionIndex);
+  return partitionIndex;
 };
 
 
 export const quickSort = (arr, left, right) => {
-    let pivot, partitionIndex;
+  let pivot;
+  let partitionIndex;
 
-    if(left < right){
-        pivot = right;
-        partitionIndex = partition(arr, pivot, left, right);
+  if (left < right) {
+    pivot = right;
+    partitionIndex = partition(arr, pivot, left, right);
 
-        quickSort(arr, left, partitionIndex - 1);
-        quickSort(arr, partitionIndex + 1, right);
-    }
-    return arr;
+    quickSort(arr, left, partitionIndex - 1);
+    quickSort(arr, partitionIndex + 1, right);
+  }
+
+  return arr;
 };
 
-export const getParameterByName = (name, url) => {
+/**
+ * Gets specified parameter from url
+ *
+ * @param {String} nameParam
+ * @param {String} urlParam
+ *
+ * @returns {Object} An object with keys: hashBuffer, type
+ */
+export const getParameterByName = (nameParam, urlParam) => {
+  let url = urlParam;
   if (!url) url = window.location.href;
-  name = name.replace(/[\[\]]/g, "\\$&");
-  const regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-    results = regex.exec(url);
+  let name = nameParam.replace(/[\[\]]/g, '\\$&'); // eslint-disable-line
+
+  const regex = new RegExp(`[?&]${name}(=([^&#]*)|&|#|$)`);
+  const results = regex.exec(url);
   if (!results) return null;
   if (!results[2]) return '';
-  return decodeURIComponent(results[2].replace(/\+/g, " "));
+  return decodeURIComponent(results[2].replace(/\+/g, ' '));
 };
-
-const initReducer = async (reducerData) =>
-  new Promise(async (resolve) => {
-    await clearReducer(reducerData.name); // remove when finished
-
-    if ((await get(reducerData.name)) === undefined) {
-      await set(reducerData.name, reducerData.initialState);
-      resolve();
-    }
-
-    resolve();
-  });
-
-export const createReducerData = (name, initialState) => ({
-  name, initialState
-});
-
-export const getReducerState = async (reducer, path) => {
-  const reducerState = await get(reducer);
-
-  if (!path) return reducerState;
-  return Object.resolve(path, reducerState);
-};
-
-export const initReducers = (reducersData) =>
-  new Promise((resolve) => {
-    reducersData.forEach(async (reducerData, index) => {
-      await initReducer(reducerData);
-
-      if (index === reducersData.length - 1) resolve();
-    });
-  });

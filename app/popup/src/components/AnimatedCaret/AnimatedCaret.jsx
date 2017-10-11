@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import * as animatedCaret from './animated-caret.scss';
+import './animated-caret.scss';
 
 const AnimatedCaret = ({ active }) => (
   <div styleName="animated-caret-wrapper">

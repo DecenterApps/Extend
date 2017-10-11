@@ -1,16 +1,36 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { createWalletMessage } from '../../../../messages/accountActionMessages';
-import NetworkSelect from '../NetworkSelect/NetworkSelect';
+import connect from '../../../../customRedux/connect';
+import Header from '../Header/Header';
+import PrivacyNotice from '../PrivacyNotice/PrivacyNotice';
 
 import './app2.scss';
 
-const App2 = () => (
+// <button o nClick={() => createWalletMessage()}>
+// Generate wallet
+// </button>
+
+const App2 = ({ acceptedNotice }) => (
   <div styleName="app2">
-    <NetworkSelect />
-    <button onClick={() => createWalletMessage()}>
-      Generate wallet
-    </button>
+    <Header />
+
+    {
+      !acceptedNotice && <PrivacyNotice />
+    }
+
+    {
+      acceptedNotice && <div>App Dashboard</div>
+    }
   </div>
 );
 
-export default App2;
+App2.propTypes = {
+  acceptedNotice: PropTypes.bool.isRequired
+};
+
+const mapStateToProps = (state) => ({
+  acceptedNotice: state.user.acceptedNotice
+});
+
+export default connect(App2, mapStateToProps);

@@ -1,12 +1,13 @@
 import {
   SET_ADDRESS, SET_NETWORK, REGISTER_USER, REGISTER_USER_ERROR, REGISTER_USER_SUCCESS,
-  SET_IS_USER_VERIFIED, SELECT_NETWORK
+  SET_IS_USER_VERIFIED, SELECT_NETWORK, ACCEPT_PRIVACY_NOTICE
 } from '../../../constants/actionTypes';
 import { NETWORKS } from '../../../constants/general';
 
 export const reducerName = 'user';
 
 const INITIAL_STATE = {
+  acceptedNotice: false,
   address: '',
   network: '',
   registering: false,
@@ -21,6 +22,9 @@ export const reducer = (state, action) => {
   const payload = action.payload;
 
   switch (action.type) {
+    case ACCEPT_PRIVACY_NOTICE:
+      return { ...state, acceptedNotice: true };
+
     case SET_ADDRESS:
       return { ...state, address: payload };
 

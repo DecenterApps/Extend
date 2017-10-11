@@ -1,16 +1,35 @@
 import React from 'react';
+import { acceptPrivacyNoticeMessage } from '../../../../messages/userActionsMessages';
+
+import './privacy-notice.scss';
 
 const PrivacyNotice = () => (
-  <div>
-    MetaMask is beta software.
+  <div styleName="privacy-notice-wrapper">
+    <div styleName="privacy-notice-header">
+      <div>Privacy Notice</div>
+      <div>Release Date</div>
+    </div>
 
-    When you log in to MetaMask, your current account is visible to every new site you visit.
+    <div styleName="privacy-notice-body">
+      <div>Reddapp is beta software.</div>
 
-    For your privacy, for now, please sign out of MetaMask when you're done using a site.
+      <div>
+        When you log in to Reddapp, your current account is visible to every new site you visit.
+      </div>
+      <div>
+        For your privacy, for now, please sign out of Reddapp when you are done using a site.
+      </div>
+      <div>
+        Also, by default, you will be signed in to a test network. To use real Ether,
+        you must connect to the main network manually in the top left network menu.
+      </div>
+    </div>
 
-    Also, by default, you will be signed in to a test network. To use real Ether, you must connect to the main network manually in the top left network menu.
-
-    import React from 'react';
+    <span styleName="privacy-notice-submit">
+      <button onClick={acceptPrivacyNoticeMessage}>
+        Accept
+      </button>
+    </span>
   </div>
 );
 

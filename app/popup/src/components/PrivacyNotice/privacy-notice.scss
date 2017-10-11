@@ -1,0 +1,31 @@
+.privacy-notice-wrapper {
+
+  .privacy-notice-header {
+    background: #777;
+    font-size: 18px;
+    text-align: center;
+    padding: 10px;
+    color: white;
+
+    div:not(:last-child) {
+      margin-bottom: 7px;
+    }
+  }
+
+  .privacy-notice-body {
+    padding: 50px;
+    font-size: 16px;
+
+    div:not(:last-child) {
+      margin-bottom: 15px;
+      line-height: 20px;
+    }
+  }
+
+  .privacy-notice-submit {
+    display: flex;
+    padding: 0 20px 20px 20px;
+    justify-content: center;
+
+  }
+}

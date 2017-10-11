@@ -1,4 +1,4 @@
-import { get, set } from './store';
+import { get, set, clearReducer } from './store';
 
 /**
  * Load reducer state from chrome local store if it was already saved there.
@@ -8,7 +8,7 @@ import { get, set } from './store';
  */
 const initReducer = async (reducerData) =>
   new Promise(async (resolve) => {
-    // await clearReducer(reducerData.name); // remove when finished
+    await clearReducer(reducerData.name); // remove when finished
 
     const existingReducerState = await get(reducerData.name);
 

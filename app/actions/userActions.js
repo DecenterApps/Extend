@@ -2,7 +2,7 @@ import { _createUser, checkIfUserVerified } from '../modules/ethereumService';
 import { getParameterByName } from './utils';
 import {
   SET_NETWORK, SET_ADDRESS, REGISTER_USER, REGISTER_USER_SUCCESS, REGISTER_USER_ERROR,
-  SET_IS_USER_VERIFIED, SELECT_NETWORK
+  SET_IS_USER_VERIFIED, SELECT_NETWORK, ACCEPT_PRIVACY_NOTICE
 } from '../constants/actionTypes';
 
 /**
@@ -85,6 +85,16 @@ export const setAddress = (contract, currentAddress, dispatch, web3) => {
  */
 export const selectNetwork = (dispatch, index) => {
   dispatch({ type: SELECT_NETWORK, payload: index });
+};
+
+/**
+ * Dispatches action to accept privacy notice. The user only does this once
+ * when the plugin is first loaded
+ *
+ * @param {Function} dispatch
+ */
+export const acceptPrivacyNotice = (dispatch) => {
+  dispatch({ type: ACCEPT_PRIVACY_NOTICE });
 };
 
 /**

@@ -9,7 +9,9 @@ const pm = (actionParam) => {
   port.postMessage(action);
 };
 
-export const createUserAuthMessage = () => { pm({ action: 'createUserAuth' }); };
+export const userAuthMessage = () => { pm({ action: 'createUserAuth' }); };
+
+export const acceptPrivacyNoticeMessage = () => { pm({ action: 'acceptPrivacyNotice' }); };
 
 export const selectedNetworkMessage = (index) => {
   pm({ action: 'selectNetwork', payload: index });

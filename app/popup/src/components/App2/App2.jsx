@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { createWalletMessage } from '../../../../messages/accountActionMessages';
 import connect from '../../../../customRedux/connect';
 import Header from '../Header/Header';
 import PrivacyNotice from '../PrivacyNotice/PrivacyNotice';
 import Dashboard from '../Dashboard/Dashboard';
+import GenerateNewPassword from '../GenerateNewPassword/GenerateNewPassword';
 
 import './app2.scss';
 
@@ -22,7 +24,7 @@ const App2 = ({ acceptedNotice, generatedVault }) => (
     {
       acceptedNotice &&
       !generatedVault &&
-      <Dashboard />
+      <GenerateNewPassword />
     }
   </div>
 );

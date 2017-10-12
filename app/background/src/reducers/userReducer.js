@@ -8,6 +8,7 @@ export const reducerName = 'user';
 
 const INITIAL_STATE = {
   acceptedNotice: false,
+  generatedVault: false,
   address: '',
   network: '',
   registering: false,

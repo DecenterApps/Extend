@@ -6,6 +6,7 @@ import * as userActions from '../../actions/userActions';
 import accountHandler from '../../handlers/accountActionsHandler';
 import dropdownHandler from '../../handlers/dropdownActionsHandler';
 import userHandler from '../../handlers/userActionsHandler';
+import formsHandler from '../../handlers/formsActionsHandler';
 
 const startApp = async () => {
   const store = await createStore(reducersData);
@@ -45,6 +46,8 @@ const startApp = async () => {
           return dropdownHandler(web3, contract, getState, dispatch, funcName, payload);
         case 'user':
           return userHandler(web3, contract, getState, dispatch, funcName, payload);
+        case 'forms':
+          return formsHandler(web3, contract, getState, dispatch, funcName, payload);
         default:
           throw Error('Action Handler not defined', handler);
       }

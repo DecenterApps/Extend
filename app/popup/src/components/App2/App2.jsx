@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { createWalletMessage } from '../../../../messages/accountActionMessages';
 import connect from '../../../../customRedux/connect';
 import Header from '../Header/Header';
 import PrivacyNotice from '../PrivacyNotice/PrivacyNotice';
+import Dashboard from '../Dashboard/Dashboard';
 
 import './app2.scss';
 
@@ -11,7 +11,7 @@ import './app2.scss';
 // Generate wallet
 // </button>
 
-const App2 = ({ acceptedNotice }) => (
+const App2 = ({ acceptedNotice, generatedVault }) => (
   <div styleName="app2">
     <Header />
 
@@ -20,17 +20,21 @@ const App2 = ({ acceptedNotice }) => (
     }
 
     {
-      acceptedNotice && <div>App Dashboard</div>
+      acceptedNotice &&
+      !generatedVault &&
+      <Dashboard />
     }
   </div>
 );
 
 App2.propTypes = {
-  acceptedNotice: PropTypes.bool.isRequired
+  acceptedNotice: PropTypes.bool.isRequired,
+  generatedVault: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = (state) => ({
-  acceptedNotice: state.user.acceptedNotice
+  acceptedNotice: state.user.acceptedNotice,
+  generatedVault: state.user.generatedVault
 });
 
 export default connect(App2, mapStateToProps);

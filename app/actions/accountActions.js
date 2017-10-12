@@ -1,39 +1,41 @@
 import lightwallet from '../modules/eth-lightwallet/lightwallet';
 
+
+const keyStore = lightwallet.keystore;
+
+const getPwDerivedKey = (ks, password) =>
+  new Promise((resolve, reject) => {
+    ks.keyFromPassword(password, (err, pwDerivedKey) => {
+      if (err) reject(err);
+      resolve(pwDerivedKey);
+    });
+  });
+
 export const createWallet = () => {
 // the seed is stored encrypted by a user-defined password
-  var password = prompt('Enter password for encryption', 'password');
+  const password = prompt('Enter password for encryption', 'password');
 
   keyStore.createVault({
-    password: password,
-    // seedPhrase: seedPhrase, // Optionally provide a 12-word seed phrase
+    password,
     // salt: fixture.salt,     // Optionally provide a salt.
     // A unique salt will be generated otherwise.
     // hdPathString: hdPath    // Optional custom HD Path String
-  }, function (err, ks) {
+  }, async (err, ks) => {
+    const pwDerivedKey = await getPwDerivedKey(ks, password);
+    const seed = ks.getSeed(pwDerivedKey);
+    ks.generateNewAddress(pwDerivedKey, 1);
+    const addresses = ks.getAddresses();
+    const address = addresses[0];
+    const privateKey = ks.exportPrivateKey(addresses[0], pwDerivedKey);
+    console.log('KEYSTORE', ks.serialize());
 
-    // Some methods will require providing the `pwDerivedKey`,
-    // Allowing you to only decrypt private keys on an as-needed basis.
-    // You can generate that value with this convenient method:
-    ks.keyFromPassword(password, function (err, pwDerivedKey) {
-      if (err) throw err;
-
-      // generate five new address/private key pairs
-      // the corresponding private keys are also encrypted
-      ks.generateNewAddress(pwDerivedKey, 1);
-      var addr = ks.getAddresses();
-
-      ks.passwordProvider = function (callback) {
-        var pw = prompt("Please enter password", "Password");
-        callback(null, pw);
-      };
-
-      // Now set ks as transaction_signer in the hooked web3 provider
-      // and you can start using web3 using the keys/addresses in ks!
-    });
+    // ks.keyFromPassword method to get pwDerivedKey
+    // keystore.serialize() Serializes the current keystore object into a JSON-encoded string
+    // keystore.deserialize(serialized_keystore)
   });
 };
 
 export const test = () => {
   console.log('test');
 };
+

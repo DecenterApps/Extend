@@ -12,9 +12,8 @@ class GenerateNewPasswordForm extends Component { // eslint-disable-line
   constructor(props) {
     super(props);
 
-    const { formName, registerField } = props;
-    this.PasswordField = createField(InputFormField, formName, registerField);
-    this.RepeatPasswordField = createField(InputFormField, formName, registerField);
+    this.PasswordField = createField(InputFormField, props.formData);
+    this.RepeatPasswordField = createField(InputFormField, props.formData);
   }
 
   render() {
@@ -55,16 +54,15 @@ class GenerateNewPasswordForm extends Component { // eslint-disable-line
 
 GenerateNewPasswordForm.propTypes = {
   user: PropTypes.string.isRequired,
-  formName: PropTypes.string.isRequired,
-  registerField: PropTypes.func.isRequired
+  formData: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state) => ({
   user: state.user.address
 });
 
-// const validate = generateNewPasswordFormValidator;
-//
-GenerateNewPasswordForm = createForm('generateNewPasswordForm', GenerateNewPasswordForm); // eslint-disable-line
+const ExportComponent = createForm(
+  'generateNewPasswordForm', GenerateNewPasswordForm, generateNewPasswordFormValidator
+);
 
-export default connect(GenerateNewPasswordForm, mapStateToProps);
+export default connect(ExportComponent, mapStateToProps);

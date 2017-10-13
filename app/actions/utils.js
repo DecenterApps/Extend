@@ -53,3 +53,20 @@ export const getParameterByName = (nameParam, urlParam) => {
   if (!results[2]) return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 };
+
+/**
+ * Creates An structured object required for validator out of filed meta data
+ *
+ * @param {Object} fieldsMeta
+ *
+ * @returns {Object} An structured object required for validator
+ */
+export const generateDataForFormValidator = (fieldsMeta) => {
+  const validatorObj = {};
+
+  for (let key in fieldsMeta) { // eslint-disable-line
+    validatorObj[key] = fieldsMeta[key].value;
+  }
+
+  return validatorObj;
+};

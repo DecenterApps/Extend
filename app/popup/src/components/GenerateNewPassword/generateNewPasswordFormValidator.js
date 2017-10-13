@@ -1,4 +1,5 @@
 const generateNewPasswordFormValidator = (values) => {
+  console.log('VALUE', values);
   const errors = {};
 
   if (!values.password) errors.password = 'Required';

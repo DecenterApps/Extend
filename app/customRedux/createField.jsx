@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { updateFieldMetaMessage } from '../messages/formsActionsMessages';
 
-const createField = (WrappedComponent, parentForm, registerField) => {
+const createField = (WrappedComponent, formData) => {
   class Field extends Component {
     constructor(props) {
       super(props);
 
       this.handleChange = this.handleChange.bind(this);
+      this.handleBlur = this.handleBlur.bind(this);
 
       this.meta = {
         value: '',
@@ -16,7 +16,8 @@ const createField = (WrappedComponent, parentForm, registerField) => {
       };
 
       this.input = {
-        onInput: this.handleChange
+        onInput: this.handleChange,
+        onBlur: this.handleBlur
       };
 
       this.updateMergedProps = this.updateMergedProps.bind(this);
@@ -27,7 +28,7 @@ const createField = (WrappedComponent, parentForm, registerField) => {
       this.updateMergedProps();
 
       this.meta.name = this.props.name;
-      registerField(this.meta);
+      formData.registerField(this.meta);
       delete this.meta.name;
     }
 
@@ -35,15 +36,22 @@ const createField = (WrappedComponent, parentForm, registerField) => {
       this.mergedProps = { ...this.props, input: this.input, meta: this.meta };
     }
 
-    handleChange(input) {
-      if (!this.meta.touched) this.meta.touched = true;
-
-      this.meta.value = input.target.value;
-
+    handleBlur() {
+      this.meta.touched = true;
       this.updateMergedProps();
-      updateFieldMetaMessage({
+
+      formData.handleFieldChange({
         name: this.props.name,
-        formName: parentForm,
+        meta: this.meta
+      });
+    }
+
+    handleChange(input) {
+      this.meta.value = input.target.value;
+      this.updateMergedProps();
+
+      formData.handleFieldChange({
+        name: this.props.name,
         meta: this.meta
       });
     }
@@ -58,7 +66,7 @@ const createField = (WrappedComponent, parentForm, registerField) => {
   }
 
   Field.propTypes = {
-    name: PropTypes.string.isRequired
+    name: PropTypes.string.isRequired,
   };
 
   return Field;

@@ -1,17 +1,25 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import createField from '../../../../customRedux/Field';
+import createForm from '../../../../customRedux/createForm';
+import createField from '../../../../customRedux/createField';
 import connect from '../../../../customRedux/connect';
 import InputFormField from '../../../../commonComponents/InputFormField';
-import createForm from '../../../../customRedux/createForm';
 import generateNewPasswordFormValidator from './generateNewPasswordFormValidator';
 
 // const formStyle = require('./forms.scss');
 
 class GenerateNewPasswordForm extends Component { // eslint-disable-line
+  constructor(props) {
+    super(props);
+
+    const { formName, registerField } = props;
+    this.PasswordField = createField(InputFormField, formName, registerField);
+    this.RepeatPasswordField = createField(InputFormField, formName, registerField);
+  }
+
   render() {
-    const PasswordField = createField(InputFormField);
-    const RepeatPasswordField = createField(InputFormField);
+    const PasswordField = this.PasswordField;
+    const RepeatPasswordField = this.RepeatPasswordField;
 
     return (
       <form>
@@ -46,7 +54,9 @@ class GenerateNewPasswordForm extends Component { // eslint-disable-line
 }
 
 GenerateNewPasswordForm.propTypes = {
-  user: PropTypes.string.isRequired
+  user: PropTypes.string.isRequired,
+  formName: PropTypes.string.isRequired,
+  registerField: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state) => ({
@@ -55,6 +65,6 @@ const mapStateToProps = (state) => ({
 
 // const validate = generateNewPasswordFormValidator;
 //
-GenerateNewPasswordForm = createForm('generateNewPasswordFrom', GenerateNewPasswordForm); // eslint-disable-line
+GenerateNewPasswordForm = createForm('generateNewPasswordForm', GenerateNewPasswordForm); // eslint-disable-line
 
 export default connect(GenerateNewPasswordForm, mapStateToProps);

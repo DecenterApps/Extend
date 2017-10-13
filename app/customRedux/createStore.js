@@ -66,6 +66,7 @@ const createStore = async (reducersData) => {
           if (!newReducerState) return;
 
           const setResult = await set(reducerName, newReducerState);
+          console.log('action type', action.type, setResult);
           resolved = true;
           state[reducerName] = setResult;
 

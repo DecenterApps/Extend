@@ -9,11 +9,11 @@ import { selectedNetworkMessage } from '../../../../messages/userActionsMessages
 import './network-select.scss';
 
 const NetworkSelect = ({ selectedNetwork, networks, dropdownVisible }) => (
-  <OutsideAlerter onClickOutside={() => { toggleDropdownMessage(false); }}>
+  <OutsideAlerter onClickOutside={() => { toggleDropdownMessage(dropdownVisible, false); }}>
     <div styleName="network-select-wrapper">
       <div
         styleName="active-network-wrapper"
-        onClick={() => { toggleDropdownMessage(!dropdownVisible); }}
+        onClick={() => { toggleDropdownMessage(dropdownVisible, !dropdownVisible); }}
         style={{ background: selectedNetwork.color }}
       >
         <span styleName="active-network-name">{ selectedNetwork.displayName }</span>

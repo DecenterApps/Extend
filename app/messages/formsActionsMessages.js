@@ -15,3 +15,7 @@ export const addFormMessage = (payload) => {
 export const updateFieldMetaMessage = (payload) => {
   pm({ action: 'updateFieldMeta', payload });
 };
+
+export const updateFieldErrorMessage = (payload) => {
+  pm({ action: 'updateFieldError', payload });
+};

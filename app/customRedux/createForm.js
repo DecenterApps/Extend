@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { addFormMessage, updateFieldMetaMessage } from '../messages/formsActionsMessages';
+import {
+  addFormMessage, updateFieldMetaMessage, updateFieldErrorMessage }
+from '../messages/formsActionsMessages';
 import { generateDataForFormValidator } from '../actions/utils';
 
 const createForm = (formName, WrappedComponent, validator) => (
@@ -17,6 +19,7 @@ const createForm = (formName, WrappedComponent, validator) => (
       this.checkFormMeta = this.checkFormMeta.bind(this);
       this.updateMergedProps = this.updateMergedProps.bind(this);
       this.handleFieldChange = this.handleFieldChange.bind(this);
+      this.updateRestOfErrors = this.updateRestOfErrors.bind(this);
 
       this.updateMergedProps();
     }
@@ -27,15 +30,19 @@ const createForm = (formName, WrappedComponent, validator) => (
     }
 
     checkFormMeta() {
-      let invalid = this.formMeta.invalid;
-      let pristine = this.formMeta.pristine;
+      let invalid = false;
+      let pristine = true;
+      let hasValue = 0;
 
-      const fileds = Object.keys(this.fields);
+      const fields = Object.keys(this.fields);
 
-      fileds.forEach((fieldName) => {
+      fields.forEach((fieldName) => {
         if (this.fields[fieldName].error) invalid = true;
         if (this.fields[fieldName].touched) pristine = false;
+        if (this.fields[fieldName].value) hasValue++;
       });
+
+      if (hasValue !== fields.length) invalid = true;
 
       this.formMeta = { pristine, invalid };
 
@@ -55,6 +62,22 @@ const createForm = (formName, WrappedComponent, validator) => (
       this.fields[field.name] = field;
     }
 
+    updateRestOfErrors(errorsParam) {
+      const errors = Object.keys(errorsParam);
+
+      if (!errors.length) return;
+
+      errors.forEach((field) => {
+        updateFieldErrorMessage({
+          formName,
+          name: field,
+          error: errorsParam[field]
+        });
+
+        this.fields[field].error = errorsParam[field];
+      });
+    }
+
     handleFieldChange(fieldData) {
       const field = this.fields[fieldData.name];
 
@@ -70,9 +93,12 @@ const createForm = (formName, WrappedComponent, validator) => (
         dataForMessage.meta.error = '';
       }
 
+      delete errors[fieldData.name];
+
       this.fields[fieldData.name] = dataForMessage.meta;
 
       updateFieldMetaMessage(dataForMessage);
+      this.updateRestOfErrors(errors);
       this.checkFormMeta();
     }
 

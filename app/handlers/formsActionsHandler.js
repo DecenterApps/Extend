@@ -4,6 +4,7 @@ const formsActionsHandler = (web3, contract, getState, dispatch, funcName, paylo
   switch (funcName) {
     case 'addForm':
     case 'updateFieldMeta':
+    case 'updateFieldError':
       return formsActions[funcName](dispatch, payload);
 
     default:

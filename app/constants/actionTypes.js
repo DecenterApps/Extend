@@ -17,3 +17,4 @@ export const SELECT_NETWORK = 'select_network';
 // FORMS
 export const ADD_FORM = 'add_form';
 export const UPDATE_FIELD_META = 'update_field_meta';
+export const UPDATE_FIELD_ERROR = 'update_field_error';

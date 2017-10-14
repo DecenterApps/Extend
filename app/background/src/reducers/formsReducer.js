@@ -1,4 +1,4 @@
-import { ADD_FORM, UPDATE_FIELD_META } from '../../../constants/actionTypes';
+import { ADD_FORM, UPDATE_FIELD_META, UPDATE_FIELD_ERROR } from '../../../constants/actionTypes';
 
 const reducerName = 'forms';
 
@@ -14,6 +14,16 @@ export const reducer = (state, action) => {
     case UPDATE_FIELD_META: {
       let currentForm = state[payload.formName];
       currentForm[payload.name] = payload.meta;
+      return { ...state, [payload.formName]: currentForm };
+    }
+
+    case UPDATE_FIELD_ERROR: {
+      let currentForm = state[payload.formName];
+      let currentFiled = currentForm[payload.name];
+
+      currentFiled.error = payload.error;
+      currentForm[payload.name] = currentFiled;
+
       return { ...state, [payload.formName]: currentForm };
     }
 

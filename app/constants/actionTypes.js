@@ -18,3 +18,7 @@ export const SELECT_NETWORK = 'select_network';
 export const ADD_FORM = 'add_form';
 export const UPDATE_FIELD_META = 'update_field_meta';
 export const UPDATE_FIELD_ERROR = 'update_field_error';
+
+// ACCOUNT
+export const CREATE_WALLET = 'create_wallet';
+export const COPIED_SEED = 'copied_seed';

@@ -26,7 +26,7 @@ const connect = (WrappedComponent, mapStateToProps) => (
     }
 
     async updateComponent(ownProps) {
-      // remove await get state if it happens to be a bottleneck
+      // TODO remove await get state if it happens to be a bottleneck
       const mappedStateProps = mapStateToProps(await getState());
       this.componentProps = { ...mappedStateProps, ...ownProps };
       this.forceUpdate();

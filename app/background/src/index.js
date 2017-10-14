@@ -17,7 +17,6 @@ const startApp = async () => {
   let web3 = new Web3(new Web3.providers.HttpProvider(getState().user.selectedNetwork.url));
   let contract = web3.eth.contract(contractConfig.abi).at(contractConfig.contractAddress);
 
-  userActions.setAddress(contract, getState().user.address, dispatch, web3);
   userActions.setNetwork(web3, dispatch);
 
   chrome.runtime.onConnect.addListener((port) => {

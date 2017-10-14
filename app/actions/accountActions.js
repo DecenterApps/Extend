@@ -1,8 +1,15 @@
 import lightwallet from '../modules/eth-lightwallet/lightwallet';
-
+import { CREATE_WALLET, COPIED_SEED } from '../constants/actionTypes';
 
 const keyStore = lightwallet.keystore;
 
+/**
+ * Returns a pw derived key from key store and password
+ *
+ * @param {Object} ks
+ * @param {String} password
+ * @return {Promise} pwDerivedKey
+ */
 const getPwDerivedKey = (ks, password) =>
   new Promise((resolve, reject) => {
     ks.keyFromPassword(password, (err, pwDerivedKey) => {
@@ -11,15 +18,15 @@ const getPwDerivedKey = (ks, password) =>
     });
   });
 
-export const createWallet = () => {
-// the seed is stored encrypted by a user-defined password
-  const password = prompt('Enter password for encryption', 'password');
-
+/**
+ * Create a new key store with the users password
+ *
+ * @param {Function} dispatch
+ * @param {String} password
+ */
+export const createWallet = (dispatch, password) => {
   keyStore.createVault({
     password,
-    // salt: fixture.salt,     // Optionally provide a salt.
-    // A unique salt will be generated otherwise.
-    // hdPathString: hdPath    // Optional custom HD Path String
   }, async (err, ks) => {
     const pwDerivedKey = await getPwDerivedKey(ks, password);
     const seed = ks.getSeed(pwDerivedKey);
@@ -27,15 +34,19 @@ export const createWallet = () => {
     const addresses = ks.getAddresses();
     const address = addresses[0];
     const privateKey = ks.exportPrivateKey(addresses[0], pwDerivedKey);
-    console.log('KEYSTORE', ks.serialize());
+    const searializedKeyStore = ks.serialize();
 
-    // ks.keyFromPassword method to get pwDerivedKey
-    // keystore.serialize() Serializes the current keystore object into a JSON-encoded string
-    // keystore.deserialize(serialized_keystore)
+    const payload = { seed, address, privateKey, keyStore: searializedKeyStore };
+
+    dispatch({ type: CREATE_WALLET, payload });
   });
 };
 
-export const test = () => {
-  console.log('test');
+/**
+ * Dispatches action that the user has copied the seed
+ *
+ * @param {Function} dispatch
+ */
+export const copiedSeed = (dispatch) => {
+  dispatch({ type: COPIED_SEED });
 };
-

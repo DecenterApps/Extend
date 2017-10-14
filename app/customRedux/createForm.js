@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
   addFormMessage, updateFieldMetaMessage, updateFieldErrorMessage }
-from '../messages/formsActionsMessages';
+  from '../messages/formsActionsMessages';
 import { generateDataForFormValidator } from '../actions/utils';
 
 const createForm = (formName, WrappedComponent, validator) => (
@@ -20,6 +20,7 @@ const createForm = (formName, WrappedComponent, validator) => (
       this.updateMergedProps = this.updateMergedProps.bind(this);
       this.handleFieldChange = this.handleFieldChange.bind(this);
       this.updateRestOfErrors = this.updateRestOfErrors.bind(this);
+      this.handleSubmit = this.handleSubmit.bind(this);
 
       this.updateMergedProps();
     }
@@ -52,10 +53,15 @@ const createForm = (formName, WrappedComponent, validator) => (
     updateMergedProps() {
       const formData = {
         registerField: this.registerField,
-        handleFieldChange: this.handleFieldChange
+        handleFieldChange: this.handleFieldChange,
       };
 
-      this.mergedProps = { ...this.props, formData, ...this.formMeta };
+      this.mergedProps = {
+        ...this.props,
+        formData,
+        ...this.formMeta,
+        handleSubmit: this.handleSubmit
+      };
     }
 
     registerField(field) {
@@ -93,13 +99,16 @@ const createForm = (formName, WrappedComponent, validator) => (
         dataForMessage.meta.error = '';
       }
 
-      delete errors[fieldData.name];
-
       this.fields[fieldData.name] = dataForMessage.meta;
 
       updateFieldMetaMessage(dataForMessage);
       this.updateRestOfErrors(errors);
       this.checkFormMeta();
+    }
+
+    handleSubmit(e, customSubmitFunction) {
+      e.preventDefault();
+      customSubmitFunction(this.fields);
     }
 
     render() {

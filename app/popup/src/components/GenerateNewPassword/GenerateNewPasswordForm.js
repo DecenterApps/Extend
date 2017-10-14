@@ -5,6 +5,7 @@ import createField from '../../../../customRedux/createField';
 import connect from '../../../../customRedux/connect';
 import InputFormField from '../../../../commonComponents/InputFormField';
 import generateNewPasswordFormValidator from './generateNewPasswordFormValidator';
+import { createWalletMessage } from '../../../../messages/accountActionMessages';
 
 import formStyle from '../../styles/forms.scss';
 
@@ -21,14 +22,17 @@ class GenerateNewPasswordForm extends Component {
     const RepeatPasswordField = this.RepeatPasswordField;
 
     return (
-      <form styleName="form-wrapper">
+      <form
+        styleName="form-wrapper"
+        onSubmit={(e) => { this.props.handleSubmit(e, createWalletMessage); }}
+      >
         {this.props.user}
 
         <PasswordField
           name="password"
           showErrorText
           placeholder="New password"
-          type="text"
+          type="password"
           wrapperClassName={formStyle['form-item-wrapper']}
           inputClassName={formStyle['form-item']}
           errorClassName={formStyle['form-item-error']}
@@ -38,7 +42,7 @@ class GenerateNewPasswordForm extends Component {
           name="repeatPassword"
           showErrorText
           placeholder="Repeat new password"
-          type="text"
+          type="password"
           wrapperClassName={formStyle['form-item-wrapper']}
           inputClassName={formStyle['form-item']}
           errorClassName={formStyle['form-item-error']}
@@ -62,7 +66,8 @@ GenerateNewPasswordForm.propTypes = {
   user: PropTypes.string.isRequired,
   formData: PropTypes.object.isRequired,
   invalid: PropTypes.bool.isRequired,
-  pristine: PropTypes.bool.isRequired
+  pristine: PropTypes.bool.isRequired,
+  handleSubmit: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state) => ({

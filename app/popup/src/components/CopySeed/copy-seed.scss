@@ -1,0 +1,31 @@
+.copy-seed-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  h1 {
+    font-size: 22px;
+    margin: 40px 0;
+  }
+
+  .copy-seed-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin-bottom: 40px;
+
+    textarea {
+      resize: none;
+      width: 280px;
+      height: 100px;
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      font-size: 16px;
+    }
+  }
+}

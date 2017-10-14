@@ -8,7 +8,13 @@ const createForm = (formName, WrappedComponent, validator) => (
       super(props);
 
       this.fields = {};
+      this.formMeta = {
+        invalid: false,
+        pristine: true
+      };
+
       this.registerField = this.registerField.bind(this);
+      this.checkFormMeta = this.checkFormMeta.bind(this);
       this.updateMergedProps = this.updateMergedProps.bind(this);
       this.handleFieldChange = this.handleFieldChange.bind(this);
 
@@ -20,13 +26,29 @@ const createForm = (formName, WrappedComponent, validator) => (
       this.updateMergedProps();
     }
 
+    checkFormMeta() {
+      let invalid = this.formMeta.invalid;
+      let pristine = this.formMeta.pristine;
+
+      const fileds = Object.keys(this.fields);
+
+      fileds.forEach((fieldName) => {
+        if (this.fields[fieldName].error) invalid = true;
+        if (this.fields[fieldName].touched) pristine = false;
+      });
+
+      this.formMeta = { pristine, invalid };
+
+      this.updateMergedProps();
+    }
+
     updateMergedProps() {
       const formData = {
         registerField: this.registerField,
         handleFieldChange: this.handleFieldChange
       };
 
-      this.mergedProps = { ...this.props, formData };
+      this.mergedProps = { ...this.props, formData, ...this.formMeta };
     }
 
     registerField(field) {
@@ -35,8 +57,6 @@ const createForm = (formName, WrappedComponent, validator) => (
 
     handleFieldChange(fieldData) {
       const field = this.fields[fieldData.name];
-
-      this.fields[fieldData.name] = fieldData.meta;
 
       let dataForMessage = fieldData;
       dataForMessage.formName = formName;
@@ -50,7 +70,10 @@ const createForm = (formName, WrappedComponent, validator) => (
         dataForMessage.meta.error = '';
       }
 
+      this.fields[fieldData.name] = dataForMessage.meta;
+
       updateFieldMetaMessage(dataForMessage);
+      this.checkFormMeta();
     }
 
     render() {

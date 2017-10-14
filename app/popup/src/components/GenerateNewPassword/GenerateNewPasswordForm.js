@@ -6,9 +6,9 @@ import connect from '../../../../customRedux/connect';
 import InputFormField from '../../../../commonComponents/InputFormField';
 import generateNewPasswordFormValidator from './generateNewPasswordFormValidator';
 
-// const formStyle = require('./forms.scss');
+import formStyle from '../../styles/forms.scss';
 
-class GenerateNewPasswordForm extends Component { // eslint-disable-line
+class GenerateNewPasswordForm extends Component {
   constructor(props) {
     super(props);
 
@@ -21,7 +21,7 @@ class GenerateNewPasswordForm extends Component { // eslint-disable-line
     const RepeatPasswordField = this.RepeatPasswordField;
 
     return (
-      <form>
+      <form styleName="form-wrapper">
         {this.props.user}
 
         <PasswordField
@@ -29,9 +29,9 @@ class GenerateNewPasswordForm extends Component { // eslint-disable-line
           showErrorText
           placeholder="New password"
           type="text"
-          wrapperClassName="form-item-wrapper"
-          inputClassName="form-item"
-          errorClassName="form-item-error"
+          wrapperClassName={formStyle['form-item-wrapper']}
+          inputClassName={formStyle['form-item']}
+          errorClassName={formStyle['form-item-error']}
         />
 
         <RepeatPasswordField
@@ -39,12 +39,18 @@ class GenerateNewPasswordForm extends Component { // eslint-disable-line
           showErrorText
           placeholder="Repeat new password"
           type="text"
-          wrapperClassName="form-item-wrapper"
-          inputClassName="form-item"
-          errorClassName="form-item-error"
+          wrapperClassName={formStyle['form-item-wrapper']}
+          inputClassName={formStyle['form-item']}
+          errorClassName={formStyle['form-item-error']}
         />
 
-        <button>
+        <button
+          className={formStyle['submit-button']}
+          type="submit"
+          disabled={
+            this.props.pristine || this.props.invalid
+          }
+        >
           Submit
         </button>
       </form>
@@ -54,7 +60,9 @@ class GenerateNewPasswordForm extends Component { // eslint-disable-line
 
 GenerateNewPasswordForm.propTypes = {
   user: PropTypes.string.isRequired,
-  formData: PropTypes.object.isRequired
+  formData: PropTypes.object.isRequired,
+  invalid: PropTypes.bool.isRequired,
+  pristine: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = (state) => ({

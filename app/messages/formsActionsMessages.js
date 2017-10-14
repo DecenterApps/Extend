@@ -9,7 +9,6 @@ const pm = (actionParam) => {
 };
 
 export const addFormMessage = (payload) => {
-  console.log('addForm', payload);
   pm({ action: 'addForm', payload });
 };
 

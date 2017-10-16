@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import createForm from '../../../../customRedux/createForm';
 import createField from '../../../../customRedux/createField';
-import connect from '../../../../customRedux/connect';
 import InputFormField from '../../../../commonComponents/InputFormField';
 import generateNewPasswordFormValidator from './generateNewPasswordFormValidator';
 import { createWalletMessage } from '../../../../messages/accountActionMessages';
@@ -26,7 +25,6 @@ class GenerateNewPasswordForm extends Component {
         styleName="form-wrapper"
         onSubmit={(e) => { this.props.handleSubmit(e, createWalletMessage); }}
       >
-        {this.props.user}
 
         <PasswordField
           name="password"
@@ -63,19 +61,12 @@ class GenerateNewPasswordForm extends Component {
 }
 
 GenerateNewPasswordForm.propTypes = {
-  user: PropTypes.string.isRequired,
   formData: PropTypes.object.isRequired,
   invalid: PropTypes.bool.isRequired,
   pristine: PropTypes.bool.isRequired,
   handleSubmit: PropTypes.func.isRequired
 };
 
-const mapStateToProps = (state) => ({
-  user: state.user.address
-});
-
-const ExportComponent = createForm(
+export default createForm(
   'generateNewPasswordForm', GenerateNewPasswordForm, generateNewPasswordFormValidator
 );
-
-export default connect(ExportComponent, mapStateToProps);

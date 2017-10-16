@@ -19,6 +19,11 @@ const startApp = async () => {
 
   userActions.setNetwork(web3, dispatch);
 
+  if (getState().account.password) {
+    console.log('STARTED RELOAD');
+    accountHandler(web3, contract, getState, dispatch, 'passwordReloader');
+  }
+
   chrome.runtime.onConnect.addListener((port) => {
     port.onMessage.addListener(async (msg) => {
       const funcName = msg.action;

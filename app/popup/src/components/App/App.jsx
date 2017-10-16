@@ -6,10 +6,11 @@ import PrivacyNotice from '../PrivacyNotice/PrivacyNotice';
 import CopySeed from '../CopySeed/CopySeed';
 import GenerateNewPassword from '../GenerateNewPassword/GenerateNewPassword';
 import Dashboard from '../Dashboard/Dashboard';
+import TypeInPassword from '../TypeInPassword/TypeInPassword';
 
-import './app2.scss';
+import './app.scss';
 
-const App2 = ({ acceptedNotice, generatedVault, copiedSeed, seed }) => (
+const App = ({ acceptedNotice, generatedVault, copiedSeed, seed, password }) => (
   <div styleName="app2">
     <Header />
 
@@ -33,23 +34,28 @@ const App2 = ({ acceptedNotice, generatedVault, copiedSeed, seed }) => (
       generatedVault &&
       acceptedNotice &&
       copiedSeed &&
-      <Dashboard />
+      <div>
+        { password && <Dashboard /> }
+        { !password && <TypeInPassword /> }
+      </div>
     }
   </div>
 );
 
-App2.propTypes = {
+App.propTypes = {
   acceptedNotice: PropTypes.bool.isRequired,
   generatedVault: PropTypes.bool.isRequired,
   copiedSeed: PropTypes.bool.isRequired,
   seed: PropTypes.string.isRequired,
+  password: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   acceptedNotice: state.user.acceptedNotice,
   generatedVault: state.account.created,
+  password: state.account.password,
   copiedSeed: state.account.copiedSeed,
   seed: state.account.seed
 });
 
-export default connect(App2, mapStateToProps);
+export default connect(App, mapStateToProps);

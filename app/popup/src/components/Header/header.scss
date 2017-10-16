@@ -1,3 +1,9 @@
 .header-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 
+  .lock-account-button {
+    margin-right: 15px;
+  }
 }

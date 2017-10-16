@@ -1,9 +1,19 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import connect from '../../../../customRedux/connect';
 
-const Dashboard = () => (
+const Dashboard = ({ address }) => (
   <div>
-    Dashboard
+    Address: { address }
   </div>
 );
 
-export default Dashboard;
+Dashboard.propTypes = {
+  address: PropTypes.string.isRequired
+};
+
+const mapStateToProps = (state) => ({
+  address: state.account.address
+});
+
+export default connect(Dashboard, mapStateToProps);

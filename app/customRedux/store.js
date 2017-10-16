@@ -4,6 +4,10 @@ export const subscribe = (callback) => {
   chrome.storage.onChanged.addListener(callback);
 };
 
+export const unsubscribe = (callback) => {
+  chrome.storage.onChanged.removeListener(callback);
+};
+
 export const set = (key, data) =>
   new Promise((resolve) => {
     chrome.storage.local.set({ [key]: data }, () => {

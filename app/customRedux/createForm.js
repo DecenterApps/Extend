@@ -20,6 +20,7 @@ const createForm = (formName, WrappedComponent, validator) => (
       this.updateMergedProps = this.updateMergedProps.bind(this);
       this.handleFieldChange = this.handleFieldChange.bind(this);
       this.updateRestOfErrors = this.updateRestOfErrors.bind(this);
+      this.getFiledVal = this.getFiledVal.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
 
       this.updateMergedProps();
@@ -27,6 +28,36 @@ const createForm = (formName, WrappedComponent, validator) => (
 
     componentDidMount() {
       addFormMessage({ name: formName, state: this.fields });
+      this.updateMergedProps();
+    }
+
+    componentWillReceiveProps(nextProps) {
+      this.mergedProps = { ...this.mergedProps, ...nextProps };
+    }
+
+    getFiledVal(field) {
+      if (this.fields[field] === undefined) return false;
+
+      return this.fields[field].value;
+    }
+
+    updateMergedProps() {
+      const formData = {
+        registerField: this.registerField,
+        handleFieldChange: this.handleFieldChange,
+        getFiledVal: this.getFiledVal
+      };
+
+      this.mergedProps = {
+        ...this.props,
+        formData,
+        ...this.formMeta,
+        handleSubmit: this.handleSubmit
+      };
+    }
+
+    registerField(field) {
+      this.fields[field.name] = field;
       this.updateMergedProps();
     }
 
@@ -48,24 +79,6 @@ const createForm = (formName, WrappedComponent, validator) => (
       this.formMeta = { pristine, invalid };
 
       this.updateMergedProps();
-    }
-
-    updateMergedProps() {
-      const formData = {
-        registerField: this.registerField,
-        handleFieldChange: this.handleFieldChange,
-      };
-
-      this.mergedProps = {
-        ...this.props,
-        formData,
-        ...this.formMeta,
-        handleSubmit: this.handleSubmit
-      };
-    }
-
-    registerField(field) {
-      this.fields[field.name] = field;
     }
 
     updateRestOfErrors(errorsParam) {

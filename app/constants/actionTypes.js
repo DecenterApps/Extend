@@ -22,3 +22,6 @@ export const UPDATE_FIELD_ERROR = 'update_field_error';
 // ACCOUNT
 export const CREATE_WALLET = 'create_wallet';
 export const COPIED_SEED = 'copied_seed';
+export const CLEAR_PASSWORD = 'clear_password';
+export const UNLOCK = 'unlock';
+export const UNLOCK_ERROR = 'unlock_error';

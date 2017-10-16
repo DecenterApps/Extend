@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { getState, subscribe } from './store';
+import { getState, subscribe, unsubscribe } from './store';
 
 const connect = (WrappedComponent, mapStateToProps) => (
   class Connect extends Component {
     constructor(props) {
       super(props);
 
+      this.willUnmount = false;
       this.updateComponent = this.updateComponent.bind(this);
       this.listenForStateChanges = this.listenForStateChanges.bind(this);
     }
@@ -19,6 +20,11 @@ const connect = (WrappedComponent, mapStateToProps) => (
       this.updateComponent(nextProps);
     }
 
+    componentWillUnmount() {
+      this.willUnmount = true;
+      unsubscribe(this.listenForStateChanges);
+    }
+
     async listenForStateChanges(changes) {
       if (changes[Object.keys(changes)[0]].newValue === undefined) return;
 
@@ -29,7 +35,8 @@ const connect = (WrappedComponent, mapStateToProps) => (
       // TODO remove await get state if it happens to be a bottleneck
       const mappedStateProps = mapStateToProps(await getState());
       this.componentProps = { ...mappedStateProps, ...ownProps };
-      this.forceUpdate();
+
+      if (!this.willUnmount) this.forceUpdate();
     }
 
     render() {

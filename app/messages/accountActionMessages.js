@@ -15,3 +15,11 @@ export const createWalletMessage = (fields) => {
 export const copiedSeedMessage = () => {
   pm({ action: 'copiedSeed' });
 };
+
+export const checkIfPasswordValidMessage = (fields) => {
+  pm({ action: 'checkIfPasswordValid', payload: fields.password.value });
+};
+
+export const clearPasswordMessage = () => {
+  pm({ action: 'clearPassword' });
+};

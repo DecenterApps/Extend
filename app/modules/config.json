@@ -1,7 +1,40 @@
 {
-  "contractAddress": "0xF181Bc715bA4A3204aF7944F96F733Fc35692bAB",
+  "contractAddress": "0x59262079B2D076ac894656bAa996105c1981Cf3D",
   "startingBlock": 4145732,
   "abi": [
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "checkAddressVerified",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "username",
+          "type": "string"
+        }
+      ],
+      "name": "checkUsernameVerified",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
     {
       "constant": false,
       "inputs": [
@@ -16,29 +49,6 @@
       ],
       "name": "__callback",
       "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "postId",
-          "type": "uint256"
-        },
-        {
-          "name": "vote",
-          "type": "bool"
-        }
-      ],
-      "name": "votePost",
-      "outputs": [
-        {
-          "name": "",
-          "type": "bool"
-        }
-      ],
       "payable": false,
       "stateMutability": "nonpayable",
       "type": "function"
@@ -94,25 +104,6 @@
       "type": "function"
     },
     {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "postId",
-          "type": "uint256"
-        }
-      ],
-      "name": "getPostScore",
-      "outputs": [
-        {
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
       "constant": false,
       "inputs": [
         {
@@ -124,20 +115,6 @@
       "outputs": [],
       "payable": true,
       "stateMutability": "payable",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [],
-      "name": "checkIfUserVerified",
-      "outputs": [
-        {
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
       "type": "function"
     },
     {
@@ -159,14 +136,28 @@
       "type": "function"
     },
     {
-      "constant": true,
+      "constant": false,
       "inputs": [
         {
-          "name": "commentId",
-          "type": "uint256"
+          "name": "data",
+          "type": "bytes32"
         }
       ],
-      "name": "getCommentScore",
+      "name": "bytes32ToString",
+      "outputs": [
+        {
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "checkBalance",
       "outputs": [
         {
           "name": "",
@@ -178,27 +169,15 @@
       "type": "function"
     },
     {
-      "constant": false,
       "inputs": [
         {
-          "name": "commentId",
-          "type": "uint256"
-        },
-        {
-          "name": "vote",
-          "type": "bool"
-        }
-      ],
-      "name": "voteComment",
-      "outputs": [
-        {
-          "name": "",
-          "type": "bool"
+          "name": "_data",
+          "type": "address"
         }
       ],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function"
+      "type": "constructor"
     },
     {
       "anonymous": false,

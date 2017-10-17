@@ -34,6 +34,12 @@ export const quickSort = (arr, left, right) => {
   return arr;
 };
 
+/**
+ * Checks whether a string is a JSON
+ *
+ * @param {String} str
+ * @return {boolean}
+ */
 export const isJson = (str) => {
   try {
     JSON.parse(str);
@@ -43,6 +49,13 @@ export const isJson = (str) => {
   return true;
 };
 
+/**
+ * Return a link to the address on a correct network on etherscan
+ *
+ * @param {String} network
+ * @param {String} address
+ * @return {String} link to the address on a correct network on etherscan
+ */
 export const getEtherScanLinkByNetwork = (network, address) => {
   if (network === 'unknown') return '';
   if (network === 'mainnet') return `https://etherscan.io/address/${address}`;
@@ -109,3 +122,49 @@ export const generateDataForFormValidator = (fieldsMeta) => {
 
   return validatorObj;
 };
+
+/**
+ * Gets the price of the computation that needs to be done on the Oreclize contract in ETH
+ *
+ * @return {Promise}
+ */
+export const getOreclizeTransactionCost = () =>
+  new Promise(async (resolve, reject) => {
+    try {
+      const oreclizeResponse = await fetch('https://api.oraclize.it/v1/platform/info?_pretty=1');
+      const oreclizeData = await oreclizeResponse.json();
+
+      const pricePerUnit = oreclizeData.result.quotes.ETH;
+      const dataSources = oreclizeData.result.pricing.datasources;
+      const numOfComputationUnits = dataSources.find((dataSource) => dataSource.name === 'computation').units;
+      // resolve(pricePerUnit * numOfComputationUnits);
+      // TODO change this when we get a response from Oreclize
+      resolve(0.005385);
+    } catch(err) {
+      reject(err);
+    }
+  });
+
+/**
+ * Sends the token to Oreclize servers for encryption and returns the encrypted access token
+ *
+ * @param {String} token
+ * @return {Promise}
+ */
+export const encryptTokenOreclize = (token) =>
+  new Promise(async (resolve, reject) => {
+    try {
+      const oreclizeEncryptResponse = await fetch('https://api.oraclize.it/v1/utils/encryption/encrypt', {
+        method: 'post',
+        headers: {
+          'content-type': 'application/x-www-form-urlencoded',
+        },
+        body: JSON.stringify({ 'message': token })
+      });
+
+      const oreclizeEnecrypt = await oreclizeEncryptResponse.json();
+      resolve(oreclizeEnecrypt.result);
+    } catch (err) {
+      reject(err);
+    }
+  });

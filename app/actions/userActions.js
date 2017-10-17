@@ -1,8 +1,7 @@
-import { _createUser, checkIfUserVerified } from '../modules/ethereumService';
-import { getParameterByName } from './utils';
+import { checkIfUserVerified } from '../modules/ethereumService';
 import {
-  SET_NETWORK, SET_ADDRESS, REGISTER_USER, REGISTER_USER_SUCCESS, REGISTER_USER_ERROR,
-  SET_IS_USER_VERIFIED, SELECT_NETWORK, ACCEPT_PRIVACY_NOTICE
+  SET_NETWORK, SET_ADDRESS, SET_IS_USER_VERIFIED, SELECT_NETWORK,
+  ACCEPT_PRIVACY_NOTICE
 } from '../constants/actionTypes';
 
 /**
@@ -95,51 +94,4 @@ export const selectNetwork = (dispatch, index) => {
  */
 export const acceptPrivacyNotice = (dispatch) => {
   dispatch({ type: ACCEPT_PRIVACY_NOTICE });
-};
-
-/**
- * Opens Reddit oauth window and receives user access_token. Access_token and
- * user address are sent to the contract
- *
- * @param {Object} contract
- * @param {String} address
- * @param {Function} dispatch
- * @param {Object} web3
- */
-export const createUserAuth = (contract, web3, address, dispatch) => {
-  const redirectUri = chrome.identity.getRedirectURL('oauth2');
-
-  dispatch({ type: REGISTER_USER });
-
-  chrome.identity.launchWebAuthFlow({
-    url: `https://www.reddit.com/api/v1/authorize?client_id=AFH0yVxKuLUlVQ&response_type=token&state=asdf&redirect_uri=${redirectUri}&scope=identity`,
-    interactive: true
-  }, async (authResponse) => {
-    console.log('RESPONSE AUTH', authResponse);
-    const response = authResponse.replace(/#/g, '?');
-    const accessToken = getParameterByName('access_token', response);
-
-    const request = new Request('https://oauth.reddit.com/api/v1/me', {
-      headers: new Headers({
-        'Authorization': `bearer ${accessToken}`
-      })
-    });
-
-    try {
-      const redditMeResponse = await fetch(request);
-      const me = await redditMeResponse.json();
-
-      if (me.error) return dispatch({ type: REGISTER_USER_ERROR });
-
-      dispatch({ type: REGISTER_USER_SUCCESS, payload: me.name });
-
-      const contractResponse = await _createUser(contract, web3, me.name, accessToken, address);
-      // Uspesno otislo na contract
-      // dispatch({ type: REGISTER_USER_ERROR });
-      return contractResponse;
-    } catch (err) {
-      console.log('create user error', err);
-      return dispatch({ type: REGISTER_USER_ERROR });
-    }
-  });
 };

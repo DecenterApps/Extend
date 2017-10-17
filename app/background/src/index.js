@@ -3,6 +3,7 @@ import reducersData from './reducers/index';
 import { NETWORKS } from '../../constants/general';
 import contractConfig from '../../modules/config.json';
 import * as userActions from '../../actions/userActions';
+import * as accountActions from '../../actions/accountActions';
 import accountHandler from '../../handlers/accountActionsHandler';
 import dropdownHandler from '../../handlers/dropdownActionsHandler';
 import userHandler from '../../handlers/userActionsHandler';
@@ -18,9 +19,10 @@ const startApp = async () => {
   let contract = web3.eth.contract(contractConfig.abi).at(contractConfig.contractAddress);
 
   userActions.setNetwork(web3, dispatch);
+  accountActions.setDefaultAcc(web3, getState);
+  accountActions.setBalance(web3, getState, dispatch);
 
   if (getState().account.password) {
-    console.log('STARTED RELOAD');
     accountHandler(web3, contract, getState, dispatch, 'passwordReloader');
   }
 
@@ -37,6 +39,9 @@ const startApp = async () => {
           contract = web3.eth.contract(contractConfig.abi).at(contractConfig.contractAddress);
 
           userActions.setNetwork(web3, dispatch);
+          accountActions.setDefaultAcc(web3, getState);
+          accountActions.setBalance(web3, getState, dispatch);
+
           return userActions[funcName](dispatch, payload);
         } catch (err) {
           throw Error('Cound not connect to the http provider', NETWORKS[payload].url, err);

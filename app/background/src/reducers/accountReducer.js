@@ -1,5 +1,5 @@
 import {
-  CREATE_WALLET, COPIED_SEED, CLEAR_PASSWORD, UNLOCK_ERROR, UNLOCK
+  CREATE_WALLET, COPIED_SEED, CLEAR_PASSWORD, UNLOCK_ERROR, UNLOCK, SET_BALANCE
 } from '../../../constants/actionTypes';
 
 const reducerName = 'account';
@@ -9,9 +9,11 @@ const INITIAL_STATE = {
   copiedSeed: false,
   address: '',
   password: '',
-  keyStore: '',
+  keyStore: {},
   seed: '',
-  unlockError: ''
+  unlockError: '',
+  accountIcon: '',
+  balance: ''
 };
 
 export const reducer = (state, action) => {
@@ -32,6 +34,9 @@ export const reducer = (state, action) => {
 
     case UNLOCK_ERROR:
       return { ...state, unlockError: 'Password not valid' };
+
+    case SET_BALANCE:
+      return { ...state, balance: payload };
 
     default:
       return false;

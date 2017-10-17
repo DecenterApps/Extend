@@ -12,7 +12,7 @@ import './app.scss';
 
 const App = ({ acceptedNotice, generatedVault, copiedSeed, seed, password }) => (
   <div styleName="app2">
-    <Header />
+    <Header password={password} copiedSeed={copiedSeed} generatedVault={generatedVault} />
 
     {
       !acceptedNotice && <PrivacyNotice />

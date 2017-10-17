@@ -1,16 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import connect from '../../../../customRedux/connect';
 import NetworkSelect from '../NetworkSelect/NetworkSelect';
 import { clearPasswordMessage } from '../../../../messages/accountActionMessages';
 
 import './header.scss';
 
-const Header = ({ password }) => (
+const Header = ({ password, generatedVault, copiedSeed }) => (
   <div styleName="header-wrapper">
     <NetworkSelect />
 
     {
+      generatedVault &&
+      copiedSeed &&
       password &&
       <button
         styleName="lock-account-button"
@@ -23,11 +24,9 @@ const Header = ({ password }) => (
 );
 
 Header.propTypes = {
-  password: PropTypes.string.isRequired
+  password: PropTypes.string.isRequired,
+  generatedVault: PropTypes.bool.isRequired,
+  copiedSeed: PropTypes.bool.isRequired
 };
 
-const mapStateToProps = (state) => ({
-  password: state.account.password
-});
-
-export default connect(Header, mapStateToProps);
+export default Header;

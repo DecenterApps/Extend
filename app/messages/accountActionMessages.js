@@ -8,6 +8,8 @@ const pm = (actionParam) => {
   port.postMessage(action);
 };
 
+export const createUserAuthMessage = () => { pm({ action: 'createUserAuth' }); };
+
 export const createWalletMessage = (fields) => {
   pm({ action: 'createWallet', payload: fields.password.value });
 };

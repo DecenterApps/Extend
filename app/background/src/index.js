@@ -1,67 +1,74 @@
 import createStore from '../../customRedux/createStore';
 import reducersData from './reducers/index';
-import { NETWORKS } from '../../constants/general';
 import contractConfig from '../../modules/config.json';
 import * as userActions from '../../actions/userActions';
-import * as accountActions from '../../actions/accountActions';
 import accountHandler from '../../handlers/accountActionsHandler';
 import dropdownHandler from '../../handlers/dropdownActionsHandler';
 import userHandler from '../../handlers/userActionsHandler';
 import formsHandler from '../../handlers/formsActionsHandler';
+import handleChangeNetwork from '../../modules/handleChangeNetwork';
+
+let appLoaded = null;
+
+let store = null;
+let dispatch = null;
+let getState = null;
+let web3 = null;
+let contract = null;
 
 const startApp = async () => {
-  const store = await createStore(reducersData);
+  store = await createStore(reducersData);
+  dispatch = store.dispatch;
+  getState = store.getState;
 
-  const dispatch = store.dispatch;
-  const getState = store.getState;
-
-  let web3 = new Web3(new Web3.providers.HttpProvider(getState().user.selectedNetwork.url));
-  let contract = web3.eth.contract(contractConfig.abi).at(contractConfig.contractAddress);
-
-  userActions.setNetwork(web3, dispatch);
-  accountActions.setDefaultAcc(web3, getState);
-  accountActions.setBalance(web3, getState, dispatch);
-
-  if (getState().account.password) {
-    accountHandler(web3, contract, getState, dispatch, 'passwordReloader');
+  try {
+    let networkData = await handleChangeNetwork(Web3, contractConfig, dispatch, getState);
+    web3 = networkData.web3;
+    contract = networkData.contract;
+  } catch (err) {
+    console.error('COULD NOT CONNECT TO NETWORK');
+    userActions.networkUnavailable(dispatch);
   }
 
-  chrome.runtime.onConnect.addListener((port) => {
-    port.onMessage.addListener(async (msg) => {
-      const funcName = msg.action;
-      const handler = msg.handler;
-      const payload = msg.payload;
-
-      // Only action that is handled here
-      if (funcName === 'selectNetwork') {
-        try {
-          web3 = new Web3(new Web3.providers.HttpProvider(NETWORKS[payload].url));
-          contract = web3.eth.contract(contractConfig.abi).at(contractConfig.contractAddress);
-
-          userActions.setNetwork(web3, dispatch);
-          accountActions.setDefaultAcc(web3, getState);
-          accountActions.setBalance(web3, getState, dispatch);
-
-          return userActions[funcName](dispatch, payload);
-        } catch (err) {
-          throw Error('Cound not connect to the http provider', NETWORKS[payload].url, err);
-        }
-      }
-
-      switch (handler) {
-        case 'account':
-          return accountHandler(web3, contract, getState, dispatch, funcName, payload);
-        case 'dropdown':
-          return dropdownHandler(web3, contract, getState, dispatch, funcName, payload);
-        case 'user':
-          return userHandler(web3, contract, getState, dispatch, funcName, payload);
-        case 'forms':
-          return formsHandler(web3, contract, getState, dispatch, funcName, payload);
-        default:
-          throw Error('Action Handler not defined', handler);
-      }
-    });
-  });
+  appLoaded = true;
 };
+
+chrome.runtime.onConnect.addListener((port) => {
+  port.onMessage.addListener(async (msg) => {
+    if (!appLoaded) return false;
+
+    const funcName = msg.action;
+    const handler = msg.handler;
+    const payload = msg.payload;
+
+    if (funcName === 'selectNetwork') {
+      try {
+        await userActions.selectNetwork(dispatch, payload);
+
+        let networkData = await handleChangeNetwork(Web3, contractConfig, dispatch, getState);
+
+        web3 = networkData.web3;
+        contract = networkData.contract;
+        return false;
+      } catch (err) {
+        userActions.networkUnavailable(dispatch);
+        console.error('COULD NOT CONNECT TO NETWORK');
+      }
+    }
+
+    switch (handler) {
+      case 'account':
+        return accountHandler(web3, contract, getState, dispatch, funcName, payload);
+      case 'dropdown':
+        return dropdownHandler(web3, contract, getState, dispatch, funcName, payload);
+      case 'user':
+        return userHandler(web3, contract, getState, dispatch, funcName, payload);
+      case 'forms':
+        return formsHandler(web3, contract, getState, dispatch, funcName, payload);
+      default:
+        throw Error('Action Handler not defined', handler);
+    }
+  });
+});
 
 startApp();

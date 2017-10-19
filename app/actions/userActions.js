@@ -1,7 +1,6 @@
-import { checkIfUserVerified } from '../modules/ethereumService';
+import { verifiedUserEvent } from '../modules/ethereumService';
 import {
-  SET_NETWORK, SET_ADDRESS, SET_IS_USER_VERIFIED, SELECT_NETWORK,
-  ACCEPT_PRIVACY_NOTICE
+  SET_NETWORK, SELECT_NETWORK, ACCEPT_PRIVACY_NOTICE, NETWORK_UNAVAILABLE
 } from '../constants/actionTypes';
 
 /**
@@ -10,71 +9,40 @@ import {
  * @param {Object} web3
  * @param {Function} dispatch
  */
-export const setNetwork = (web3, dispatch) => {
-  web3.version.getNetwork((err, netId) => {
-    if (err) return dispatch({ type: SET_NETWORK, payload: '' });
+export const setNetwork = (web3, dispatch) =>
+  new Promise((resolve) => {
+    web3.version.getNetwork(async (err, netId) => {
+      if (err) {
+        await dispatch({ type: SET_NETWORK, payload: '' });
+        resolve();
+      }
 
-    let networkName = '';
+      let networkName = '';
 
-    switch (netId) {
-      case '1':
-        networkName = 'mainnet';
-        break;
-      case '2':
-        networkName = 'morden';
-        break;
-      case '3':
-        networkName = 'ropsten';
-        break;
-      case '4':
-        networkName = 'rinkeby';
-        break;
-      case '42':
-        networkName = 'kovan';
-        break;
-      default:
-        networkName = 'unknown';
-    }
+      switch (netId) {
+        case '1':
+          networkName = 'mainnet';
+          break;
+        case '2':
+          networkName = 'morden';
+          break;
+        case '3':
+          networkName = 'ropsten';
+          break;
+        case '4':
+          networkName = 'rinkeby';
+          break;
+        case '42':
+          networkName = 'kovan';
+          break;
+        default:
+          networkName = 'unknown';
+      }
 
-    return dispatch({ type: SET_NETWORK, payload: networkName });
+      await dispatch({ type: SET_NETWORK, payload: networkName });
+      resolve();
+    });
   });
-};
-
-/**
- * Checks if the users address is associated to a Reddit username on the contract
- *
- * @param {Object} contract
- * @param {Function} dispatch
- */
-export const checkIfAddressHasUser = async (contract, dispatch) => {
-  const isUserVerified = await checkIfUserVerified(contract);
-  dispatch({ type: SET_IS_USER_VERIFIED, payload: isUserVerified });
-};
-
-/**
- * Checks if the current node has an address, if it does, checks if it is same
- * as the current address in the state. If it is different sets it as the new state address
- *
- * @param {Object} contract
- * @param {String} currentAddress
- * @param {Function} dispatch
- * @param {Object} web3
- */
-export const setAddress = (contract, currentAddress, dispatch, web3) => {
-  if (!web3.eth.accounts[0]) {
-    dispatch({ type: SET_ADDRESS, payload: '' });
-    return false;
-  }
-
-  const newAddress = web3.eth.accounts[0];
-
-  if (newAddress !== currentAddress) return false;
-
-  web3.eth.defaultAccount = newAddress;
-  checkIfAddressHasUser(contract, dispatch);
-  dispatch({ type: SET_ADDRESS, payload: newAddress });
-  return true;
-};
 
 /**
  * Dispatches action to change the current selected network
@@ -82,9 +50,11 @@ export const setAddress = (contract, currentAddress, dispatch, web3) => {
  * @param {Function} dispatch
  * @param {Number} index - index of network in the constant NETWORKS array
  */
-export const selectNetwork = (dispatch, index) => {
-  dispatch({ type: SELECT_NETWORK, payload: index });
-};
+export const selectNetwork = (dispatch, index) =>
+  new Promise(async (resolve) => {
+    await dispatch({ type: SELECT_NETWORK, payload: index });
+    resolve();
+  });
 
 /**
  * Dispatches action to accept privacy notice. The user only does this once
@@ -94,4 +64,28 @@ export const selectNetwork = (dispatch, index) => {
  */
 export const acceptPrivacyNotice = (dispatch) => {
   dispatch({ type: ACCEPT_PRIVACY_NOTICE });
+};
+
+/**
+ * Listens for new verified users and checks if the current user is verified
+ *
+ * @param {Function} web3
+ * @param {Object} contract
+ */
+export const listenForVerifiedUser = (web3, contract) => {
+  console.log('LISTENING FOR VERIFIED USER');
+  const cb = (err, val) => {
+    console.log('VERIFIED USER EVENT', val);
+  };
+
+  verifiedUserEvent(web3, contract, cb);
+};
+
+/**
+ * Dispatches action to set that web3 could not connect to the network
+ *
+ * @param {Function} dispatch
+ */
+export const networkUnavailable = (dispatch) => {
+  dispatch({ type: NETWORK_UNAVAILABLE });
 };

@@ -1,6 +1,6 @@
 {
-  "contractAddress": "0x59262079B2D076ac894656bAa996105c1981Cf3D",
-  "startingBlock": 4145732,
+  "contractAddress": "0x6876AA245B3d8a0b931C5E94E5BAFDC8AA626308",
+  "startingBlock": 4349623,
   "abi": [
     {
       "constant": true,

@@ -1,12 +1,16 @@
 import {
-  SET_ADDRESS, SET_NETWORK, REGISTER_USER, REGISTER_USER_ERROR, REGISTER_USER_SUCCESS,
-  SET_IS_USER_VERIFIED, SELECT_NETWORK, ACCEPT_PRIVACY_NOTICE
+  SET_NETWORK, REGISTER_USER, REGISTER_USER_ERROR, REGISTER_USER_SUCCESS,
+  SELECT_NETWORK, ACCEPT_PRIVACY_NOTICE, NETWORK_UNAVAILABLE
 } from '../../../constants/actionTypes';
 import { NETWORKS } from '../../../constants/general';
 
 export const reducerName = 'user';
 
+// Registering is the state while he sends data to the contract
+// Verifying is when he is waiting for a response from Oreclize
+
 const INITIAL_STATE = {
+  networkActive: true,
   acceptedNotice: false,
   address: '',
   network: '',
@@ -14,6 +18,8 @@ const INITIAL_STATE = {
   registeringError: '',
   username: '',
   verified: false,
+  verifiedUsername: '',
+  registeringUsername: '',
   networks: NETWORKS,
   selectedNetwork: NETWORKS[0]
 };
@@ -25,26 +31,27 @@ export const reducer = (state, action) => {
     case ACCEPT_PRIVACY_NOTICE:
       return { ...state, acceptedNotice: true };
 
-    case SET_ADDRESS:
-      return { ...state, address: payload };
-
     case SET_NETWORK:
       return { ...state, network: payload };
 
     case REGISTER_USER:
-      return { ...state, registering: true };
+      return { ...state, registering: true, registeringUsername: payload };
 
     case REGISTER_USER_ERROR:
-      return { ...state, registering: false, registeringError: 'Registering user error' };
+      return {
+        ...state,
+        registering: false,
+        registeringError: 'An error occurred while registering your username, please try again.'
+      };
 
     case REGISTER_USER_SUCCESS:
       return { ...state, registering: false, registeringError: '', username: payload };
 
-    case SET_IS_USER_VERIFIED:
-      return { ...state, verified: payload };
-
     case SELECT_NETWORK:
       return { ...state, selectedNetwork: NETWORKS[payload] };
+
+    case NETWORK_UNAVAILABLE:
+      return { ...state, networkActive: false };
 
     default:
       return false;

@@ -13,5 +13,5 @@ export const acceptPrivacyNoticeMessage = () => { pm({ action: 'acceptPrivacyNot
 
 export const selectedNetworkMessage = (index) => {
   pm({ action: 'selectNetwork', payload: index });
-  toggleDropdownMessage(false);
+  toggleDropdownMessage(true, false);
 };

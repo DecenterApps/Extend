@@ -6,7 +6,7 @@ import {
 } from '../constants/actionTypes';
 import { LOCK_INTERVAL } from '../constants/general';
 import { isJson, formatLargeNumber, getParameterByName } from '../actions/utils';
-import { _createUser } from '../modules/ethereumService';
+import { _createUser, _checkAddressVerified } from '../modules/ethereumService';
 
 let lockTimeout = null;
 const keyStore = lightwallet.keystore;
@@ -210,3 +210,27 @@ export const createUserAuth = (contract, web3, getState, dispatch) => {
     }
   });
 };
+
+/**
+ *
+ * @param web3
+ * @param contract
+ * @param getState
+ * @return {Promise.<void>}
+ */
+export const checkAddressVerified = (web3, contract, getState) =>
+  new Promise(async (resolve, reject) => {
+    const address = getState().account.address;
+
+    if (!address) resolve(false);
+
+    try {
+      const isVerified = await _checkAddressVerified(web3, contract, address);
+
+      resolve(isVerified);
+      // dispatch something
+    } catch (err) {
+      // dispatch something
+      reject(err);
+    }
+  });

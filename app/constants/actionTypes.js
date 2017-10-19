@@ -13,6 +13,7 @@ export const ACCEPT_PRIVACY_NOTICE = 'accept_privacy_notice';
 // NETWORK
 export const TOGGLE_DROPDOWN = 'toggle_dropdown';
 export const SELECT_NETWORK = 'select_network';
+export const NETWORK_UNAVAILABLE = 'network_unavailable';
 
 // FORMS
 export const ADD_FORM = 'add_form';

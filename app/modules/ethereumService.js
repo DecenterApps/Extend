@@ -135,12 +135,32 @@ export const _createUser = (contract, web3, username, token, ks, address, passwo
     }
   });
 
-// TODO convert to sendTransaction
-export const checkIfUserVerified = (contract) =>
+export const _checkAddressVerified = (web3, contract, address) =>
   new Promise((resolve, reject) => {
-    contract.checkIfUserVerified((error, result) => {
+    web3.eth.defaultAccount = address; //eslint-disable-line
+
+    contract.checkAddressVerified((error, result) => {
       if (error) return reject({ message: error, });
 
       return resolve(result);
     });
   });
+
+/* EVENT LISTENERS */
+export const verifiedUserEvent = async (web3, contract, callback) => {
+  let latestBlock = 0;
+
+  try {
+    latestBlock = await getBlockNumber(web3);
+  } catch (err) {
+    callback(err, null);
+    return;
+  }
+
+  contract.VerifiedUser({}, { fromBlock: latestBlock, toBlock: 'latest' })
+    .watch((error, event) => {
+      if (error) return callback(error);
+
+      return callback(null, event);
+    });
+};

@@ -4,7 +4,7 @@
   "description": "React, Chrome, and Redux example",
   "version": "0.0.0.1",
   "background": {
-    "scripts": ["web3.min.js", "background.js"],
+    "scripts": ["web3.js", "background.js"],
     "persistent": true
   },
   "browser_action": {

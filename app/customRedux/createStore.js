@@ -8,7 +8,7 @@ import { get, set, clearReducer } from './store';
  */
 const initReducer = async (reducerData) =>
   new Promise(async (resolve) => {
-    await clearReducer(reducerData.name); // remove when finished
+    // await clearReducer(reducerData.name); // remove when finished
 
     const existingReducerState = await get(reducerData.name);
 
@@ -44,39 +44,71 @@ const combineReducers = (reducersData) =>
     });
   });
 
+/**
+ * Checks if action went to all reducers and handles if all the reducers were checked
+ *
+ * @param {Number} reducersFinished
+ * @param {Object} reducers
+ * @param {Boolean} resolved - if any reducer handled the action
+ * @param {Function} resolve - dispatch promise resolver
+ * @param {Object} state
+ * @param {Object} action
+ * @param {String} reducerName
+ */
+const handleReducerFinish = (reducersFinished, reducers, resolved, resolve, state, action, reducerName) => {
+  if (reducersFinished !== Object.keys(reducers).length) return;
 
-const createStore = async (reducersData) => {
-  const combinedReducers = await combineReducers(reducersData);
-
-  let state = combinedReducers.state;
-  const reducers = combinedReducers.reducers;
-
-  return {
-    getState: () => state,
-    dispatch: (action) =>
-      new Promise(async (resolve) => {
-        let resolved = false;
-
-        Object.keys(reducers).forEach(async (reducerName, index) => {
-          const reducer = reducers[reducerName];
-          const reducerState = state[reducerName];
-
-          const newReducerState = reducer(reducerState, action);
-
-          if (!newReducerState) return;
-
-          const setResult = await set(reducerName, newReducerState);
-          console.log('action type', action.type, setResult);
-          resolved = true;
-          state[reducerName] = setResult;
-
-          if (index === reducers.length - 1) {
-            if (resolved) resolve(state[reducerName]);
-            throw Error('Dispatch was not handled in any reducer', action);
-          }
-        });
-      })
-  };
+  if (resolved) {
+    resolve(state[reducerName]);
+  } else {
+    throw Error('Dispatch was not handled in any reducer', action);
+  }
 };
+
+
+// TODO Try to clean this code up
+/**
+ * Goes through all reducers and checks if there was any state before starting the app.
+ * Creates getState and dispatch functions
+ *
+ * @param {Object} reducersData - reducers names and handlers
+ */
+const createStore = (reducersData) =>
+  new Promise(async (resolve) => {
+    const combinedReducers = await combineReducers(reducersData);
+
+    let state = combinedReducers.state;
+    const reducers = combinedReducers.reducers;
+
+    resolve({
+      getState: () => state,
+      dispatch: (action) =>
+        new Promise(async (dispatchResolve) => {
+          let resolved = false;
+          let reducersFinished = 0;
+
+          Object.keys(reducers).forEach(async (reducerName) => {
+            const reducer = reducers[reducerName];
+            const reducerState = state[reducerName];
+
+            const newReducerState = reducer(reducerState, action);
+
+            if (!newReducerState) {
+              reducersFinished++;
+              handleReducerFinish(reducersFinished, reducers, resolved, dispatchResolve, state, action, reducerName);
+              return;
+            }
+
+            const setResult = await set(reducerName, newReducerState);
+            console.log('ACTION', action);
+            resolved = true;
+            state[reducerName] = setResult;
+
+            reducersFinished++;
+            handleReducerFinish(reducersFinished, reducers, resolved, dispatchResolve, state, action, reducerName);
+          });
+        })
+    });
+  });
 
 export default createStore;

@@ -6,7 +6,9 @@ import { createUserAuthMessage } from '../../../../messages/accountActionMessage
 
 import './dashboard.scss';
 
-const Dashboard = ({ address, accountIcon, network, balance }) => (
+const Dashboard = ({
+  address, accountIcon, network, balance, registering, registeringError
+}) => (
   <div styleName="dashboard-wrapper">
     <div styleName="account-info-wrapper">
       <img src={accountIcon} alt="Account icon" />
@@ -36,9 +38,25 @@ const Dashboard = ({ address, accountIcon, network, balance }) => (
     </div>
 
     <div styleName="dashboard-content">
-      <button onClick={createUserAuthMessage} styleName="register-username">
-        Register Reddit username
-      </button>
+      {
+        registeringError &&
+        !registering &&
+        <div styleName="error-wrapper">
+          { registeringError }
+        </div>
+      }
+      {
+        !registering &&
+        <button onClick={createUserAuthMessage} styleName="register-username">
+          Register Reddit username
+        </button>
+      }
+      {
+        registering &&
+        <div styleName="info-wrapper">
+          We are verifying your Reddit username, it may take up to 5 minutes.
+        </div>
+      }
     </div>
   </div>
 );
@@ -47,14 +65,19 @@ Dashboard.propTypes = {
   address: PropTypes.string.isRequired,
   accountIcon: PropTypes.string.isRequired,
   network: PropTypes.string.isRequired,
-  balance: PropTypes.string.isRequired
+  balance: PropTypes.string.isRequired,
+  registeringError: PropTypes.string.isRequired,
+  registering: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = (state) => ({
   address: state.account.address,
   accountIcon: state.account.accountIcon,
   network: state.user.network,
-  balance: state.account.balance
+  balance: state.account.balance,
+  registering: state.user.registering,
+  registeringError: state.user.registeringError,
 });
 
 export default connect(Dashboard, mapStateToProps);
+

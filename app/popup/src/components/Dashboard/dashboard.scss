@@ -1,3 +1,5 @@
+Dashboard.scss
+
 .dashboard-wrapper {
 
   .account-info-wrapper {
@@ -39,5 +41,22 @@
     .register-username {
       font-size: 14px;
     }
+  }
+
+  .info-wrapper {
+    padding: 10px;
+    border: 1px solid #72B4DC;
+    font-size: 16px;
+    background: #C6E4F4;
+    line-height: 20px;
+  }
+
+  .error-wrapper {
+    padding: 10px;
+    border: 1px solid #B67675;
+    font-size: 16px;
+    background: #EAC1BD;
+    line-height: 20px;
+    margin-bottom: 25px;
   }
 }

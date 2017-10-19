@@ -4,6 +4,7 @@ module.exports = {
     'browser': true
   },
   'rules': {
+    'max-len': [2, 120, 2, {ignoreComments: true}],
     'jsx-a11y/href-no-hash': 'off',
     'jsx-a11y/anchor-is-valid': ['warn', { 'aspects': ['invalidHref'] }],
     'jsx-a11y/label-has-for': 0,

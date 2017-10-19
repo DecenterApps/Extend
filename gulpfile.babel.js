@@ -50,14 +50,9 @@ gulp.task('copy-jquery', ['clean'], () => {
 });
 
 gulp.task('copy-web3', ['clean'], () => {
-  return gulp.src('./app/modules/web3.min.js')
+  return gulp.src('./app/modules/web3.js')
     .pipe(gulp.dest('./build'));
 });
-
-// gulp.task('copy-lightwallet', ['clean'], () => {
-//   return gulp.src('./app/modules/lightwallet.min.js')
-//     .pipe(gulp.dest('./build'));
-// });
 
 gulp.task('clean', (cb) => {
   rimraf('./build', cb);

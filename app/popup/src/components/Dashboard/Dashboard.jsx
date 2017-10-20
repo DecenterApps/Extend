@@ -2,12 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import connect from '../../../../customRedux/connect';
 import { getEtherScanLinkByNetwork } from '../../../../actions/utils';
-import { createUserAuthMessage } from '../../../../messages/accountActionMessages';
+import { createUserAuthMessage } from '../../../../messages/userActionsMessages';
 
 import './dashboard.scss';
 
 const Dashboard = ({
-  address, accountIcon, network, balance, registering, registeringError
+  address, accountIcon, network, balance, registering, registeringError, registeringUsername
 }) => (
   <div styleName="dashboard-wrapper">
     <div styleName="account-info-wrapper">
@@ -54,7 +54,7 @@ const Dashboard = ({
       {
         registering &&
         <div styleName="info-wrapper">
-          We are verifying your Reddit username, it may take up to 5 minutes.
+          We are verifying your Reddit username: { registeringUsername }. Awaiting confirmation.
         </div>
       }
     </div>
@@ -67,7 +67,8 @@ Dashboard.propTypes = {
   network: PropTypes.string.isRequired,
   balance: PropTypes.string.isRequired,
   registeringError: PropTypes.string.isRequired,
-  registering: PropTypes.bool.isRequired
+  registering: PropTypes.bool.isRequired,
+  registeringUsername: PropTypes.string.isRequired
 };
 
 const mapStateToProps = (state) => ({
@@ -77,6 +78,7 @@ const mapStateToProps = (state) => ({
   balance: state.account.balance,
   registering: state.user.registering,
   registeringError: state.user.registeringError,
+  registeringUsername: state.user.registeringUsername,
 });
 
 export default connect(Dashboard, mapStateToProps);

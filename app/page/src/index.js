@@ -1,5 +1,5 @@
-import insertUpvoteDownvote from './components/UpvoteDownvote/insertUpvoteDownvote';
+// import insertUpvoteDownvote from './components/UpvoteDownvote/insertUpvoteDownvote';
+import insertTipToAllPosts from './components/Tip/insertTipToAllPosts';
 
-insertUpvoteDownvote();
-
-$('.flat-list.buttons').append('<li class="tip">Tip</li>');
+insertTipToAllPosts();
+// insertTipToAllComments();

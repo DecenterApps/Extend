@@ -12,9 +12,6 @@ const accountActionsHandler = (web3, contract, getState, dispatch, funcName, pay
       return accountActions[funcName](dispatch);
     case 'checkIfPasswordValid':
       return accountActions[funcName](getState, dispatch, payload);
-    case 'createUserAuth': {
-      return accountActions[funcName](contract, web3, getState, dispatch);
-    }
 
     default:
       throw Error('Function in handler not defined', funcName);

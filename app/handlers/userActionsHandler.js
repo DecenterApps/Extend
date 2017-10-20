@@ -5,6 +5,9 @@ const userActionsHandler = (web3, contract, getState, dispatch, funcName, payloa
     case 'acceptPrivacyNotice': {
       return userActions[funcName](dispatch);
     }
+    case 'createUserAuth': {
+      return userActions[funcName](contract, web3, getState, dispatch);
+    }
 
     default:
       throw Error('Function in handler not defined', funcName);

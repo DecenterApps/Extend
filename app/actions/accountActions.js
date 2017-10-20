@@ -1,12 +1,11 @@
 import blockies from 'blockies';
 import lightwallet from '../modules/eth-lightwallet/lightwallet';
 import {
-  CREATE_WALLET, COPIED_SEED, CLEAR_PASSWORD, UNLOCK_ERROR, UNLOCK,
-  SET_BALANCE, REGISTER_USER, REGISTER_USER_SUCCESS, REGISTER_USER_ERROR
+  CREATE_WALLET, COPIED_SEED, CLEAR_PASSWORD, UNLOCK_ERROR, UNLOCK, SET_BALANCE
 } from '../constants/actionTypes';
 import { LOCK_INTERVAL } from '../constants/general';
-import { isJson, formatLargeNumber, getParameterByName } from '../actions/utils';
-import { _createUser, _checkAddressVerified } from '../modules/ethereumService';
+import { isJson, formatLargeNumber } from '../actions/utils';
+import { _checkAddressVerified } from '../modules/ethereumService';
 
 let lockTimeout = null;
 const keyStore = lightwallet.keystore;
@@ -156,59 +155,6 @@ export const createWallet = (web3, dispatch, password) => {
 export const copiedSeed = (dispatch) => {
   dispatch({ type: COPIED_SEED });
   passwordReloader(dispatch);
-};
-
-/**
- * Opens Reddit oauth window and receives user access_token. Access_token and
- * user address are sent to the contract
- *
- * @param {Object} contract
- * @param {String} address
- * @param {Function} dispatch
- * @param {Object} web3
- */
-export const createUserAuth = (contract, web3, getState, dispatch) => {
-  const redirectUri = chrome.identity.getRedirectURL('oauth2');
-  const account = getState().account;
-  const ks = keyStore.deserialize(account.keyStore);
-  const address = account.address;
-  const password = account.password;
-
-  // dispatch({ type: REGISTER_USER });
-
-  chrome.identity.launchWebAuthFlow({
-    url: `https://www.reddit.com/api/v1/authorize?client_id=AFH0yVxKuLUlVQ&response_type=token&state=asdf&redirect_uri=${redirectUri}&scope=identity`,
-    interactive: true
-  }, async (authResponse) => {
-    if (!authResponse) {
-      console.log('EXITED AUTH PROCCESS');
-      return;
-    }
-
-    const response = authResponse.replace(/#/g, '?');
-    const accessToken = getParameterByName('access_token', response);
-
-    const request = new Request('https://oauth.reddit.com/api/v1/me', {
-      headers: new Headers({
-        'Authorization': `bearer ${accessToken}`
-      })
-    });
-
-    try {
-      const redditMeResponse = await fetch(request);
-      const me = await redditMeResponse.json();
-
-      // if (me.error) return dispatch({ type: REGISTER_USER_ERROR });
-
-      // dispatch({ type: REGISTER_USER_SUCCESS, payload: me.name });
-
-      const contractResponse = await _createUser(contract, web3, me.name, accessToken, ks, address, password); // eslint-disable-line
-      // dispatch({ type: REGISTER_USER_ERROR });
-    } catch (err) {
-      console.log('REGISTER_USER_ERROR', err);
-      dispatch({ type: REGISTER_USER_ERROR });
-    }
-  });
 };
 
 /**

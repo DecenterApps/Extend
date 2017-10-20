@@ -1,5 +1,5 @@
 import {
-  SET_NETWORK, REGISTER_USER, REGISTER_USER_ERROR, REGISTER_USER_SUCCESS,
+  SET_NETWORK, REGISTER_USER, REGISTER_USER_ERROR, VERIFIED_USER,
   SELECT_NETWORK, ACCEPT_PRIVACY_NOTICE, NETWORK_UNAVAILABLE
 } from '../../../constants/actionTypes';
 import { NETWORKS } from '../../../constants/general';
@@ -16,7 +16,6 @@ const INITIAL_STATE = {
   network: '',
   registering: false,
   registeringError: '',
-  username: '',
   verified: false,
   verifiedUsername: '',
   registeringUsername: '',
@@ -35,7 +34,15 @@ export const reducer = (state, action) => {
       return { ...state, network: payload };
 
     case REGISTER_USER:
-      return { ...state, registering: true, registeringUsername: payload };
+      return { ...state, registering: true, registeringUsername: payload, registeringError: '' };
+
+    case VERIFIED_USER:
+      return {
+        ...state,
+        registering: false,
+        registeringUsername: '',
+        verifiedUsername: state.registeringUsername
+      };
 
     case REGISTER_USER_ERROR:
       return {
@@ -43,9 +50,6 @@ export const reducer = (state, action) => {
         registering: false,
         registeringError: 'An error occurred while registering your username, please try again.'
       };
-
-    case REGISTER_USER_SUCCESS:
-      return { ...state, registering: false, registeringError: '', username: payload };
 
     case SELECT_NETWORK:
       return { ...state, selectedNetwork: NETWORKS[payload] };

@@ -15,6 +15,9 @@ const handleChangeNetwork = (Web3, contractConfig, dispatch, getState) =>
       // while the user was being verified
       if (!isVeriied && state.user.registering && !state.user.verifiedUsername) {
         userActions.listenForVerifiedUser(web3, contract);
+      } else {
+        // Change if he has never registerd
+        userActions.verifiedUser(dispatch);
       }
 
       await userActions.setNetwork(web3, dispatch);

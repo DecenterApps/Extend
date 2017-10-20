@@ -1,12 +1,24 @@
 import * as userActions from '../actions/userActions';
 import * as accountActions from '../actions/accountActions';
+import * as ZeroClientProvider from './ZeroClientProvider';
 
 const handleChangeNetwork = (Web3, contractConfig, dispatch, getState) =>
   new Promise(async (resolve, reject) => {
     const state = getState();
 
-    let web3 = new Web3(new Web3.providers.HttpProvider(getState().user.selectedNetwork.url));
-    let contract = web3.eth.contract(contractConfig.abi).at(contractConfig.contractAddress);
+    let web3 = new Web3(
+        ZeroClientProvider({
+            static: {
+                eth_syncing: false,
+                web3_clientVersion: 'ZeroClientProvider',
+            },
+            pollingInterval: 1,
+            rpcUrl: getState().user.selectedNetwork.url,
+            getAccounts: (cb) => new Promise((resolve) => { resolve(cb) })
+        })
+    );
+
+    const contract = web3.eth.contract(contractConfig.abi).at(contractConfig.contractAddress);
 
     try {
       const isVeriied = await accountActions.checkAddressVerified(web3, contract, getState);

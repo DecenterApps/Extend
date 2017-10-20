@@ -78,7 +78,7 @@ contract Reddapp is usingOraclize {
     function tipUser(string _username) payable {
         require(data.getUserVerified(data.getAddressForUsername(stringToBytes32(_username))));
         
-        data.addBalanceForUser(stringToBytes32(_username), msg.value);
+        data.addTip(msg.sender, stringToBytes32(_username), msg.value);
 
         UserTipped(_username);
     }
@@ -92,6 +92,14 @@ contract Reddapp is usingOraclize {
         msg.sender.transfer(toSend);
 
         WithdrawSuccessful(bytes32ToString(data.getUserUsername(msg.sender)));
+    }
+
+    function refundMoneyForUser(bytes32 _username) {
+        require(!data.getUserVerified(msg.sender));
+
+        uint toSend = data.getTip(msg.sender, _username);
+        data.removeTip(msg.sender, _username);
+        msg.sender.transfer(toSend);
     }
 
 

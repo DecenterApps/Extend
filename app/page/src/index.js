@@ -1,5 +1,3 @@
-// import insertUpvoteDownvote from './components/UpvoteDownvote/insertUpvoteDownvote';
-import insertTipToAllPosts from './components/Tip/insertTipToAllPosts';
+import addTipToPostsAndComments from './components/Tip/addTipToPostsAndComments';
 
-insertTipToAllPosts();
-// insertTipToAllComments();
+addTipToPostsAndComments();

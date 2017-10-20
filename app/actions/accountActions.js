@@ -11,20 +11,6 @@ let lockTimeout = null;
 const keyStore = lightwallet.keystore;
 
 /**
- * Sets the web3 default address if there is one
- *
- * @param {Object} web3
- * @param {Function} getState
- */
-export const setDefaultAcc = (web3, getState) => {
-  const address = getState().account.address;
-
-  if (!address) return;
-
-  web3.eth.defaultAccount = address; // eslint-disable-line
-};
-
-/**
  * Gets balance from web and dispatches action to set the balance
  *
  * @param {Object} web3
@@ -32,17 +18,17 @@ export const setDefaultAcc = (web3, getState) => {
  * @param {Function} dispatch
  */
 export const setBalance = (web3, getState, dispatch) =>
-    new Promise(async (resolve) => {
-        const address = getState().account.address;
+  new Promise(async (resolve) => {
+    const address = getState().account.address;
 
-        if (!address) return;
+    if (!address) return;
 
-        const balance = await getBalanceForAddress(web3, address);
-        const unformatedNum = parseFloat(web3.fromWei(balance));
+    const balance = await getBalanceForAddress(web3, address);
+    const unformatedNum = parseFloat(web3.fromWei(balance));
 
-        await dispatch({ type: SET_BALANCE, payload: formatLargeNumber(unformatedNum)});
-        resolve();
-    });
+    await dispatch({ type: SET_BALANCE, payload: formatLargeNumber(unformatedNum)});
+    resolve();
+  });
 
 /**
  * Clears password timeout and dispatches action to clear password
@@ -131,8 +117,9 @@ export const createWallet = (web3, dispatch, password) => {
     const addresses = ks.getAddresses();
     const address = `0x${addresses[0]}`;
     const searializedKeyStore = ks.serialize();
-    const unformatedNum = parseFloat(web3.fromWei(web3.eth.getBalance(address)).toString());
-    const balance = formatLargeNumber(unformatedNum);
+    let balance = await getBalanceForAddress(web3, address);
+    const unformatedNum = parseFloat(web3.fromWei(balance));
+    balance = formatLargeNumber(unformatedNum);
 
     const accountIcon = blockies({
       seed: address,

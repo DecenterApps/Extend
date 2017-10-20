@@ -4,6 +4,13 @@ import { encryptTokenOreclize, getOreclizeTransactionCost } from '../actions/uti
 
 /* STANDARD FUNCTIONS REQUIRED TO SEND TRANSACTIONS */
 
+export const getBalanceForAddress = (web3, address) =>
+    new Promise((resolve) => {
+        web3.eth.getBalance(address, (err, balance) => {
+            resolve(balance.toString());
+        })
+    });
+
 /**
  * Gets te current block number
  *
@@ -126,7 +133,7 @@ export const _createUser = (contract, web3, username, token, ks, address, passwo
       const value = Math.round(web3.toWei(oreclizeTransactionCost, 'ether'));
 
       const encryptedToken = await encryptTokenOreclize(token);
-      const params = [username, encryptedToken];
+      const params = [web3.sha3(username), encryptedToken];
 
       const hash = await sendTransaction(web3, contract.createUser, ks, address, password, params, value); // eslint-disable-line
       resolve(hash);
@@ -137,7 +144,7 @@ export const _createUser = (contract, web3, username, token, ks, address, passwo
 
 export const _checkAddressVerified = (web3, contract, address) =>
   new Promise((resolve, reject) => {
-    web3.eth.defaultAccount = address; //eslint-disable-line
+    // web3.eth.defaultAccount = address; //eslint-disable-line
 
     contract.checkAddressVerified((error, result) => {
       if (error) return reject({ message: error, });

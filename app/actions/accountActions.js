@@ -5,7 +5,7 @@ import {
 } from '../constants/actionTypes';
 import { LOCK_INTERVAL } from '../constants/general';
 import { isJson, formatLargeNumber } from '../actions/utils';
-import { _checkAddressVerified } from '../modules/ethereumService';
+import { _checkAddressVerified, getBalanceForAddress } from '../modules/ethereumService';
 
 let lockTimeout = null;
 const keyStore = lightwallet.keystore;
@@ -31,15 +31,18 @@ export const setDefaultAcc = (web3, getState) => {
  * @param {Function} getState
  * @param {Function} dispatch
  */
-export const setBalance = (web3, getState, dispatch) => {
-  const address = getState().account.address;
+export const setBalance = (web3, getState, dispatch) =>
+    new Promise(async (resolve) => {
+        const address = getState().account.address;
 
-  if (!address) return;
+        if (!address) return;
 
-  const unformatedNum = parseFloat(web3.fromWei(web3.eth.getBalance(address)).toString());
+        const balance = await getBalanceForAddress(web3, address);
+        const unformatedNum = parseFloat(web3.fromWei(balance));
 
-  dispatch({ type: SET_BALANCE, payload: formatLargeNumber(unformatedNum) });
-};
+        await dispatch({ type: SET_BALANCE, payload: formatLargeNumber(unformatedNum)});
+        resolve();
+    });
 
 /**
  * Clears password timeout and dispatches action to clear password

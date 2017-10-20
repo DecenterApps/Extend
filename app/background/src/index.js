@@ -1,11 +1,12 @@
 import createStore from '../../customRedux/createStore';
-import reducersData from './reducers/index';
+import combinedReducers from './reducers/index';
 import contractConfig from '../../modules/config.json';
 import * as userActions from '../../actions/userActions';
 import accountHandler from '../../handlers/accountActionsHandler';
 import dropdownHandler from '../../handlers/dropdownActionsHandler';
 import userHandler from '../../handlers/userActionsHandler';
 import formsHandler from '../../handlers/formsActionsHandler';
+import pageHandler from '../../handlers/pageHandler';
 import handleChangeNetwork from '../../modules/handleChangeNetwork';
 
 let appLoaded = null;
@@ -17,7 +18,7 @@ let web3 = null;
 let contract = null;
 
 const startApp = async () => {
-  store = await createStore(reducersData);
+  store = await createStore(combinedReducers);
   dispatch = store.dispatch;
   getState = store.getState;
 
@@ -26,13 +27,31 @@ const startApp = async () => {
     web3 = networkData.web3;
     contract = networkData.contract;
   } catch (err) {
-    console.error('COULD NOT CONNECT TO NETWORK');
     userActions.networkUnavailable(dispatch);
   }
 
   appLoaded = true;
 };
 
+startApp();
+
+/* Handles runtime messages that only need information back from background */
+chrome.runtime.onMessage.addListener((message, sender) => {
+  const tabId = sender.tab.id;
+
+  const funcName = message.action;
+  const handler = message.handler;
+  const payload = message.payload;
+
+  switch (handler) {
+    case 'page':
+      return pageHandler(web3, contract, getState, dispatch, funcName, payload, tabId);
+    default:
+      throw Error('Action Handler not defined', handler);
+  }
+});
+
+/* Handles port messages that change the state of the app */
 chrome.runtime.onConnect.addListener((port) => {
   port.onMessage.addListener(async (msg) => {
     if (!appLoaded) return false;
@@ -49,10 +68,10 @@ chrome.runtime.onConnect.addListener((port) => {
 
         web3 = networkData.web3;
         contract = networkData.contract;
-        return false;
+
+        return networkData;
       } catch (err) {
-        userActions.networkUnavailable(dispatch);
-        console.error('COULD NOT CONNECT TO NETWORK');
+        return userActions.networkUnavailable(dispatch);
       }
     }
 
@@ -70,5 +89,3 @@ chrome.runtime.onConnect.addListener((port) => {
     }
   });
 });
-
-startApp();

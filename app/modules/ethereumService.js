@@ -146,6 +146,15 @@ export const _checkAddressVerified = (web3, contract, address) =>
     });
   });
 
+export const _checkUsernameVerified = (web3, contract, username) =>
+  new Promise((resolve, reject) => {
+    contract.checkUsernameVerified(username, (error, result) => {
+      if (error) return reject({ message: error, });
+
+      return resolve(result);
+    });
+  });
+
 /* EVENT LISTENERS */
 export const verifiedUserEvent = async (web3, contract, callback) => {
   let latestBlock = 0;

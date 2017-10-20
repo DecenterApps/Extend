@@ -1,21 +1,21 @@
 import * as userActions from '../actions/userActions';
 import * as accountActions from '../actions/accountActions';
-import * as ZeroClientProvider from './ZeroClientProvider';
+import * as zeroClientProvider from './ZeroClientProvider';
 
 const handleChangeNetwork = (Web3, contractConfig, dispatch, getState) =>
   new Promise(async (resolve, reject) => {
     const state = getState();
 
     let web3 = new Web3(
-        ZeroClientProvider({
-            static: {
-                eth_syncing: false,
-                web3_clientVersion: 'ZeroClientProvider',
-            },
-            pollingInterval: 1,
-            rpcUrl: getState().user.selectedNetwork.url,
-            getAccounts: (cb) => new Promise((resolve) => { resolve(cb) })
-        })
+      zeroClientProvider({
+        static: {
+          eth_syncing: false,
+          web3_clientVersion: 'ZeroClientProvider',
+        },
+        pollingInterval: 1,
+        rpcUrl: getState().user.selectedNetwork.url,
+        getAccounts: (cb) => new Promise((resolveCb) => { resolveCb(cb); })
+      })
     );
 
     const contract = web3.eth.contract(contractConfig.abi).at(contractConfig.contractAddress);
@@ -42,6 +42,5 @@ const handleChangeNetwork = (Web3, contractConfig, dispatch, getState) =>
       reject(err);
     }
   });
-
 
 export default handleChangeNetwork;

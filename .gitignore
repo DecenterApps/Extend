@@ -4,3 +4,5 @@ yarn.lock
 build/
 node_modules/
 server/TSOTD.log
+server/vendor/
+server/composer.phar/

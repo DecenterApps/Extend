@@ -1,0 +1,15 @@
+{
+    "name": "decenter/reddapp",
+    "description": "Server to send PM to reddit user upon receiving a tip",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "nebojsa.urosevic",
+            "email": "nebojsa94urosevic@gmail.com"
+        }
+    ],
+    "require": {
+        "php-amqplib/php-amqplib": ">=2.6.1"
+    }
+}

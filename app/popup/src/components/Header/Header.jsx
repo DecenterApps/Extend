@@ -1,14 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import NetworkSelect from '../NetworkSelect/NetworkSelect';
 import { clearPasswordMessage } from '../../../../messages/accountActionMessages';
 
 import './header.scss';
 
 const Header = ({ password, generatedVault, copiedSeed }) => (
   <div styleName="header-wrapper">
-    <NetworkSelect />
-
     {
       generatedVault &&
       copiedSeed &&

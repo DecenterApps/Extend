@@ -20,8 +20,7 @@ const INITIAL_STATE = {
   verified: false,
   verifiedUsername: '',
   registeringUsername: '',
-  networks: NETWORKS,
-  selectedNetwork: NETWORKS[0],
+  selectedNetwork: NETWORKS[2],
   sendingTip: false,
   sendingTipError: ''
 };

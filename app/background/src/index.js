@@ -43,21 +43,6 @@ chrome.runtime.onMessage.addListener(async (msg, sender) => {
   const handler = msg.handler;
   const payload = msg.payload;
 
-  if (funcName === 'selectNetwork') {
-    try {
-      await userActions.selectNetwork(dispatch, payload);
-
-      let networkData = await handleChangeNetwork(Web3, contractConfig, dispatch, getState);
-
-      web3 = networkData.web3;
-      contract = networkData.contract;
-
-      return networkData;
-    } catch (err) {
-      return userActions.networkUnavailable(dispatch);
-    }
-  }
-
   switch (handler) {
     case 'account':
       return accountHandler(web3, contract, getState, dispatch, funcName, payload);

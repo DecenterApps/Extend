@@ -1,13 +1,12 @@
 import React from 'react';
 import { render } from 'react-dom';
-import App from './components/App/App';
+import ModalRoot from './components/Modals/ModalRoot';
+import addTipToPostsAndComments from './components/Tip/addTipToPostsAndComments';
 
-const id = Math.random().toString(36).substring(2);
+addTipToPostsAndComments();
 
-const pageApp = document.createElement('div');
-pageApp.id = id;
-const pageAppInstance = document.body.appendChild(pageApp);
+const pageAppInstance = document.body.appendChild(document.createElement('div'));
 
 render(
-  <App id={id} />, pageAppInstance
+  <ModalRoot />, pageAppInstance
 );

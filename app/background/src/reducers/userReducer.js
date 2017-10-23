@@ -1,6 +1,7 @@
 import {
   SET_NETWORK, REGISTER_USER, REGISTER_USER_ERROR, VERIFIED_USER,
-  SELECT_NETWORK, ACCEPT_PRIVACY_NOTICE, NETWORK_UNAVAILABLE
+  SELECT_NETWORK, ACCEPT_PRIVACY_NOTICE, NETWORK_UNAVAILABLE,
+  SEND_TIP, SEND_TIP_SUCCESS, SEND_TIP_ERROR
 } from '../../../constants/actionTypes';
 import { NETWORKS } from '../../../constants/general';
 
@@ -20,7 +21,9 @@ const INITIAL_STATE = {
   verifiedUsername: '',
   registeringUsername: '',
   networks: NETWORKS,
-  selectedNetwork: NETWORKS[0]
+  selectedNetwork: NETWORKS[0],
+  sendingTip: false,
+  sendingTipError: ''
 };
 
 export const reducer = (state, action) => {
@@ -56,6 +59,19 @@ export const reducer = (state, action) => {
 
     case NETWORK_UNAVAILABLE:
       return { ...state, networkActive: false };
+
+    case SEND_TIP:
+      return { ...state, sendingTip: true };
+
+    case SEND_TIP_SUCCESS:
+      return { ...state, sendingTip: false, sendingTipError: '' };
+
+    case SEND_TIP_ERROR:
+      return {
+        ...state,
+        sendingTip: false,
+        sendingTipError: 'An error occurred while sending tip, please try again.'
+      };
 
     default:
       return false;

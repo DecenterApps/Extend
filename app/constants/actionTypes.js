@@ -30,3 +30,9 @@ export const SET_BALANCE = 'set_balance';
 
 // MODAL
 export const TOGGLE_MODAL = 'toggle_modal';
+
+// PAGE
+export const SEND_TIP = 'send_tip';
+export const SEND_TIP_ERROR = 'send_tip_error';
+export const SEND_TIP_SUCCESS = 'send_tip_success';
+

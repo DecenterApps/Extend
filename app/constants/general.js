@@ -1,4 +1,5 @@
 export const LOCK_INTERVAL = 1800000; // miliseconds
+export const weiPerEth = 1000000000000000000;
 
 export const NETWORKS = [
   {

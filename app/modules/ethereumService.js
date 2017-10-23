@@ -68,6 +68,24 @@ const getEncodedParams = (contractMethod, params) => {
 };
 
 /**
+ * Calculates gas needed to execute a contract function
+ *
+ * @param {Object} web3 - Function defined on the smart contract
+ * @param {Object} paramsObj
+ * @return {Promise}
+ */
+const estimateGas = (web3, paramsObj) =>
+  new Promise((resolve, reject) => {
+    const { to, data, value } = paramsObj;
+
+    web3.toHex(web3.eth.estimateGas({ to, data, value }, (err, gas) => {
+      if (err) reject(err);
+
+      resolve(gas);
+    }));
+  });
+
+/**
  * Sends a transaction to a contract
  *
  * @param {Object} web3
@@ -77,13 +95,15 @@ const getEncodedParams = (contractMethod, params) => {
  * @param {String} password
  * @param {Array} params
  * @param {Number} valueParam - amount of wei to send
+ * @param {Number} gasPriceParam
  * @return {Promise.<void>}
  */
 export const sendTransaction =
-  async (web3, contractMethod, ks, from, password, params, valueParam = 0) =>
+  async (web3, contractMethod, ks, from, password, params, valueParam = 0, gasPriceParam = 0) =>
     new Promise(async (resolve, reject) => {
       try {
         const value = web3.toHex(valueParam);
+        let gasPrice = gasPriceParam;
 
         const pwDerivedKey = await getPwDerivedKey(ks, password);
         const privateKey = new Buffer(getPrivateKey(ks, from, pwDerivedKey), 'hex');
@@ -91,8 +111,10 @@ export const sendTransaction =
         const { to, data } = getEncodedParams(contractMethod, params);
         const nonce = web3.toHex(await getNonceForAddress(web3, from));
 
-        const gasPrice = web3.toHex(await getGasPrice(web3));
-        const gas = web3.toHex(web3.eth.estimateGas({ to, data, value }));
+        if (gasPrice === 0) gasPrice = await getGasPrice(web3);
+
+        gasPrice = web3.toHex(gasPrice);
+        const gas = web3.toHex(await estimateGas(web3, { to, data, value }));
 
         let transactionParams = { from, to, data, gas, gasPrice, value, nonce };
 

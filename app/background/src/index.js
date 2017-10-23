@@ -36,59 +36,42 @@ const startApp = async () => {
 
 startApp();
 
-/* Handles action calls from content script */
-chrome.runtime.onMessage.addListener((message, sender) => {
-  const tabId = sender.tab.id;
+chrome.runtime.onMessage.addListener(async (msg, sender) => {
+  if (!appLoaded) return false;
 
-  const funcName = message.action;
-  const handler = message.handler;
-  const payload = message.payload;
+  const funcName = msg.action;
+  const handler = msg.handler;
+  const payload = msg.payload;
+
+  if (funcName === 'selectNetwork') {
+    try {
+      await userActions.selectNetwork(dispatch, payload);
+
+      let networkData = await handleChangeNetwork(Web3, contractConfig, dispatch, getState);
+
+      web3 = networkData.web3;
+      contract = networkData.contract;
+
+      return networkData;
+    } catch (err) {
+      return userActions.networkUnavailable(dispatch);
+    }
+  }
 
   switch (handler) {
+    case 'account':
+      return accountHandler(web3, contract, getState, dispatch, funcName, payload);
+    case 'dropdown':
+      return dropdownHandler(web3, contract, getState, dispatch, funcName, payload);
+    case 'user':
+      return userHandler(web3, contract, getState, dispatch, funcName, payload);
+    case 'forms':
+      return formsHandler(web3, contract, getState, dispatch, funcName, payload);
     case 'page':
-      return pageHandler(web3, contract, getState, dispatch, funcName, payload, tabId);
+      return pageHandler(web3, contract, getState, dispatch, funcName, payload, sender.tab.id);
     case 'modals':
       return modalsActionsHandler(web3, contract, getState, dispatch, funcName, payload);
     default:
       throw Error('Action Handler not defined', handler);
   }
-});
-
-/* Handles port messages that change the state of the app */
-chrome.runtime.onConnect.addListener((port) => {
-  port.onMessage.addListener(async (msg) => {
-    if (!appLoaded) return false;
-
-    const funcName = msg.action;
-    const handler = msg.handler;
-    const payload = msg.payload;
-
-    if (funcName === 'selectNetwork') {
-      try {
-        await userActions.selectNetwork(dispatch, payload);
-
-        let networkData = await handleChangeNetwork(Web3, contractConfig, dispatch, getState);
-
-        web3 = networkData.web3;
-        contract = networkData.contract;
-
-        return networkData;
-      } catch (err) {
-        return userActions.networkUnavailable(dispatch);
-      }
-    }
-
-    switch (handler) {
-      case 'account':
-        return accountHandler(web3, contract, getState, dispatch, funcName, payload);
-      case 'dropdown':
-        return dropdownHandler(web3, contract, getState, dispatch, funcName, payload);
-      case 'user':
-        return userHandler(web3, contract, getState, dispatch, funcName, payload);
-      case 'forms':
-        return formsHandler(web3, contract, getState, dispatch, funcName, payload);
-      default:
-        throw Error('Action Handler not defined', handler);
-    }
-  });
 });

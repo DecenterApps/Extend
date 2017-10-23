@@ -1,9 +1,9 @@
-const HANDLER_NAME = 'page';
+const pm = (actionParam) => {
+  let action = actionParam;
+  action.handler = 'page';
+  chrome.runtime.sendMessage(action);
+};
 
 export const checkIfUsernameVerifiedMessage = (username, index, type) => {
-  chrome.runtime.sendMessage('', {
-    handler: HANDLER_NAME,
-    action: 'checkIfUsernameVerified',
-    payload: { username, index, type }
-  });
+  pm({ action: 'checkIfUsernameVerified', payload: { username, index, type } });
 };

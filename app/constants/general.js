@@ -1,4 +1,3 @@
-export const STORE_PORT = 'eth_extension';
 export const LOCK_INTERVAL = 1800000; // miliseconds
 
 export const NETWORKS = [

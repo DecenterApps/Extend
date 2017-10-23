@@ -1,11 +1,7 @@
-import { STORE_PORT } from '../constants/general';
-
-const port = chrome.runtime.connect('', { name: STORE_PORT });
-
 const pm = (actionParam) => {
   let action = actionParam;
   action.handler = 'forms';
-  port.postMessage(action);
+  chrome.runtime.sendMessage(action);
 };
 
 export const addFormMessage = (payload) => {

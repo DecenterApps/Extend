@@ -8,6 +8,7 @@ import userHandler from '../../handlers/userActionsHandler';
 import formsHandler from '../../handlers/formsActionsHandler';
 import pageHandler from '../../handlers/pageHandler';
 import handleChangeNetwork from '../../modules/handleChangeNetwork';
+import modalsActionsHandler from '../../handlers/modalsActionsHandler';
 
 let appLoaded = null;
 
@@ -35,7 +36,7 @@ const startApp = async () => {
 
 startApp();
 
-/* Handles runtime messages that only need information back from background */
+/* Handles action calls from content script */
 chrome.runtime.onMessage.addListener((message, sender) => {
   const tabId = sender.tab.id;
 
@@ -46,6 +47,8 @@ chrome.runtime.onMessage.addListener((message, sender) => {
   switch (handler) {
     case 'page':
       return pageHandler(web3, contract, getState, dispatch, funcName, payload, tabId);
+    case 'modals':
+      return modalsActionsHandler(web3, contract, getState, dispatch, funcName, payload);
     default:
       throw Error('Action Handler not defined', handler);
   }

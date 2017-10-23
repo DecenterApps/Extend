@@ -27,3 +27,6 @@ export const CLEAR_PASSWORD = 'clear_password';
 export const UNLOCK = 'unlock';
 export const UNLOCK_ERROR = 'unlock_error';
 export const SET_BALANCE = 'set_balance';
+
+// MODAL
+export const TOGGLE_MODAL = 'toggle_modal';

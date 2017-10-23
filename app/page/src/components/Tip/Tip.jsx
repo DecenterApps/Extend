@@ -1,9 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { toggleModalMessage } from '../../../../messages/modalsActionsMessages';
+
+const openTipModal = () => {
+  toggleModalMessage('example_modal', {}, true);
+};
 
 const Tip = ({ author, isVerified }) => (
   <span>
-    <button>{ isVerified ? 'Tip' : 'Tip unverified' }</button>
+    <button onClick={openTipModal}>{ isVerified ? 'Tip' : 'Tip unverified' }</button>
   </span>
 );
 

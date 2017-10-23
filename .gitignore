@@ -1,7 +1,7 @@
 yarn.lock
 .DS_Store
 .idea/
-build/
+.build/*
 node_modules/
 server/TSOTD.log
 server/vendor/

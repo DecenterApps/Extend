@@ -5,6 +5,12 @@
   visibility: hidden;
   top: 0;
   opacity: 0;
-  transition: opacity 2s;
+  transition: opacity 0.15s;
   z-index: 100000;
+
+  &.open {
+    visibility: visible;
+    opacity: 1;
+    background: rgba(0,0,0, 0.5);
+  }
 }

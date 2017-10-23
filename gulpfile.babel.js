@@ -3,11 +3,11 @@ import loadPlugins from 'gulp-load-plugins';
 import webpack from 'webpack';
 import rimraf from 'rimraf';
 
-const plugins = loadPlugins();
-
 import popupWebpackConfig from './app/popup/webpack.config';
 import eventWebpackConfig from './app/background/webpack.config';
 import contentWebpackConfig from './app/page/webpack.config';
+
+const plugins = loadPlugins();
 
 gulp.task('popup-js', ['clean'], (cb) => {
   webpack(popupWebpackConfig, (err, stats) => {
@@ -39,20 +39,17 @@ gulp.task('content-js', ['clean'], (cb) => {
   });
 });
 
-gulp.task('copy-manifest', ['clean'], () => {
-  return gulp.src('manifest.json')
-    .pipe(gulp.dest('./build'));
-});
+gulp.task('copy-manifest', ['clean'], () => (
+  gulp.src('manifest.json').pipe(gulp.dest('./build'))
+));
 
-gulp.task('copy-jquery', ['clean'], () => {
-  return gulp.src('./app/modules/jquery-slim.js')
-    .pipe(gulp.dest('./build'));
-});
+gulp.task('copy-jquery', ['clean'], () => (
+  gulp.src('./app/modules/jquery-slim.js').pipe(gulp.dest('./build'))
+));
 
-gulp.task('copy-web3', ['clean'], () => {
-  return gulp.src('./app/modules/web3.js')
-    .pipe(gulp.dest('./build'));
-});
+gulp.task('copy-web3', ['clean'], () => (
+  gulp.src('./app/modules/web3.js').pipe(gulp.dest('./build'))
+));
 
 gulp.task('clean', (cb) => {
   rimraf('./build', cb);

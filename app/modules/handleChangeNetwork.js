@@ -19,14 +19,17 @@ const handleChangeNetwork = (Web3, contractConfig, dispatch, getState) =>
         })
       );
 
-      const contract = web3.eth.contract(contractConfig.abi).at(contractConfig.contractAddress);
+      const eventsContract = web3.eth.contract(contractConfig.events.abi).at(contractConfig.events.contractAddress);
+      const funcContract = web3.eth.contract(contractConfig.func.abi).at(contractConfig.func.contractAddress);
 
-      const isVeriied = await accountActions.checkAddressVerified(web3, contract, getState);
+      const contracts = { events: eventsContract, func: funcContract };
 
-      if (isVeriied) {
+      const isVerified = await accountActions.checkAddressVerified(web3, contracts.func, getState);
+
+      if (isVerified) {
         userActions.verifiedUser(dispatch);
-      } else if (!isVeriied && state.user.registering && !state.user.verifiedUsername) {
-        userActions.listenForVerifiedUser(web3, contract, dispatch, getState);
+      } else if (!isVerified && state.user.registering && !state.user.verifiedUsername) {
+        userActions.listenForVerifiedUser(web3, contracts.event, dispatch, getState);
       }
 
       await userActions.setNetwork(web3, dispatch); // TODO remove this
@@ -37,7 +40,7 @@ const handleChangeNetwork = (Web3, contractConfig, dispatch, getState) =>
       if (state.account.address) accountActions.pollForBalance(web3, dispatch, state.account.address);
       if (state.account.password) accountActions.passwordReloader(dispatch);
 
-      resolve({ web3, contract });
+      resolve({ web3, contracts });
     } catch(err) {
       reject(err);
     }

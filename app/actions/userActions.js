@@ -94,7 +94,7 @@ export const verifiedUser = (dispatch) => {
  * Listens for new verified users and checks if the current user is verified
  *
  * @param {Object} web3
- * @param {Object} contract
+ * @param {Object} contract - event contract
  * @param {Function} dispatch
  * @param {Function} getState
  */
@@ -113,12 +113,12 @@ export const listenForVerifiedUser = (web3, contract, dispatch, getState) => {
  * Opens Reddit oauth window and receives user access_token. Access_token and
  * user address are sent to the contract
  *
- * @param {Object} contract
+ * @param {Array} contracts
  * @param {Object} web3
  * @param {Function} getState
  * @param {Function} dispatch
  */
-export const createUserAuth = (contract, web3, getState, dispatch) => {
+export const createUserAuth = (contracts, web3, getState, dispatch) => {
   const redirectUri = chrome.identity.getRedirectURL('oauth2');
   const account = getState().account;
   const ks = keyStore.deserialize(account.keyStore);
@@ -149,10 +149,10 @@ export const createUserAuth = (contract, web3, getState, dispatch) => {
         return;
       }
 
-      await _createUser(contract, web3, me.name, accessToken, ks, address, password);
+      await _createUser(contracts.func, web3, me.name, accessToken, ks, address, password);
       await dispatch({ type: REGISTER_USER, payload: me.name });
 
-      listenForVerifiedUser(web3, contract, dispatch, getState);
+      listenForVerifiedUser(web3, contracts.event, dispatch, getState);
     } catch (err) {
       dispatch({ type: REGISTER_USER_ERROR });
     }

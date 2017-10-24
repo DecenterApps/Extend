@@ -232,9 +232,9 @@ export const copiedSeed = (dispatch) => {
 
 /**
  *
- * @param web3
- * @param contract
- * @param getState
+ * @param {Object} web3
+ * @param {Object} contract - func contract
+ * @param {Function} getState
  * @return {Promise.<void>}
  */
 export const checkAddressVerified = (web3, contract, getState) =>

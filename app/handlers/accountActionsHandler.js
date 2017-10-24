@@ -1,6 +1,6 @@
 import * as accountActions from '../actions/accountActions';
 
-const accountActionsHandler = (web3, contract, getState, dispatch, funcName, payload) => {
+const accountActionsHandler = (web3, contracts, getState, dispatch, funcName, payload) => {
   switch (funcName) {
     case 'createWallet':
       return accountActions[funcName](web3, dispatch, payload);

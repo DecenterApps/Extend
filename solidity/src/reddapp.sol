@@ -55,6 +55,9 @@ contract Reddapp is usingOraclize {
         events.verifiedUser(_result);
     }
 
+    function getOraclizePrice() public constant returns (uint) {
+        return oraclize_getPrice("computation");
+    }
 
     /**
      * Creates user with username and address

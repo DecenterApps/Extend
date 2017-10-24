@@ -15,3 +15,7 @@ export const selectedNetworkMessage = (index) => {
   pm({ action: 'selectNetwork', payload: index });
   toggleDropdownMessage(true, false);
 };
+
+export const setActiveTabMessage = (tabName) => {
+  pm({ action: 'setTab', payload: tabName });
+};

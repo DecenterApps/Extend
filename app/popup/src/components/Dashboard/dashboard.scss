@@ -2,7 +2,7 @@
 
   .account-info-wrapper {
     display: flex;
-    padding: 20px;
+    padding: 0 20px 20px 20px;
 
     img {
       width: 62px;
@@ -35,26 +35,5 @@
   .dashboard-content {
     padding: 20px;
     text-align: center;
-
-    .register-username {
-      font-size: 14px;
-    }
-  }
-
-  .info-wrapper {
-    padding: 10px;
-    border: 1px solid #72B4DC;
-    font-size: 16px;
-    background: #C6E4F4;
-    line-height: 20px;
-  }
-
-  .error-wrapper {
-    padding: 10px;
-    border: 1px solid #B67675;
-    font-size: 16px;
-    background: #EAC1BD;
-    line-height: 20px;
-    margin-bottom: 25px;
   }
 }

@@ -33,3 +33,5 @@ export const NETWORKS = [
     color: '#777'
   }
 ];
+
+export const TABS = ['Verify', 'Send', 'Withdraw', 'Sent', 'Received'];

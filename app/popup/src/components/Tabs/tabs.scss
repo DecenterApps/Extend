@@ -1,0 +1,30 @@
+.tabs {
+  display: flex;
+  width: 100%;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+  list-style-type: none;
+
+  li {
+    line-height: 38px;
+    padding: 0;
+    flex-grow: 1;
+  }
+
+  span {
+    background-color: #eff0f2;
+    border-bottom: 1px solid #fff;
+    color: #888;
+    font-weight: 500;
+    display: block;
+    letter-spacing: 0;
+    transition: all 0.2s ease-in-out;
+    border-bottom: 2px solid blue;
+
+    &.active {
+      color: #fff;
+      background: blue;
+    }
+  }
+}

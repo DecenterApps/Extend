@@ -5,6 +5,7 @@ export const SET_NETWORK = 'set_network';
 export const REGISTER_USER = 'register_user';
 export const REGISTER_USER_ERROR = 'register_user_error';
 export const VERIFIED_USER = 'verified_user';
+export const SET_ACTIVE_TAB = 'set_active_tab';
 
 export const SET_IS_USER_VERIFIED = 'set_is_user_verified';
 

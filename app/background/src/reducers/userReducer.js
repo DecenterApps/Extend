@@ -1,9 +1,9 @@
 import {
   SET_NETWORK, REGISTER_USER, REGISTER_USER_ERROR, VERIFIED_USER,
   SELECT_NETWORK, ACCEPT_PRIVACY_NOTICE, NETWORK_UNAVAILABLE,
-  SEND_TIP, SEND_TIP_SUCCESS, SEND_TIP_ERROR
+  SEND_TIP, SEND_TIP_SUCCESS, SEND_TIP_ERROR, SET_ACTIVE_TAB
 } from '../../../constants/actionTypes';
-import { NETWORKS } from '../../../constants/general';
+import { NETWORKS, TABS } from '../../../constants/general';
 
 export const reducerName = 'user';
 
@@ -22,7 +22,8 @@ const INITIAL_STATE = {
   registeringUsername: '',
   selectedNetwork: NETWORKS[2],
   sendingTip: false,
-  sendingTipError: ''
+  sendingTipError: '',
+  activeTab: TABS[0]
 };
 
 export const reducer = (state, action) => {
@@ -55,6 +56,9 @@ export const reducer = (state, action) => {
 
     case SELECT_NETWORK:
       return { ...state, selectedNetwork: NETWORKS[payload] };
+
+    case SET_ACTIVE_TAB:
+      return { ...state, activeTab: payload };
 
     case NETWORK_UNAVAILABLE:
       return { ...state, networkActive: false };

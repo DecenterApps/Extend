@@ -2,13 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import connect from '../../../../customRedux/connect';
 import { getEtherScanLinkByNetwork } from '../../../../actions/utils';
-import { createUserAuthMessage } from '../../../../messages/userActionsMessages';
+import Tabs from '../Tabs/Tabs';
 
 import './dashboard.scss';
 
-const Dashboard = ({
-  address, accountIcon, network, balance, registering, registeringError, registeringUsername
-}) => (
+const Dashboard = ({ address, accountIcon, network, balance }) => (
   <div styleName="dashboard-wrapper">
     <div styleName="account-info-wrapper">
       <img src={accountIcon} alt="Account icon" />
@@ -38,25 +36,7 @@ const Dashboard = ({
     </div>
 
     <div styleName="dashboard-content">
-      {
-        registeringError &&
-        !registering &&
-        <div styleName="error-wrapper">
-          { registeringError }
-        </div>
-      }
-      {
-        !registering &&
-        <button onClick={createUserAuthMessage} styleName="register-username">
-          Register Reddit username
-        </button>
-      }
-      {
-        registering &&
-        <div styleName="info-wrapper">
-          We are verifying your Reddit username: { registeringUsername }. Awaiting confirmation.
-        </div>
-      }
+      <Tabs />
     </div>
   </div>
 );
@@ -65,10 +45,7 @@ Dashboard.propTypes = {
   address: PropTypes.string.isRequired,
   accountIcon: PropTypes.string.isRequired,
   network: PropTypes.string.isRequired,
-  balance: PropTypes.string.isRequired,
-  registeringError: PropTypes.string.isRequired,
-  registering: PropTypes.bool.isRequired,
-  registeringUsername: PropTypes.string.isRequired
+  balance: PropTypes.string.isRequired
 };
 
 const mapStateToProps = (state) => ({

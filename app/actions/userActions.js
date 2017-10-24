@@ -3,7 +3,7 @@ import { getParameterByName } from '../actions/utils';
 import { verifiedUserEvent, _createUser } from '../modules/ethereumService';
 import {
   SET_NETWORK, SELECT_NETWORK, ACCEPT_PRIVACY_NOTICE, NETWORK_UNAVAILABLE,
-  REGISTER_USER, VERIFIED_USER, REGISTER_USER_ERROR
+  REGISTER_USER, VERIFIED_USER, REGISTER_USER_ERROR, SET_ACTIVE_TAB
 } from '../constants/actionTypes';
 
 const keyStore = lightwallet.keystore;
@@ -69,6 +69,16 @@ export const selectNetwork = (dispatch, index) =>
  */
 export const acceptPrivacyNotice = (dispatch) => {
   dispatch({ type: ACCEPT_PRIVACY_NOTICE });
+};
+
+/**
+ * Dispatches action to set the current active content tab
+ *
+ * @param {Function} dispatch
+ * @param {String} selectedTab
+ */
+export const setTab = (dispatch, selectedTab) => {
+  dispatch({ type: SET_ACTIVE_TAB, payload: selectedTab });
 };
 
 /**

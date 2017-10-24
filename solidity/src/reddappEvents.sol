@@ -44,8 +44,8 @@ contract ReddappEvents {
         VerifiedUser(_username);
     }
 
-    function userTipped(address _from, bytes32 _username, uint _val) {
-        UserTipped(_from, _username, _val);
+    function userTipped(address _from, string _username, uint _val) {
+        UserTipped(_from, keccak256(_username), _val);
     }
 
     function withdrawSuccessful(string _username) {

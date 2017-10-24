@@ -1,6 +1,6 @@
 {
-  "contractAddress": "0x6876AA245B3d8a0b931C5E94E5BAFDC8AA626308",
-  "startingBlock": 4349623,
+  "contractAddress": "0xf2b01B8EB43558A3dbf40D4Ff96B6dE3a829dE2B",
+  "startingBlock": 4447379,
   "abi": [
     {
       "constant": true,
@@ -20,7 +20,7 @@
       "constant": true,
       "inputs": [
         {
-          "name": "username",
+          "name": "_username",
           "type": "string"
         }
       ],
@@ -39,11 +39,11 @@
       "constant": false,
       "inputs": [
         {
-          "name": "myid",
+          "name": "_myid",
           "type": "bytes32"
         },
         {
-          "name": "result",
+          "name": "_result",
           "type": "string"
         }
       ],
@@ -88,7 +88,7 @@
       "constant": true,
       "inputs": [
         {
-          "name": "username",
+          "name": "_username",
           "type": "string"
         }
       ],
@@ -107,7 +107,7 @@
       "constant": false,
       "inputs": [
         {
-          "name": "username",
+          "name": "_username",
           "type": "string"
         }
       ],
@@ -121,11 +121,11 @@
       "constant": false,
       "inputs": [
         {
-          "name": "username",
+          "name": "_username",
           "type": "string"
         },
         {
-          "name": "token",
+          "name": "_token",
           "type": "string"
         }
       ],
@@ -139,7 +139,7 @@
       "constant": false,
       "inputs": [
         {
-          "name": "data",
+          "name": "_data",
           "type": "bytes32"
         }
       ],
@@ -166,6 +166,20 @@
       ],
       "payable": false,
       "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_username",
+          "type": "bytes32"
+        }
+      ],
+      "name": "refundMoneyForUser",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
       "type": "function"
     },
     {

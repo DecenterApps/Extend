@@ -71,18 +71,16 @@ const getEncodedParams = (contractMethod, params) => {
  * Calculates gas needed to execute a contract function
  *
  * @param {Object} web3 - Function defined on the smart contract
- * @param {Object} paramsObj
+ * @param {Object} paramsObj - to, data, value
  * @return {Promise}
  */
 const estimateGas = (web3, paramsObj) =>
   new Promise((resolve, reject) => {
-    const { to, data, value } = paramsObj;
-
-    web3.toHex(web3.eth.estimateGas({ to, data, value }, (err, gas) => {
+    web3.eth.estimateGas(paramsObj, (err, gas) => {
       if (err) reject(err);
 
       resolve(gas);
-    }));
+    });
   });
 
 /**

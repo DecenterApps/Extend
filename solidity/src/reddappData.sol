@@ -1,4 +1,4 @@
-pragma solidity ^0.4.16;
+pragma solidity ^0.4.17;
 
 contract ReddappData {
     
@@ -15,6 +15,7 @@ contract ReddappData {
     mapping(bytes32 => address) usernameToAddress;
     mapping(bytes32 => address) queryToAddress;
     mapping(address => mapping(bytes32 => uint)) tips;
+    mapping(address => mapping(bytes32 => uint)) lastTip;
     mapping(bytes32 => uint) balances;
     mapping(address => User) users;   
     mapping(address => bool) owners;
@@ -48,7 +49,11 @@ contract ReddappData {
     function getTip(address _from, bytes32 _to) public constant returns (uint) {
         return tips[_from][_to];
     }
-    
+  
+    function getLastTipTime(address _from, bytes32 _to) public constant returns (uint) {
+        return lastTip[_from][_to];
+    }
+
     //setters
     function setQueryIdForAddress(bytes32 _queryId, address _address) public onlyOwners {
         queryToAddress[_queryId] = _address;
@@ -65,6 +70,7 @@ contract ReddappData {
     function addTip(address _from, bytes32 _to, uint _tip) public onlyOwners {
         tips[_from][_to] += _tip;
         balances[_to] += _tip;
+        lastTip[_from][_to] = now;     
     }
 
     function addUser(address _address, bytes32 _username) public onlyOwners {

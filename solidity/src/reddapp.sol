@@ -1,25 +1,37 @@
+pragma solidity ^0.4.17;
+
+import './reddappData.sol';
+import './oraclize.sol';
+import './reddappEvents.sol';
+
 contract Reddapp is usingOraclize {
 
     event Log(string tekst);
-    event LogQuery(bytes32 query, address userAddress);
-    event LogBalance(uint balance);
-    event LogNeededBalance(uint balance);
-    event CreatedUser(string username);
-    event UsernameDoesNotMatch(string username, string neededUsername);
-    event VerifiedUser(string username);
-    event UserTipped(string username);
-    event WithdrawSuccessful(string username);
-    
+    event CheckAddressVerified(address userAddress);
+
     modifier onlyVerified() {
         require(data.getUserVerified(msg.sender));
         _;
     }
 
     ReddappData data;
+    ReddappEvents events;
 
-    function Reddapp(ReddappData _data) {
-        data = ReddappData(_data);
+    function Reddapp() public {
+        data = new ReddappData();
+        data.addOwner(msg.sender);
+        events = new ReddappEvents();
+        events.addOwner(msg.sender);
     } 
+
+    function getDataAddress() public constant returns (address) {
+        return data;
+    }
+
+    function getEventsAddress() public constant returns (address) {
+        return address(events);
+    }
+    
 
     /**
      * Function called when API gets results
@@ -34,13 +46,13 @@ contract Reddapp is usingOraclize {
         string memory usernameForAddress = bytes32ToString(data.getUserUsername(queryAddress));
         //if we don't do this double conversion for some reason strCompare is not working
         if (strCompare(usernameForAddress, bytes32ToString(stringToBytes32(_result))) != 0) {
-            UsernameDoesNotMatch(_result, usernameForAddress);
+            events.usernameDoesNotMatch(_result, usernameForAddress);
             return;
         }
 
         data.setVerified(queryAddress);
         data.setUsernameForAddress(stringToBytes32(_result), queryAddress);
-        VerifiedUser(_result);
+        events.verifiedUser(_result);
     }
 
 
@@ -49,7 +61,7 @@ contract Reddapp is usingOraclize {
      * @param _username reddit username from user
      * @param _token reddit oauth access token (should be encrypted with oraclize public key)
      */
-    function createUser(string _username, string _token) payable {
+    function createUser(string _username, string _token) public payable {
         //TODO: what happens if user with that address exists (verified or not)
         //TODO: what happens if that username is already registered with another address
 
@@ -57,8 +69,8 @@ contract Reddapp is usingOraclize {
 
         if (oraclize_getPrice("computation") > this.balance) {
             Log("Oraclize query was NOT sent, please add some ETH to cover for the query fee");
-            LogBalance(this.balance);
-            LogNeededBalance(oraclize_getPrice("computation"));
+            events.logBalance(this.balance);
+            events.logNeededBalance(oraclize_getPrice("computation"));
             return;
         } 
         
@@ -66,8 +78,8 @@ contract Reddapp is usingOraclize {
         bytes32 queryId = oraclize_query("nested", queryString);
         data.setQueryIdForAddress(queryId, msg.sender);
 
-        LogQuery(queryId, msg.sender);
-        CreatedUser(_username);
+        events.logQuery(queryId, msg.sender);
+        events.createdUser(_username);
     }
 
 
@@ -75,27 +87,25 @@ contract Reddapp is usingOraclize {
      * Tip user for his post/comment 
      * @param _username reddit username for user
      */
-    function tipUser(string _username) payable {
-        require(data.getUserVerified(data.getAddressForUsername(stringToBytes32(_username))));
-        
+    function tipUser(string _username) public payable {   
         data.addTip(msg.sender, stringToBytes32(_username), msg.value);
 
-        UserTipped(_username);
+        events.userTipped(msg.sender, _username, msg.value);
     }
 
     /**
      * Withdraw collected eth 
      */
-    function withdraw() onlyVerified {
+    function withdraw() public onlyVerified {
         uint toSend = data.getBalanceForUser(data.getUserUsername(msg.sender));
         data.setBalanceForUser(data.getUserUsername(msg.sender), 0);
         msg.sender.transfer(toSend);
 
-        WithdrawSuccessful(bytes32ToString(data.getUserUsername(msg.sender)));
+        events.withdrawSuccessful(bytes32ToString(data.getUserUsername(msg.sender)));
     }
 
-    function refundMoneyForUser(bytes32 _username) {
-        require(!data.getUserVerified(msg.sender));
+    function refundMoneyForUser(bytes32 _username) public {
+        require(data.getLastTipTime(msg.sender, _username) < (now - 2 weeks));
 
         uint toSend = data.getTip(msg.sender, _username);
         data.removeTip(msg.sender, _username);
@@ -103,20 +113,25 @@ contract Reddapp is usingOraclize {
     }
 
 
-    function getAddressFromUsername(string _username) constant returns (address userAddress) {
+    function getAddressFromUsername(string _username) public constant returns (address userAddress) {
         return data.getAddressForUsername(stringToBytes32(_username));
     }
 
-    function checkAddressVerified() constant returns (bool) {
+    function checkAddressVerified() public constant returns (bool) {
+        CheckAddressVerified(msg.sender);
         return data.getUserVerified(msg.sender);
     }
 
-    function checkUsernameVerified(string _username) constant returns (bool) {
+    function checkUsernameVerified(string _username) public constant returns (bool) {
         return data.getUserVerified(data.getAddressForUsername(stringToBytes32(_username)));
     }
 
-    function checkBalance() onlyVerified constant returns (uint) {
+    function checkBalance() public onlyVerified constant returns (uint) {
         return data.getBalanceForUser(data.getUserUsername(msg.sender));
+    }
+
+    function checkIfRefundAvailable(bytes32 _username) public constant returns (bool) {
+        return data.getLastTipTime(msg.sender, _username) < (now - 2 weeks);
     }
 
     /**
@@ -143,6 +158,10 @@ contract Reddapp is usingOraclize {
         }
         
         return string(bytesString);
+    }
+
+    function () payable {
+        revert();
     }
 }
 

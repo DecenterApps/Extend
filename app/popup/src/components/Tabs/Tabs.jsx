@@ -4,6 +4,7 @@ import connect from '../../../../customRedux/connect';
 import { TABS } from '../../../../constants/general';
 import { setActiveTabMessage } from '../../../../messages/userActionsMessages';
 import RegisterUsername from '../RegisterUsername/RegisterUsername';
+import Send from '../Send/Send';
 
 import './tabs.scss';
 
@@ -31,6 +32,7 @@ const Tabs = ({ isVerified, activeTab }) => (
     </ul>
 
     { (activeTab === 'Verify') && <RegisterUsername /> }
+    { (activeTab === 'Send') && <Send /> }
   </div>
 );
 

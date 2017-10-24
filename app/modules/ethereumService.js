@@ -1,6 +1,7 @@
 import EthereumTx from 'ethereumjs-tx';
 import { getPwDerivedKey, getPrivateKey } from '../actions/accountActions';
 import { encryptTokenOreclize, getOreclizeTransactionCost } from '../actions/utils';
+import { CHANGE_TX_STATE } from '../constants/actionTypes';
 
 /* STANDARD FUNCTIONS REQUIRED TO SEND TRANSACTIONS */
 
@@ -30,7 +31,7 @@ export const getBlockNumber = (web3) =>
  *
  * @return {Promise}
  */
-const getGasPrice = (web3) =>
+export const getGasPrice = (web3) =>
   new Promise((resolve, reject) => {
     web3.eth.getGasPrice((error, gasPrice) => {
       if (error) reject(error);
@@ -46,7 +47,7 @@ const getGasPrice = (web3) =>
  * @param {String} address
  * @return {Promise}
  */
-const getNonceForAddress = (web3, address) =>
+export const getNonceForAddress = (web3, address) =>
   new Promise((resolve, reject) => {
     web3.eth.getTransactionCount(address, (error, nonce) => {
       if (error) reject(error);
@@ -70,7 +71,7 @@ const getEncodedParams = (contractMethod, params) => {
 /**
  * Calculates gas needed to execute a contract function
  *
- * @param {Object} web3 - Function defined on the smart contract
+ * @param {Object} web3
  * @param {Object} paramsObj - to, data, value
  * @return {Promise}
  */
@@ -81,6 +82,103 @@ const estimateGas = (web3, paramsObj) =>
 
       resolve(gas);
     });
+  });
+
+/**
+ * Gets transaction receipt for transaction hash
+ *
+ * @param {Object} web3
+ * @param {String} txHash
+ * @return {Promise}
+ */
+const getTransactionReceipt = (web3, txHash) =>
+  new Promise((resolve) => {
+    web3.eth.getTransactionReceipt(txHash, (err, result) => {
+      resolve(result);
+    });
+  });
+
+/**
+ * Polls for Tx receipt and then dispatches action to change tx state
+ *
+ * @param {Function} dispatch
+ * @param {Function} getState
+ * @param {Null/Object} result - return value from getTransactionReceipt
+ * @param {String} txHash
+ * @param {Number} intervalId
+ */
+const handleTransactionReceipt = (dispatch, getState, result, txHash, intervalId = null) => {
+  if (!result) return;
+  if (intervalId) clearInterval(intervalId);
+
+  const transactions = getState().account.transactions;
+  const txIndex = transactions.findIndex((tx) => tx.hash === txHash);
+
+  dispatch({ type: CHANGE_TX_STATE, payload: txIndex });
+};
+
+/**
+ * Polls for Tx receipt and then dispatches action to change tx state
+ *
+ * @param {Object} web3
+ * @param {Function} dispatch
+ * @param {Function} getState
+ * @param {String} txHash
+ */
+export const pollForReceipt = async (web3, dispatch, getState, txHash) => {
+  const result = await getTransactionReceipt(web3, txHash);
+  handleTransactionReceipt(dispatch, getState, result, txHash);
+
+  if (result) return;
+
+  const interval = setInterval(async () => {
+    const intervalResult = await getTransactionReceipt(web3, txHash);
+
+    handleTransactionReceipt(dispatch, getState, intervalResult, txHash, interval);
+  }, 1000);
+};
+
+/**
+ * transfers ETH to another address
+ *
+ * @param {Object} web3
+ * @param {String} from - sender address
+ * @param {String} to
+ * @param {Number} valueParam - amount of wei to send
+ * @param {Number} gasPriceParam
+ * @param {Object} ks
+ * @param {String} password
+ * @param {String} nonceParam
+ * @return {Promise.<void>}
+ */
+export const transfer = (web3, from, to, valueParam, gasPriceParam, ks, password, nonceParam) =>
+  new Promise(async (resolve, reject) => {
+    try {
+      const value = web3.toHex(valueParam);
+      let gasPrice = web3.toHex(gasPriceParam);
+
+      const pwDerivedKey = await getPwDerivedKey(ks, password);
+      const privateKey = new Buffer(getPrivateKey(ks, from, pwDerivedKey), 'hex');
+
+      const gas = web3.toHex(await estimateGas(web3, { to, value }));
+      const nonce = web3.toHex(nonceParam);
+
+      let transactionParams = { from, to, gas, gasPrice, value, nonce };
+
+      const tx = new EthereumTx(transactionParams);
+
+      tx.sign(privateKey);
+
+      const serializedTx = `0x${tx.serialize().toString('hex')}`;
+
+      web3.eth.sendRawTransaction(serializedTx, (error, transactionHash) => {
+        if (error) reject(error);
+
+        resolve(transactionHash);
+      });
+    } catch (err) {
+      reject(err);
+    }
   });
 
 /**

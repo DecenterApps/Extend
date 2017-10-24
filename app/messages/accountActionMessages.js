@@ -19,3 +19,7 @@ export const checkIfPasswordValidMessage = (fields) => {
 export const clearPasswordMessage = () => {
   pm({ action: 'clearPassword' });
 };
+
+export const sendMessage = () => {
+  pm({ action: 'send' });
+};

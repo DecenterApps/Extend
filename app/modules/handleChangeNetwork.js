@@ -31,6 +31,9 @@ const handleChangeNetwork = (Web3, contractConfig, dispatch, getState) =>
 
       await userActions.setNetwork(web3, dispatch); // TODO remove this
 
+      accountActions.pollForGasPrice(web3, dispatch);
+      accountActions.pollPendingTxs(web3, dispatch, getState);
+
       if (state.account.address) accountActions.pollForBalance(web3, dispatch, state.account.address);
       if (state.account.password) accountActions.passwordReloader(dispatch);
 

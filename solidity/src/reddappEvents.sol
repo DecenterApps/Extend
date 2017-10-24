@@ -9,7 +9,7 @@ contract ReddappEvents {
     event CreatedUser(string username);
     event UsernameDoesNotMatch(string username, string neededUsername);
     event VerifiedUser(string username);
-    event UserTipped(address from, string username, uint val);
+    event UserTipped(address from, bytes32 indexed username, uint val);
     event WithdrawSuccessful(string username);
     event CheckAddressVerified(address userAddress);
 
@@ -44,7 +44,7 @@ contract ReddappEvents {
         VerifiedUser(_username);
     }
 
-    function userTipped(address _from, string _username, uint _val) {
+    function userTipped(address _from, bytes32 _username, uint _val) {
         UserTipped(_from, _username, _val);
     }
 

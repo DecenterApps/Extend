@@ -87,8 +87,8 @@ contract Reddapp is usingOraclize {
      * Tip user for his post/comment 
      * @param _username reddit username for user
      */
-    function tipUser(string _username) public payable {   
-        data.addTip(msg.sender, stringToBytes32(_username), msg.value);
+    function tipUser(bytes32 _username) public payable {
+        data.addTip(msg.sender, _username, msg.value);
 
         events.userTipped(msg.sender, _username, msg.value);
     }

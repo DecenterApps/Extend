@@ -18,7 +18,7 @@ export const pollPendingTxs = (web3, dispatch, getState) => {
   const transactions = getState().account.transactions;
 
   transactions.forEach((transaction) => {
-    if (!transaction.status === 'pending') return;
+    if (transaction.status !== 'pending') return;
 
     pollForReceipt(web3, dispatch, getState, transaction.hash);
   });

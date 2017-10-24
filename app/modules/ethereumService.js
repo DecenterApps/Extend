@@ -138,6 +138,15 @@ export const pollForReceipt = async (web3, dispatch, getState, txHash) => {
   }, 1000);
 };
 
+export const getOraclizePrice = (contract) =>
+  new Promise((resolve, reject) => {
+    contract.getOraclizePrice({}, (err, result) => {
+      if (err) reject(err);
+
+      resolve(result);
+    });
+  });
+
 /**
  * transfers ETH to another address
  *
@@ -204,7 +213,7 @@ export const sendTransaction =
         const pwDerivedKey = await getPwDerivedKey(ks, password);
         const privateKey = new Buffer(getPrivateKey(ks, from, pwDerivedKey), 'hex');
 
-        const { to, data } = getEncodedParams(contractMethod, params);
+        let { to, data } = getEncodedParams(contractMethod, params);
         const nonce = web3.toHex(await getNonceForAddress(web3, from));
 
         if (gasPrice === 0) gasPrice = await getGasPrice(web3);
@@ -212,7 +221,12 @@ export const sendTransaction =
         gasPrice = web3.toHex(gasPrice);
         const gas = web3.toHex(await estimateGas(web3, { to, data, value }));
 
-        let transactionParams = { from, to, data, gas, gasPrice, value, nonce };
+        // Have to take in account that sometimes the default gas limit is wrong
+        let gasLimit = await estimateGas(web3, { to, data, value });
+        gasLimit *= 1.1;
+        gasLimit = web3.toHex(gasLimit);
+
+        let transactionParams = { from, to, data, gas, gasPrice, value, nonce, gasLimit };
 
         const tx = new EthereumTx(transactionParams);
 
@@ -235,7 +249,7 @@ export const sendTransaction =
 /**
  * Initiates the createUser method on the contract
  *
- * @param {Object} contract
+ * @param {Object} contract - func contract
  * @param {Object} web3
  * @param {String} username
  * @param {String} token
@@ -247,13 +261,13 @@ export const sendTransaction =
 export const _createUser = (contract, web3, username, token, ks, address, password) =>
   new Promise(async (resolve, reject) => {
     try {
-      const oreclizeTransactionCost = await getOreclizeTransactionCost();
-      const value = Math.round(web3.toWei(oreclizeTransactionCost, 'ether'));
+      const oreclizeTransactionCost = await getOraclizePrice(contract);
+      const value = oreclizeTransactionCost.toString();
 
       const encryptedToken = await encryptTokenOreclize(token);
-      const params = [web3.sha3(username), encryptedToken];
+      const params = [username, encryptedToken];
 
-      const hash = await sendTransaction(web3, contract.createUser, ks, address, password, params, value); // eslint-disable-line
+      const hash = await sendTransaction(web3, contract.createUser, ks, address, password, params, value);
       resolve(hash);
     } catch (err) {
       reject({ message: err });

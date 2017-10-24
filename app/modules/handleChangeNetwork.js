@@ -29,7 +29,7 @@ const handleChangeNetwork = (Web3, contractConfig, dispatch, getState) =>
       if (isVerified) {
         userActions.verifiedUser(dispatch);
       } else if (!isVerified && state.user.registering && !state.user.verifiedUsername) {
-        userActions.listenForVerifiedUser(web3, contracts.event, dispatch, getState);
+        userActions.listenForVerifiedUser(web3, contracts.events, dispatch, getState);
       }
 
       await userActions.setNetwork(web3, dispatch); // TODO remove this

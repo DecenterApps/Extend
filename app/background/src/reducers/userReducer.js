@@ -43,8 +43,10 @@ export const reducer = (state, action) => {
       return {
         ...state,
         registering: false,
+        verified: true,
         registeringUsername: '',
-        verifiedUsername: state.registeringUsername
+        verifiedUsername: state.registeringUsername,
+        activeTab: TABS[1]
       };
 
     case REGISTER_USER_ERROR:

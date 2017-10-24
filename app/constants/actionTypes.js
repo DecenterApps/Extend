@@ -28,6 +28,12 @@ export const CLEAR_PASSWORD = 'clear_password';
 export const UNLOCK = 'unlock';
 export const UNLOCK_ERROR = 'unlock_error';
 export const SET_BALANCE = 'set_balance';
+export const SET_GAS_PRICE = 'set_gas_price';
+export const ADD_TRANSACTION = 'add_transaction';
+export const SEND = 'send';
+export const SEND_ERROR = 'send_error';
+export const SEND_SUCCESS = 'send_success';
+export const CHANGE_TX_STATE = 'change_tx_state';
 
 // MODAL
 export const TOGGLE_MODAL = 'toggle_modal';

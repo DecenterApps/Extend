@@ -42,6 +42,7 @@ class TipForm extends Component {
           showErrorText
           placeholder="Transaction gas price"
           type="text"
+          value={this.props.gasPrice}
           wrapperClassName={formStyle['form-item-wrapper']}
           inputClassName={formStyle['form-item']}
           errorClassName={formStyle['form-item-error']}
@@ -74,10 +75,12 @@ TipForm.propTypes = {
   pristine: PropTypes.bool.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   sendingTip: PropTypes.bool.isRequired,
-  sendingTipError: PropTypes.string.isRequired
+  sendingTipError: PropTypes.string.isRequired,
+  gasPrice: PropTypes.number.isRequired,
 };
 
 const mapStateToProps = (state) => ({
+  gasPrice: state.account.gasPrice,
   sendingTipError: state.user.sendingTipError,
   sendingTip: state.user.sendingTip
 });

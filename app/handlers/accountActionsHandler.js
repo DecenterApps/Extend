@@ -1,6 +1,6 @@
 import * as accountActions from '../actions/accountActions';
 
-const accountActionsHandler = (web3, contract, getState, dispatch, funcName, payload) => {
+const accountActionsHandler = (web3, contracts, getState, dispatch, funcName, payload) => {
   switch (funcName) {
     case 'createWallet':
       return accountActions[funcName](web3, dispatch, payload);
@@ -12,6 +12,8 @@ const accountActionsHandler = (web3, contract, getState, dispatch, funcName, pay
       return accountActions[funcName](dispatch);
     case 'checkIfPasswordValid':
       return accountActions[funcName](getState, dispatch, payload);
+    case 'send':
+      return accountActions[funcName](web3, getState, dispatch);
 
     default:
       throw Error('Function in handler not defined', funcName);

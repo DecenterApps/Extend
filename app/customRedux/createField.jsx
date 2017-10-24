@@ -24,7 +24,7 @@ const createField = (WrappedComponent, formData) => {
       this.updateMergedProps();
     }
 
-    componentDidMount() {
+    componentWillMount() {
       this.updateMergedProps();
 
       this.meta.name = this.props.name;

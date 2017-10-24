@@ -11,24 +11,23 @@ let lockTimeout = null;
 const keyStore = lightwallet.keystore;
 
 /**
- * Gets balance from web and dispatches action to set the balance
+ * Checks the balance by using web3 every second and sets it if the value has changed
  *
  * @param {Object} web3
- * @param {Function} getState
  * @param {Function} dispatch
+ * @param {String} address
  */
-export const setBalance = (web3, getState, dispatch) =>
-  new Promise(async (resolve) => {
-    const address = getState().account.address;
+export const pollForBalance = (web3, dispatch, address) => {
+  let currentBalance = '';
+  setInterval(async () => {
+    const newBalance = await getBalanceForAddress(web3, address);
 
-    if (!address) return;
+    if (currentBalance === newBalance) return;
 
-    const balance = await getBalanceForAddress(web3, address);
-    const unformatedNum = parseFloat(web3.fromWei(balance));
-
-    await dispatch({ type: SET_BALANCE, payload: formatLargeNumber(unformatedNum)});
-    resolve();
-  });
+    currentBalance = newBalance;
+    dispatch({ type: SET_BALANCE, payload: web3.fromWei(newBalance) });
+  }, 1000);
+};
 
 /**
  * Clears password timeout and dispatches action to clear password
@@ -133,7 +132,8 @@ export const createWallet = (web3, dispatch, password) => {
       seed, password, address, keyStore: searializedKeyStore, accountIcon, balance
     };
 
-    dispatch({ type: CREATE_WALLET, payload });
+    await dispatch({ type: CREATE_WALLET, payload });
+    pollForBalance(web3, dispatch, address);
   });
 };
 

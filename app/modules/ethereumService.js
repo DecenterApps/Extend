@@ -5,11 +5,11 @@ import { encryptTokenOreclize, getOreclizeTransactionCost } from '../actions/uti
 /* STANDARD FUNCTIONS REQUIRED TO SEND TRANSACTIONS */
 
 export const getBalanceForAddress = (web3, address) =>
-    new Promise((resolve) => {
-        web3.eth.getBalance(address, (err, balance) => {
-            resolve(balance.toString());
-        })
+  new Promise((resolve) => {
+    web3.eth.getBalance(address, (err, balance) => {
+      resolve(balance.toString());
     });
+  });
 
 /**
  * Gets te current block number

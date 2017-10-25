@@ -34,6 +34,10 @@ export const SEND = 'send';
 export const SEND_ERROR = 'send_error';
 export const SEND_SUCCESS = 'send_success';
 export const CHANGE_TX_STATE = 'change_tx_state';
+export const WITHDRAW = 'withdraw';
+export const WITHDRAW_ERROR = 'withdraw_error';
+export const WITHDRAW_SUCCESS = 'withdraw_success';
+export const CLEAR_WITHDRAW_SUCCESS = 'clear_withdraw_success';
 
 // MODAL
 export const TOGGLE_MODAL = 'toggle_modal';

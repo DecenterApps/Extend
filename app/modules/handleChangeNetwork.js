@@ -1,3 +1,4 @@
+import { _checkAddressVerified } from './ethereumService';
 import * as userActions from '../actions/userActions';
 import * as accountActions from '../actions/accountActions';
 import * as zeroClientProvider from './ZeroClientProvider';
@@ -14,7 +15,7 @@ const handleChangeNetwork = (Web3, contractConfig, dispatch, getState) =>
             web3_clientVersion: 'ZeroClientProvider',
           },
           pollingInterval: 1,
-          rpcUrl: getState().user.selectedNetwork.url,
+          rpcUrl: state.user.selectedNetwork.url,
           getAccounts: () => {}
         })
       );
@@ -24,12 +25,18 @@ const handleChangeNetwork = (Web3, contractConfig, dispatch, getState) =>
 
       const contracts = { events: eventsContract, func: funcContract };
 
-      const isVerified = await accountActions.checkAddressVerified(web3, contracts.func, getState);
+      web3.eth.defaultAccount = state.account.address; //eslint-disable-line
 
-      if (isVerified) {
-        userActions.verifiedUser(dispatch);
-      } else if (!isVerified && state.user.registering && !state.user.verifiedUsername) {
-        userActions.listenForVerifiedUser(web3, contracts.event, dispatch, getState);
+      const alreadyVerified = state.user.verified;
+
+      if (!alreadyVerified) {
+        const isVerified = await _checkAddressVerified(web3, contracts.func);
+
+        if (isVerified) {
+          userActions.verifiedUser(dispatch);
+        } else if (!isVerified && state.user.registering && !state.user.verifiedUsername) {
+          userActions.listenForVerifiedUser(web3, contracts.events, dispatch, getState);
+        }
       }
 
       await userActions.setNetwork(web3, dispatch); // TODO remove this

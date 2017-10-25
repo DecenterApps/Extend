@@ -23,3 +23,7 @@ export const clearPasswordMessage = () => {
 export const sendMessage = () => {
   pm({ action: 'send' });
 };
+
+export const withdrawMessage = () => {
+  pm({ action: 'withdraw' });
+};

@@ -102,7 +102,7 @@ export const listenForVerifiedUser = (web3, contract, dispatch, getState) => {
   console.log('LISTENING FOR VERIFIED USER');
   const cb = (err, event) => {
     if (event.args.username !== getState().user.registeringUsername) return;
-    console.log('VERIFIED USER');
+    console.log('VERIFIED USER', event);
     verifiedUser(dispatch);
   };
 
@@ -152,7 +152,7 @@ export const createUserAuth = (contracts, web3, getState, dispatch) => {
       await _createUser(contracts.func, web3, me.name, accessToken, ks, address, password);
       await dispatch({ type: REGISTER_USER, payload: me.name });
 
-      listenForVerifiedUser(web3, contracts.event, dispatch, getState);
+      listenForVerifiedUser(web3, contracts.events, dispatch, getState);
     } catch (err) {
       dispatch({ type: REGISTER_USER_ERROR });
     }

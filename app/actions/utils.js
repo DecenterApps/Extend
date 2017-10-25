@@ -166,28 +166,6 @@ export const generateDataForFormValidator = (fieldsMeta) => {
 };
 
 /**
- * Gets the price of the computation that needs to be done on the Oreclize contract in ETH
- *
- * @return {Promise}
- */
-export const getOreclizeTransactionCost = () =>
-  new Promise(async (resolve, reject) => {
-    try {
-      const oreclizeResponse = await fetch('https://api.oraclize.it/v1/platform/info?_pretty=1');
-      const oreclizeData = await oreclizeResponse.json();
-
-      const pricePerUnit = oreclizeData.result.quotes.ETH;
-      const dataSources = oreclizeData.result.pricing.datasources;
-      const numOfComputationUnits = dataSources.find((dataSource) => dataSource.name === 'computation').units;
-      // resolve(pricePerUnit * numOfComputationUnits);
-      // TODO change this when we get a response from Oreclize
-      resolve(0.005385);
-    } catch(err) {
-      reject(err);
-    }
-  });
-
-/**
  * Sends the token to Oreclize servers for encryption and returns the encrypted access token
  *
  * @param {String} token

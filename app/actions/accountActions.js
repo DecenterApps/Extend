@@ -2,23 +2,40 @@ import blockies from 'blockies';
 import lightwallet from '../modules/eth-lightwallet/lightwallet';
 import {
   CREATE_WALLET, COPIED_SEED, CLEAR_PASSWORD, UNLOCK_ERROR, UNLOCK, SET_BALANCE, SET_GAS_PRICE,
-  SEND, SEND_ERROR, SEND_SUCCESS
+  SEND, SEND_ERROR, SEND_SUCCESS, WITHDRAW, WITHDRAW_ERROR, WITHDRAW_SUCCESS, CLEAR_WITHDRAW_SUCCESS
 } from '../constants/actionTypes';
 import { LOCK_INTERVAL } from '../constants/general';
 import { isJson, formatLargeNumber } from '../actions/utils';
 import {
-  _checkAddressVerified, getBalanceForAddress, getGasPrice, transfer, pollForReceipt, getNonceForAddress
+  getBalanceForAddress, getGasPrice, transfer, pollForReceipt, getNonceForAddress, sendTransaction
 } from '../modules/ethereumService';
 
 let lockTimeout = null;
 const keyStore = lightwallet.keystore;
 
-// TODO test this poller
+export const withdraw = async (web3, getState, dispatch, contracts) => {
+  const state = getState();
+  // const gasPrice = web3.toWei(formData.gasPrice.value, 'gwei');
+  const address = state.account.address;
+  const ks = keyStore.deserialize(state.account.keyStore);
+  const password = state.account.password;
+
+  dispatch({ type: WITHDRAW });
+
+  try {
+    await sendTransaction(web3, contracts.func.withdraw, ks, address, password);
+    dispatch({ type: WITHDRAW_SUCCESS });
+    setTimeout(() => { dispatch({ type: CLEAR_WITHDRAW_SUCCESS }); }, 10000);
+  } catch(err) {
+    dispatch({ type: WITHDRAW_ERROR });
+  }
+};
+
 export const pollPendingTxs = (web3, dispatch, getState) => {
   const transactions = getState().account.transactions;
 
   transactions.forEach((transaction) => {
-    if (!transaction.status === 'pending') return;
+    if (transaction.status !== 'pending') return;
 
     pollForReceipt(web3, dispatch, getState, transaction.hash);
   });
@@ -64,7 +81,7 @@ export const send = async (web3, getState, dispatch) => {
  * @param {Function} dispatch
  * @param {Number} currentGasPriceParam
  */
-export const setBalance = (web3, dispatch, currentGasPriceParam) =>
+export const setGasPrice = (web3, dispatch, currentGasPriceParam) =>
   new Promise(async (resolve) => {
     let currentGasPrice = currentGasPriceParam;
 
@@ -86,10 +103,10 @@ export const setBalance = (web3, dispatch, currentGasPriceParam) =>
  */
 export const pollForGasPrice = async (web3, dispatch) => {
   let currentGasPrice = 0;
-  currentGasPrice = await setBalance(web3, dispatch, currentGasPrice);
+  currentGasPrice = await setGasPrice(web3, dispatch, currentGasPrice);
 
   setInterval(async () => {
-    currentGasPrice = await setBalance(web3, dispatch, currentGasPrice);
+    currentGasPrice = await setGasPrice(web3, dispatch, currentGasPrice);
   }, 1000);
 };
 
@@ -229,27 +246,3 @@ export const copiedSeed = (dispatch) => {
   dispatch({ type: COPIED_SEED });
   passwordReloader(dispatch);
 };
-
-/**
- *
- * @param {Object} web3
- * @param {Object} contract - func contract
- * @param {Function} getState
- * @return {Promise.<void>}
- */
-export const checkAddressVerified = (web3, contract, getState) =>
-  new Promise(async (resolve, reject) => {
-    const address = getState().account.address;
-
-    if (!address) resolve(false);
-
-    try {
-      const isVerified = await _checkAddressVerified(web3, contract, address);
-
-      resolve(isVerified);
-      // dispatch something
-    } catch (err) {
-      // dispatch something
-      reject(err);
-    }
-  });

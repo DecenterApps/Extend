@@ -26,7 +26,7 @@ const startApp = async () => {
   try {
     let networkData = await handleChangeNetwork(Web3, contractConfig, dispatch, getState);
     web3 = networkData.web3;
-    contracts = networkData.contract;
+    contracts = networkData.contracts;
   } catch (err) {
     userActions.networkUnavailable(dispatch);
   }

@@ -16,6 +16,7 @@ contract ReddappData {
     mapping(bytes32 => address) queryToAddress;
     mapping(address => mapping(bytes32 => uint)) tips;
     mapping(address => mapping(bytes32 => uint)) lastTip;
+    mapping(bytes32 => uint) lastWithdraw;
     mapping(bytes32 => uint) balances;
     mapping(address => User) users;   
     mapping(address => bool) owners;
@@ -54,11 +55,19 @@ contract ReddappData {
         return lastTip[_from][_to];
     }
 
+    function getLastWithdraw(bytes32 _username) public constant returns (uint) {
+        return lastWithdraw[_username];
+    }
+
     //setters
+    function setLastWithdraw(bytes32 _username) public onlyOwners {
+        lastWithdraw[_username] = now;
+    }
+    
     function setQueryIdForAddress(bytes32 _queryId, address _address) public onlyOwners {
         queryToAddress[_queryId] = _address;
     }
-    
+   
     function setBalanceForUser(bytes32 _username, uint _balance) public onlyOwners {
         balances[_username] = _balance;
     }
@@ -68,6 +77,11 @@ contract ReddappData {
     }
 
     function addTip(address _from, bytes32 _to, uint _tip) public onlyOwners {
+        //reset tips if user withdraw his money
+        if (lastWithdraw[_to] > lastTip[_from][_to]) {
+            tips[_from][_to] = 0;
+        }
+        
         tips[_from][_to] += _tip;
         balances[_to] += _tip;
         lastTip[_from][_to] = now;     

@@ -12,6 +12,7 @@ contract ReddappEvents {
     event UserTipped(address from, bytes32 indexed username, uint val);
     event WithdrawSuccessful(string username);
     event CheckAddressVerified(address userAddress);
+    event RefundSuccessful(string username);
 
     mapping(address => bool) owners;
 
@@ -32,35 +33,39 @@ contract ReddappEvents {
         owners[_address] = false;
     }
 
-    function createdUser(string _username) {
+    function createdUser(string _username) onlyOwners {
         CreatedUser(_username);
     }
 
-    function usernameDoesNotMatch(string _username, string _neededUsername) {
+    function refundSuccessful(string _username) onlyOwners{
+        RefundSuccessful(_username);
+    }
+
+    function usernameDoesNotMatch(string _username, string _neededUsername) onlyOwners{
         UsernameDoesNotMatch(_username, _neededUsername);
     }
 
-    function verifiedUser(string _username) {
+    function verifiedUser(string _username) onlyOwners{
         VerifiedUser(_username);
     }
 
-    function userTipped(address _from, string _username, uint _val) {
+    function userTipped(address _from, bytes32 _username, uint _val) onlyOwners{
         UserTipped(_from, _username, _val);
     }
 
-    function withdrawSuccessful(string _username) {
+    function withdrawSuccessful(string _username) onlyOwners{
         WithdrawSuccessful(_username);
     }
 
-    function logQuery(bytes32 _query, address _userAddress) {
+    function logQuery(bytes32 _query, address _userAddress) onlyOwners{
         LogQuery(_query, _userAddress);
     }
 
-    function logBalance(uint _balance) {
+    function logBalance(uint _balance) onlyOwners{
         LogBalance(_balance);
     }
 
-    function logNeededBalance(uint _balance) {
+    function logNeededBalance(uint _balance) onlyOwners{
         LogNeededBalance(_balance);
     }
 

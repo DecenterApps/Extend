@@ -1,6 +1,6 @@
 import {
   CREATE_WALLET, COPIED_SEED, CLEAR_PASSWORD, UNLOCK_ERROR, UNLOCK, SET_BALANCE, SET_GAS_PRICE,
-  SEND, SEND_ERROR, SEND_SUCCESS, CHANGE_TX_STATE
+  SEND, SEND_ERROR, SEND_SUCCESS, CHANGE_TX_STATE, WITHDRAW, WITHDRAW_ERROR, WITHDRAW_SUCCESS, CLEAR_WITHDRAW_SUCCESS
 } from '../../../constants/actionTypes';
 
 const reducerName = 'account';
@@ -18,7 +18,10 @@ const INITIAL_STATE = {
   gasPrice: 0,
   transactions: [],
   sending: false,
-  sendingError: ''
+  sendingError: '',
+  withdrawing: false,
+  withdrawingError: false,
+  withdrawSuccessful: false
 };
 
 export const reducer = (state, action) => {
@@ -61,6 +64,20 @@ export const reducer = (state, action) => {
       newTransactions[payload].state = 'mined';
       return { ...state, transactions: newTransactions };
     }
+
+    case WITHDRAW:
+      return { ...state, withdrawing: true };
+    case WITHDRAW_SUCCESS:
+      return { ...state, withdrawing: false, withdrawingError: '', withdrawSuccessful: true };
+    case WITHDRAW_ERROR:
+      return {
+        ...state,
+        withdrawing: false,
+        withdrawingError: 'An error occurred while withdrawing ETH, please try again.',
+        withdrawSuccessful: false,
+      };
+    case CLEAR_WITHDRAW_SUCCESS:
+      return { ...state, withdrawSuccessful: false };
 
     default:
       return false;

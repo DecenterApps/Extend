@@ -63,7 +63,7 @@ const mapStateToProps = (state) => ({
   network: state.user.network,
   balance: state.account.balance,
   verifiedUsername: state.user.verifiedUsername,
-  tipsAmount: 0
+  tipsAmount: ''
 });
 
 export default connect(Dashboard, mapStateToProps);

@@ -17,7 +17,7 @@ export const checkIfUsernameVerified = async (web3, contract, payload, tabId) =>
 export const tip = async (web3, contract, dispatch, getState) => {
   const state = getState();
   const amount = web3.toWei(state.forms.tipForm.amount.value);
-  const gasPrice = state.forms.tipForm.gasPrice.value;
+  const gasPrice = web3.toWei(state.forms.tipForm.gasPrice.value, 'gwei');
   const author = state.modals.modalProps.author;
   const ks = keyStore.deserialize(state.account.keyStore);
   const address = state.account.address;

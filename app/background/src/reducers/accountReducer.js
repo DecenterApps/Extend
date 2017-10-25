@@ -1,6 +1,7 @@
 import {
   CREATE_WALLET, COPIED_SEED, CLEAR_PASSWORD, UNLOCK_ERROR, UNLOCK, SET_BALANCE, SET_GAS_PRICE,
-  SEND, SEND_ERROR, SEND_SUCCESS, CHANGE_TX_STATE, WITHDRAW, WITHDRAW_ERROR, WITHDRAW_SUCCESS, CLEAR_WITHDRAW_SUCCESS
+  SEND, SEND_ERROR, SEND_SUCCESS, CHANGE_TX_STATE, WITHDRAW, WITHDRAW_ERROR, WITHDRAW_SUCCESS, CLEAR_WITHDRAW_SUCCESS,
+  SET_TIPS_BALANCE
 } from '../../../constants/actionTypes';
 
 const reducerName = 'account';
@@ -21,7 +22,8 @@ const INITIAL_STATE = {
   sendingError: '',
   withdrawing: false,
   withdrawingError: false,
-  withdrawSuccessful: false
+  withdrawSuccessful: false,
+  tipsBalance: '0'
 };
 
 export const reducer = (state, action) => {
@@ -78,6 +80,9 @@ export const reducer = (state, action) => {
       };
     case CLEAR_WITHDRAW_SUCCESS:
       return { ...state, withdrawSuccessful: false };
+
+    case SET_TIPS_BALANCE:
+      return { ...state, tipsBalance: payload };
 
     default:
       return false;

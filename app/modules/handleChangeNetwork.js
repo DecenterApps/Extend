@@ -3,22 +3,47 @@ import * as userActions from '../actions/userActions';
 import * as accountActions from '../actions/accountActions';
 import * as zeroClientProvider from './ZeroClientProvider';
 
+const getProviderSpecs = (url) => (
+  zeroClientProvider({
+    static: {
+      eth_syncing: false,
+      web3_clientVersion: 'ZeroClientProvider',
+    },
+    pollingInterval: 1,
+    rpcUrl: url,
+    getAccounts: () => {}
+  })
+);
+
+const handleUserVerification = (web3, dispatch, getState, state, contracts) =>
+  new Promise(async (resolve, reject) => {
+    try {
+      const alreadyVerified = state.user.verified;
+
+      if (alreadyVerified) accountActions.pollTipsBalance(web3, contracts.func, dispatch, getState);
+
+      if (!alreadyVerified && state.account.address) {
+        const isVerified = await _checkAddressVerified(web3, contracts.func);
+
+        if (isVerified) {
+          userActions.verifiedUser(web3, contracts.func, getState, dispatch);
+        } else if (!isVerified && state.user.registering && !state.user.verifiedUsername) {
+          userActions.listenForVerifiedUser(web3, contracts, dispatch, getState);
+        }
+      }
+
+      resolve();
+    } catch(err) {
+      reject(err);
+    }
+  });
+
 const handleChangeNetwork = (Web3, contractConfig, dispatch, getState) =>
   new Promise(async (resolve, reject) => {
     const state = getState();
 
     try {
-      let web3 = new Web3(
-        zeroClientProvider({
-          static: {
-            eth_syncing: false,
-            web3_clientVersion: 'ZeroClientProvider',
-          },
-          pollingInterval: 1,
-          rpcUrl: state.user.selectedNetwork.url,
-          getAccounts: () => {}
-        })
-      );
+      let web3 = new Web3(getProviderSpecs(state.user.selectedNetwork.url));
 
       const eventsContract = web3.eth.contract(contractConfig.events.abi).at(contractConfig.events.contractAddress);
       const funcContract = web3.eth.contract(contractConfig.func.abi).at(contractConfig.func.contractAddress);
@@ -27,17 +52,7 @@ const handleChangeNetwork = (Web3, contractConfig, dispatch, getState) =>
 
       web3.eth.defaultAccount = state.account.address; //eslint-disable-line
 
-      const alreadyVerified = state.user.verified;
-
-      if (!alreadyVerified) {
-        const isVerified = await _checkAddressVerified(web3, contracts.func);
-
-        if (isVerified) {
-          userActions.verifiedUser(dispatch);
-        } else if (!isVerified && state.user.registering && !state.user.verifiedUsername) {
-          userActions.listenForVerifiedUser(web3, contracts.events, dispatch, getState);
-        }
-      }
+      await handleUserVerification(web3, dispatch, getState, state, contracts);
 
       await userActions.setNetwork(web3, dispatch); // TODO remove this
 

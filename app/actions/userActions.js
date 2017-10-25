@@ -1,6 +1,7 @@
 import lightwallet from '../modules/eth-lightwallet/lightwallet';
 import { getParameterByName } from '../actions/utils';
 import { verifiedUserEvent, _createUser } from '../modules/ethereumService';
+import { pollTipsBalance } from './accountActions';
 import {
   SET_NETWORK, SELECT_NETWORK, ACCEPT_PRIVACY_NOTICE, NETWORK_UNAVAILABLE,
   REGISTER_USER, VERIFIED_USER, REGISTER_USER_ERROR, SET_ACTIVE_TAB
@@ -86,27 +87,28 @@ export const setTab = (dispatch, selectedTab) => {
  *
  * @param {Function} dispatch
  */
-export const verifiedUser = (dispatch) => {
+export const verifiedUser = (web3, contract, getState, dispatch) => {
   dispatch({ type: VERIFIED_USER });
+  pollTipsBalance(web3, contract, dispatch, getState);
 };
 
 /**
  * Listens for new verified users and checks if the current user is verified
  *
  * @param {Object} web3
- * @param {Object} contract - event contract
+ * @param {Array} contracts
  * @param {Function} dispatch
  * @param {Function} getState
  */
-export const listenForVerifiedUser = (web3, contract, dispatch, getState) => {
+export const listenForVerifiedUser = (web3, contracts, dispatch, getState) => {
   console.log('LISTENING FOR VERIFIED USER');
   const cb = (err, event) => {
     if (event.args.username !== getState().user.registeringUsername) return;
-    console.log('VERIFIED USER', event);
-    verifiedUser(dispatch);
+
+    verifiedUser(web3, contracts.func, getState, dispatch);
   };
 
-  verifiedUserEvent(web3, contract, cb);
+  verifiedUserEvent(web3, contracts.events, cb);
 };
 
 /**
@@ -152,13 +154,12 @@ export const createUserAuth = (contracts, web3, getState, dispatch) => {
       await _createUser(contracts.func, web3, me.name, accessToken, ks, address, password);
       await dispatch({ type: REGISTER_USER, payload: me.name });
 
-      listenForVerifiedUser(web3, contracts.events, dispatch, getState);
+      listenForVerifiedUser(web3, contracts, dispatch, getState);
     } catch (err) {
       dispatch({ type: REGISTER_USER_ERROR });
     }
   });
 };
-
 
 /**
  * Dispatches action to set that web3 could not connect to the network

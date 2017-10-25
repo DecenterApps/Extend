@@ -294,10 +294,29 @@ export const _createUser = (contract, web3, username, token, ks, address, passwo
     }
   });
 
+export const _getTipBalance = (web3, contractMethod, from) =>
+  new Promise(async (resolve, reject) => {
+    try {
+      let { to, data } = getEncodedParams(contractMethod);
+
+      const nonce = await getNonceForAddress(web3, from);
+      const gasPrice = (await getGasPrice(web3)).toString();
+      const gas = await estimateGas(web3, { to, data });
+
+      contractMethod.call({ to, from, data, nonce, gas, gasPrice }, (err, result) => {
+        if (err) reject(err);
+
+        resolve(web3.fromWei(result.toString()));
+      });
+    } catch(err) {
+      reject(err);
+    }
+  });
+
 export const _checkAddressVerified = (web3, contract) =>
   new Promise((resolve, reject) => {
     contract.checkAddressVerified((error, result) => {
-      if (error) return reject({ message: error, });
+      if (error) return reject(error);
 
       return resolve(result);
     });
@@ -306,7 +325,7 @@ export const _checkAddressVerified = (web3, contract) =>
 export const _checkUsernameVerified = (web3, contract, username) =>
   new Promise((resolve, reject) => {
     contract.checkUsernameVerified(username, (error, result) => {
-      if (error) return reject({ message: error, });
+      if (error) return reject(error);
 
       return resolve(result);
     });

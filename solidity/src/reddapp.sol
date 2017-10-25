@@ -93,26 +93,31 @@ contract Reddapp is usingOraclize {
      function tipUser(string _username) public payable {
         data.addTip(msg.sender, stringToBytes32(_username), msg.value);
 
-        events.userTipped(msg.sender, _username, msg.value);
+        events.userTipped(msg.sender, stringToBytes32(_username), msg.value);
     }
 
     /**
      * Withdraw collected eth 
      */
     function withdraw() public onlyVerified {
-        uint toSend = data.getBalanceForUser(data.getUserUsername(msg.sender));
-        data.setBalanceForUser(data.getUserUsername(msg.sender), 0);
+        bytes32 _username = data.getUserUsername(msg.sender);
+        uint toSend = data.getBalanceForUser(_username);
+        data.setBalanceForUser(_username, 0);
+        data.setLastWithdraw(_username);
         msg.sender.transfer(toSend);
 
-        events.withdrawSuccessful(bytes32ToString(data.getUserUsername(msg.sender)));
+        events.withdrawSuccessful(bytes32ToString(_username));
     }
 
     function refundMoneyForUser(bytes32 _username) public {
         require(data.getLastTipTime(msg.sender, _username) < (now - 2 weeks));
+        require(data.getLastTipTime(msg.sender, _username) > data.getLastWithdraw(_username));
 
         uint toSend = data.getTip(msg.sender, _username);
         data.removeTip(msg.sender, _username);
         msg.sender.transfer(toSend);
+
+        events.refundSuccessful(bytes32ToString(_username));
     }
 
 

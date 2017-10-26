@@ -28,20 +28,20 @@ contract ReddappTest is DSTest, ReddappEvents {
 
     function test_tipUser() {
         uint toSend = 1000000;
-        reddapp.tipUser.value(toSend)(bytes32ToString(myUsername)); 
+        reddapp.tipUser.value(toSend)(myUsername); 
 
         assert(data.getBalanceForUser(myUsername) == toSend);  
     }
 
     function testFail_tipUser() {
         uint toSend = 1000000;
-        reddapp.tipUser.value(toSend)(bytes32ToString(myUsername));
+        reddapp.tipUser.value(toSend)(myUsername);
 
         assert(data.getBalanceForUser(myUsername) != toSend);    
     }
 
     function test_addressForUsername() {
-        assert(myAddress == reddapp.getAddressFromUsername(bytes32ToString(myUsername)));
+        assert(myAddress == reddapp.getAddressFromUsername(myUsername));
     }
 
     function test_checkAddressVerified() {
@@ -51,7 +51,7 @@ contract ReddappTest is DSTest, ReddappEvents {
     }
 
     function test_checkUsernameVerified() {
-        assert(reddapp.checkUsernameVerified(bytes32ToString(myUsername)));
+        assert(reddapp.checkUsernameVerified(myUsername));
         assert(!reddapp.checkUsernameVerified("rnd"));
     }
 
@@ -76,14 +76,14 @@ contract ReddappTest is DSTest, ReddappEvents {
 
     function testFail_refund() {
         uint val = 100000;
-        reddapp.tipUser.value(val)(bytes32ToString(myUsername));
+        reddapp.tipUser.value(val)(myUsername);
 
         reddapp.refundMoneyForUser(myUsername);
     }
 
     function testFail_checkIfRefundable() {
         uint val = 10000;
-        reddapp.tipUser.value(val)(bytes32ToString(myUsername));
+        reddapp.tipUser.value(val)(myUsername);
 
         assert(reddapp.checkIfRefundAvailable(myUsername));
     }

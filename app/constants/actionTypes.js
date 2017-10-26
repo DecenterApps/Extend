@@ -6,10 +6,11 @@ export const REGISTER_USER = 'register_user';
 export const REGISTER_USER_ERROR = 'register_user_error';
 export const VERIFIED_USER = 'verified_user';
 export const SET_ACTIVE_TAB = 'set_active_tab';
-
 export const SET_IS_USER_VERIFIED = 'set_is_user_verified';
-
 export const ACCEPT_PRIVACY_NOTICE = 'accept_privacy_notice';
+export const GET_SENT_TIPS = 'get_sent_tips';
+export const GET_SENT_TIPS_SUCCESS = 'get_sent_tips_success';
+export const GET_SENT_TIPS_ERROR = 'get_sent_tips_error';
 
 // NETWORK
 export const TOGGLE_DROPDOWN = 'toggle_dropdown';

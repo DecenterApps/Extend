@@ -6,6 +6,7 @@ import { setActiveTabMessage } from '../../../../messages/userActionsMessages';
 import RegisterUsername from '../RegisterUsername/RegisterUsername';
 import Send from '../Send/Send';
 import Withdraw from '../Withdraw/Withdraw';
+import SentTips from '../SentTips/SentTips';
 
 import './tabs.scss';
 
@@ -35,6 +36,7 @@ const Tabs = ({ isVerified, activeTab }) => (
     { (activeTab === 'Verify') && <RegisterUsername /> }
     { (activeTab === 'Send') && <Send /> }
     { (activeTab === 'Withdraw') && <Withdraw /> }
+    { (activeTab === 'Sent') && <SentTips /> }
   </div>
 );
 

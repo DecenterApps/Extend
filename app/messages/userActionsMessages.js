@@ -11,6 +11,8 @@ export const createUserAuthMessage = () => { pm({ action: 'createUserAuth' }); }
 
 export const acceptPrivacyNoticeMessage = () => { pm({ action: 'acceptPrivacyNotice' }); };
 
+export const getSentTipsMessage = () => { pm({ action: 'getSentTips' }); };
+
 export const selectedNetworkMessage = (index) => {
   pm({ action: 'selectNetwork', payload: index });
   toggleDropdownMessage(true, false);

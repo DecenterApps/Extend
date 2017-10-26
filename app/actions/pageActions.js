@@ -6,7 +6,7 @@ import { SEND_TIP, SEND_TIP_ERROR, SEND_TIP_SUCCESS } from '../constants/actionT
 const keyStore = lightwallet.keystore;
 
 export const checkIfUsernameVerified = async (web3, contract, payload, tabId) => {
-  const isVerified = await _checkUsernameVerified(web3, contract, payload.username);
+  const isVerified = await _checkUsernameVerified(web3, contract, web3.sha3(payload.username));
 
   const newPayload = payload;
   newPayload.isVerified = isVerified;
@@ -27,7 +27,7 @@ export const tip = async (web3, contract, dispatch, getState) => {
   try {
     dispatch({ type: SEND_TIP });
 
-    await sendTransaction(web3, contractMethod, ks, address, password, [author], amount, gasPrice);
+    await sendTransaction(web3, contractMethod, ks, address, password, [web3.sha3(author)], amount, gasPrice);
 
     dispatch({ type: SEND_TIP_SUCCESS });
 

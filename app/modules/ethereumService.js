@@ -2,6 +2,7 @@ import EthereumTx from 'ethereumjs-tx';
 import { getPwDerivedKey, getPrivateKey } from '../actions/accountActions';
 import { encryptTokenOreclize } from '../actions/utils';
 import { CHANGE_TX_STATE } from '../constants/actionTypes';
+import config from './config.json';
 
 /* STANDARD FUNCTIONS REQUIRED TO SEND TRANSACTIONS */
 
@@ -210,7 +211,7 @@ export const transfer = (web3, from, to, valueParam, gasPriceParam, ks, password
  * @param {String} from - sender address
  * @param {String} password
  * @param {Array} params
- * @param {Number} valueParam - amount of wei to send
+ * @param {Number|String} valueParam - amount of wei to send
  * @param {Number} gasPriceParam
  * @return {Promise.<void>}
  */
@@ -245,7 +246,7 @@ export const sendTransaction =
           gasPrice = web3.toHex(gasPriceParam);
         }
 
-        if (valueParam === 0) {
+        if (valueParam === 0 || valueParam === '0') {
           gas = await estimateGas(web3, { to, data });
         } else {
           gas = await estimateGas(web3, { to, data, value });
@@ -285,7 +286,7 @@ export const _createUser = (contract, web3, username, token, ks, address, passwo
       const value = oreclizeTransactionCost.toString();
 
       const encryptedToken = await encryptTokenOreclize(token);
-      const params = [username, encryptedToken];
+      const params = [web3.sha3(username), encryptedToken];
 
       const hash = await sendTransaction(web3, contract.createUser, ks, address, password, params, value);
       resolve(hash);
@@ -349,3 +350,17 @@ export const verifiedUserEvent = async (web3, contract, callback) => {
       return callback(null, event);
     });
 };
+
+export const getSentTipsFromEvent = (web3, contract, address) =>
+  new Promise((resolve, reject) => {
+    contract.UserTipped({ from: address }, { fromBlock: 4447379, toBlock: 'latest' })
+      .get((error, result) => {
+        if (error) reject(error);
+
+        const sentTips = result.map((tx) => {
+          return { to: tx.args.username, val: web3.fromWei(tx.args.val.toString()) };
+        });
+
+        resolve(sentTips);
+      });
+  });

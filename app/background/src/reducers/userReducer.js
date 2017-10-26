@@ -1,7 +1,8 @@
 import {
   SET_NETWORK, REGISTER_USER, REGISTER_USER_ERROR, VERIFIED_USER,
   SELECT_NETWORK, ACCEPT_PRIVACY_NOTICE, NETWORK_UNAVAILABLE,
-  SEND_TIP, SEND_TIP_SUCCESS, SEND_TIP_ERROR, SET_ACTIVE_TAB
+  SEND_TIP, SEND_TIP_SUCCESS, SEND_TIP_ERROR, SET_ACTIVE_TAB,
+  GET_SENT_TIPS, GET_SENT_TIPS_SUCCESS, GET_SENT_TIPS_ERROR
 } from '../../../constants/actionTypes';
 import { NETWORKS, TABS } from '../../../constants/general';
 
@@ -13,17 +14,21 @@ export const reducerName = 'user';
 const INITIAL_STATE = {
   networkActive: true,
   acceptedNotice: false,
-  address: '',
   network: '',
   registering: false,
   registeringError: '',
   verified: false,
   verifiedUsername: '',
+  verifiedUsernameSha3: '',
   registeringUsername: '',
+  registeringUsernameSha3: '',
   selectedNetwork: NETWORKS[2],
   sendingTip: false,
   sendingTipError: '',
-  activeTab: TABS[0]
+  activeTab: TABS[0],
+  gettingSentTips: false,
+  gettingSentTipsError: '',
+  sentTips: []
 };
 
 export const reducer = (state, action) => {
@@ -37,15 +42,22 @@ export const reducer = (state, action) => {
       return { ...state, network: payload };
 
     case REGISTER_USER:
-      return { ...state, registering: true, registeringUsername: payload, registeringError: '' };
-
+      return {
+        ...state,
+        registering: true,
+        registeringUsername: payload.username,
+        registeringUsernameSha3: payload.sha3Username,
+        registeringError: ''
+      };
     case VERIFIED_USER:
       return {
         ...state,
         registering: false,
         verified: true,
         registeringUsername: '',
+        registeringUsernameSha3: '',
         verifiedUsername: state.registeringUsername,
+        verifiedUsernameSha3: state.registeringUsernameSha3,
         activeTab: TABS[1]
       };
 
@@ -76,6 +88,19 @@ export const reducer = (state, action) => {
         ...state,
         sendingTip: false,
         sendingTipError: 'An error occurred while sending tip, please try again.'
+      };
+
+    case GET_SENT_TIPS:
+      return { ...state, gettingSentTips: true };
+
+    case GET_SENT_TIPS_SUCCESS:
+      return { ...state, sentTips: payload, gettingSentTips: false, gettingSentTipsError: '' };
+
+    case GET_SENT_TIPS_ERROR:
+      return {
+        ...state,
+        gettingSentTips: false,
+        gettingSentTipsError: 'An error occurred while getting sent tips, please try again.'
       };
 
     default:

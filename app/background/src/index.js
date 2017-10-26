@@ -6,7 +6,7 @@ import accountHandler from '../../handlers/accountActionsHandler';
 import dropdownHandler from '../../handlers/dropdownActionsHandler';
 import userHandler from '../../handlers/userActionsHandler';
 import formsHandler from '../../handlers/formsActionsHandler';
-import pageHandler from '../../handlers/pageHandler';
+import pageHandler from '../../handlers/pageActionsHandler';
 import handleChangeNetwork from '../../modules/handleChangeNetwork';
 import modalsActionsHandler from '../../handlers/modalsActionsHandler';
 

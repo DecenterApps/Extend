@@ -2,17 +2,16 @@ pragma solidity ^0.4.17;
 
 contract ReddappEvents {
 
-    event Log(string tekst);
     event LogQuery(bytes32 query, address userAddress);
     event LogBalance(uint balance);
     event LogNeededBalance(uint balance);
-    event CreatedUser(string username);
-    event UsernameDoesNotMatch(string username, string neededUsername);
-    event VerifiedUser(string username);
+    event CreatedUser(bytes32 username);
+    event UsernameDoesNotMatch(bytes32 username, bytes32 neededUsername);
+    event VerifiedUser(bytes32 username);
     event UserTipped(address from, bytes32 indexed username, uint val);
-    event WithdrawSuccessful(string username);
+    event WithdrawSuccessful(bytes32 username);
     event CheckAddressVerified(address userAddress);
-    event RefundSuccessful(string username);
+    event RefundSuccessful(bytes32 username);
 
     mapping(address => bool) owners;
 
@@ -33,19 +32,19 @@ contract ReddappEvents {
         owners[_address] = false;
     }
 
-    function createdUser(string _username) onlyOwners {
+    function createdUser(bytes32 _username) onlyOwners {
         CreatedUser(_username);
     }
 
-    function refundSuccessful(string _username) onlyOwners{
+    function refundSuccessful(bytes32 _username) onlyOwners{
         RefundSuccessful(_username);
     }
 
-    function usernameDoesNotMatch(string _username, string _neededUsername) onlyOwners{
+    function usernameDoesNotMatch(bytes32 _username, bytes32 _neededUsername) onlyOwners{
         UsernameDoesNotMatch(_username, _neededUsername);
     }
 
-    function verifiedUser(string _username) onlyOwners{
+    function verifiedUser(bytes32 _username) onlyOwners{
         VerifiedUser(_username);
     }
 
@@ -53,7 +52,7 @@ contract ReddappEvents {
         UserTipped(_from, _username, _val);
     }
 
-    function withdrawSuccessful(string _username) onlyOwners{
+    function withdrawSuccessful(bytes32 _username) onlyOwners{
         WithdrawSuccessful(_username);
     }
 

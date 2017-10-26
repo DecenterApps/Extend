@@ -364,3 +364,17 @@ export const getSentTipsFromEvent = (web3, contract, address) =>
         resolve(sentTips);
       });
   });
+
+export const getReceivedTipsFromEvent = (web3, contract, sha3Username) =>
+  new Promise((resolve, reject) => {
+    contract.UserTipped({ to: sha3Username }, { fromBlock: 4447379, toBlock: 'latest' })
+      .get((error, result) => {
+        if (error) reject(error);
+
+        const sentTips = result.map((tx) => {
+          return { to: tx.args.username, val: web3.fromWei(tx.args.val.toString()) };
+        });
+
+        resolve(sentTips);
+      });
+  });

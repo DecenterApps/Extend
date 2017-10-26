@@ -1,11 +1,13 @@
 import lightwallet from '../modules/eth-lightwallet/lightwallet';
 import { getParameterByName } from '../actions/utils';
-import { verifiedUserEvent, _createUser, getSentTipsFromEvent } from '../modules/ethereumService';
+import {
+  verifiedUserEvent, _createUser, getSentTipsFromEvent, getReceivedTipsFromEvent
+} from '../modules/ethereumService';
 import { pollTipsBalance } from './accountActions';
 import {
   SET_NETWORK, SELECT_NETWORK, ACCEPT_PRIVACY_NOTICE, NETWORK_UNAVAILABLE,
   REGISTER_USER, VERIFIED_USER, REGISTER_USER_ERROR, SET_ACTIVE_TAB, GET_SENT_TIPS, GET_SENT_TIPS_SUCCESS,
-  GET_SENT_TIPS_ERROR
+  GET_SENT_TIPS_ERROR, GET_RECEIVED_TIPS, GET_RECEIVED_TIPS_SUCCESS, GET_RECEIVED_TIPS_ERROR
 } from '../constants/actionTypes';
 
 const keyStore = lightwallet.keystore;
@@ -187,3 +189,15 @@ export const getSentTips = async (web3, contract, dispatch, getState) => {
     dispatch({ type: GET_SENT_TIPS_ERROR });
   }
 };
+
+export const getReceivedTips = async (web3, contract, dispatch, getState) => {
+  dispatch({ type: GET_RECEIVED_TIPS });
+
+  try {
+    const receivedTips = await getReceivedTipsFromEvent(web3, contract, getState().user.verifiedUsernameSha3);
+    dispatch({ type: GET_RECEIVED_TIPS_SUCCESS, payload: receivedTips });
+  } catch(err) {
+    dispatch({ type: GET_RECEIVED_TIPS_ERROR });
+  }
+};
+

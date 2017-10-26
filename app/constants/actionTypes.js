@@ -11,6 +11,9 @@ export const ACCEPT_PRIVACY_NOTICE = 'accept_privacy_notice';
 export const GET_SENT_TIPS = 'get_sent_tips';
 export const GET_SENT_TIPS_SUCCESS = 'get_sent_tips_success';
 export const GET_SENT_TIPS_ERROR = 'get_sent_tips_error';
+export const GET_RECEIVED_TIPS = 'get_received_tips';
+export const GET_RECEIVED_TIPS_SUCCESS = 'get_received_tips_success';
+export const GET_RECEIVED_TIPS_ERROR = 'get_received_tips_error';
 
 // NETWORK
 export const TOGGLE_DROPDOWN = 'toggle_dropdown';

@@ -32,7 +32,7 @@ class SentTips extends Component {
                 {
                   this.props.sentTips.length > 0 &&
                   this.props.sentTips.map((tip) => (
-                    <div>
+                    <div key={tip.to + Math.random()}>
                       <div>To: { tip.to }</div>
                       <div>Amount: { tip.val }</div>
                     </div>

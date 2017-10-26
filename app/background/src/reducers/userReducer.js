@@ -2,7 +2,8 @@ import {
   SET_NETWORK, REGISTER_USER, REGISTER_USER_ERROR, VERIFIED_USER,
   SELECT_NETWORK, ACCEPT_PRIVACY_NOTICE, NETWORK_UNAVAILABLE,
   SEND_TIP, SEND_TIP_SUCCESS, SEND_TIP_ERROR, SET_ACTIVE_TAB,
-  GET_SENT_TIPS, GET_SENT_TIPS_SUCCESS, GET_SENT_TIPS_ERROR
+  GET_SENT_TIPS, GET_SENT_TIPS_SUCCESS, GET_SENT_TIPS_ERROR,
+  GET_RECEIVED_TIPS, GET_RECEIVED_TIPS_SUCCESS, GET_RECEIVED_TIPS_ERROR
 } from '../../../constants/actionTypes';
 import { NETWORKS, TABS } from '../../../constants/general';
 
@@ -92,15 +93,24 @@ export const reducer = (state, action) => {
 
     case GET_SENT_TIPS:
       return { ...state, gettingSentTips: true };
-
     case GET_SENT_TIPS_SUCCESS:
       return { ...state, sentTips: payload, gettingSentTips: false, gettingSentTipsError: '' };
-
     case GET_SENT_TIPS_ERROR:
       return {
         ...state,
         gettingSentTips: false,
         gettingSentTipsError: 'An error occurred while getting sent tips, please try again.'
+      };
+
+    case GET_RECEIVED_TIPS:
+      return { ...state, gettingReceivedTips: true };
+    case GET_RECEIVED_TIPS_SUCCESS:
+      return { ...state, receivedTips: payload, gettingReceivedTips: false, gettingReceivedTipsError: '' };
+    case GET_RECEIVED_TIPS_ERROR:
+      return {
+        ...state,
+        gettingReceivedTips: false,
+        gettingReceivedTipsError: 'An error occurred while getting sent tips, please try again.'
       };
 
     default:

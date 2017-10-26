@@ -13,6 +13,8 @@ export const acceptPrivacyNoticeMessage = () => { pm({ action: 'acceptPrivacyNot
 
 export const getSentTipsMessage = () => { pm({ action: 'getSentTips' }); };
 
+export const getReceivedTipsMessage = () => { pm({ action: 'getReceivedTips' }); };
+
 export const selectedNetworkMessage = (index) => {
   pm({ action: 'selectNetwork', payload: index });
   toggleDropdownMessage(true, false);

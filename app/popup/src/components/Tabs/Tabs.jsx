@@ -7,6 +7,7 @@ import RegisterUsername from '../RegisterUsername/RegisterUsername';
 import Send from '../Send/Send';
 import Withdraw from '../Withdraw/Withdraw';
 import SentTips from '../SentTips/SentTips';
+import ReceivedTips from '../ReceivedTips/ReceivedTips';
 
 import './tabs.scss';
 
@@ -37,6 +38,7 @@ const Tabs = ({ isVerified, activeTab }) => (
     { (activeTab === 'Send') && <Send /> }
     { (activeTab === 'Withdraw') && <Withdraw /> }
     { (activeTab === 'Sent') && <SentTips /> }
+    { (activeTab === 'Received') && <ReceivedTips /> }
   </div>
 );
 

@@ -2,12 +2,14 @@ import blockies from 'blockies';
 import lightwallet from '../modules/eth-lightwallet/lightwallet';
 import {
   CREATE_WALLET, COPIED_SEED, CLEAR_PASSWORD, UNLOCK_ERROR, UNLOCK, SET_BALANCE, SET_GAS_PRICE,
-  SEND, SEND_ERROR, SEND_SUCCESS, WITHDRAW, WITHDRAW_ERROR, WITHDRAW_SUCCESS, CLEAR_WITHDRAW_SUCCESS
+  SEND, SEND_ERROR, SEND_SUCCESS, WITHDRAW, WITHDRAW_ERROR, WITHDRAW_SUCCESS, CLEAR_WITHDRAW_SUCCESS,
+  SET_TIPS_BALANCE
 } from '../constants/actionTypes';
 import { LOCK_INTERVAL } from '../constants/general';
 import { isJson, formatLargeNumber } from '../actions/utils';
 import {
-  getBalanceForAddress, getGasPrice, transfer, pollForReceipt, getNonceForAddress, sendTransaction
+  getBalanceForAddress, getGasPrice, transfer, pollForReceipt, getNonceForAddress, sendTransaction,
+  _getTipBalance
 } from '../modules/ethereumService';
 
 let lockTimeout = null;
@@ -72,6 +74,25 @@ export const send = async (web3, getState, dispatch) => {
   } catch(err) {
     dispatch({ type: SEND_ERROR });
   }
+};
+
+const setTipsBalance = async (web3, contract, dispatch, getState) => {
+  const currentTipBalance = getState().account.tipsBalance;
+
+  const address = getState().account.address;
+
+  const contractTipBalance = await _getTipBalance(web3, contract.checkBalance, address);
+
+  if (currentTipBalance === contractTipBalance) return;
+
+  dispatch({ type: SET_TIPS_BALANCE, payload: contractTipBalance });
+};
+
+export const pollTipsBalance = (web3, contract, dispatch, getState) => {
+  setTipsBalance(web3, contract, dispatch, getState);
+  setInterval(async () => {
+    setTipsBalance(web3, contract, dispatch, getState);
+  }, 2000);
 };
 
 /**

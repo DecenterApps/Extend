@@ -6,7 +6,7 @@ import Tabs from '../Tabs/Tabs';
 
 import './dashboard.scss';
 
-const Dashboard = ({ address, accountIcon, network, balance, verifiedUsername, tipsAmount }) => (
+const Dashboard = ({ address, accountIcon, network, balance, verifiedUsername, tipsBalance }) => (
   <div styleName="dashboard-wrapper">
     <div styleName="account-info-wrapper">
       <img src={accountIcon} alt="Account icon" />
@@ -36,7 +36,7 @@ const Dashboard = ({ address, accountIcon, network, balance, verifiedUsername, t
           verifiedUsername &&
           <div>
             <div styleName="username">{ verifiedUsername }</div>
-            <div styleName="tips">Tips (ETH): { tipsAmount }</div>
+            <div styleName="tips">Tips (ETH): { tipsBalance }</div>
           </div>
         }
       </div>
@@ -54,7 +54,7 @@ Dashboard.propTypes = {
   network: PropTypes.string.isRequired,
   balance: PropTypes.string.isRequired,
   verifiedUsername: PropTypes.string.isRequired,
-  tipsAmount: PropTypes.string.isRequired
+  tipsBalance: PropTypes.string.isRequired
 };
 
 const mapStateToProps = (state) => ({
@@ -63,7 +63,7 @@ const mapStateToProps = (state) => ({
   network: state.user.network,
   balance: state.account.balance,
   verifiedUsername: state.user.verifiedUsername,
-  tipsAmount: ''
+  tipsBalance: state.account.tipsBalance
 });
 
 export default connect(Dashboard, mapStateToProps);

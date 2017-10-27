@@ -4,26 +4,15 @@ import { clearPasswordMessage } from '../../../../messages/accountActionMessages
 
 import './header.scss';
 
-const Header = ({ password, generatedVault, copiedSeed }) => (
+const Header = ({ view }) => (
   <div styleName="header-wrapper">
-    {
-      generatedVault &&
-      copiedSeed &&
-      password &&
-      <button
-        styleName="lock-account-button"
-        onClick={clearPasswordMessage}
-      >
-        Lock account
-      </button>
-    }
+    { (view === 'privacyNotice') && <span>Privacy Notice</span> }
+    { (view === 'createAccount') && <span>Create Account</span> }
   </div>
 );
 
 Header.propTypes = {
-  password: PropTypes.string.isRequired,
-  generatedVault: PropTypes.bool.isRequired,
-  copiedSeed: PropTypes.bool.isRequired
+  view: PropTypes.string.isRequired
 };
 
 export default Header;

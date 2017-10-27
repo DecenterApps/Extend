@@ -5,75 +5,17 @@ import {
 } from '../modules/ethereumService';
 import { pollTipsBalance } from './accountActions';
 import {
-  SET_NETWORK, SELECT_NETWORK, ACCEPT_PRIVACY_NOTICE, NETWORK_UNAVAILABLE,
+  NETWORK_UNAVAILABLE,
   REGISTER_USER, VERIFIED_USER, REGISTER_USER_ERROR, SET_ACTIVE_TAB, GET_SENT_TIPS, GET_SENT_TIPS_SUCCESS,
-  GET_SENT_TIPS_ERROR, GET_RECEIVED_TIPS, GET_RECEIVED_TIPS_SUCCESS, GET_RECEIVED_TIPS_ERROR
+  GET_SENT_TIPS_ERROR, GET_RECEIVED_TIPS, GET_RECEIVED_TIPS_SUCCESS, GET_RECEIVED_TIPS_ERROR, CHANGE_VIEW
 } from '../constants/actionTypes';
 
 const keyStore = lightwallet.keystore;
 
-/**
- * Sets Ethereum network if it is defined
- *
- * @param {Object} web3
- * @param {Function} dispatch
- */
-export const setNetwork = (web3, dispatch) =>
-  new Promise((resolve) => {
-    web3.version.getNetwork(async (err, netId) => {
-      if (err) {
-        await dispatch({ type: SET_NETWORK, payload: '' });
-        resolve();
-      }
-
-      let networkName = '';
-
-      switch (netId) {
-        case '1':
-          networkName = 'mainnet';
-          break;
-        case '2':
-          networkName = 'morden';
-          break;
-        case '3':
-          networkName = 'ropsten';
-          break;
-        case '4':
-          networkName = 'rinkeby';
-          break;
-        case '42':
-          networkName = 'kovan';
-          break;
-        default:
-          networkName = 'unknown';
-      }
-
-      await dispatch({ type: SET_NETWORK, payload: networkName });
-      resolve();
-    });
-  });
-
-/**
- * Dispatches action to change the current selected network
- *
- * @param {Function} dispatch
- * @param {Number} index - index of network in the constant NETWORKS array
- */
-export const selectNetwork = (dispatch, index) =>
-  new Promise(async (resolve) => {
-    await dispatch({ type: SELECT_NETWORK, payload: index });
-    resolve();
-  });
-
-/**
- * Dispatches action to accept privacy notice. The user only does this once
- * when the plugin is first loaded
- *
- * @param {Function} dispatch
- */
-export const acceptPrivacyNotice = (dispatch) => {
-  dispatch({ type: ACCEPT_PRIVACY_NOTICE });
+export const changeView = (dispatch, payload) => {
+  dispatch({ type: CHANGE_VIEW, payload });
 };
+
 
 /**
  * Dispatches action to set the current active content tab

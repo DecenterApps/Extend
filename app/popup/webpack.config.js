@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
 const { generateScopedName } = require('../modules/buildTools');
 
-const context = path.join(__dirname, 'src');
+const context = path.join(__dirname, '../');
 
 const HtmlWebpackPluginConfig = new HtmlWebpackPlugin({
   template: './app/popup/src/index.html',
@@ -62,7 +62,8 @@ module.exports = {
         ]
       },
       {
-        include: path.join(__dirname, 'src'),
+        test: /\.scss?$/,
+        include: [path.join(__dirname, '../')],
         use: [
           { loader: 'style-loader' },
           {
@@ -90,8 +91,7 @@ module.exports = {
               browsers: 'last 4 version'
             }
           },
-        ],
-        test: /\.scss?$/
+        ]
       },
       {
         test: /\.(jpe?g|png|gif|svg)$/i,

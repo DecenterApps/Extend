@@ -1,20 +1,15 @@
+@import '../../../../commonComponents/buttons';
+
 .privacy-notice-wrapper {
-
-  .privacy-notice-header {
-    background: #777;
-    font-size: 18px;
-    text-align: center;
-    padding: 10px;
-    color: white;
-
-    div:not(:last-child) {
-      margin-bottom: 7px;
-    }
-  }
+  height: 400px;
+  overflow: auto;
+  padding: 25px;
+  font-size: 16px;
 
   .privacy-notice-body {
-    padding: 50px;
-    font-size: 16px;
+    h2 {
+      font-size: 21px;
+    }
 
     div:not(:last-child) {
       margin-bottom: 15px;
@@ -22,10 +17,8 @@
     }
   }
 
-  .privacy-notice-submit {
-    display: flex;
-    padding: 0 20px 20px 20px;
-    justify-content: center;
-
+  button {
+    margin-top: 25px;
+    @include btn;
   }
 }

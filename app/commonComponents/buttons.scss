@@ -1,0 +1,22 @@
+@import './colors';
+
+@mixin btn {
+  border: 0;
+  padding: 13px;
+  width: 100%;
+  font-size: 16px;
+  text-align: center;
+  background: $green;
+  color: #fff;
+  cursor: pointer;
+
+  &:hover {
+    background: $green-hover;
+  }
+
+  &:disabled {
+    user-select: none;
+    cursor: not-allowed;
+    background: $green-disabled;
+  }
+}

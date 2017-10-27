@@ -7,7 +7,7 @@ import InputFormField from '../../../../commonComponents/InputFormField';
 import typeInPasswordFormValidator from './typeInPasswordFormValidator';
 import { checkIfPasswordValidMessage } from '../../../../messages/accountActionMessages';
 
-import formStyle from '../../styles/forms.scss';
+import formStyle from '../../../../commonComponents/forms.scss';
 
 class TypeInPasswordForm extends Component {
   constructor(props) {

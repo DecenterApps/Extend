@@ -1,11 +1,12 @@
 import {
-  SET_NETWORK, REGISTER_USER, REGISTER_USER_ERROR, VERIFIED_USER,
-  SELECT_NETWORK, ACCEPT_PRIVACY_NOTICE, NETWORK_UNAVAILABLE,
+  REGISTER_USER, REGISTER_USER_ERROR, VERIFIED_USER,
+  NETWORK_UNAVAILABLE,
   SEND_TIP, SEND_TIP_SUCCESS, SEND_TIP_ERROR, SET_ACTIVE_TAB,
   GET_SENT_TIPS, GET_SENT_TIPS_SUCCESS, GET_SENT_TIPS_ERROR,
-  GET_RECEIVED_TIPS, GET_RECEIVED_TIPS_SUCCESS, GET_RECEIVED_TIPS_ERROR
+  GET_RECEIVED_TIPS, GET_RECEIVED_TIPS_SUCCESS, GET_RECEIVED_TIPS_ERROR,
+  CHANGE_VIEW
 } from '../../../constants/actionTypes';
-import { NETWORKS, TABS } from '../../../constants/general';
+import { NETWORK_URL, TABS, VIEWS } from '../../../constants/general';
 
 export const reducerName = 'user';
 
@@ -15,7 +16,6 @@ export const reducerName = 'user';
 const INITIAL_STATE = {
   networkActive: true,
   acceptedNotice: false,
-  network: '',
   registering: false,
   registeringError: '',
   verified: false,
@@ -23,25 +23,23 @@ const INITIAL_STATE = {
   verifiedUsernameSha3: '',
   registeringUsername: '',
   registeringUsernameSha3: '',
-  selectedNetwork: NETWORKS[2],
+  networkUrl: NETWORK_URL,
   sendingTip: false,
   sendingTipError: '',
   activeTab: TABS[0],
   gettingSentTips: false,
   gettingSentTipsError: '',
-  sentTips: []
+  sentTips: [],
+  gettingReceivedTips: false,
+  gettingReceivedTipsError: '',
+  receivedTips: [],
+  view: VIEWS[0]
 };
 
 export const reducer = (state, action) => {
   const payload = action.payload;
 
   switch (action.type) {
-    case ACCEPT_PRIVACY_NOTICE:
-      return { ...state, acceptedNotice: true };
-
-    case SET_NETWORK:
-      return { ...state, network: payload };
-
     case REGISTER_USER:
       return {
         ...state,
@@ -68,9 +66,6 @@ export const reducer = (state, action) => {
         registering: false,
         registeringError: 'An error occurred while registering your username, please try again.'
       };
-
-    case SELECT_NETWORK:
-      return { ...state, selectedNetwork: NETWORKS[payload] };
 
     case SET_ACTIVE_TAB:
       return { ...state, activeTab: payload };
@@ -112,6 +107,9 @@ export const reducer = (state, action) => {
         gettingReceivedTips: false,
         gettingReceivedTipsError: 'An error occurred while getting sent tips, please try again.'
       };
+
+    case CHANGE_VIEW:
+      return { ...state, view: payload.viewName, ...payload.additionalChanges };
 
     default:
       return false;

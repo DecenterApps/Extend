@@ -43,7 +43,7 @@ const handleChangeNetwork = (Web3, contractConfig, dispatch, getState) =>
     const state = getState();
 
     try {
-      let web3 = new Web3(getProviderSpecs(state.user.selectedNetwork.url));
+      let web3 = new Web3(getProviderSpecs(state.user.networkUrl));
 
       const eventsContract = web3.eth.contract(contractConfig.events.abi).at(contractConfig.events.contractAddress);
       const funcContract = web3.eth.contract(contractConfig.func.abi).at(contractConfig.func.contractAddress);
@@ -53,8 +53,6 @@ const handleChangeNetwork = (Web3, contractConfig, dispatch, getState) =>
       web3.eth.defaultAccount = state.account.address; //eslint-disable-line
 
       await handleUserVerification(web3, dispatch, getState, state, contracts);
-
-      await userActions.setNetwork(web3, dispatch); // TODO remove this
 
       accountActions.pollForGasPrice(web3, dispatch);
       accountActions.pollPendingTxs(web3, dispatch, getState);

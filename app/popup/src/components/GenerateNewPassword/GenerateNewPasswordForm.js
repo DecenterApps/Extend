@@ -6,7 +6,7 @@ import InputFormField from '../../../../commonComponents/InputFormField';
 import generateNewPasswordFormValidator from './generateNewPasswordFormValidator';
 import { createWalletMessage } from '../../../../messages/accountActionMessages';
 
-import formStyle from '../../styles/forms.scss';
+import formStyle from '../../../../commonComponents/forms.scss';
 
 class GenerateNewPasswordForm extends Component {
   constructor(props) {

@@ -1,9 +1,11 @@
+@import '../../../../commonComponents/colors';
+
 .header-wrapper {
+  height: 50px;
+  font-size: 18px;
+  background: $green;
+  color: #fff;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-
-  .lock-account-button {
-    margin-right: 15px;
-  }
+  justify-content: center;
 }

@@ -8,14 +8,14 @@ import GenerateNewPassword from '../GenerateNewPassword/GenerateNewPassword';
 import Dashboard from '../Dashboard/Dashboard';
 import TypeInPassword from '../TypeInPassword/TypeInPassword';
 
-import './app.scss';
+import '../../../../commonComponents/general.scss';
 
-const App = ({ acceptedNotice, generatedVault, copiedSeed, seed, password }) => (
-  <div styleName="app2">
-    <Header password={password} copiedSeed={copiedSeed} generatedVault={generatedVault} />
+const App = ({ acceptedNotice, generatedVault, copiedSeed, seed, password, view }) => (
+  <div styleName="popup-wrapper">
+    <Header view={view} />
 
     {
-      !acceptedNotice && <PrivacyNotice />
+      view === 'privacyNotice' && <PrivacyNotice />
     }
 
     {
@@ -48,6 +48,7 @@ App.propTypes = {
   copiedSeed: PropTypes.bool.isRequired,
   seed: PropTypes.string.isRequired,
   password: PropTypes.string.isRequired,
+  view: PropTypes.string.isRequired
 };
 
 const mapStateToProps = (state) => ({
@@ -55,7 +56,8 @@ const mapStateToProps = (state) => ({
   generatedVault: state.account.created,
   password: state.account.password,
   copiedSeed: state.account.copiedSeed,
-  seed: state.account.seed
+  seed: state.account.seed,
+  view: state.user.view
 });
 
 export default connect(App, mapStateToProps);

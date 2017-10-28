@@ -1,3 +1,6 @@
+@import './buttons';
+@import './colors';
+
 .form-name {
   font-size: 24px;
   text-align: center;
@@ -6,8 +9,6 @@
 
 .form-wrapper {
   width: 250px;
-
-  $errorColor: #F57170;
 
   .form-item-wrapper {
     position: relative;
@@ -24,13 +25,13 @@
     }
 
     .form-item-error {
-      border-color: $errorColor;
-      outline-color: $errorColor;
+      border-color: $red-error;
+      outline-color: $red-error;
     }
 
     div.form-item-error {
       position: absolute;
-      color: $errorColor;
+      color: $red-error;
       top: 45px;
       font-size: 16px;
     }
@@ -39,30 +40,61 @@
   .submit-error {
     font-size: 18px;
     margin-bottom: 20px;
-    color: $errorColor;
+    color: $red-error;
   }
 
   .submit-button {
+    @include btn;
+  }
+}
+
+.form-wrapper-2 {
+  width: 100%;
+
+  .form-item-wrapper {
+    position: relative;
     display: flex;
     align-items: center;
-    justify-content: center;
-    width: 100%;
-    color: white;
-    background: #673AB7;
-    padding: 12px 0;
-    font-size: 14px;
-    border-radius: 3px;
-    border: none;
-    cursor: pointer;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    margin-bottom: 35px;
 
-    &:hover {
-      background: lighten(#673AB7, 15);
+    .form-item {
+      border: 2px solid #444;
+      border-radius: 3px;
+      padding: 8px;
+      margin: 0;
+      width: 200px;
+      text-align: right;
     }
 
-    &:disabled {
-      user-select: none;
-      cursor: not-allowed;
-      background: lighten(#673AB7, 30);
+    label {
+      color: #444;
+      font-size: 16px;
     }
+
+    .form-item-error {
+      border-color: $red-error;
+      outline-color: $red-error;
+    }
+
+    div.form-item-error {
+      position: absolute;
+      color: $red-error;
+      top: 40px;
+      font-size: 16px;
+      width: 100%;
+      text-align: right;
+    }
+  }
+
+  .submit-error {
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: $red-error;
+  }
+
+  .submit-button {
+    @include btn;
   }
 }

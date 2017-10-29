@@ -11,6 +11,7 @@ import {
   getBalanceForAddress, getGasPrice, transfer, pollForReceipt, getNonceForAddress, sendTransaction,
   _getTipBalance
 } from '../modules/ethereumService';
+import { changeView } from './userActions';
 
 let lockTimeout = null;
 const keyStore = lightwallet.keystore;
@@ -166,6 +167,7 @@ export const clearPassword = (dispatch) => {
 export const passwordReloader = (dispatch) => {
   lockTimeout = setTimeout(() => {
     dispatch({ type: CLEAR_PASSWORD });
+    changeView(dispatch, { viewName: 'unlockAccount' });
   }, LOCK_INTERVAL);
 };
 
@@ -211,7 +213,8 @@ export const checkIfPasswordValid = async (getState, dispatch, password) => {
     const pwDerivedKey = await getPwDerivedKey(ks, password);
     getPrivateKey(ks, getState().account.address, pwDerivedKey);
 
-    dispatch({ type: UNLOCK, payload: password });
+    await dispatch({ type: UNLOCK, payload: password });
+    changeView(dispatch, { viewName: 'dashboard' });
     passwordReloader(dispatch);
   } catch(err) {
     dispatch({ type: UNLOCK_ERROR });
@@ -254,6 +257,7 @@ export const createWallet = (web3, dispatch, password) => {
     };
 
     await dispatch({ type: CREATE_WALLET, payload });
+    changeView(dispatch, { viewName: 'copySeed' });
     pollForBalance(web3, dispatch, address);
   });
 };
@@ -265,5 +269,6 @@ export const createWallet = (web3, dispatch, password) => {
  */
 export const copiedSeed = (dispatch) => {
   dispatch({ type: COPIED_SEED });
+  changeView(dispatch, { viewName: 'dashboard' });
   passwordReloader(dispatch);
 };

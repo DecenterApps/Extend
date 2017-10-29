@@ -6,8 +6,6 @@ import './copy-seed.scss';
 
 const CopySeed = ({ seed }) => (
   <div styleName="copy-seed-wrapper">
-    <h1>Copy recovery phrase</h1>
-
     <div styleName="copy-seed-content">
       <textarea name="seed" value={seed} readOnly />
 

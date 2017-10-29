@@ -31,7 +31,7 @@ class GenerateNewPasswordForm extends Component {
           showErrorText
           type="password"
           showLabel
-          labelText="New Password:"
+          labelText="Password:"
           wrapperClassName={formStyle['form-item-wrapper']}
           inputClassName={formStyle['form-item']}
           errorClassName={formStyle['form-item-error']}
@@ -42,7 +42,7 @@ class GenerateNewPasswordForm extends Component {
           showErrorText
           type="password"
           showLabel
-          labelText="Repeat new password:"
+          labelText="Repeat password:"
           wrapperClassName={formStyle['form-item-wrapper']}
           inputClassName={formStyle['form-item']}
           errorClassName={formStyle['form-item-error']}

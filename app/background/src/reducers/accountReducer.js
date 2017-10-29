@@ -21,7 +21,7 @@ const INITIAL_STATE = {
   sending: false,
   sendingError: '',
   withdrawing: false,
-  withdrawingError: false,
+  withdrawingError: '',
   withdrawSuccessful: false,
   tipsBalance: '0'
 };

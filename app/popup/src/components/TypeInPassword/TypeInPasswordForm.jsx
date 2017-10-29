@@ -21,14 +21,15 @@ class TypeInPasswordForm extends Component {
 
     return (
       <form
-        styleName="form-wrapper"
+        styleName="form-wrapper-2"
         onSubmit={(e) => { this.props.handleSubmit(e, checkIfPasswordValidMessage); }}
       >
 
         <PasswordField
           name="password"
           showErrorText
-          placeholder="Enter password"
+          showLabel
+          labelText="Password:"
           type="password"
           wrapperClassName={formStyle['form-item-wrapper']}
           inputClassName={formStyle['form-item']}

@@ -14,31 +14,11 @@ const App = ({ acceptedNotice, generatedVault, copiedSeed, seed, password, view 
   <div styleName="popup-wrapper">
     <Header view={view} />
 
-    {
-      view === 'privacyNotice' && <PrivacyNotice />
-    }
-
-    {
-      !generatedVault &&
-      acceptedNotice &&
-      <GenerateNewPassword />
-    }
-
-    {
-      generatedVault &&
-      !copiedSeed &&
-      <CopySeed seed={seed} />
-    }
-
-    {
-      generatedVault &&
-      acceptedNotice &&
-      copiedSeed &&
-      <div>
-        { password && <Dashboard /> }
-        { !password && <TypeInPassword /> }
-      </div>
-    }
+    { view === 'privacyNotice' && <PrivacyNotice /> }
+    { (view === 'createAccount') && !generatedVault && acceptedNotice && <GenerateNewPassword /> }
+    { (view === 'copySeed') && generatedVault && !copiedSeed && <CopySeed seed={seed} /> }
+    { (view === 'dashboard') && generatedVault && acceptedNotice && copiedSeed && password && <Dashboard /> }
+    { (view === 'unlockAccount') && generatedVault && acceptedNotice && copiedSeed && !password && <TypeInPassword /> }
   </div>
 );
 

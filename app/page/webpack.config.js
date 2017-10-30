@@ -2,7 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const { generateScopedName } = require('../modules/buildTools');
 
-const context = path.join(__dirname, 'src');
+const context = path.join(__dirname, '../');
 
 module.exports = {
   entry: [
@@ -59,7 +59,7 @@ module.exports = {
         ]
       },
       {
-        include: path.join(__dirname, 'src'),
+        include: path.join(__dirname, '../'),
         use: [
           { loader: 'style-loader' },
           {

@@ -14,14 +14,13 @@ const INITIAL_STATE = {
   keyStore: {},
   seed: '',
   unlockError: '',
-  accountIcon: '',
   balance: '',
   gasPrice: 0,
   transactions: [],
   sending: false,
   sendingError: '',
   withdrawing: false,
-  withdrawingError: false,
+  withdrawingError: '',
   withdrawSuccessful: false,
   tipsBalance: '0'
 };

@@ -6,7 +6,7 @@ import InputFormField from '../../../../commonComponents/InputFormField';
 import generateNewPasswordFormValidator from './generateNewPasswordFormValidator';
 import { createWalletMessage } from '../../../../messages/accountActionMessages';
 
-import formStyle from '../../styles/forms.scss';
+import formStyle from '../../../../commonComponents/forms.scss';
 
 class GenerateNewPasswordForm extends Component {
   constructor(props) {
@@ -22,15 +22,16 @@ class GenerateNewPasswordForm extends Component {
 
     return (
       <form
-        styleName="form-wrapper"
+        styleName="form-wrapper-2"
         onSubmit={(e) => { this.props.handleSubmit(e, createWalletMessage); }}
       >
 
         <PasswordField
           name="password"
           showErrorText
-          placeholder="New password"
           type="password"
+          showLabel
+          labelText="Password:"
           wrapperClassName={formStyle['form-item-wrapper']}
           inputClassName={formStyle['form-item']}
           errorClassName={formStyle['form-item-error']}
@@ -39,8 +40,9 @@ class GenerateNewPasswordForm extends Component {
         <RepeatPasswordField
           name="repeatPassword"
           showErrorText
-          placeholder="Repeat new password"
           type="password"
+          showLabel
+          labelText="Repeat password:"
           wrapperClassName={formStyle['form-item-wrapper']}
           inputClassName={formStyle['form-item']}
           errorClassName={formStyle['form-item-error']}

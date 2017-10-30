@@ -1,0 +1,100 @@
+@import './buttons';
+@import './colors';
+
+.form-name {
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.form-wrapper {
+  width: 250px;
+
+  .form-item-wrapper {
+    position: relative;
+    display: flex;
+    margin-bottom: 35px;
+
+    .form-item {
+      border: 2px solid #E2E2E2;
+      border-radius: 3px;
+      padding: 10px;
+      margin: 0;
+      width: 100%;
+      font-size: 14px;
+    }
+
+    .form-item-error {
+      border-color: $red-error;
+      outline-color: $red-error;
+    }
+
+    div.form-item-error {
+      position: absolute;
+      color: $red-error;
+      top: 45px;
+      font-size: 16px;
+    }
+  }
+
+  .submit-error {
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: $red-error;
+  }
+
+  .submit-button {
+    @include btn;
+  }
+}
+
+.form-wrapper-2 {
+  width: 100%;
+
+  .form-item-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    margin-bottom: 35px;
+
+    .form-item {
+      border: 2px solid #444;
+      border-radius: 3px;
+      padding: 8px;
+      margin: 0;
+      width: 200px;
+      text-align: right;
+    }
+
+    label {
+      color: #444;
+      font-size: 16px;
+    }
+
+    .form-item-error {
+      border-color: $red-error;
+      outline-color: $red-error;
+    }
+
+    div.form-item-error {
+      position: absolute;
+      color: $red-error;
+      top: 40px;
+      font-size: 16px;
+      width: 100%;
+      text-align: right;
+    }
+  }
+
+  .submit-error {
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: $red-error;
+  }
+
+  .submit-button {
+    @include btn;
+  }
+}

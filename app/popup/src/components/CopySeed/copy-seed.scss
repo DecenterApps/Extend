@@ -1,31 +1,28 @@
-.copy-seed-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
+@import '../../../../commonComponents/buttons';
 
-  h1 {
-    font-size: 22px;
-    margin: 40px 0;
-  }
+.copy-seed-wrapper {
+  padding: 25px;
 
   .copy-seed-content {
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    margin-bottom: 40px;
 
     textarea {
+      border-radius: 3px;
+      border: 2px solid #444;
       resize: none;
-      width: 280px;
+      width: calc(100% - 45px);
       height: 100px;
       font-size: 20px;
-      margin-bottom: 20px;
+      padding: 20px;
     }
 
     button {
-      font-size: 16px;
+      margin-top: 25px;
+      @include btn;
     }
   }
 }

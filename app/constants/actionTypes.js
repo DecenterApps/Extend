@@ -1,19 +1,21 @@
 export const SET_ADDRESS = 'set_address';
-export const SET_NETWORK = 'set_network';
 
 // USER
 export const REGISTER_USER = 'register_user';
 export const REGISTER_USER_ERROR = 'register_user_error';
 export const VERIFIED_USER = 'verified_user';
 export const SET_ACTIVE_TAB = 'set_active_tab';
-
 export const SET_IS_USER_VERIFIED = 'set_is_user_verified';
-
-export const ACCEPT_PRIVACY_NOTICE = 'accept_privacy_notice';
+export const GET_SENT_TIPS = 'get_sent_tips';
+export const GET_SENT_TIPS_SUCCESS = 'get_sent_tips_success';
+export const GET_SENT_TIPS_ERROR = 'get_sent_tips_error';
+export const GET_RECEIVED_TIPS = 'get_received_tips';
+export const GET_RECEIVED_TIPS_SUCCESS = 'get_received_tips_success';
+export const GET_RECEIVED_TIPS_ERROR = 'get_received_tips_error';
+export const CHANGE_VIEW = 'change_view';
 
 // NETWORK
 export const TOGGLE_DROPDOWN = 'toggle_dropdown';
-export const SELECT_NETWORK = 'select_network';
 export const NETWORK_UNAVAILABLE = 'network_unavailable';
 
 // FORMS

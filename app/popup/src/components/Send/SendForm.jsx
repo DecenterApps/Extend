@@ -7,7 +7,7 @@ import InputFormField from '../../../../commonComponents/InputFormField';
 import { sendMessage } from '../../../../messages/accountActionMessages';
 import sendFormValidator from './sendFormValidator';
 
-import formStyle from '../../styles/forms.scss';
+import formStyle from '../../../../commonComponents/forms.scss';
 
 const FORM_NAME = 'sendForm';
 

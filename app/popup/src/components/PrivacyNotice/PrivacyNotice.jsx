@@ -1,35 +1,35 @@
 import React from 'react';
-import { acceptPrivacyNoticeMessage } from '../../../../messages/userActionsMessages';
+import { changeViewMessage } from '../../../../messages/userActionsMessages';
 
 import './privacy-notice.scss';
 
 const PrivacyNotice = () => (
   <div styleName="privacy-notice-wrapper">
-    <div styleName="privacy-notice-header">
-      <div>Privacy Notice</div>
-      <div>Release Date</div>
-    </div>
-
     <div styleName="privacy-notice-body">
-      <div>Reddapp is beta software.</div>
+      <h2>Subtitle</h2>
 
       <div>
-        When you log in to Reddapp, your current account is visible to every new site you visit.
+        Information You Provide. We receive and store information you enter. For example, when you search for or buy a
+        product or service, or when you supply information such as your address, phone number or credit card. You can
+        choose not to provide certain information, but then you might not be able to take advantage of some of our
+        features. We use the information that you provide for such purposes as responding to your requests, customizing
+        future shopping for you, improving our website, and communicating with you. In addition, if you opt-in, we may
+        share your information with other companies who provide goods or services that you are interested in.
       </div>
+
       <div>
-        For your privacy, for now, please sign out of Reddapp when you are done using a site.
-      </div>
-      <div>
-        Also, by default, you will be signed in to a test network. To use real Ether,
-        you must connect to the main network manually in the top left network menu.
+        Cookies. Like many websites, we use cookies. Cookies are small programs that we transfer to your hard drive
+        that allow us to recognize you and to provide you with a customized shopping experience. If you doyou and to
+        provide you with a customized shopping experience. If you do not want us to use cookies, you can easily disable
+        them by going to the toolbar of your web browser, and clicking on the “help” button. Follow the instructions
+        that will ide you with a browser from accepting cookies, or set the browser to inform you visit this and other
+        websites anonymously through the use of utilities provided by other private companies.
       </div>
     </div>
 
-    <span styleName="privacy-notice-submit">
-      <button onClick={acceptPrivacyNoticeMessage}>
-        Accept
-      </button>
-    </span>
+    <button onClick={() => { changeViewMessage('createAccount', { acceptedNotice: true }); }}>
+      Accept
+    </button>
   </div>
 );
 

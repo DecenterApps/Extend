@@ -7,7 +7,7 @@ import InputFormField from '../../../../../commonComponents/InputFormField';
 import tipFormValidator from './tipFormValidator';
 import { tipMessage } from '../../../../../messages/pageActionsMessages';
 
-import formStyle from '../../../styles/forms.scss';
+import formStyle from '../../../../../commonComponents/forms.scss';
 
 class TipForm extends Component {
   constructor(props) {

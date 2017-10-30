@@ -1,0 +1,17 @@
+.tips-wrapper {
+  padding: 25px;
+
+  .single-tip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #444;
+    padding: 5px 0;
+
+    span:first-child {
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+}

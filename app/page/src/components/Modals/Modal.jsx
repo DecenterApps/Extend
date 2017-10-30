@@ -22,7 +22,9 @@ class Modal extends PureComponent {
       return setTimeout(() => { this.setState({ children: null }); }, 450);
     }
 
-    return this.setState({ children: newProps.children, show: true });
+    if (newProps.modalOpen) { this.setState({ show: true }); }
+
+    return this.setState({ children: newProps.children });
   }
 
   componentWillUnmount() {

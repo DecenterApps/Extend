@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import connect from '../../../../customRedux/connect';
 import { getEtherScanLinkByNetwork } from '../../../../actions/utils';
-import { createUserAuthMessage } from '../../../../messages/userActionsMessages';
+import { createUserAuthMessage, changeViewMessage } from '../../../../messages/userActionsMessages';
 import Tabs from '../Tabs/Tabs';
 
 import './dashboard.scss';
@@ -41,7 +41,7 @@ const Dashboard = ({
           <div styleName="large-section-balance">
             { balance }
           </div>
-          <div styleName="large-section-btn">
+          <div styleName="large-section-btn" onClick={() => { changeViewMessage('send'); }}>
             Send
           </div>
         </div>
@@ -55,7 +55,7 @@ const Dashboard = ({
             <div styleName="large-section-balance">
               { tipsBalance }
             </div>
-            <div styleName="large-section-btn">
+            <div styleName="large-section-btn" onClick={() => { changeViewMessage('withdraw'); }}>
               Withdraw
             </div>
           </div>
@@ -66,9 +66,11 @@ const Dashboard = ({
     {
       !registering &&
       !verifiedUsername &&
-      <button onClick={createUserAuthMessage} styleName="register-btn">
-        Register Reddit username
-      </button>
+      <div styleName="register-btn-wrapper">
+        <button onClick={createUserAuthMessage} styleName="register-btn">
+          Register Reddit username
+        </button>
+      </div>
     }
     {
       registering && <div styleName="registering-info">Username is currently being registered. Please wait...</div>

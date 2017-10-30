@@ -7,18 +7,22 @@ import CopySeed from '../CopySeed/CopySeed';
 import GenerateNewPassword from '../GenerateNewPassword/GenerateNewPassword';
 import Dashboard from '../Dashboard/Dashboard';
 import TypeInPassword from '../TypeInPassword/TypeInPassword';
+import Send from '../Send/Send';
+import Withdraw from '../Withdraw/Withdraw';
 
 import '../../../../commonComponents/general.scss';
 
 const App = ({ acceptedNotice, generatedVault, copiedSeed, seed, password, view }) => (
   <div styleName="popup-wrapper">
-    <Header view={view} />
+    <Header view={view} password={password} copiedSeed={copiedSeed} generatedVault={generatedVault} />
 
     { view === 'privacyNotice' && <PrivacyNotice /> }
     { (view === 'createAccount') && !generatedVault && acceptedNotice && <GenerateNewPassword /> }
     { (view === 'copySeed') && generatedVault && !copiedSeed && <CopySeed seed={seed} /> }
     { (view === 'dashboard') && generatedVault && acceptedNotice && copiedSeed && password && <Dashboard /> }
     { (view === 'unlockAccount') && generatedVault && acceptedNotice && copiedSeed && !password && <TypeInPassword /> }
+    { (view === 'send') && <Send /> }
+    { (view === 'withdraw') && <Withdraw /> }
   </div>
 );
 

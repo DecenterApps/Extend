@@ -1,9 +1,11 @@
 import { TOGGLE_DROPDOWN } from '../../../constants/actionTypes';
+import { OPTIONS_DROPDOWN_ITEMS } from '../../../constants/general';
 
-const reducerName = 'networkDropdown';
+const reducerName = 'dropdowns';
 
 const INITIAL_STATE = {
-  visible: false
+  visible: false,
+  optionsDropdownItems: OPTIONS_DROPDOWN_ITEMS
 };
 
 export const reducer = (state, action) => {

@@ -54,8 +54,11 @@
     font-size: 16px;
   }
 
-  .register-btn {
-    margin-top: 25px;
-    @include btn;
+  .register-btn-wrapper {
+    padding: 0 25px 25px 25px;
+
+    .register-btn {
+      @include btn;
+    }
   }
 }

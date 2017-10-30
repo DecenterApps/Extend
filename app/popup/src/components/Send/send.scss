@@ -1,4 +1,5 @@
 .send-wrapper {
+  padding: 25px;
 
   .transaction-list {
 
@@ -8,6 +9,8 @@
   }
 
   .no-transactions {
-
+    margin-top: 25px;
+    font-size: 16px;
+    text-align: center;
   }
 }

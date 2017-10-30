@@ -28,16 +28,17 @@ class SendForm extends Component {
     return (
       <div>
         <form
-          styleName="form-wrapper"
+          styleName="form-wrapper-2"
           onSubmit={(e) => { this.props.handleSubmit(e, sendMessage); }}
         >
 
           <AddressField
             name="to"
             showErrorText
-            placeholder="Address to send to"
+            showLabel
+            labelText="To:"
             type="text"
-            wrapperClassName={formStyle['form-item-wrapper']}
+            wrapperClassName={`${formStyle['form-item-wrapper']} ${formStyle['form-item-wrapper-long']}`}
             inputClassName={formStyle['form-item']}
             errorClassName={formStyle['form-item-error']}
           />
@@ -45,7 +46,8 @@ class SendForm extends Component {
           <AmountField
             name="amount"
             showErrorText
-            placeholder="Amount of Eth that you want to tip"
+            showLabel
+            labelText="Amount (ETH):"
             type="text"
             wrapperClassName={formStyle['form-item-wrapper']}
             inputClassName={formStyle['form-item']}
@@ -55,7 +57,8 @@ class SendForm extends Component {
           <GasPriceField
             name="gasPrice"
             showErrorText
-            placeholder="Transaction gas price"
+            showLabel
+            labelText="Gas price (Gwei):"
             type="number"
             value={this.props.gasPrice}
             wrapperClassName={formStyle['form-item-wrapper']}

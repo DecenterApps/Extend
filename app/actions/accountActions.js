@@ -1,4 +1,3 @@
-import blockies from 'blockies';
 import lightwallet from '../modules/eth-lightwallet/lightwallet';
 import {
   CREATE_WALLET, COPIED_SEED, CLEAR_PASSWORD, UNLOCK_ERROR, UNLOCK, SET_BALANCE, SET_GAS_PRICE,
@@ -159,6 +158,7 @@ export const pollForBalance = (web3, dispatch, address) => {
 export const clearPassword = (dispatch) => {
   clearTimeout(lockTimeout);
   dispatch({ type: CLEAR_PASSWORD });
+  changeView(dispatch, { viewName: 'unlockAccount' });
 };
 
 /**

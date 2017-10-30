@@ -16,12 +16,14 @@ contract Reddapp is usingOraclize {
 
     ReddappData data;
     ReddappEvents events;
+    address owner;
 
     function Reddapp() public {
         data = new ReddappData();
         data.addOwner(msg.sender);
         events = new ReddappEvents();
         events.addOwner(msg.sender);
+        owner = msg.sender;
     } 
 
     function getDataAddress() public constant returns (address) {
@@ -45,8 +47,8 @@ contract Reddapp is usingOraclize {
         address queryAddress = data.getAddressForQuery(_myid);
         bytes32 usernameForAddress = data.getUserUsername(queryAddress);
         //if we don't do this double conversion for some reason strCompare is not working
-        if (usernameForAddress != keccak256(_result)) {
-            events.usernameDoesNotMatch(keccak256(_result), usernameForAddress);
+        if (usernameForAddress != stringToBytes32(_result)) {
+            events.usernameDoesNotMatch(stringToBytes32(_result), usernameForAddress);
             return;
         }
 
@@ -120,6 +122,11 @@ contract Reddapp is usingOraclize {
         events.refundSuccessful(_username);
     }
 
+    function buyGold(bytes32 _username) public payable {
+        owner.transfer(msg.value);
+        events.goldBought(_username, msg.value);  
+    }
+
     function getAddressFromUsername(bytes32 _username) public constant returns (address userAddress) {
         return data.getAddressForUsername(_username);
     }
@@ -139,6 +146,16 @@ contract Reddapp is usingOraclize {
 
     function checkIfRefundAvailable(bytes32 _username) public constant returns (bool) {
         return data.getLastTipTime(msg.sender, _username) < (now - 2 weeks);
+    }
+
+    /**
+     * Convert string to bytes32
+     * @param _source string to convert
+     */
+    function stringToBytes32(string memory _source) internal returns (bytes32 result) {
+        assembly {
+            result := mload(add(_source, 32))
+        }
     }
 
     function () payable {

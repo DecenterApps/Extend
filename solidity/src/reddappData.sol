@@ -27,35 +27,35 @@ contract ReddappData {
     
     
     //getters
-    function getAddressForUsername(bytes32 _username) public constant returns (address) {
+    function getAddressForUsername(bytes32 _username) public constant onlyOwners returns (address) {
         return usernameToAddress[_username];
     }
 
-    function getAddressForQuery(bytes32 _queryId) public constant returns (address) {
+    function getAddressForQuery(bytes32 _queryId) public constant onlyOwners returns (address) {
         return queryToAddress[_queryId];
     }
     
-    function getBalanceForUser(bytes32 _username) public constant returns (uint) {
+    function getBalanceForUser(bytes32 _username) public constant onlyOwners returns (uint) {
         return balances[_username];
     }
     
-    function getUserVerified(address _address) public constant returns (bool) {
+    function getUserVerified(address _address) public constant onlyOwners returns (bool) {
         return users[_address].verified;
     }
     
-    function getUserUsername(address _address) public constant returns (bytes32) {
+    function getUserUsername(address _address) public constant onlyOwners returns (bytes32) {
         return users[_address].username;
     }
 
-    function getTip(address _from, bytes32 _to) public constant returns (uint) {
+    function getTip(address _from, bytes32 _to) public constant onlyOwners  returns (uint) {
         return tips[_from][_to];
     }
   
-    function getLastTipTime(address _from, bytes32 _to) public constant returns (uint) {
+    function getLastTipTime(address _from, bytes32 _to) public constant onlyOwners returns (uint) {
         return lastTip[_from][_to];
     }
 
-    function getLastWithdraw(bytes32 _username) public constant returns (uint) {
+    function getLastWithdraw(bytes32 _username) public constant onlyOwners returns (uint) {
         return lastWithdraw[_username];
     }
 

@@ -12,6 +12,7 @@ contract ReddappEvents {
     event WithdrawSuccessful(bytes32 username);
     event CheckAddressVerified(address userAddress);
     event RefundSuccessful(bytes32 username);
+    event GoldBought(bytes32 username, uint value);
 
     mapping(address => bool) owners;
 
@@ -30,6 +31,10 @@ contract ReddappEvents {
 
     function removeOwner(address _address) onlyOwners {
         owners[_address] = false;
+    }
+
+    function goldBought(bytes32 _username, uint _value){
+        GoldBought(_username, _value);
     }
 
     function createdUser(bytes32 _username) onlyOwners {

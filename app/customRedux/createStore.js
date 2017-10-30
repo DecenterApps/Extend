@@ -1,4 +1,5 @@
 import { get, set, clearReducer } from './store';
+import { CLEAR_PENDING } from '../constants/actionTypes';
 
 /**
  * Load reducer state from chrome local store if it was already saved there.
@@ -8,7 +9,7 @@ import { get, set, clearReducer } from './store';
  */
 const initReducer = async (reducerData) =>
   new Promise(async (resolve) => {
-    // await clearReducer(reducerData.name); // remove when finished
+    await clearReducer(reducerData.name); // remove when finished
 
     const existingReducerState = await get(reducerData.name);
 
@@ -61,6 +62,11 @@ const handleReducerFinish = (reducersFinished, reducers, resolved, resolve, stat
   if (resolved) {
     resolve(state[reducerName]);
   } else {
+    if (action.type.includes(CLEAR_PENDING)) {
+      resolve();
+      return;
+    }
+
     throw Error('Dispatch was not handled in any reducer', action);
   }
 };

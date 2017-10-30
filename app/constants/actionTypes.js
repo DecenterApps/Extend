@@ -1,4 +1,5 @@
 export const SET_ADDRESS = 'set_address';
+export const CLEAR_PENDING = 'clear_pending';
 
 // USER
 export const REGISTER_USER = 'register_user';

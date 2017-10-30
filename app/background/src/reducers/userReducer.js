@@ -4,7 +4,7 @@ import {
   SEND_TIP, SEND_TIP_SUCCESS, SEND_TIP_ERROR, SET_ACTIVE_TAB,
   GET_SENT_TIPS, GET_SENT_TIPS_SUCCESS, GET_SENT_TIPS_ERROR,
   GET_RECEIVED_TIPS, GET_RECEIVED_TIPS_SUCCESS, GET_RECEIVED_TIPS_ERROR,
-  CHANGE_VIEW
+  CHANGE_VIEW, CLEAR_PENDING
 } from '../../../constants/actionTypes';
 import { NETWORK_URL, TABS, VIEWS } from '../../../constants/general';
 
@@ -40,6 +40,17 @@ export const reducer = (state, action) => {
   const payload = action.payload;
 
   switch (action.type) {
+    case `${CLEAR_PENDING}-${reducerName}`:
+      return {
+        ...state,
+        sendingTip: false,
+        sendingTipError: '',
+        gettingSentTips: false,
+        gettingSentTipsError: '',
+        gettingReceivedTips: false,
+        gettingReceivedTipsError: '',
+      };
+
     case REGISTER_USER:
       return {
         ...state,

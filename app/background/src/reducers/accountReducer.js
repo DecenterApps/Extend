@@ -1,7 +1,7 @@
 import {
   CREATE_WALLET, COPIED_SEED, CLEAR_PASSWORD, UNLOCK_ERROR, UNLOCK, SET_BALANCE, SET_GAS_PRICE,
   SEND, SEND_ERROR, SEND_SUCCESS, CHANGE_TX_STATE, WITHDRAW, WITHDRAW_ERROR, WITHDRAW_SUCCESS, CLEAR_WITHDRAW_SUCCESS,
-  SET_TIPS_BALANCE
+  SET_TIPS_BALANCE, CLEAR_PENDING
 } from '../../../constants/actionTypes';
 
 const reducerName = 'account';
@@ -29,6 +29,17 @@ export const reducer = (state, action) => {
   const payload = action.payload;
 
   switch (action.type) {
+    case `${CLEAR_PENDING}-${reducerName}`:
+      return {
+        ...state,
+        unlockError: '',
+        sending: false,
+        sendingError: '',
+        withdrawing: false,
+        withdrawingError: '',
+        withdrawSuccessful: false,
+      };
+
     case CREATE_WALLET:
       return { ...state, created: true, ...payload };
 

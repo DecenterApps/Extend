@@ -8,6 +8,7 @@ import userHandler from '../../handlers/userActionsHandler';
 import formsHandler from '../../handlers/formsActionsHandler';
 import pageHandler from '../../handlers/pageActionsHandler';
 import handleChangeNetwork from '../../modules/handleChangeNetwork';
+import clearPendingStates from '../../modules/clearPendingStates';
 import modalsActionsHandler from '../../handlers/modalsActionsHandler';
 
 let appLoaded = null;
@@ -24,6 +25,7 @@ const startApp = async () => {
   getState = store.getState;
 
   try {
+    await clearPendingStates(dispatch, combinedReducers);
     let networkData = await handleChangeNetwork(Web3, contractConfig, dispatch, getState);
     web3 = networkData.web3;
     contracts = networkData.contracts;

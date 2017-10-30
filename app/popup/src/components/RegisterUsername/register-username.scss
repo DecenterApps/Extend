@@ -1,4 +1,11 @@
+@import '../../../../commonComponents/buttons';
+
 .register-username-wrapper {
+
+  button {
+    margin-top: 25px;
+    @include btn;
+  }
 
   .register-username {
     font-size: 14px;

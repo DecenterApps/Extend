@@ -14,7 +14,6 @@ const INITIAL_STATE = {
   keyStore: {},
   seed: '',
   unlockError: '',
-  accountIcon: '',
   balance: '',
   gasPrice: 0,
   transactions: [],

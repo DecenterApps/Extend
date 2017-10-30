@@ -244,16 +244,10 @@ export const createWallet = (web3, dispatch, password) => {
     const unformatedNum = parseFloat(web3.fromWei(balance));
     balance = formatLargeNumber(unformatedNum);
 
-    const accountIcon = blockies({
-      seed: address,
-      size: 8,
-      scale: 8
-    }).toDataURL();
-
     web3.eth.defaultAccount = address; // eslint-disable-line
 
     const payload = {
-      seed, password, address, keyStore: searializedKeyStore, accountIcon, balance
+      seed, password, address, keyStore: searializedKeyStore, balance
     };
 
     await dispatch({ type: CREATE_WALLET, payload });

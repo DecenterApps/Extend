@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import connect from '../../../../customRedux/connect';
 import { getReceivedTipsMessage } from '../../../../messages/userActionsMessages';
 
+import '../SentTips/tips.scss';
+
 class SentTips extends Component {
   componentWillMount() {
     getReceivedTipsMessage();
@@ -10,9 +12,7 @@ class SentTips extends Component {
 
   render() {
     return(
-      <div>
-        Received tips
-
+      <div styleName="tips-wrapper">
         {
           this.props.gettingReceivedTips &&
           <div>Getting received tips</div>
@@ -32,9 +32,9 @@ class SentTips extends Component {
                 {
                   this.props.receivedTips.length > 0 &&
                   this.props.receivedTips.map((tip) => (
-                    <div key={tip.to + Math.random()}>
-                      <div>To: { tip.to }</div>
-                      <div>Amount: { tip.val }</div>
+                    <div styleName="single-tip" key={tip.to + Math.random()}>
+                      <span>{ tip.to }</span>
+                      <span>{ tip.val }</span>
                     </div>
                   ))
                 }

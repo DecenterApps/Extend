@@ -1,39 +1,61 @@
+@import '../../../../commonComponents/colors';
+@import '../../../../commonComponents/buttons';
+
 .dashboard-wrapper {
 
   .account-info-wrapper {
+    padding: 25px;
     display: flex;
-    padding: 0 20px 20px 20px;
+    flex-direction: column;
 
-    img {
-      width: 62px;
-      height: 62px;
-      border-radius: 50%;
-      margin-right: 20px;
-    }
+    .small-section {
+      margin-bottom: 25px;
 
-    .account-info {
-      .address {
-        font-family: Monospaced;
-        display: inline-block;
-        width: 228px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+      .small-section-title {
         font-size: 16px;
       }
 
-      .balance, .username, .tips {
-        width: 228px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        font-size: 16px;
+      .error { color: $red-error };
+    }
+
+    .large-section-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .large-section {
+        flex-grow: 1;
+
+        .large-section-title {
+          font-size: 16px;
+        }
+
+        .large-section-balance {
+          font-size: 24px;
+          max-width: 145px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .large-section-btn {
+          cursor: pointer;
+          color: $green;
+
+          &:hover { color: $green-hover; }
+          &:disabled { color: $green-disabled; }
+        }
       }
     }
   }
 
-  .dashboard-content {
-    padding: 20px;
+  .registering-info {
+    margin-top: 25px;
     text-align: center;
+    font-size: 16px;
+  }
+
+  .register-btn {
+    margin-top: 25px;
+    @include btn;
   }
 }

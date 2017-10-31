@@ -1,0 +1,18 @@
+@import '../../../../commonComponents/buttons';
+@import '../../../../commonComponents/colors';
+
+.network-unavailable-wrapper {
+  padding: 25px;
+  text-align: center;
+  font-size: 16px;
+
+  button {
+    margin-top: 25px;
+    @include btn;
+  }
+
+  .error-msg {
+    margin-top: 15px;
+    color: $red-error;
+  }
+}

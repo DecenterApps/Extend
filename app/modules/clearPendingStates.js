@@ -7,8 +7,6 @@ const clearPendingStates = (dispatch, combinedReducers) =>
         dispatch({ type: `${CLEAR_PENDING}-${reducer.name}` })
       ));
 
-      console.log('clears', clears);
-
       await Promise.all(clears);
       resolve();
     } catch(err) {

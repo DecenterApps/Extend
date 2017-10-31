@@ -9,10 +9,11 @@ import Dashboard from '../Dashboard/Dashboard';
 import TypeInPassword from '../TypeInPassword/TypeInPassword';
 import Send from '../Send/Send';
 import Withdraw from '../Withdraw/Withdraw';
+import NetworkUnavailable from '../NetworkUnavailable/NetworkUnavailable';
 
 import '../../../../commonComponents/general.scss';
 
-const App = ({ acceptedNotice, generatedVault, copiedSeed, seed, password, view }) => (
+const App = ({ acceptedNotice, generatedVault, copiedSeed, seed, password, view, networkActive }) => (
   <div styleName="popup-wrapper">
     <Header view={view} password={password} copiedSeed={copiedSeed} generatedVault={generatedVault} />
 
@@ -23,6 +24,7 @@ const App = ({ acceptedNotice, generatedVault, copiedSeed, seed, password, view 
     { (view === 'unlockAccount') && generatedVault && acceptedNotice && copiedSeed && !password && <TypeInPassword /> }
     { (view === 'send') && <Send /> }
     { (view === 'withdraw') && <Withdraw /> }
+    { (view === 'networkUnavailable') && !networkActive && <NetworkUnavailable /> }
   </div>
 );
 
@@ -32,7 +34,8 @@ App.propTypes = {
   copiedSeed: PropTypes.bool.isRequired,
   seed: PropTypes.string.isRequired,
   password: PropTypes.string.isRequired,
-  view: PropTypes.string.isRequired
+  view: PropTypes.string.isRequired,
+  networkActive: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = (state) => ({
@@ -41,7 +44,8 @@ const mapStateToProps = (state) => ({
   password: state.account.password,
   copiedSeed: state.account.copiedSeed,
   seed: state.account.seed,
-  view: state.user.view
+  view: state.user.view,
+  networkActive: state.user.networkActive
 });
 
 export default connect(App, mapStateToProps);

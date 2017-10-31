@@ -4,7 +4,7 @@ import {
   SEND_TIP, SEND_TIP_SUCCESS, SEND_TIP_ERROR, SET_ACTIVE_TAB,
   GET_SENT_TIPS, GET_SENT_TIPS_SUCCESS, GET_SENT_TIPS_ERROR,
   GET_RECEIVED_TIPS, GET_RECEIVED_TIPS_SUCCESS, GET_RECEIVED_TIPS_ERROR,
-  CHANGE_VIEW, CLEAR_PENDING
+  CHANGE_VIEW, CLEAR_PENDING, CONNECT_AGAIN, CONNECT_AGAIN_SUCCESS, CONNECT_AGAIN_ERROR
 } from '../../../constants/actionTypes';
 import { NETWORK_URL, TABS, VIEWS } from '../../../constants/general';
 
@@ -33,7 +33,9 @@ const INITIAL_STATE = {
   gettingReceivedTips: false,
   gettingReceivedTipsError: '',
   receivedTips: [],
-  view: VIEWS[0]
+  view: VIEWS[0],
+  connectingAgain: false,
+  connectingAgainError: '',
 };
 
 export const reducer = (state, action) => {
@@ -49,6 +51,8 @@ export const reducer = (state, action) => {
         gettingSentTipsError: '',
         gettingReceivedTips: false,
         gettingReceivedTipsError: '',
+        connectingAgain: false,
+        connectingAgainError: '',
       };
 
     case REGISTER_USER:
@@ -121,6 +125,17 @@ export const reducer = (state, action) => {
 
     case CHANGE_VIEW:
       return { ...state, view: payload.viewName, ...payload.additionalChanges };
+
+    case CONNECT_AGAIN:
+      return { ...state, connectingAgain: true };
+    case CONNECT_AGAIN_SUCCESS:
+      return { ...state, connectingAgain: false, connectingAgainError: '' };
+    case CONNECT_AGAIN_ERROR:
+      return {
+        ...state,
+        connectingAgain: false,
+        connectingAgainError: 'Still could not connect, please try again.'
+      };
 
     default:
       return false;

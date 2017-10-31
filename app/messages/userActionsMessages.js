@@ -17,3 +17,5 @@ export const setActiveTabMessage = (tabName) => {
 export const changeViewMessage = (viewName, additionalChanges) => {
   pm({ action: 'changeView', payload: { viewName, additionalChanges } });
 };
+
+export const connectAgainMessage = () => { pm({ action: 'connectAgain' }); };

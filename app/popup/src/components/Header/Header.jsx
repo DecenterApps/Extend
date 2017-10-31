@@ -25,7 +25,7 @@ const Header = ({ view, generatedVault, copiedSeed, password }) => (
     { (view === 'unlockAccount') && <span>Unlock Account</span> }
     { (view === 'send') && <span>Send funds</span> }
     { (view === 'withdraw') && <span>Withdraw tips</span> }
-
+    { (view === 'networkUnavailable') && <span>Network Unavailable</span> }
 
     {
       generatedVault &&

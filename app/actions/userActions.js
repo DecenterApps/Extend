@@ -7,14 +7,17 @@ import { pollTipsBalance } from './accountActions';
 import {
   NETWORK_UNAVAILABLE,
   REGISTER_USER, VERIFIED_USER, REGISTER_USER_ERROR, SET_ACTIVE_TAB, GET_SENT_TIPS, GET_SENT_TIPS_SUCCESS,
-  GET_SENT_TIPS_ERROR, GET_RECEIVED_TIPS, GET_RECEIVED_TIPS_SUCCESS, GET_RECEIVED_TIPS_ERROR, CHANGE_VIEW
+  GET_SENT_TIPS_ERROR, GET_RECEIVED_TIPS, GET_RECEIVED_TIPS_SUCCESS, GET_RECEIVED_TIPS_ERROR, CHANGE_VIEW,
+  CONNECT_AGAIN, CONNECT_AGAIN_SUCCESS, CONNECT_AGAIN_ERROR
 } from '../constants/actionTypes';
 
 const keyStore = lightwallet.keystore;
 
-export const changeView = (dispatch, payload) => {
-  dispatch({ type: CHANGE_VIEW, payload });
-};
+export const changeView = (dispatch, payload) =>
+  new Promise(async (resolve) => {
+    await dispatch({ type: CHANGE_VIEW, payload });
+    resolve();
+  });
 
 
 /**
@@ -117,9 +120,12 @@ export const createUserAuth = (contracts, web3, getState, dispatch) => {
  *
  * @param {Function} dispatch
  */
-export const networkUnavailable = (dispatch) => {
-  dispatch({ type: NETWORK_UNAVAILABLE });
-};
+export const networkUnavailable = (dispatch) =>
+  new Promise(async (resolve) => {
+    await dispatch({ type: NETWORK_UNAVAILABLE });
+    await changeView(dispatch, { viewName: 'networkUnavailable' });
+    resolve();
+  });
 
 export const getSentTips = async (web3, contract, dispatch, getState) => {
   dispatch({ type: GET_SENT_TIPS });
@@ -142,4 +148,8 @@ export const getReceivedTips = async (web3, contract, dispatch, getState) => {
     dispatch({ type: GET_RECEIVED_TIPS_ERROR });
   }
 };
+
+export const connectAgain = (dispatch) => { dispatch({ type: CONNECT_AGAIN }); };
+export const connectingAgainError = (dispatch) => { dispatch({ type: CONNECT_AGAIN_ERROR }); };
+export const connectingAgainSuccess = (dispatch) => { dispatch({ type: CONNECT_AGAIN_SUCCESS }); };
 

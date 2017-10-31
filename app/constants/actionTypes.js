@@ -14,6 +14,9 @@ export const GET_RECEIVED_TIPS = 'get_received_tips';
 export const GET_RECEIVED_TIPS_SUCCESS = 'get_received_tips_success';
 export const GET_RECEIVED_TIPS_ERROR = 'get_received_tips_error';
 export const CHANGE_VIEW = 'change_view';
+export const CONNECT_AGAIN = 'connect_again';
+export const CONNECT_AGAIN_SUCCESS = 'connect_again_success';
+export const CONNECT_AGAIN_ERROR = 'connect_again_error';
 
 // NETWORK
 export const TOGGLE_DROPDOWN = 'toggle_dropdown';

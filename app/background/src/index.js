@@ -19,24 +19,29 @@ let getState = null;
 let web3 = null;
 let contracts = null;
 
-const startApp = async () => {
-  store = await createStore(combinedReducers);
-  dispatch = store.dispatch;
-  getState = store.getState;
+const startApp = () =>
+  new Promise(async (resolve, reject) => {
+    store = await createStore(combinedReducers);
+    dispatch = store.dispatch;
+    getState = store.getState;
 
-  try {
-    await clearPendingStates(dispatch, combinedReducers);
-    let networkData = await handleChangeNetwork(Web3, contractConfig, dispatch, getState);
-    web3 = networkData.web3;
-    contracts = networkData.contracts;
-  } catch (err) {
-    userActions.networkUnavailable(dispatch);
-  }
+    try {
+      await clearPendingStates(dispatch, combinedReducers);
+      let networkData = await handleChangeNetwork(Web3, contractConfig, dispatch, getState);
 
-  appLoaded = true;
-};
+      web3 = networkData.web3;
+      contracts = networkData.contracts;
+      appLoaded = true;
 
-startApp();
+      resolve();
+    } catch (err) {
+      await userActions.networkUnavailable(dispatch);
+      appLoaded = true;
+      reject(err);
+    }
+  });
+
+Promise.resolve(startApp());
 
 chrome.runtime.onMessage.addListener(async (msg, sender) => {
   if (!appLoaded) return false;
@@ -44,6 +49,19 @@ chrome.runtime.onMessage.addListener(async (msg, sender) => {
   const funcName = msg.action;
   const handler = msg.handler;
   const payload = msg.payload;
+
+  if (handler === 'user' && funcName === 'connectAgain') {
+    userActions.connectAgain(dispatch);
+
+    try {
+      await startApp(false);
+      userActions.connectingAgainSuccess(dispatch);
+    } catch(err) {
+      userActions.connectingAgainError(dispatch);
+    }
+
+    return false;
+  }
 
   switch (handler) {
     case 'account':

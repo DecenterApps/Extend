@@ -8,12 +8,13 @@ import { createWalletMessage } from '../../../../messages/accountActionMessages'
 
 import formStyle from '../../../../commonComponents/forms.scss';
 
-class GenerateNewPasswordForm extends Component {
-  constructor(props) {
-    super(props);
+const FORM_NAME = 'generateNewPasswordForm';
 
-    this.PasswordField = createField(InputFormField, props.formData);
-    this.RepeatPasswordField = createField(InputFormField, props.formData);
+class GenerateNewPasswordForm extends Component {
+  componentWillMount() {
+    this.props.formData.setNumOfFields(2);
+    this.PasswordField = createField(InputFormField, this.props.formData);
+    this.RepeatPasswordField = createField(InputFormField, this.props.formData);
   }
 
   render() {
@@ -70,5 +71,5 @@ GenerateNewPasswordForm.propTypes = {
 };
 
 export default createForm(
-  'generateNewPasswordForm', GenerateNewPasswordForm, generateNewPasswordFormValidator
+  FORM_NAME, GenerateNewPasswordForm, generateNewPasswordFormValidator
 );

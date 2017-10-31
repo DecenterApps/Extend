@@ -277,9 +277,10 @@ export const sendTransaction =
  * @param {Object} ks
  * @param {String} address
  * @param {String} password
+ * @param {String} gasPrice
  * @return {Promise} transaction hash once finished
  */
-export const _createUser = (contract, web3, username, token, ks, address, password) =>
+export const _createUser = (contract, web3, username, token, ks, address, password, gasPrice) =>
   new Promise(async (resolve, reject) => {
     try {
       const oreclizeTransactionCost = await getOraclizePrice(contract);
@@ -288,7 +289,7 @@ export const _createUser = (contract, web3, username, token, ks, address, passwo
       const encryptedToken = await encryptTokenOreclize(token);
       const params = [web3.sha3(username), encryptedToken];
 
-      const hash = await sendTransaction(web3, contract.createUser, ks, address, password, params, value);
+      const hash = await sendTransaction(web3, contract.createUser, ks, address, password, params, value, gasPrice);
       resolve(hash);
     } catch (err) {
       reject({ message: err });

@@ -9,11 +9,12 @@ import { checkIfPasswordValidMessage } from '../../../../messages/accountActionM
 
 import formStyle from '../../../../commonComponents/forms.scss';
 
-class TypeInPasswordForm extends Component {
-  constructor(props) {
-    super(props);
+const FORM_NAME = 'TypeInPasswordForm';
 
-    this.PasswordField = createField(InputFormField, props.formData);
+class TypeInPasswordForm extends Component {
+  componentWillMount() {
+    this.props.formData.setNumOfFields(1);
+    this.PasswordField = createField(InputFormField, this.props.formData);
   }
 
   render() {
@@ -67,7 +68,7 @@ const mapStateToProps = (state) => ({
 });
 
 const ExportComponent = createForm(
-  'TypeInPasswordForm', TypeInPasswordForm, typeInPasswordFormValidator
+  FORM_NAME, TypeInPasswordForm, typeInPasswordFormValidator
 );
 
 export default connect(ExportComponent, mapStateToProps);

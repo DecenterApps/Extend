@@ -4,14 +4,14 @@ import connect from '../../../../customRedux/connect';
 import createForm from '../../../../customRedux/createForm';
 import createField from '../../../../customRedux/createField';
 import InputFormField from '../../../../commonComponents/InputFormField';
-import withdrawFormValidator from './withdrawFormValidator';
-import { withdrawMessage } from '../../../../messages/accountActionMessages';
+import withdrawFormValidator from '../Withdraw/withdrawFormValidator';
+import { createUserAuthMessage } from '../../../../messages/userActionsMessages';
 
 import formStyle from '../../../../commonComponents/forms.scss';
 
-const FORM_NAME = 'withdrawForm';
+const FORM_NAME = 'registerForm';
 
-class WithdrawForm extends Component {
+class RegisterForm extends Component {
   componentWillMount() {
     this.props.formData.setNumOfFields(1);
     this.GasPriceField = createField(InputFormField, this.props.formData);
@@ -24,7 +24,7 @@ class WithdrawForm extends Component {
       <div>
         <form
           styleName="form-wrapper-2"
-          onSubmit={(e) => { this.props.handleSubmit(e, withdrawMessage); }}
+          onSubmit={(e) => { this.props.handleSubmit(e, createUserAuthMessage); }}
         >
 
           <GasPriceField
@@ -39,19 +39,14 @@ class WithdrawForm extends Component {
             errorClassName={formStyle['form-item-error']}
           />
 
-          {
-            this.props.withdrawingError &&
-            <div className="submit-error">Error: {this.props.withdrawingError}</div>
-          }
-
           <button
             className={formStyle['submit-button']}
             type="submit"
             disabled={
-              this.props.pristine || this.props.invalid || this.props.withdrawing
+              this.props.pristine || this.props.invalid
             }
           >
-            { this.props.withdrawing ? 'Withdrawing' : 'Withdraw' }
+            Register Reddit username
           </button>
         </form>
       </div>
@@ -59,22 +54,19 @@ class WithdrawForm extends Component {
   }
 }
 
-WithdrawForm.propTypes = {
+RegisterForm.propTypes = {
   formData: PropTypes.object.isRequired,
   invalid: PropTypes.bool.isRequired,
   pristine: PropTypes.bool.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   gasPrice: PropTypes.number.isRequired,
-  withdrawing: PropTypes.bool.isRequired,
-  withdrawingError: PropTypes.string.isRequired
+
 };
 
 const mapStateToProps = (state) => ({
   gasPrice: state.account.gasPrice,
-  withdrawing: state.account.withdrawing,
-  withdrawingError: state.account.withdrawingError,
 });
 
-const ExportComponent = createForm(FORM_NAME, WithdrawForm, withdrawFormValidator);
+const ExportComponent = createForm(FORM_NAME, RegisterForm, withdrawFormValidator);
 
 export default connect(ExportComponent, mapStateToProps);

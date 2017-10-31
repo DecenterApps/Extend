@@ -12,12 +12,11 @@ import formStyle from '../../../../commonComponents/forms.scss';
 const FORM_NAME = 'sendForm';
 
 class SendForm extends Component {
-  constructor(props) {
-    super(props);
-
-    this.AddressField = createField(InputFormField, props.formData);
-    this.AmountField = createField(InputFormField, props.formData);
-    this.GasPriceField = createField(InputFormField, props.formData);
+  componentWillMount() {
+    this.props.formData.setNumOfFields(3);
+    this.AddressField = createField(InputFormField, this.props.formData);
+    this.AmountField = createField(InputFormField, this.props.formData);
+    this.GasPriceField = createField(InputFormField, this.props.formData);
   }
 
   render() {

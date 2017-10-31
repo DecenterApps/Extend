@@ -9,12 +9,13 @@ import { tipMessage } from '../../../../../messages/pageActionsMessages';
 
 import formStyle from '../../../../../commonComponents/forms.scss';
 
-class TipForm extends Component {
-  constructor(props) {
-    super(props);
+const FORM_NAME = 'tipForm';
 
-    this.AmountField = createField(InputFormField, props.formData);
-    this.GasPriceField = createField(InputFormField, props.formData);
+class TipForm extends Component {
+  componentWillMount() {
+    this.props.formData.setNumOfFields(2);
+    this.AmountField = createField(InputFormField, this.props.formData);
+    this.GasPriceField = createField(InputFormField, this.props.formData);
   }
 
   render() {
@@ -85,6 +86,6 @@ const mapStateToProps = (state) => ({
   sendingTip: state.user.sendingTip
 });
 
-const ExportComponent = createForm('tipForm', TipForm, tipFormValidator);
+const ExportComponent = createForm(FORM_NAME, TipForm, tipFormValidator);
 
 export default connect(ExportComponent, mapStateToProps);

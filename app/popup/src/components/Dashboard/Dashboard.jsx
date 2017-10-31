@@ -2,8 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import connect from '../../../../customRedux/connect';
 import { getEtherScanLinkByNetwork } from '../../../../actions/utils';
-import { createUserAuthMessage, changeViewMessage } from '../../../../messages/userActionsMessages';
+import { changeViewMessage } from '../../../../messages/userActionsMessages';
 import Tabs from '../Tabs/Tabs';
+import RegisterForm from '../RegisterForm/RegisterForm';
 
 import './dashboard.scss';
 
@@ -67,9 +68,7 @@ const Dashboard = ({
       !registering &&
       !verifiedUsername &&
       <div styleName="register-btn-wrapper">
-        <button onClick={createUserAuthMessage} styleName="register-btn">
-          Register Reddit username
-        </button>
+        <RegisterForm />
       </div>
     }
     {

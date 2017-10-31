@@ -99,7 +99,9 @@ export const createUserAuth = (contracts, web3, getState, dispatch) => {
         return;
       }
 
-      await _createUser(contracts.func, web3, me.name, accessToken, ks, address, password);
+      const gasPrice = web3.toWei(getState().forms.registerForm.gasPrice.value, 'gwei');
+
+      await _createUser(contracts.func, web3, me.name, accessToken, ks, address, password, gasPrice);
       await dispatch({
         type: REGISTER_USER,
         payload: {

@@ -1,6 +1,6 @@
 import {
   CREATE_WALLET, COPIED_SEED, CLEAR_PASSWORD, UNLOCK_ERROR, UNLOCK, SET_BALANCE, SET_GAS_PRICE,
-  SEND, SEND_ERROR, SEND_SUCCESS, CHANGE_TX_STATE, WITHDRAW, WITHDRAW_ERROR, WITHDRAW_SUCCESS, CLEAR_WITHDRAW_SUCCESS,
+  SEND, SEND_ERROR, SEND_SUCCESS, CHANGE_TX_STATE, WITHDRAW, WITHDRAW_ERROR, WITHDRAW_SUCCESS,
   SET_TIPS_BALANCE, CLEAR_PENDING
 } from '../../../constants/actionTypes';
 
@@ -21,7 +21,6 @@ const INITIAL_STATE = {
   sendingError: '',
   withdrawing: false,
   withdrawingError: '',
-  withdrawSuccessful: false,
   tipsBalance: '0'
 };
 
@@ -36,8 +35,7 @@ export const reducer = (state, action) => {
         sending: false,
         sendingError: '',
         withdrawing: false,
-        withdrawingError: '',
-        withdrawSuccessful: false,
+        withdrawingError: ''
       };
 
     case CREATE_WALLET:
@@ -80,16 +78,13 @@ export const reducer = (state, action) => {
     case WITHDRAW:
       return { ...state, withdrawing: true };
     case WITHDRAW_SUCCESS:
-      return { ...state, withdrawing: false, withdrawingError: '', withdrawSuccessful: true };
+      return { ...state, withdrawing: false, withdrawingError: '' };
     case WITHDRAW_ERROR:
       return {
         ...state,
         withdrawing: false,
-        withdrawingError: 'An error occurred while withdrawing ETH, please try again.',
-        withdrawSuccessful: false,
+        withdrawingError: 'An error occurred while withdrawing ETH, please try again.'
       };
-    case CLEAR_WITHDRAW_SUCCESS:
-      return { ...state, withdrawSuccessful: false };
 
     case SET_TIPS_BALANCE:
       return { ...state, tipsBalance: payload };

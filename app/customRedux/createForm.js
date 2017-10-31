@@ -15,6 +15,10 @@ const createForm = (formName, WrappedComponent, validator) => (
         pristine: true
       };
 
+      this.state = {
+        mergedProps: null
+      };
+
       this.registerField = this.registerField.bind(this);
       this.checkFormMeta = this.checkFormMeta.bind(this);
       this.updateMergedProps = this.updateMergedProps.bind(this);
@@ -22,8 +26,6 @@ const createForm = (formName, WrappedComponent, validator) => (
       this.updateRestOfErrors = this.updateRestOfErrors.bind(this);
       this.getFiledVal = this.getFiledVal.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
-
-      this.updateMergedProps();
     }
 
     componentDidMount() {
@@ -33,6 +35,7 @@ const createForm = (formName, WrappedComponent, validator) => (
 
     componentWillReceiveProps(nextProps) {
       this.mergedProps = { ...this.mergedProps, ...nextProps };
+      this.setState({ mergedProps: this.mergedProps });
     }
 
     getFiledVal(field) {
@@ -54,6 +57,8 @@ const createForm = (formName, WrappedComponent, validator) => (
         ...this.formMeta,
         handleSubmit: this.handleSubmit
       };
+
+      this.setState({ mergedProps: this.mergedProps });
     }
 
     registerField(field) {
@@ -112,6 +117,11 @@ const createForm = (formName, WrappedComponent, validator) => (
         dataForMessage.meta.error = '';
       }
 
+      // TODO REFACTOR THIS TO CHECK ALL FORM FIELDS HAVE A DEFAULT VALUE ON FIRST RENDER
+      if (Object.keys(this.fields).length === 1 && !field.touched && (field.value !== undefined)) {
+        dataForMessage.meta.touched = true;
+      }
+
       this.fields[fieldData.name] = dataForMessage.meta;
 
       updateFieldMetaMessage(dataForMessage);
@@ -125,6 +135,10 @@ const createForm = (formName, WrappedComponent, validator) => (
     }
 
     render() {
+      if (this.state.mergedProps === null) {
+        return <div />;
+      }
+
       return (
         <WrappedComponent
           {...this.mergedProps}

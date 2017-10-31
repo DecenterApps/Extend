@@ -16,6 +16,7 @@
       }
 
       .error { color: $red-error };
+      .pending { color: $yellow-pending }
     }
 
     .large-section-wrapper {
@@ -49,7 +50,7 @@
   }
 
   .registering-info {
-    margin-top: 25px;
+    margin-bottom: 25px;
     text-align: center;
     font-size: 16px;
   }

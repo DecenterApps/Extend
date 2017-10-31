@@ -28,7 +28,7 @@ const Dashboard = ({
         <div>
           { !registering && !registeringError && !verifiedUsername && <span styleName="error">Not registered</span> }
           { !registering && registeringError && <span styleName="error">There was an error, try again</span> }
-          { registering && <span>Registering /u/{ registeringUsername } </span> }
+          { registering && <span styleName="pending">Registering /u/{ registeringUsername } </span> }
           { verifiedUsername && <span>{ verifiedUsername }</span> }
         </div>
       </div>

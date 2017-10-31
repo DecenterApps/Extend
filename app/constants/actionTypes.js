@@ -43,7 +43,6 @@ export const CHANGE_TX_STATE = 'change_tx_state';
 export const WITHDRAW = 'withdraw';
 export const WITHDRAW_ERROR = 'withdraw_error';
 export const WITHDRAW_SUCCESS = 'withdraw_success';
-export const CLEAR_WITHDRAW_SUCCESS = 'clear_withdraw_success';
 export const SET_TIPS_BALANCE = 'set_tips_balance';
 
 // MODAL

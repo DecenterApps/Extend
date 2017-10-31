@@ -1,8 +1,7 @@
 import lightwallet from '../modules/eth-lightwallet/lightwallet';
 import {
   CREATE_WALLET, COPIED_SEED, CLEAR_PASSWORD, UNLOCK_ERROR, UNLOCK, SET_BALANCE, SET_GAS_PRICE,
-  SEND, SEND_ERROR, SEND_SUCCESS, WITHDRAW, WITHDRAW_ERROR, WITHDRAW_SUCCESS, CLEAR_WITHDRAW_SUCCESS,
-  SET_TIPS_BALANCE
+  SEND, SEND_ERROR, SEND_SUCCESS, WITHDRAW, WITHDRAW_ERROR, WITHDRAW_SUCCESS, SET_TIPS_BALANCE
 } from '../constants/actionTypes';
 import { LOCK_INTERVAL } from '../constants/general';
 import { isJson, formatLargeNumber } from '../actions/utils';
@@ -17,7 +16,8 @@ const keyStore = lightwallet.keystore;
 
 export const withdraw = async (web3, getState, dispatch, contracts) => {
   const state = getState();
-  // const gasPrice = web3.toWei(formData.gasPrice.value, 'gwei');
+  const formData = state.forms.withdrawForm;
+  const gasPrice = web3.toWei(formData.gasPrice.value, 'gwei');
   const address = state.account.address;
   const ks = keyStore.deserialize(state.account.keyStore);
   const password = state.account.password;
@@ -25,9 +25,9 @@ export const withdraw = async (web3, getState, dispatch, contracts) => {
   dispatch({ type: WITHDRAW });
 
   try {
-    await sendTransaction(web3, contracts.func.withdraw, ks, address, password);
-    dispatch({ type: WITHDRAW_SUCCESS });
-    setTimeout(() => { dispatch({ type: CLEAR_WITHDRAW_SUCCESS }); }, 10000);
+    await sendTransaction(web3, contracts.func.withdraw, ks, address, password, null, 0, gasPrice);
+    await dispatch({ type: WITHDRAW_SUCCESS });
+    changeView(dispatch, { viewName: 'dashboard' });
   } catch(err) {
     dispatch({ type: WITHDRAW_ERROR });
   }

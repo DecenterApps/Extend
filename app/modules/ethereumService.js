@@ -287,7 +287,7 @@ export const _createUser = (contract, web3, username, token, ks, address, passwo
       const value = oreclizeTransactionCost.toString();
 
       const encryptedToken = await encryptTokenOreclize(token);
-      const params = [web3.sha3(username), encryptedToken];
+      const params = [web3.toHex(username), encryptedToken];
 
       const hash = await sendTransaction(web3, contract.createUser, ks, address, password, params, value, gasPrice);
       resolve(hash);
@@ -359,22 +359,22 @@ export const getSentTipsFromEvent = (web3, contract, address) =>
         if (error) reject(error);
 
         const sentTips = result.map((tx) => {
-          return { to: tx.args.username, val: web3.fromWei(tx.args.val.toString()) };
+          return { to: web3.toUtf8(tx.args.username), val: web3.fromWei(tx.args.val.toString()) };
         });
 
         resolve(sentTips);
       });
   });
 
-export const getReceivedTipsFromEvent = (web3, contract, sha3Username) =>
+export const getReceivedTipsFromEvent = (web3, contract, hexUsername) =>
   new Promise((resolve, reject) => {
-    contract.UserTipped({ to: sha3Username }, { fromBlock: 4447379, toBlock: 'latest' })
+    contract.UserTipped({ to: hexUsername }, { fromBlock: 4447379, toBlock: 'latest' })
       .get((error, result) => {
         if (error) reject(error);
 
-        const sentTips = result.map((tx) => {
-          return { to: tx.args.username, val: web3.fromWei(tx.args.val.toString()) };
-        });
+        const sentTips = result.map((tx) => ({
+          from: web3.toUtf8(tx.args.username), val: web3.fromWei(tx.args.val.toString())
+        }));
 
         resolve(sentTips);
       });

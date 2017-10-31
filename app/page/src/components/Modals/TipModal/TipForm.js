@@ -24,7 +24,7 @@ class TipForm extends Component {
 
     return (
       <form
-        styleName="form-wrapper"
+        styleName="form-wrapper-2"
         onSubmit={(e) => { this.props.handleSubmit(e, tipMessage); }}
       >
 

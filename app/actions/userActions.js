@@ -51,7 +51,7 @@ export const verifiedUser = (web3, contract, getState, dispatch) => {
 export const listenForVerifiedUser = (web3, contracts, dispatch, getState) => {
   console.log('LISTENING FOR VERIFIED USER');
   const cb = (err, event) => {
-    if (event.args.username !== getState().user.registeringUsernameSha3) return;
+    if (web3.toUtf8(event.args.username) !== getState().user.registeringUsername) return;
 
     verifiedUser(web3, contracts.func, getState, dispatch);
   };
@@ -104,10 +104,7 @@ export const createUserAuth = (contracts, web3, getState, dispatch) => {
       await _createUser(contracts.func, web3, me.name, accessToken, ks, address, password, gasPrice);
       await dispatch({
         type: REGISTER_USER,
-        payload: {
-          username: me.name,
-          sha3Username: web3.sha3(me.name)
-        }
+        payload: { username: me.name }
       });
 
       listenForVerifiedUser(web3, contracts, dispatch, getState);
@@ -144,7 +141,7 @@ export const getReceivedTips = async (web3, contract, dispatch, getState) => {
   dispatch({ type: GET_RECEIVED_TIPS });
 
   try {
-    const receivedTips = await getReceivedTipsFromEvent(web3, contract, getState().user.verifiedUsernameSha3);
+    const receivedTips = await getReceivedTipsFromEvent(web3, contract, getState().user.verifiedUsername);
     dispatch({ type: GET_RECEIVED_TIPS_SUCCESS, payload: receivedTips });
   } catch(err) {
     dispatch({ type: GET_RECEIVED_TIPS_ERROR });

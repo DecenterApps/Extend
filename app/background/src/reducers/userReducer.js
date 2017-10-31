@@ -20,9 +20,7 @@ const INITIAL_STATE = {
   registeringError: '',
   verified: false,
   verifiedUsername: '',
-  verifiedUsernameSha3: '',
   registeringUsername: '',
-  registeringUsernameSha3: '',
   networkUrl: NETWORK_URL,
   sendingTip: false,
   sendingTipError: '',
@@ -60,7 +58,6 @@ export const reducer = (state, action) => {
         ...state,
         registering: true,
         registeringUsername: payload.username,
-        registeringUsernameSha3: payload.sha3Username,
         registeringError: ''
       };
     case VERIFIED_USER:
@@ -69,9 +66,7 @@ export const reducer = (state, action) => {
         registering: false,
         verified: true,
         registeringUsername: '',
-        registeringUsernameSha3: '',
         verifiedUsername: state.registeringUsername,
-        verifiedUsernameSha3: state.registeringUsernameSha3,
         activeTab: TABS[1]
       };
 

@@ -9,7 +9,7 @@ import { CLEAR_PENDING } from '../constants/actionTypes';
  */
 const initReducer = async (reducerData) =>
   new Promise(async (resolve) => {
-    await clearReducer(reducerData.name); // remove when finished
+    // await clearReducer(reducerData.name); // remove when finished
 
     const existingReducerState = await get(reducerData.name);
 

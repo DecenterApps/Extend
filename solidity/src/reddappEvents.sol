@@ -33,7 +33,7 @@ contract ReddappEvents {
         owners[_address] = false;
     }
 
-    function goldBought(bytes32 _username, uint _value){
+    function goldBought(bytes32 _username, uint _value) onlyOwners {
         GoldBought(_username, _value);
     }
 
@@ -41,35 +41,35 @@ contract ReddappEvents {
         CreatedUser(_username);
     }
 
-    function refundSuccessful(bytes32 _username) onlyOwners{
+    function refundSuccessful(bytes32 _username) onlyOwners {
         RefundSuccessful(_username);
     }
 
-    function usernameDoesNotMatch(bytes32 _username, bytes32 _neededUsername) onlyOwners{
+    function usernameDoesNotMatch(bytes32 _username, bytes32 _neededUsername) onlyOwners {
         UsernameDoesNotMatch(_username, _neededUsername);
     }
 
-    function verifiedUser(bytes32 _username) onlyOwners{
+    function verifiedUser(bytes32 _username) onlyOwners {
         VerifiedUser(_username);
     }
 
-    function userTipped(address _from, bytes32 _username, uint _val) onlyOwners{
+    function userTipped(address _from, bytes32 _username, uint _val) onlyOwners {
         UserTipped(_from, _username, _val);
     }
 
-    function withdrawSuccessful(bytes32 _username) onlyOwners{
+    function withdrawSuccessful(bytes32 _username) onlyOwners {
         WithdrawSuccessful(_username);
     }
 
-    function logQuery(bytes32 _query, address _userAddress) onlyOwners{
+    function logQuery(bytes32 _query, address _userAddress) onlyOwners {
         LogQuery(_query, _userAddress);
     }
 
-    function logBalance(uint _balance) onlyOwners{
+    function logBalance(uint _balance) onlyOwners {
         LogBalance(_balance);
     }
 
-    function logNeededBalance(uint _balance) onlyOwners{
+    function logNeededBalance(uint _balance) onlyOwners {
         LogNeededBalance(_balance);
     }
 

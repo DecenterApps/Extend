@@ -1,7 +1,7 @@
 import {
   CREATE_WALLET, COPIED_SEED, CLEAR_PASSWORD, UNLOCK_ERROR, UNLOCK, SET_BALANCE, SET_GAS_PRICE,
   SEND, SEND_ERROR, SEND_SUCCESS, CHANGE_TX_STATE, WITHDRAW, WITHDRAW_ERROR, WITHDRAW_SUCCESS,
-  SET_TIPS_BALANCE, CLEAR_PENDING
+  SET_TIPS_BALANCE, CLEAR_PENDING, REFUND, REFUND_ERROR, REFUND_SUCCESS, REFUND_UNAVAILABLE
 } from '../../../constants/actionTypes';
 
 const reducerName = 'account';
@@ -21,7 +21,10 @@ const INITIAL_STATE = {
   sendingError: '',
   withdrawing: false,
   withdrawingError: '',
-  tipsBalance: '0'
+  tipsBalance: '0',
+  refunding: false,
+  refundingError: '',
+  refundAvailable: true
 };
 
 export const reducer = (state, action) => {
@@ -35,7 +38,10 @@ export const reducer = (state, action) => {
         sending: false,
         sendingError: '',
         withdrawing: false,
-        withdrawingError: ''
+        withdrawingError: '',
+        refunding: false,
+        refundingError: '',
+        refundAvailable: true
       };
 
     case CREATE_WALLET:
@@ -85,6 +91,21 @@ export const reducer = (state, action) => {
         withdrawing: false,
         withdrawingError: 'An error occurred while withdrawing ETH, please try again.'
       };
+
+    case REFUND:
+      return { ...state, refunding: true };
+    case REFUND_SUCCESS:
+      return { ...state, refunding: false, refundingError: '', refundAvailable: true };
+    case REFUND_ERROR:
+      return {
+        ...state,
+        refunding: false,
+        refundAvailable: true,
+        refundingError: 'An error occurred while refunding ETH, please try again.'
+      };
+    case REFUND_UNAVAILABLE:
+      return { ...state, refundAvailable: false, refunding: false, refundingError: '' };
+
 
     case SET_TIPS_BALANCE:
       return { ...state, tipsBalance: payload };

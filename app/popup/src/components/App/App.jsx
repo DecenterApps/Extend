@@ -10,6 +10,7 @@ import TypeInPassword from '../TypeInPassword/TypeInPassword';
 import Send from '../Send/Send';
 import Withdraw from '../Withdraw/Withdraw';
 import NetworkUnavailable from '../NetworkUnavailable/NetworkUnavailable';
+import Refund from '../Refund/Refund';
 
 import '../../../../commonComponents/general.scss';
 
@@ -25,6 +26,7 @@ const App = ({ acceptedNotice, generatedVault, copiedSeed, seed, password, view,
     { (view === 'send') && <Send /> }
     { (view === 'withdraw') && <Withdraw /> }
     { (view === 'networkUnavailable') && !networkActive && <NetworkUnavailable /> }
+    { (view === 'refund') && <Refund /> }
   </div>
 );
 

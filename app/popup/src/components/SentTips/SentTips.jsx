@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import connect from '../../../../customRedux/connect';
-import { getSentTipsMessage } from '../../../../messages/userActionsMessages';
+import { getSentTipsMessage, changeViewMessage } from '../../../../messages/userActionsMessages';
 
 import './tips.scss';
 
@@ -13,6 +13,9 @@ class SentTips extends Component {
   render() {
     return(
       <div styleName="tips-wrapper">
+        <div styleName="refund-btn" onClick={() => { changeViewMessage('refund'); }}>
+          Refund tip
+        </div>
         {
           this.props.gettingSentTips &&
           <div>Getting sent tips</div>

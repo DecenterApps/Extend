@@ -44,6 +44,10 @@ export const WITHDRAW = 'withdraw';
 export const WITHDRAW_ERROR = 'withdraw_error';
 export const WITHDRAW_SUCCESS = 'withdraw_success';
 export const SET_TIPS_BALANCE = 'set_tips_balance';
+export const REFUND = 'refund';
+export const REFUND_ERROR = 'refund_error';
+export const REFUND_UNAVAILABLE = 'refund_unavailable';
+export const REFUND_SUCCESS = 'refund_success';
 
 // MODAL
 export const TOGGLE_MODAL = 'toggle_modal';

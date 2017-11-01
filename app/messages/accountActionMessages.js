@@ -27,3 +27,7 @@ export const sendMessage = () => {
 export const withdrawMessage = () => {
   pm({ action: 'withdraw' });
 };
+
+export const refundMessage = () => {
+  pm({ action: 'refund' });
+};

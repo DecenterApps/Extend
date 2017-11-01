@@ -50,9 +50,10 @@ export const verifiedUser = (web3, contract, getState, dispatch) => {
  */
 export const listenForVerifiedUser = (web3, contracts, dispatch, getState) => {
   console.log('LISTENING FOR VERIFIED USER');
-  const cb = (err, event) => {
+  const cb = (err, event, eventInstance) => {
     if (web3.toUtf8(event.args.username) !== getState().user.registeringUsername) return;
 
+    eventInstance.stopWatching();
     verifiedUser(web3, contracts.func, getState, dispatch);
   };
 

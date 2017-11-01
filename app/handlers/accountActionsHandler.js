@@ -15,6 +15,7 @@ const accountActionsHandler = (web3, contracts, getState, dispatch, funcName, pa
     case 'send':
       return accountActions[funcName](web3, getState, dispatch);
     case 'withdraw':
+    case 'refund':
       return accountActions[funcName](web3, getState, dispatch, contracts);
 
     default:

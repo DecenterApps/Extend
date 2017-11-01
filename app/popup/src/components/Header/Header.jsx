@@ -11,7 +11,8 @@ const Header = ({ view, generatedVault, copiedSeed, password }) => (
     {
       (
         (view === 'send') ||
-        (view === 'withdraw')
+        (view === 'withdraw') ||
+        (view === 'refund')
       ) &&
       <span styleName="back" onClick={() => { changeViewMessage('dashboard'); }}>
         <BackIcon />
@@ -26,6 +27,7 @@ const Header = ({ view, generatedVault, copiedSeed, password }) => (
     { (view === 'send') && <span>Send funds</span> }
     { (view === 'withdraw') && <span>Withdraw tips</span> }
     { (view === 'networkUnavailable') && <span>Network Unavailable</span> }
+    { (view === 'refund') && <span>Refund tip</span> }
 
     {
       generatedVault &&

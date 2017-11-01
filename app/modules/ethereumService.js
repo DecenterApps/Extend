@@ -333,6 +333,15 @@ export const _checkUsernameVerified = (web3, contract, username) =>
     });
   });
 
+export const _checkIfRefundAvailable = (web3, contract, username) =>
+  new Promise((resolve, reject) => {
+    contract.checkIfRefundAvailable(username, (error, result) => {
+      if (error) return reject(error);
+
+      return resolve(result);
+    });
+  });
+
 /* EVENT LISTENERS */
 export const verifiedUserEvent = async (web3, contract, callback) => {
   let latestBlock = 0;
@@ -344,13 +353,34 @@ export const verifiedUserEvent = async (web3, contract, callback) => {
     return;
   }
 
-  contract.VerifiedUser({}, { fromBlock: latestBlock, toBlock: 'latest' })
-    .watch((error, event) => {
-      if (error) return callback(error);
+  const VerifiedUser = contract.VerifiedUser({}, { fromBlock: latestBlock, toBlock: 'latest' });
 
-      return callback(null, event);
-    });
+  VerifiedUser.watch((error, event) => {
+    if (error) return callback(error);
+
+    return callback(null, event, VerifiedUser);
+  });
 };
+
+export const listenForRefundSuccessful = async (web3, contract, username, callback) => {
+  let latestBlock = 0;
+
+  try {
+    latestBlock = await getBlockNumber(web3);
+  } catch (err) {
+    callback(err, null);
+    return;
+  }
+
+  const RefundSuccessful = contract.refundSuccessful({ username }, { fromBlock: latestBlock, toBlock: 'latest' });
+
+  RefundSuccessful.watch((error, event) => {
+    if (error) return callback(error);
+
+    return callback(null, event, RefundSuccessful);
+  });
+};
+
 
 export const getSentTipsFromEvent = (web3, contract, address) =>
   new Promise((resolve, reject) => {

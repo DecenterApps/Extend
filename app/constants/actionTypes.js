@@ -48,6 +48,7 @@ export const REFUND = 'refund';
 export const REFUND_ERROR = 'refund_error';
 export const REFUND_UNAVAILABLE = 'refund_unavailable';
 export const REFUND_SUCCESS = 'refund_success';
+export const CLEAR_REFUND_VALUES = 'clear_refund_values';
 
 // MODAL
 export const TOGGLE_MODAL = 'toggle_modal';

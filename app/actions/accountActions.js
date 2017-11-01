@@ -2,7 +2,7 @@ import lightwallet from '../modules/eth-lightwallet/lightwallet';
 import {
   CREATE_WALLET, COPIED_SEED, CLEAR_PASSWORD, UNLOCK_ERROR, UNLOCK, SET_BALANCE, SET_GAS_PRICE,
   SEND, SEND_ERROR, SEND_SUCCESS, WITHDRAW, WITHDRAW_ERROR, WITHDRAW_SUCCESS, SET_TIPS_BALANCE,
-  REFUND, REFUND_ERROR, REFUND_SUCCESS, REFUND_UNAVAILABLE
+  REFUND, REFUND_ERROR, REFUND_SUCCESS, REFUND_UNAVAILABLE, CLEAR_REFUND_VALUES
 } from '../constants/actionTypes';
 import { LOCK_INTERVAL } from '../constants/general';
 import { isJson, formatLargeNumber } from '../actions/utils';
@@ -268,6 +268,12 @@ export const copiedSeed = (dispatch) => {
   passwordReloader(dispatch);
 };
 
+export const clearRefundValues = (dispatch) =>
+  new Promise(async (resolve) => {
+    await dispatch({ type: CLEAR_REFUND_VALUES });
+    resolve();
+  });
+
 export const refund = async (web3, getState, dispatch, contracts) => {
   const state = getState();
   const formData = state.forms.refundForm;
@@ -278,12 +284,13 @@ export const refund = async (web3, getState, dispatch, contracts) => {
   const password = state.account.password;
 
   const cb = async (err, event, eventInstance) => {
-    console.log('EVENT', event, web3.toUtf8(event.args.username) === formData.username.value);
-
     if (web3.toUtf8(event.args.username) !== formData.username.value) return;
 
-    eventInstance.stopWatching();
+    eventInstance.stopWatching(() => {});
+
     await dispatch({ type: REFUND_SUCCESS });
+    await clearRefundValues(dispatch);
+
     changeView(dispatch, { viewName: 'dashboard' });
   };
 
@@ -293,14 +300,14 @@ export const refund = async (web3, getState, dispatch, contracts) => {
     const isAvailable = await _checkIfRefundAvailable(web3, contracts.func, username);
 
     console.log('is available', isAvailable);
-    if (!isAvailable) {
+    if (isAvailable) { // TODO change this for production (TESTING ONLY!)
       dispatch({ type: REFUND_UNAVAILABLE });
       return;
     }
 
-    const hash =await sendTransaction(web3, contracts.func.refundMoneyForUser, ks, address, password, [username], 0, gasPrice); // eslint-disable-line
+    const hash = await sendTransaction(web3, contracts.func.refundMoneyForUser, ks, address, password, [username], 0, gasPrice); // eslint-disable-line
     console.log('LISTENING FOR REFUNCD', hash);
-    listenForRefundSuccessful(web3, contracts.func, username, cb);
+    listenForRefundSuccessful(web3, contracts.events, username, cb);
   } catch(err) {
     dispatch({ type: REFUND_ERROR });
   }

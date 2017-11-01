@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import Tooltip from 'react-tooltip-lite';
 import connect from '../../../../customRedux/connect';
 import createForm from '../../../../customRedux/createForm';
 import createField from '../../../../customRedux/createField';
@@ -46,7 +47,18 @@ class RegisterForm extends Component {
               this.props.pristine || this.props.invalid
             }
           >
-            Register Reddit username
+            <Tooltip
+              content={(
+                <span>
+                  { this.props.pristine && 'Form has not been touched' }
+                  { this.props.invalid && 'Form is not valid, check errors' }
+                </span>
+              )}
+              useHover={this.props.pristine || this.props.invalid}
+              useDefaultStyles
+            >
+              Register Reddit username
+            </Tooltip>
           </button>
         </form>
       </div>

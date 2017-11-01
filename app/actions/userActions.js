@@ -53,8 +53,8 @@ export const listenForVerifiedUser = (web3, contracts, dispatch, getState) => {
   const cb = (err, event, eventInstance) => {
     if (web3.toUtf8(event.args.username) !== getState().user.registeringUsername) return;
 
-    eventInstance.stopWatching();
     verifiedUser(web3, contracts.func, getState, dispatch);
+    eventInstance.stopWatching(() => {});
   };
 
   verifiedUserEvent(web3, contracts.events, cb);
@@ -142,7 +142,7 @@ export const getReceivedTips = async (web3, contract, dispatch, getState) => {
   dispatch({ type: GET_RECEIVED_TIPS });
 
   try {
-    const receivedTips = await getReceivedTipsFromEvent(web3, contract, getState().user.verifiedUsername);
+    const receivedTips = await getReceivedTipsFromEvent(web3, contract, web3.toHex(getState().user.verifiedUsername));
     dispatch({ type: GET_RECEIVED_TIPS_SUCCESS, payload: receivedTips });
   } catch(err) {
     dispatch({ type: GET_RECEIVED_TIPS_ERROR });

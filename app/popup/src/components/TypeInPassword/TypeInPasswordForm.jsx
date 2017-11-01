@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import Tooltip from 'react-tooltip-lite';
 import connect from '../.././../../customRedux/connect';
 import createForm from '../../../../customRedux/createForm';
 import createField from '../../../../customRedux/createField';
@@ -49,7 +50,13 @@ class TypeInPasswordForm extends Component {
             !this.props.formData.getFiledVal('password')
           }
         >
+          <Tooltip
+            content="No password"
+            useHover={!this.props.formData.getFiledVal('password')}
+            useDefaultStyles
+          >
           Submit
+          </Tooltip>
         </button>
       </form>
     );
@@ -58,8 +65,10 @@ class TypeInPasswordForm extends Component {
 
 TypeInPasswordForm.propTypes = {
   formData: PropTypes.object.isRequired,
-  handleSubmit: PropTypes.func.isRequired,
-  unlockError: PropTypes.string.isRequired
+  unlockError: PropTypes.string.isRequired,
+  invalid: PropTypes.bool.isRequired,
+  pristine: PropTypes.bool.isRequired,
+  handleSubmit: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state) => ({

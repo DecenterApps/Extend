@@ -2,17 +2,25 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import BackIcon from '../../../../commonComponents/Decorative/BackIcon';
 import OptionsDropdown from '../OptionsDropdown/OptionsDropdown';
+import { changeViewMessage } from '../../../../messages/userActionsMessages';
+import { clearRefundValuesMessage } from '../../../../messages/accountActionMessages';
 
 import './header.scss';
-import { changeViewMessage } from '../../../../messages/userActionsMessages';
 
 const Header = ({ view, generatedVault, copiedSeed, password }) => (
   <div styleName="header-wrapper">
     {
+
+      (view === 'refund') &&
+      <span styleName="back" onClick={() => { changeViewMessage('dashboard'); clearRefundValuesMessage(); }}>
+        <BackIcon />
+      </span>
+    }
+
+    {
       (
         (view === 'send') ||
-        (view === 'withdraw') ||
-        (view === 'refund')
+        (view === 'withdraw')
       ) &&
       <span styleName="back" onClick={() => { changeViewMessage('dashboard'); }}>
         <BackIcon />

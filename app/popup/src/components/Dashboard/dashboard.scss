@@ -36,6 +36,8 @@
           max-width: 145px;
           overflow: hidden;
           text-overflow: ellipsis;
+          cursor: pointer;
+          display: inline-block;
         }
 
         .large-section-btn {

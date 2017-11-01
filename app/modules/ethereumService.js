@@ -372,7 +372,7 @@ export const listenForRefundSuccessful = async (web3, contract, username, callba
     return;
   }
 
-  const RefundSuccessful = contract.refundSuccessful({ username }, { fromBlock: latestBlock, toBlock: 'latest' });
+  const RefundSuccessful = contract.RefundSuccessful({ username }, { fromBlock: latestBlock, toBlock: 'latest' });
 
   RefundSuccessful.watch((error, event) => {
     if (error) return callback(error);
@@ -402,10 +402,10 @@ export const getReceivedTipsFromEvent = (web3, contract, hexUsername) =>
       .get((error, result) => {
         if (error) reject(error);
 
-        const sentTips = result.map((tx) => ({
+        const receivedTips = result.map((tx) => ({
           from: web3.toUtf8(tx.args.username), val: web3.fromWei(tx.args.val.toString())
         }));
 
-        resolve(sentTips);
+        resolve(receivedTips);
       });
   });

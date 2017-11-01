@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import connect from '../../../../customRedux/connect';
 import { getReceivedTipsMessage } from '../../../../messages/userActionsMessages';
+import { createRedditLink } from '../../../../actions/utils';
 
 import '../SentTips/tips.scss';
 
@@ -32,8 +33,16 @@ class SentTips extends Component {
                 {
                   this.props.receivedTips.length > 0 &&
                   this.props.receivedTips.map((tip) => (
-                    <div styleName="single-tip" key={tip.to + Math.random()}>
-                      <span>{ tip.from }</span>
+                    <div styleName="single-tip" key={tip.from + Math.random()}>
+                      <span>
+                        <a
+                          href={createRedditLink(tip.from)}
+                          target="_blank"
+                          rel="noopener"
+                        >
+                          /u/{ tip.from }
+                        </a>
+                      </span>
                       <span>{ tip.val } ETH</span>
                     </div>
                   ))
@@ -59,9 +68,9 @@ SentTips.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-  receivedTips: state.user.sentTips,
-  gettingReceivedTips: state.user.gettingSentTips,
-  gettingReceivedTipsError: state.user.gettingSentTipsError
+  receivedTips: state.user.receivedTips,
+  gettingReceivedTips: state.user.gettingReceivedTips,
+  gettingReceivedTipsError: state.user.gettingReceivedTipsError
 });
 
 export default connect(SentTips, mapStateToProps);

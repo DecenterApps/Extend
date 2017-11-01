@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import Tooltip from 'react-tooltip-lite';
 import createForm from '../../../../customRedux/createForm';
 import createField from '../../../../customRedux/createField';
 import InputFormField from '../../../../commonComponents/InputFormField';
@@ -49,6 +50,7 @@ class GenerateNewPasswordForm extends Component {
           errorClassName={formStyle['form-item-error']}
         />
 
+
         <button
           className={formStyle['submit-button']}
           type="submit"
@@ -56,7 +58,18 @@ class GenerateNewPasswordForm extends Component {
             this.props.pristine || this.props.invalid
           }
         >
-          Submit
+          <Tooltip
+            content={(
+              <span>
+                { this.props.pristine && 'Form has not been touched' }
+                { this.props.invalid && 'Form is not valid, check errors' }
+              </span>
+            )}
+            useHover={this.props.pristine || this.props.invalid}
+            useDefaultStyles
+          >
+            Submit
+          </Tooltip>
         </button>
       </form>
     );

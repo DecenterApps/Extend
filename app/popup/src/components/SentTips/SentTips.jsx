@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import connect from '../../../../customRedux/connect';
 import { getSentTipsMessage, changeViewMessage } from '../../../../messages/userActionsMessages';
+import { createRedditLink } from '../../../../actions/utils';
 
 import './tips.scss';
 
@@ -36,7 +37,15 @@ class SentTips extends Component {
                   this.props.sentTips.length > 0 &&
                   this.props.sentTips.map((tip) => (
                     <div styleName="single-tip" key={tip.to + Math.random()}>
-                      <span>{ tip.to }</span>
+                      <span>
+                        <a
+                          href={createRedditLink(tip.to)}
+                          target="_blank"
+                          rel="noopener"
+                        >
+                          /u/{ tip.to }
+                        </a>
+                      </span>
                       <span>{ tip.val } ETH</span>
                     </div>
                   ))

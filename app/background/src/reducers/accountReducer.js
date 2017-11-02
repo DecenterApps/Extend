@@ -69,9 +69,12 @@ export const reducer = (state, action) => {
     case SEND:
       return { ...state, sending: true };
 
-    case SEND_SUCCESS:
-      // implement that only last 10 addresses were send
-      return { ...state, sending: false, transactions: [...state.transactions, payload], sendingError: '' };
+    case SEND_SUCCESS: {
+      let transactions = [...state.transactions];
+      if (transactions.length > 10) transactions.pop();
+
+      return { ...state, sending: false, transactions: [payload, ...transactions], sendingError: '' };
+    }
 
     case SEND_ERROR:
       return { ...state, sending: false, sendingError: 'An error occurred while sending ETH, please try again.' };

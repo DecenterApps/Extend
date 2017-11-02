@@ -1,7 +1,8 @@
 import {
   CREATE_WALLET, COPIED_SEED, CLEAR_PASSWORD, UNLOCK_ERROR, UNLOCK, SET_BALANCE, SET_GAS_PRICE,
-  SEND, SEND_ERROR, SEND_SUCCESS, CHANGE_TX_STATE, WITHDRAW, WITHDRAW_ERROR, WITHDRAW_SUCCESS, CLEAR_WITHDRAW_SUCCESS,
-  SET_TIPS_BALANCE
+  SEND, SEND_ERROR, SEND_SUCCESS, CHANGE_TX_STATE, WITHDRAW, WITHDRAW_ERROR, WITHDRAW_SUCCESS,
+  SET_TIPS_BALANCE, CLEAR_PENDING, REFUND, REFUND_ERROR, REFUND_SUCCESS, REFUND_UNAVAILABLE,
+  CLEAR_REFUND_VALUES
 } from '../../../constants/actionTypes';
 
 const reducerName = 'account';
@@ -21,14 +22,29 @@ const INITIAL_STATE = {
   sendingError: '',
   withdrawing: false,
   withdrawingError: '',
-  withdrawSuccessful: false,
-  tipsBalance: '0'
+  tipsBalance: '0',
+  refunding: false,
+  refundingError: '',
+  refundAvailable: true
 };
 
 export const reducer = (state, action) => {
   const payload = action.payload;
 
   switch (action.type) {
+    case `${CLEAR_PENDING}-${reducerName}`:
+      return {
+        ...state,
+        unlockError: '',
+        sending: false,
+        sendingError: '',
+        withdrawing: false,
+        withdrawingError: '',
+        refunding: false,
+        refundingError: '',
+        refundAvailable: true
+      };
+
     case CREATE_WALLET:
       return { ...state, created: true, ...payload };
 
@@ -53,9 +69,12 @@ export const reducer = (state, action) => {
     case SEND:
       return { ...state, sending: true };
 
-    case SEND_SUCCESS:
-      // implement that only last 10 addresses were send
-      return { ...state, sending: false, transactions: [...state.transactions, payload], sendingError: '' };
+    case SEND_SUCCESS: {
+      let transactions = [...state.transactions];
+      if (transactions.length > 10) transactions.pop();
+
+      return { ...state, sending: false, transactions: [payload, ...transactions], sendingError: '' };
+    }
 
     case SEND_ERROR:
       return { ...state, sending: false, sendingError: 'An error occurred while sending ETH, please try again.' };
@@ -69,16 +88,30 @@ export const reducer = (state, action) => {
     case WITHDRAW:
       return { ...state, withdrawing: true };
     case WITHDRAW_SUCCESS:
-      return { ...state, withdrawing: false, withdrawingError: '', withdrawSuccessful: true };
+      return { ...state, withdrawing: false, withdrawingError: '' };
     case WITHDRAW_ERROR:
       return {
         ...state,
         withdrawing: false,
-        withdrawingError: 'An error occurred while withdrawing ETH, please try again.',
-        withdrawSuccessful: false,
+        withdrawingError: 'An error occurred while withdrawing ETH, please try again.'
       };
-    case CLEAR_WITHDRAW_SUCCESS:
-      return { ...state, withdrawSuccessful: false };
+
+    case REFUND:
+      return { ...state, refunding: true };
+    case REFUND_SUCCESS:
+      return { ...state, refunding: false, refundingError: '', refundAvailable: true };
+    case REFUND_ERROR:
+      return {
+        ...state,
+        refunding: false,
+        refundAvailable: true,
+        refundingError: 'An error occurred while refunding ETH, please try again.'
+      };
+    case REFUND_UNAVAILABLE:
+      return { ...state, refundAvailable: false, refunding: false, refundingError: '' };
+    case CLEAR_REFUND_VALUES:
+      return { ...state, refundAvailable: true, refunding: false, refundingError: '' };
+
 
     case SET_TIPS_BALANCE:
       return { ...state, tipsBalance: payload };

@@ -7,14 +7,16 @@ const accountActionsHandler = (web3, contracts, getState, dispatch, funcName, pa
     case 'setBalance':
       return accountActions[funcName](dispatch, payload);
     case 'copiedSeed':
-    case 'passwordReloader':
     case 'clearPassword':
+    case 'passwordReloader':
+    case 'clearRefundValues':
       return accountActions[funcName](dispatch);
     case 'checkIfPasswordValid':
       return accountActions[funcName](getState, dispatch, payload);
     case 'send':
       return accountActions[funcName](web3, getState, dispatch);
     case 'withdraw':
+    case 'refund':
       return accountActions[funcName](web3, getState, dispatch, contracts);
 
     default:

@@ -59,10 +59,15 @@
     justify-content: space-between;
     margin-bottom: 35px;
 
+    &.form-item-wrapper-long {
+      .form-item { flex-grow: 1; }
+      label { flex-grow: 0.3; }
+    }
+
     .form-item {
       border: 2px solid #444;
       border-radius: 3px;
-      padding: 8px;
+      padding: 6px 10px;
       margin: 0;
       width: 200px;
       text-align: right;

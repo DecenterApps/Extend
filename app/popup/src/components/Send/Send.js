@@ -26,7 +26,7 @@ const Send = ({ transactions }) => (
       {
         transactions.length === 0 &&
         <div styleName="no-transactions">
-          You have not made any transactions
+          You have not made any transactions yet
         </div>
       }
     </div>

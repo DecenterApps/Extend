@@ -1,0 +1,47 @@
+.burger-menu {
+  cursor: pointer;
+  position: absolute;
+  top: 17px;
+  right: 25px;
+  padding: 7px 0;
+
+  span {
+    position: relative;
+    display: block;
+    width: 25px;
+    height: 3px;
+    background: #fff;
+    transition: all .2s ease-in-out;
+
+    &:before, &:after {
+      position: absolute;
+      background: #fff;
+      content: '';
+      width: 25px;
+      height: 3px;
+      transition: all .2s ease-in-out;
+    }
+
+    &:before {
+      top: -6px;
+    }
+
+    &:after {
+      top: 6px;
+    }
+  }
+}
+
+.burger-menu.active {
+  span {
+    background: transparent;
+
+    &:before {
+      transform: rotate(45deg) translate(4px, 5px);
+    }
+
+    &:after {
+      transform: rotate(-45deg) translate(4px, -4px);
+    }
+  }
+} 

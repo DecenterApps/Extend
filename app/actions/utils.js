@@ -105,6 +105,8 @@ export const getEtherScanLinkByNetwork = (network, address) => {
   return `https://${network}.etherscan.io/address/${address}`;
 };
 
+export const createRedditLink = ((user) => (`https://www.reddit.com/user/${user}`));
+
 /**
  * Formats small numbers example: 0.0000000001 number to 0.0000000001 string instead of the
  * usual JS conversion to 1e-9

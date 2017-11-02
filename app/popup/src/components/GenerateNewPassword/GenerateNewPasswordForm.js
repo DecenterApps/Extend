@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import Tooltip from 'react-tooltip-lite';
 import createForm from '../../../../customRedux/createForm';
 import createField from '../../../../customRedux/createField';
 import InputFormField from '../../../../commonComponents/InputFormField';
@@ -8,12 +9,13 @@ import { createWalletMessage } from '../../../../messages/accountActionMessages'
 
 import formStyle from '../../../../commonComponents/forms.scss';
 
-class GenerateNewPasswordForm extends Component {
-  constructor(props) {
-    super(props);
+const FORM_NAME = 'generateNewPasswordForm';
 
-    this.PasswordField = createField(InputFormField, props.formData);
-    this.RepeatPasswordField = createField(InputFormField, props.formData);
+class GenerateNewPasswordForm extends Component {
+  componentWillMount() {
+    this.props.formData.setNumOfFields(2);
+    this.PasswordField = createField(InputFormField, this.props.formData);
+    this.RepeatPasswordField = createField(InputFormField, this.props.formData);
   }
 
   render() {
@@ -48,6 +50,7 @@ class GenerateNewPasswordForm extends Component {
           errorClassName={formStyle['form-item-error']}
         />
 
+
         <button
           className={formStyle['submit-button']}
           type="submit"
@@ -55,7 +58,18 @@ class GenerateNewPasswordForm extends Component {
             this.props.pristine || this.props.invalid
           }
         >
-          Submit
+          <Tooltip
+            content={(
+              <span>
+                { this.props.pristine && 'Form has not been touched' }
+                { this.props.invalid && 'Form is not valid, check errors' }
+              </span>
+            )}
+            useHover={this.props.pristine || this.props.invalid}
+            useDefaultStyles
+          >
+            Submit
+          </Tooltip>
         </button>
       </form>
     );
@@ -70,5 +84,5 @@ GenerateNewPasswordForm.propTypes = {
 };
 
 export default createForm(
-  'generateNewPasswordForm', GenerateNewPasswordForm, generateNewPasswordFormValidator
+  FORM_NAME, GenerateNewPasswordForm, generateNewPasswordFormValidator
 );

@@ -12,10 +12,6 @@ const userActionsHandler = (web3, contracts, getState, dispatch, funcName, paylo
     case 'changeView':
       return userActions[funcName](dispatch, payload);
 
-    case 'getSentTips':
-    case 'getReceivedTips':
-      return userActions[funcName](web3, contracts.events, dispatch, getState);
-
     default:
       throw Error('Function in handler not defined', funcName);
   }

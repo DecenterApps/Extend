@@ -4,49 +4,36 @@ import connect from '../../../../customRedux/connect';
 import createForm from '../../../../customRedux/createForm';
 import createField from '../../../../customRedux/createField';
 import InputFormField from '../../../../commonComponents/InputFormField';
-import { sendMessage } from '../../../../messages/accountActionMessages';
-import sendFormValidator from './sendFormValidator';
+import refundFormValidator from './refundFormValidator';
+import { refundMessage } from '../../../../messages/accountActionMessages';
 
 import formStyle from '../../../../commonComponents/forms.scss';
 
-const FORM_NAME = 'sendForm';
+const FORM_NAME = 'refundForm';
 
-class SendForm extends Component {
+class RefundForm extends Component {
   componentWillMount() {
-    this.props.formData.setNumOfFields(3);
-    this.AddressField = createField(InputFormField, this.props.formData);
-    this.AmountField = createField(InputFormField, this.props.formData);
+    this.props.formData.setNumOfFields(2);
+    this.UsernameField = createField(InputFormField, this.props.formData);
     this.GasPriceField = createField(InputFormField, this.props.formData);
   }
 
   render() {
-    const AddressField = this.AddressField;
-    const AmountField = this.AmountField;
+    const UsernameField = this.UsernameField;
     const GasPriceField = this.GasPriceField;
 
     return (
       <div>
         <form
           styleName="form-wrapper-2"
-          onSubmit={(e) => { this.props.handleSubmit(e, sendMessage); }}
+          onSubmit={(e) => { this.props.handleSubmit(e, refundMessage); }}
         >
 
-          <AddressField
-            name="to"
+          <UsernameField
+            name="username"
             showErrorText
             showLabel
-            labelText="To:"
-            type="text"
-            wrapperClassName={`${formStyle['form-item-wrapper']} ${formStyle['form-item-wrapper-long']}`}
-            inputClassName={formStyle['form-item']}
-            errorClassName={formStyle['form-item-error']}
-          />
-
-          <AmountField
-            name="amount"
-            showErrorText
-            showLabel
-            labelText="Amount (ETH):"
+            labelText="Username:"
             type="text"
             wrapperClassName={formStyle['form-item-wrapper']}
             inputClassName={formStyle['form-item']}
@@ -66,19 +53,23 @@ class SendForm extends Component {
           />
 
           {
-            this.props.sendingError &&
-            <div className="submit-error">Error: {this.props.sendingError}</div>
+            this.props.refundingError &&
+            <div styleName="submit-error">Error: {this.props.refundingError}</div>
           }
 
+          {
+            !this.props.refundAvailable &&
+            <div styleName="submit-error">Error: Refund not available from this user</div>
+          }
 
           <button
             className={formStyle['submit-button']}
             type="submit"
             disabled={
-              this.props.pristine || this.props.invalid || this.props.sending
+              this.props.pristine || this.props.invalid || this.props.refunding
             }
           >
-            { this.props.sending ? 'Sending' : 'Send' }
+            { this.props.refunding ? 'Refunding' : 'Refund' }
           </button>
         </form>
       </div>
@@ -86,22 +77,24 @@ class SendForm extends Component {
   }
 }
 
-SendForm.propTypes = {
+RefundForm.propTypes = {
   formData: PropTypes.object.isRequired,
   invalid: PropTypes.bool.isRequired,
   pristine: PropTypes.bool.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   gasPrice: PropTypes.number.isRequired,
-  sending: PropTypes.bool.isRequired,
-  sendingError: PropTypes.string.isRequired
+  refunding: PropTypes.bool.isRequired,
+  refundingError: PropTypes.string.isRequired,
+  refundAvailable: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = (state) => ({
   gasPrice: state.account.gasPrice,
-  sending: state.account.sending,
-  sendingError: state.account.sendingError,
+  refunding: state.account.refunding,
+  refundingError: state.account.refundingError,
+  refundAvailable: state.account.refundAvailable,
 });
 
-const ExportComponent = createForm(FORM_NAME, SendForm, sendFormValidator);
+const ExportComponent = createForm(FORM_NAME, RefundForm, refundFormValidator);
 
 export default connect(ExportComponent, mapStateToProps);

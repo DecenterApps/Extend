@@ -1,12 +1,12 @@
 import React from 'react';
-import WithdrawForm from './WithdrawForm';
+import RefundForm from './RefundForm';
 
 import '../../../../commonComponents/general.scss';
 
-const Withdraw = () => (
+const Refund = () => (
   <div styleName="view-wrapper">
-    <WithdrawForm />
+    <RefundForm />
   </div>
 );
 
-export default Withdraw;
+export default Refund;

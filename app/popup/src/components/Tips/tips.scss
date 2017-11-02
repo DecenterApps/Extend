@@ -1,4 +1,8 @@
+@import '../../../../commonComponents/colors';
+
 .tips-wrapper {
+  max-height: 150px;
+  overflow: auto;
   padding: 25px;
 
   .single-tip {
@@ -12,6 +16,17 @@
       max-width: 200px;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+  }
+
+  .refund-btn {
+    cursor: pointer;
+    color: $green;
+    font-size: 16px;
+    margin-bottom: 15px;
+
+    &:hover {
+      color: $green-hover;
     }
   }
 }

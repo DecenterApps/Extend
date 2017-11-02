@@ -1,12 +1,9 @@
 import React from 'react';
 import { render } from 'react-dom';
-import ModalRoot from './components/Modals/ModalRoot';
-import addTipToPostsAndComments from './components/Tip/addTipToPostsAndComments';
-
-addTipToPostsAndComments();
+import App from './components/App/App';
 
 const pageAppInstance = document.body.appendChild(document.createElement('div'));
 
 render(
-  <ModalRoot />, pageAppInstance
+  <App />, pageAppInstance
 );

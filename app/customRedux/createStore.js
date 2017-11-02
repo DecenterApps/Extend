@@ -1,4 +1,5 @@
 import { get, set, clearReducer } from './store';
+import { CLEAR_PENDING } from '../constants/actionTypes';
 
 /**
  * Load reducer state from chrome local store if it was already saved there.
@@ -35,9 +36,7 @@ const combineReducers = (reducersData) =>
     };
 
     reducersData.forEach(async (reducerData, index) => {
-      const reducerState = await initReducer(reducerData);
-
-      store.state[reducerData.name] = reducerState;
+      store.state[reducerData.name] = await initReducer(reducerData);
       store.reducers[reducerData.name] = reducerData.handle;
 
       if (index === reducersData.length - 1) resolve(store);
@@ -61,6 +60,11 @@ const handleReducerFinish = (reducersFinished, reducers, resolved, resolve, stat
   if (resolved) {
     resolve(state[reducerName]);
   } else {
+    if (action.type.includes(CLEAR_PENDING)) {
+      resolve();
+      return;
+    }
+
     throw Error('Dispatch was not handled in any reducer', action);
   }
 };

@@ -16,6 +16,7 @@
       }
 
       .error { color: $red-error };
+      .pending { color: $yellow-pending }
     }
 
     .large-section-wrapper {
@@ -35,6 +36,8 @@
           max-width: 145px;
           overflow: hidden;
           text-overflow: ellipsis;
+          cursor: pointer;
+          display: inline-block;
         }
 
         .large-section-btn {
@@ -49,13 +52,16 @@
   }
 
   .registering-info {
-    margin-top: 25px;
+    margin-bottom: 25px;
     text-align: center;
     font-size: 16px;
   }
 
-  .register-btn {
-    margin-top: 25px;
-    @include btn;
+  .register-btn-wrapper {
+    padding: 0 25px 25px 25px;
+
+    .register-btn {
+      @include btn;
+    }
   }
 }

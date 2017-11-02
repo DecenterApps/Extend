@@ -277,35 +277,33 @@ export const sendTransaction =
  * @param {Object} ks
  * @param {String} address
  * @param {String} password
+ * @param {String} gasPrice
  * @return {Promise} transaction hash once finished
  */
-export const _createUser = (contract, web3, username, token, ks, address, password) =>
+export const _createUser = (contract, web3, username, token, ks, address, password, gasPrice) =>
   new Promise(async (resolve, reject) => {
     try {
       const oreclizeTransactionCost = await getOraclizePrice(contract);
       const value = oreclizeTransactionCost.toString();
 
       const encryptedToken = await encryptTokenOreclize(token);
-      const params = [web3.sha3(username), encryptedToken];
+      const params = [web3.toHex(username), encryptedToken];
 
-      const hash = await sendTransaction(web3, contract.createUser, ks, address, password, params, value);
+      const hash = await sendTransaction(web3, contract.createUser, ks, address, password, params, value, gasPrice);
       resolve(hash);
     } catch (err) {
       reject({ message: err });
     }
   });
 
-export const _getTipBalance = (web3, contractMethod, from) =>
+export const _getTipBalance = (web3, contract) =>
   new Promise(async (resolve, reject) => {
     try {
-      let { to, data } = getEncodedParams(contractMethod);
-
-      const nonce = await getNonceForAddress(web3, from);
-      const gasPrice = (await getGasPrice(web3)).toString();
-      const gas = await estimateGas(web3, { to, data });
-
-      contractMethod.call({ to, from, data, nonce, gas, gasPrice }, (err, result) => {
-        if (err) reject(err);
+      contract.checkBalance({}, (error, result) => {
+        if (error) {
+          reject(error);
+          return;
+        }
 
         resolve(web3.fromWei(result.toString()));
       });
@@ -332,6 +330,15 @@ export const _checkUsernameVerified = (web3, contract, username) =>
     });
   });
 
+export const _checkIfRefundAvailable = (web3, contract, username) =>
+  new Promise((resolve, reject) => {
+    contract.checkIfRefundAvailable(username, (error, result) => {
+      if (error) return reject(error);
+
+      return resolve(result);
+    });
+  });
+
 /* EVENT LISTENERS */
 export const verifiedUserEvent = async (web3, contract, callback) => {
   let latestBlock = 0;
@@ -343,38 +350,68 @@ export const verifiedUserEvent = async (web3, contract, callback) => {
     return;
   }
 
-  contract.VerifiedUser({}, { fromBlock: latestBlock, toBlock: 'latest' })
-    .watch((error, event) => {
-      if (error) return callback(error);
+  const VerifiedUser = contract.VerifiedUser({}, { fromBlock: latestBlock, toBlock: 'latest' });
 
-      return callback(null, event);
-    });
+  VerifiedUser.watch((error, event) => {
+    if (error) return callback(error);
+
+    return callback(null, event, VerifiedUser);
+  });
 };
 
-export const getSentTipsFromEvent = (web3, contract, address) =>
+export const listenForRefundSuccessful = async (web3, contract, username, callback) => {
+  let latestBlock = 0;
+
+  try {
+    latestBlock = await getBlockNumber(web3);
+  } catch (err) {
+    callback(err, null);
+    return;
+  }
+
+  const RefundSuccessful = contract.RefundSuccessful({ username }, { fromBlock: latestBlock, toBlock: 'latest' });
+
+  RefundSuccessful.watch((error, event) => {
+    if (error) return callback(error);
+
+    return callback(null, event, RefundSuccessful);
+  });
+};
+
+export const getTipsFromEvent = (web3, contract, address, hexUsername) =>
   new Promise((resolve, reject) => {
-    contract.UserTipped({ from: address }, { fromBlock: 4447379, toBlock: 'latest' })
+    contract.UserTipped([{ from: address }, { to: hexUsername }], { fromBlock: 4447379, toBlock: 'latest' })
       .get((error, result) => {
         if (error) reject(error);
 
-        const sentTips = result.map((tx) => {
-          return { to: tx.args.username, val: web3.fromWei(tx.args.val.toString()) };
-        });
+        const tips = result.map((tx) => ({
+          to: web3.toUtf8(tx.args.username), val: web3.fromWei(tx.args.val.toString()), from: tx.args.from
+        }));
 
-        resolve(sentTips);
+        resolve(tips.reverse());
       });
   });
 
-export const getReceivedTipsFromEvent = (web3, contract, sha3Username) =>
-  new Promise((resolve, reject) => {
-    contract.UserTipped({ to: sha3Username }, { fromBlock: 4447379, toBlock: 'latest' })
-      .get((error, result) => {
-        if (error) reject(error);
+export const listenForTips = async (web3, contract, dispatch, address, hexUsername, callback) => {
+  try {
+    const fromBlock = await getBlockNumber(web3);
 
-        const sentTips = result.map((tx) => {
-          return { to: tx.args.username, val: web3.fromWei(tx.args.val.toString()) };
-        });
+    const UserTipped = contract.UserTipped([{ from: address }, { to: hexUsername }], { fromBlock, toBlock: 'latest' });
 
-        resolve(sentTips);
-      });
-  });
+    UserTipped.watch((error, event) => {
+      if (error) {
+        callback(error);
+        return;
+      }
+
+      const tip = event.args;
+      const to = web3.toUtf8(tip.username);
+      const val = web3.fromWei(tip.val.toString());
+      const from = tip.from;
+
+      callback({ to, val, from });
+    });
+  } catch (err) {
+    callback(err);
+  }
+};

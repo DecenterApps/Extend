@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import connect from '../../../../customRedux/connect';
 import { TABS } from '../../../../constants/general';
 import { setActiveTabMessage } from '../../../../messages/userActionsMessages';
-import SentTips from '../SentTips/SentTips';
-import ReceivedTips from '../ReceivedTips/ReceivedTips';
+import Tips from '../Tips/Tips';
 
 import './tabs.scss';
 
@@ -25,8 +24,8 @@ const Tabs = ({ activeTab }) => (
       }
     </ul>
 
-    { (activeTab === 'Sent') && <SentTips /> }
-    { (activeTab === 'Received') && <ReceivedTips /> }
+    { (activeTab === 'Sent') && <Tips tipsType="sent" /> }
+    { (activeTab === 'Received') && <Tips tipsType="received" /> }
   </div>
 );
 

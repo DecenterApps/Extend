@@ -1,11 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Tooltip from 'react-tooltip-lite';
 import connect from '../../../../customRedux/connect';
-import { getEtherScanLinkByNetwork } from '../../../../actions/utils';
-import { createUserAuthMessage } from '../../../../messages/userActionsMessages';
+import { getEtherScanLinkByNetwork, createRedditLink } from '../../../../actions/utils';
+import { changeViewMessage } from '../../../../messages/userActionsMessages';
 import Tabs from '../Tabs/Tabs';
+import RegisterForm from '../RegisterForm/RegisterForm';
 
-import './dashboard.scss';
+import dashboardStyle from './dashboard.scss';
 
 const Dashboard = ({
   address, balance, verifiedUsername, tipsBalance, registering, registeringError, registeringUsername
@@ -28,8 +30,30 @@ const Dashboard = ({
         <div>
           { !registering && !registeringError && !verifiedUsername && <span styleName="error">Not registered</span> }
           { !registering && registeringError && <span styleName="error">There was an error, try again</span> }
-          { registering && <span>Registering /u/{ registeringUsername } </span> }
-          { verifiedUsername && <span>{ verifiedUsername }</span> }
+          { registering &&
+            <span styleName="pending">
+              Registering
+              <a
+                href={createRedditLink(registeringUsername)}
+                target="_blank"
+                rel="noopener"
+              >
+                /u/{registeringUsername }
+              </a>
+            </span>
+          }
+          {
+            verifiedUsername &&
+            <span>
+              <a
+                href={createRedditLink(verifiedUsername)}
+                target="_blank"
+                rel="noopener"
+              >
+                /u/{verifiedUsername }
+              </a>
+            </span>
+          }
         </div>
       </div>
 
@@ -38,10 +62,16 @@ const Dashboard = ({
           <div styleName="large-section-title">
             Balance (ETH):
           </div>
-          <div styleName="large-section-balance">
+
+          <Tooltip
+            content={balance}
+            tagName="div"
+            className={dashboardStyle['large-section-balance']}
+            useDefaultStyles
+          >
             { balance }
-          </div>
-          <div styleName="large-section-btn">
+          </Tooltip>
+          <div styleName="large-section-btn" onClick={() => { changeViewMessage('send'); }}>
             Send
           </div>
         </div>
@@ -52,10 +82,17 @@ const Dashboard = ({
             <div styleName="large-section-title">
               Tips (ETH):
             </div>
-            <div styleName="large-section-balance">
+
+            <Tooltip
+              content={tipsBalance}
+              tagName="div"
+              className={dashboardStyle['large-section-balance']}
+              useDefaultStyles
+            >
               { tipsBalance }
-            </div>
-            <div styleName="large-section-btn">
+            </Tooltip>
+
+            <div styleName="large-section-btn" onClick={() => { changeViewMessage('withdraw'); }}>
               Withdraw
             </div>
           </div>
@@ -66,9 +103,9 @@ const Dashboard = ({
     {
       !registering &&
       !verifiedUsername &&
-      <button onClick={createUserAuthMessage} styleName="register-btn">
-        Register Reddit username
-      </button>
+      <div styleName="register-btn-wrapper">
+        <RegisterForm />
+      </div>
     }
     {
       registering && <div styleName="registering-info">Username is currently being registered. Please wait...</div>

@@ -11,8 +11,8 @@ contract ReddappEvents {
     event UserTipped(address from, bytes32 indexed username, uint val);
     event WithdrawSuccessful(bytes32 username);
     event CheckAddressVerified(address userAddress);
-    event RefundSuccessful(bytes32 username);
-    event GoldBought(bytes32 username, uint value);
+    event RefundSuccessful(address _from, bytes32 username);
+    event GoldBought(string _data, string _signature);
 
     mapping(address => bool) owners;
 
@@ -33,16 +33,16 @@ contract ReddappEvents {
         owners[_address] = false;
     }
 
-    function goldBought(bytes32 _username, uint _value) onlyOwners {
-        GoldBought(_username, _value);
+    function goldBought(string _data, string _signature) onlyOwners {
+        GoldBought(_data, _signature);
     }
 
     function createdUser(bytes32 _username) onlyOwners {
         CreatedUser(_username);
     }
 
-    function refundSuccessful(bytes32 _username) onlyOwners {
-        RefundSuccessful(_username);
+    function refundSuccessful(address _from, bytes32 _username) onlyOwners {
+        RefundSuccessful(_from, _username);
     }
 
     function usernameDoesNotMatch(bytes32 _username, bytes32 _neededUsername) onlyOwners {

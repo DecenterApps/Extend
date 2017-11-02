@@ -31,8 +31,9 @@ class TipForm extends Component {
         <AmountField
           name="amount"
           showErrorText
-          placeholder="Amount of Eth that you want to tip"
           type="text"
+          showLabel
+          labelText="Amount (ETH):"
           wrapperClassName={formStyle['form-item-wrapper']}
           inputClassName={formStyle['form-item']}
           errorClassName={formStyle['form-item-error']}
@@ -41,7 +42,8 @@ class TipForm extends Component {
         <GasPriceField
           name="gasPrice"
           showErrorText
-          placeholder="Transaction gas price"
+          showLabel
+          labelText="Gas price (Gwei):"
           type="text"
           value={this.props.gasPrice}
           wrapperClassName={formStyle['form-item-wrapper']}

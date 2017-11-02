@@ -101,15 +101,11 @@ Tips.propTypes = {
   tipsType: PropTypes.string.isRequired
 };
 
-const mapStateToProps = (state) => {
-  console.log('SENT TIPS', state.user.sentTips);
-
-  return {
-    receivedTips: state.user.receivedTips,
-    sentTips: state.user.sentTips,
-    gettingTips: state.user.gettingTips,
-    gettingTipsError: state.user.gettingTipsError
-  };
-};
+const mapStateToProps = (state) => ({
+  receivedTips: state.user.receivedTips,
+  sentTips: state.user.sentTips,
+  gettingTips: state.user.gettingTips,
+  gettingTipsError: state.user.gettingTipsError
+});
 
 export default connect(Tips, mapStateToProps);

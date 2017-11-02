@@ -33,7 +33,6 @@ export const UNLOCK = 'unlock';
 export const UNLOCK_ERROR = 'unlock_error';
 export const SET_BALANCE = 'set_balance';
 export const SET_GAS_PRICE = 'set_gas_price';
-export const ADD_TRANSACTION = 'add_transaction';
 export const SEND = 'send';
 export const SEND_ERROR = 'send_error';
 export const SEND_SUCCESS = 'send_success';

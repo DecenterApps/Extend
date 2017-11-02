@@ -296,17 +296,14 @@ export const _createUser = (contract, web3, username, token, ks, address, passwo
     }
   });
 
-export const _getTipBalance = (web3, contractMethod, from) =>
+export const _getTipBalance = (web3, contract) =>
   new Promise(async (resolve, reject) => {
     try {
-      let { to, data } = getEncodedParams(contractMethod);
-
-      const nonce = await getNonceForAddress(web3, from);
-      const gasPrice = (await getGasPrice(web3)).toString();
-      const gas = await estimateGas(web3, { to, data });
-
-      contractMethod.call({ to, from, data, nonce, gas, gasPrice }, (err, result) => {
-        if (err) reject(err);
+      contract.checkBalance({}, (error, result) => {
+        if (error) {
+          reject(error);
+          return;
+        }
 
         resolve(web3.fromWei(result.toString()));
       });
@@ -381,31 +378,40 @@ export const listenForRefundSuccessful = async (web3, contract, username, callba
   });
 };
 
-
-export const getSentTipsFromEvent = (web3, contract, address) =>
+export const getTipsFromEvent = (web3, contract, address, hexUsername) =>
   new Promise((resolve, reject) => {
-    contract.UserTipped({ from: address }, { fromBlock: 4447379, toBlock: 'latest' })
+    contract.UserTipped([{ from: address }, { to: hexUsername }], { fromBlock: 4447379, toBlock: 'latest' })
       .get((error, result) => {
         if (error) reject(error);
 
-        const sentTips = result.map((tx) => {
-          return { to: web3.toUtf8(tx.args.username), val: web3.fromWei(tx.args.val.toString()) };
-        });
-
-        resolve(sentTips);
-      });
-  });
-
-export const getReceivedTipsFromEvent = (web3, contract, hexUsername) =>
-  new Promise((resolve, reject) => {
-    contract.UserTipped({ to: hexUsername }, { fromBlock: 4447379, toBlock: 'latest' })
-      .get((error, result) => {
-        if (error) reject(error);
-
-        const receivedTips = result.map((tx) => ({
-          from: web3.toUtf8(tx.args.username), val: web3.fromWei(tx.args.val.toString())
+        const tips = result.map((tx) => ({
+          to: web3.toUtf8(tx.args.username), val: web3.fromWei(tx.args.val.toString()), from: tx.args.from
         }));
 
-        resolve(receivedTips);
+        resolve(tips.reverse());
       });
   });
+
+export const listenForTips = async (web3, contract, dispatch, address, hexUsername, callback) => {
+  try {
+    const fromBlock = await getBlockNumber(web3);
+
+    const UserTipped = contract.UserTipped([{ from: address }, { to: hexUsername }], { fromBlock, toBlock: 'latest' });
+
+    UserTipped.watch((error, event) => {
+      if (error) {
+        callback(error);
+        return;
+      }
+
+      const tip = event.args;
+      const to = web3.toUtf8(tip.username);
+      const val = web3.fromWei(tip.val.toString());
+      const from = tip.from;
+
+      callback({ to, val, from });
+    });
+  } catch (err) {
+    callback(err);
+  }
+};

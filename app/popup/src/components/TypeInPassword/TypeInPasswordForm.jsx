@@ -66,8 +66,6 @@ class TypeInPasswordForm extends Component {
 TypeInPasswordForm.propTypes = {
   formData: PropTypes.object.isRequired,
   unlockError: PropTypes.string.isRequired,
-  invalid: PropTypes.bool.isRequired,
-  pristine: PropTypes.bool.isRequired,
   handleSubmit: PropTypes.func.isRequired
 };
 

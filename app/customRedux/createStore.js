@@ -36,9 +36,7 @@ const combineReducers = (reducersData) =>
     };
 
     reducersData.forEach(async (reducerData, index) => {
-      const reducerState = await initReducer(reducerData);
-
-      store.state[reducerData.name] = reducerState;
+      store.state[reducerData.name] = await initReducer(reducerData);
       store.reducers[reducerData.name] = reducerData.handle;
 
       if (index === reducersData.length - 1) resolve(store);
@@ -106,7 +104,7 @@ const createStore = (reducersData) =>
             }
 
             const setResult = await set(reducerName, newReducerState);
-            console.log('ACTION', action);
+            console.log('ACTION', action, setResult);
             resolved = true;
             state[reducerName] = setResult;
 

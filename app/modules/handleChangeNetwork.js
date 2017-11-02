@@ -20,13 +20,13 @@ const handleUserVerification = (web3, dispatch, getState, state, contracts) =>
     try {
       const alreadyVerified = state.user.verified;
 
-      if (alreadyVerified) accountActions.pollTipsBalance(web3, contracts.func, dispatch, getState);
+      if (alreadyVerified) userActions.handleTips(web3, contracts, getState, dispatch);
 
       if (!alreadyVerified && state.account.address) {
         const isVerified = await _checkAddressVerified(web3, contracts.func);
 
         if (isVerified) {
-          userActions.verifiedUser(web3, contracts.func, getState, dispatch);
+          userActions.verifiedUser(web3, contracts, getState, dispatch);
         } else if (!isVerified && state.user.registering && !state.user.verifiedUsername) {
           userActions.listenForVerifiedUser(web3, contracts, dispatch, getState);
         }

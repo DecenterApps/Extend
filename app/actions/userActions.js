@@ -1,15 +1,12 @@
 import lightwallet from '../modules/eth-lightwallet/lightwallet';
 import { getParameterByName } from '../actions/utils';
 import {
-  verifiedUserEvent, _createUser, getSentTipsFromEvent, getReceivedTipsFromEvent
-} from '../modules/ethereumService';
-import { pollTipsBalance } from './accountActions';
-import {
   NETWORK_UNAVAILABLE,
-  REGISTER_USER, VERIFIED_USER, REGISTER_USER_ERROR, SET_ACTIVE_TAB, GET_SENT_TIPS, GET_SENT_TIPS_SUCCESS,
-  GET_SENT_TIPS_ERROR, GET_RECEIVED_TIPS, GET_RECEIVED_TIPS_SUCCESS, GET_RECEIVED_TIPS_ERROR, CHANGE_VIEW,
-  CONNECT_AGAIN, CONNECT_AGAIN_SUCCESS, CONNECT_AGAIN_ERROR
+  REGISTER_USER, VERIFIED_USER, REGISTER_USER_ERROR, SET_ACTIVE_TAB, GET_TIPS, GET_TIPS_SUCCESS,
+  GET_TIPS_ERROR, CHANGE_VIEW, CONNECT_AGAIN, CONNECT_AGAIN_SUCCESS, CONNECT_AGAIN_ERROR, ADD_NEW_TIP
 } from '../constants/actionTypes';
+import { verifiedUserEvent, _createUser, listenForTips, getTipsFromEvent } from '../modules/ethereumService';
+import { setTipsBalance } from './accountActions';
 
 const keyStore = lightwallet.keystore;
 
@@ -19,6 +16,45 @@ export const changeView = (dispatch, payload) =>
     resolve();
   });
 
+const getTips = async (web3, contract, dispatch, getState) => {
+  const state = getState();
+  const address = state.account.address;
+  const username = state.user.verifiedUsername;
+
+  dispatch({ type: GET_TIPS });
+
+  try {
+    const tips = await getTipsFromEvent(web3, contract, address, web3.toHex(username));
+    const sentTips = [];
+    const receivedTips = [];
+
+    if (tips.length > 0) {
+      tips.forEach((tip) => {
+        if (tip.from === address) sentTips.push(tip);
+        if (tip.to === username) receivedTips.push(tip);
+      });
+    }
+
+    dispatch({ type: GET_TIPS_SUCCESS, payload: { sentTips, receivedTips } });
+  } catch(err) {
+    dispatch({ type: GET_TIPS_ERROR });
+  }
+};
+
+export const handleTips = (web3, contracts, getState, dispatch) => {
+  const state = getState();
+  const address = state.account.address;
+  const username = state.user.verifiedUsername;
+
+  const handleNewTip = (tip) => {
+    setTipsBalance(web3, contracts.func, dispatch, getState);
+    dispatch({ type: ADD_NEW_TIP, payload: { tip, address, username } });
+  };
+
+  setTipsBalance(web3, contracts.func, dispatch, getState);
+  getTips(web3, contracts.events, dispatch, getState);
+  listenForTips(web3, contracts.events, dispatch, address, web3.toHex(username), handleNewTip);
+};
 
 /**
  * Dispatches action to set the current active content tab
@@ -35,9 +71,9 @@ export const setTab = (dispatch, selectedTab) => {
  *
  * @param {Function} dispatch
  */
-export const verifiedUser = (web3, contract, getState, dispatch) => {
-  dispatch({ type: VERIFIED_USER });
-  pollTipsBalance(web3, contract, dispatch, getState);
+export const verifiedUser = async (web3, contracts, getState, dispatch) => {
+  await dispatch({ type: VERIFIED_USER });
+  handleTips(web3, contracts, getState, dispatch);
 };
 
 /**
@@ -53,7 +89,7 @@ export const listenForVerifiedUser = (web3, contracts, dispatch, getState) => {
   const cb = (err, event, eventInstance) => {
     if (web3.toUtf8(event.args.username) !== getState().user.registeringUsername) return;
 
-    verifiedUser(web3, contracts.func, getState, dispatch);
+    verifiedUser(web3, contracts, getState, dispatch);
     eventInstance.stopWatching(() => {});
   };
 
@@ -126,28 +162,6 @@ export const networkUnavailable = (dispatch) =>
     await changeView(dispatch, { viewName: 'networkUnavailable' });
     resolve();
   });
-
-export const getSentTips = async (web3, contract, dispatch, getState) => {
-  dispatch({ type: GET_SENT_TIPS });
-
-  try {
-    const sentTips = await getSentTipsFromEvent(web3, contract, getState().account.address);
-    dispatch({ type: GET_SENT_TIPS_SUCCESS, payload: sentTips });
-  } catch(err) {
-    dispatch({ type: GET_SENT_TIPS_ERROR });
-  }
-};
-
-export const getReceivedTips = async (web3, contract, dispatch, getState) => {
-  dispatch({ type: GET_RECEIVED_TIPS });
-
-  try {
-    const receivedTips = await getReceivedTipsFromEvent(web3, contract, web3.toHex(getState().user.verifiedUsername));
-    dispatch({ type: GET_RECEIVED_TIPS_SUCCESS, payload: receivedTips });
-  } catch(err) {
-    dispatch({ type: GET_RECEIVED_TIPS_ERROR });
-  }
-};
 
 export const connectAgain = (dispatch) => { dispatch({ type: CONNECT_AGAIN }); };
 export const connectingAgainError = (dispatch) => { dispatch({ type: CONNECT_AGAIN_ERROR }); };

@@ -1,10 +1,9 @@
 import {
   REGISTER_USER, REGISTER_USER_ERROR, VERIFIED_USER,
-  NETWORK_UNAVAILABLE,
+  NETWORK_UNAVAILABLE, ADD_NEW_TIP,
   SEND_TIP, SEND_TIP_SUCCESS, SEND_TIP_ERROR, SET_ACTIVE_TAB,
-  GET_SENT_TIPS, GET_SENT_TIPS_SUCCESS, GET_SENT_TIPS_ERROR,
-  GET_RECEIVED_TIPS, GET_RECEIVED_TIPS_SUCCESS, GET_RECEIVED_TIPS_ERROR,
-  CHANGE_VIEW, CLEAR_PENDING, CONNECT_AGAIN, CONNECT_AGAIN_SUCCESS, CONNECT_AGAIN_ERROR
+  GET_TIPS, GET_TIPS_SUCCESS, GET_TIPS_ERROR, CHANGE_VIEW,
+  CLEAR_PENDING, CONNECT_AGAIN, CONNECT_AGAIN_SUCCESS, CONNECT_AGAIN_ERROR
 } from '../../../constants/actionTypes';
 import { NETWORK_URL, TABS, VIEWS } from '../../../constants/general';
 
@@ -25,11 +24,9 @@ const INITIAL_STATE = {
   sendingTip: false,
   sendingTipError: '',
   activeTab: TABS[0],
-  gettingSentTips: false,
-  gettingSentTipsError: '',
+  gettingTips: false,
+  gettingTipsError: '',
   sentTips: [],
-  gettingReceivedTips: false,
-  gettingReceivedTipsError: '',
   receivedTips: [],
   view: VIEWS[0],
   connectingAgain: false,
@@ -96,27 +93,31 @@ export const reducer = (state, action) => {
         sendingTipError: 'An error occurred while sending tip, please try again.'
       };
 
-    case GET_SENT_TIPS:
-      return { ...state, gettingSentTips: true };
-    case GET_SENT_TIPS_SUCCESS:
-      return { ...state, sentTips: payload, gettingSentTips: false, gettingSentTipsError: '' };
-    case GET_SENT_TIPS_ERROR:
+    case GET_TIPS:
+      return { ...state, gettingTips: true };
+    case GET_TIPS_SUCCESS:
       return {
         ...state,
-        gettingSentTips: false,
-        gettingSentTipsError: 'An error occurred while getting sent tips, please try again.'
+        sentTips: payload.sentTips,
+        receivedTips: payload.receivedTips,
+        gettingTips: false,
+        gettingTipsError: ''
       };
+    case GET_TIPS_ERROR:
+      return {
+        ...state,
+        gettingTips: false,
+        gettingTipsError: 'An error occurred while getting sent tips, please try again.'
+      };
+    case ADD_NEW_TIP: {
+      let receivedTips = [...state.receivedTips];
+      let sentTips = [...state.sentTips];
 
-    case GET_RECEIVED_TIPS:
-      return { ...state, gettingReceivedTips: true };
-    case GET_RECEIVED_TIPS_SUCCESS:
-      return { ...state, receivedTips: payload, gettingReceivedTips: false, gettingReceivedTipsError: '' };
-    case GET_RECEIVED_TIPS_ERROR:
-      return {
-        ...state,
-        gettingReceivedTips: false,
-        gettingReceivedTipsError: 'An error occurred while getting sent tips, please try again.'
-      };
+      if (payload.tip.from === payload.address) sentTips = [payload.tip, ...sentTips];
+      if (payload.tip.to === payload.username) receivedTips = [payload.tip, ...receivedTips];
+
+      return { ...state, sentTips, receivedTips };
+    }
 
     case CHANGE_VIEW:
       return { ...state, view: payload.viewName, ...payload.additionalChanges };

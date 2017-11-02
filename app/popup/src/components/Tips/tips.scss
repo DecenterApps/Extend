@@ -1,6 +1,8 @@
 @import '../../../../commonComponents/colors';
 
 .tips-wrapper {
+  max-height: 150px;
+  overflow: auto;
   padding: 25px;
 
   .single-tip {

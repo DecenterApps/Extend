@@ -77,23 +77,14 @@ export const send = async (web3, getState, dispatch) => {
   }
 };
 
-const setTipsBalance = async (web3, contract, dispatch, getState) => {
+export const setTipsBalance = async (web3, contract, dispatch, getState) => {
   const currentTipBalance = getState().account.tipsBalance;
 
-  const address = getState().account.address;
-
-  const contractTipBalance = await _getTipBalance(web3, contract.checkBalance, address);
+  const contractTipBalance = await _getTipBalance(web3, contract);
 
   if (currentTipBalance === contractTipBalance) return;
 
   dispatch({ type: SET_TIPS_BALANCE, payload: contractTipBalance });
-};
-
-export const pollTipsBalance = (web3, contract, dispatch, getState) => {
-  setTipsBalance(web3, contract, dispatch, getState);
-  setInterval(async () => {
-    setTipsBalance(web3, contract, dispatch, getState);
-  }, 2000);
 };
 
 /**

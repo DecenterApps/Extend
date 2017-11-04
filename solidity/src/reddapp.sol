@@ -119,12 +119,12 @@ contract Reddapp is usingOraclize {
         data.removeTip(msg.sender, _username);
         msg.sender.transfer(toSend);
 
-        events.refundSuccessful(_username);
+        events.refundSuccessful(msg.sender, _username);
     }
 
-    function buyGold(bytes32 _username) public payable {
+    function buyGold(string _data, string _signature) public payable {
         owner.transfer(msg.value);
-        events.goldBought(_username, msg.value);  
+        events.goldBought(_data, _signature);  
     }
 
     function getAddressFromUsername(bytes32 _username) public constant returns (address userAddress) {

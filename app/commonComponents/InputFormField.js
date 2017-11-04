@@ -20,7 +20,7 @@ class InputFormField extends Component {
           {...input}
           defaultValue={value}
           placeholder={placeholder}
-          id={id || ''}
+          id={id}
           className={`${inputClassName} ${touched && error ? errorClassName : ''}`}
           type={type}
         />

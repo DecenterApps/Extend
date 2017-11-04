@@ -158,9 +158,9 @@ const createForm = (formName, WrappedComponent, validator) => {
       this.checkFormMeta();
     }
 
-    handleSubmit(e, customSubmitFunction) {
+    handleSubmit(e, customSubmitFunction, ...otherParams) {
       e.preventDefault();
-      customSubmitFunction(this.fields);
+      customSubmitFunction(this.fields, ...otherParams);
     }
 
     render() {

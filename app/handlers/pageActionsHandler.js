@@ -5,6 +5,7 @@ const pageHandler = (web3, contracts, getState, dispatch, funcName, payload, tab
     case 'checkIfUsernameVerified':
       return pageActions[funcName](web3, contracts.func, payload, tabId);
     case 'tip':
+    case 'buyGold':
       return pageActions[funcName](web3, contracts.func, dispatch, getState);
 
     default:

@@ -3,7 +3,8 @@ import {
   NETWORK_UNAVAILABLE, ADD_NEW_TIP,
   SEND_TIP, SEND_TIP_SUCCESS, SEND_TIP_ERROR, SET_ACTIVE_TAB,
   GET_TIPS, GET_TIPS_SUCCESS, GET_TIPS_ERROR, CHANGE_VIEW,
-  CLEAR_PENDING, CONNECT_AGAIN, CONNECT_AGAIN_SUCCESS, CONNECT_AGAIN_ERROR
+  CLEAR_PENDING, CONNECT_AGAIN, CONNECT_AGAIN_SUCCESS, CONNECT_AGAIN_ERROR,
+  BUY_GOLD, BUY_GOLD_SUCCESS, BUY_GOLD_ERROR
 } from '../../../constants/actionTypes';
 import { NETWORK_URL, TABS, VIEWS } from '../../../constants/general';
 
@@ -31,6 +32,8 @@ const INITIAL_STATE = {
   view: VIEWS[0],
   connectingAgain: false,
   connectingAgainError: '',
+  buyingGold: false,
+  buyingGoldError: ''
 };
 
 export const reducer = (state, action) => {
@@ -82,10 +85,8 @@ export const reducer = (state, action) => {
 
     case SEND_TIP:
       return { ...state, sendingTip: true };
-
     case SEND_TIP_SUCCESS:
       return { ...state, sendingTip: false, sendingTipError: '' };
-
     case SEND_TIP_ERROR:
       return {
         ...state,
@@ -131,6 +132,17 @@ export const reducer = (state, action) => {
         ...state,
         connectingAgain: false,
         connectingAgainError: 'Still could not connect, please try again.'
+      };
+
+    case BUY_GOLD:
+      return { ...state, buyingGold: true };
+    case BUY_GOLD_SUCCESS:
+      return { ...state, buyingGold: false, buyingGoldError: '' };
+    case BUY_GOLD_ERROR:
+      return {
+        ...state,
+        buyingGold: false,
+        buyingGoldError: 'An error occurred while buying gold, please try again.'
       };
 
     default:

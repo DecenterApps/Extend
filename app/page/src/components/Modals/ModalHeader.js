@@ -1,13 +1,14 @@
-/* eslint no-unused-vars: 0 */
 import React from 'react';
 import PropTypes from 'prop-types';
-import mhs from './modals.scss';
+import CloseIcon from '../../../../commonComponents/Decorative/CloseIcon';
+
+import './modals.scss';
 
 const ModalHeader = ({ closeModal, title }) => (
-  <div styleName="mhs.modal-header">
+  <div styleName="modal-header">
     { title && <h1>{ title }</h1> }
 
-    <span onClick={closeModal}>Close</span>
+    <span onClick={closeModal} styleName="icon-close"><CloseIcon /></span>
   </div>
 );
 

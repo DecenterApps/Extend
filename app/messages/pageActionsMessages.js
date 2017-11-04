@@ -9,3 +9,5 @@ export const checkIfUsernameVerifiedMessage = (username, index, type) => {
 };
 
 export const tipMessage = () => { pm({ action: 'tip' }); };
+
+export const buyGoldMessage = () => { pm({ action: 'buyGold' }); };

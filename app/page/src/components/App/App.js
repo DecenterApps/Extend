@@ -4,11 +4,14 @@ import connect from '../../../../customRedux/connect';
 import ModalRoot from '../Modals/ModalRoot';
 import addTipToPostsAndComments from '../Tip/addTipToPostsAndComments';
 import removeTipToPostsAndComments from '../Tip/removeTipToPostsAndComments';
+import removeGoldFromPostsAndComments from '../BuyGold/removeGoldFromPostsAndComments';
+import addGoldToPostsAndComments from '../BuyGold/addGoldToPostsAndComments';
 
 class App extends Component {
   componentWillMount() {
     if (this.props.generatedVault && this.props.copiedSeed && this.props.password) {
       addTipToPostsAndComments();
+      addGoldToPostsAndComments();
       this.added = true;
       this.removed = false;
     }
@@ -23,6 +26,7 @@ class App extends Component {
 
     if (!newProps.password && this.added && !this.removed) {
       removeTipToPostsAndComments();
+      removeGoldFromPostsAndComments();
       this.added = false;
       this.removed = true;
     }

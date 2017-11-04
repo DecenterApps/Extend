@@ -3,15 +3,13 @@ import PropTypes from 'prop-types';
 import { toggleModalMessage } from '../../../../messages/modalsActionsMessages';
 
 const openTipModal = (author) => {
-  toggleModalMessage('example_modal', { author }, true);
+  toggleModalMessage('tip_modal', { author }, true);
 };
 
 const Tip = ({ author, isVerified }) => (
-  <span>
-    <button onClick={() => { openTipModal(author); }}>
-      { isVerified ? 'Tip' : 'Tip unverified' }
-    </button>
-  </span>
+  <a onClick={() => { openTipModal(author); }}>
+    { isVerified ? 'Tip ETH' : 'Tip unverified' }
+  </a>
 );
 
 Tip.propTypes = {

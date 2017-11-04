@@ -81,7 +81,7 @@ const Tips = ({ gettingTips, gettingTipsError, sentTips, receivedTips, tipsType 
 
                 {
                   receivedTips.length === 0 &&
-                  <div>You did not send any tips yet</div>
+                  <div>You did not receive any tips yet</div>
                 }
               </div>
 

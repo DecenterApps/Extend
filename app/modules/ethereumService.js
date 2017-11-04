@@ -415,3 +415,41 @@ export const listenForTips = async (web3, contract, dispatch, address, hexUserna
     callback(err);
   }
 };
+
+export const getGoldFromEvent = (web3, contract, address, hexUsername) =>
+  new Promise((resolve, reject) => {
+    contract.GoldBought([{ from: address }, { to: hexUsername }], { fromBlock: 4447379, toBlock: 'latest' })
+      .get((error, result) => {
+        if (error) reject(error);
+
+        const allGold = result.map((tx) => ({
+          to: web3.toUtf8(tx.args.to), val: web3.fromWei(tx.args.price.toString()), from: tx.args.from
+        }));
+
+        resolve(allGold.reverse());
+      });
+  });
+
+export const listenForGold = async (web3, contract, dispatch, address, hexUsername, callback) => {
+  try {
+    const fromBlock = await getBlockNumber(web3);
+
+    const GoldBought = contract.GoldBought([{ from: address }, { to: hexUsername }], { fromBlock, toBlock: 'latest' });
+
+    GoldBought.watch((error, event) => {
+      if (error) {
+        callback(error);
+        return;
+      }
+
+      const gold = event.args;
+      const to = web3.toUtf8(gold.to);
+      const val = web3.fromWei(gold.price.toString());
+      const from = gold.from;
+
+      callback({ to, val, from });
+    });
+  } catch (err) {
+    callback(err);
+  }
+};

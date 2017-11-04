@@ -61,7 +61,7 @@ export const buyGold = async (web3, contract, dispatch, getState) => {
     const amount = web3.toWei(data.priceInEth.toString());
 
     const params = [
-      author, // string _to
+      web3.toHex(author), // bytes32 _to
       months, // string _months
       data.priceInUsd.toString(), // string _priceUsd
       data.nonce.toString(), // string _nonce

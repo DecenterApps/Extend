@@ -6,8 +6,8 @@ const pm = (actionParam) => {
 
 export const createUserAuthMessage = () => { pm({ action: 'createUserAuth' }); };
 
-export const setActiveTabMessage = (tabName) => {
-  pm({ action: 'setTab', payload: tabName });
+export const setActiveTabMessage = (tabSlug) => {
+  pm({ action: 'setTab', payload: tabSlug });
 };
 
 export const changeViewMessage = (viewName, additionalChanges) => {

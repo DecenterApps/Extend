@@ -27,4 +27,9 @@ export const OPTIONS_DROPDOWN_ITEMS = [
   }
 ];
 
-export const TABS = ['Sent', 'Received'];
+export const TABS = [
+  { slug: 'sentTips', name: 'Sent tips' },
+  { slug: 'receivedTips', name: 'Received tips' },
+  { slug: 'sentGold', name: 'Sent gold' },
+  { slug: 'receivedGold', name: 'Received gold' }
+];

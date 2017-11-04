@@ -4,6 +4,7 @@ import connect from '../../../../customRedux/connect';
 import { TABS } from '../../../../constants/general';
 import { setActiveTabMessage } from '../../../../messages/userActionsMessages';
 import Tips from '../Tips/Tips';
+import Gold from '../Gold/Gold';
 
 import './tabs.scss';
 
@@ -12,20 +13,22 @@ const Tabs = ({ activeTab }) => (
     <ul styleName="tabs">
       {
         TABS.map((tab) => (
-          <li key={tab}>
+          <li key={tab.slug}>
             <span
-              styleName={activeTab === tab ? 'active' : ''}
-              onClick={() => { setActiveTabMessage(tab); }}
+              styleName={activeTab === tab.slug ? 'active' : ''}
+              onClick={() => { setActiveTabMessage(tab.slug); }}
             >
-              { tab }
+              { tab.name }
             </span>
           </li>
         ))
       }
     </ul>
 
-    { (activeTab === 'Sent') && <Tips tipsType="sent" /> }
-    { (activeTab === 'Received') && <Tips tipsType="received" /> }
+    { (activeTab === 'sentTips') && <Tips tipsType="sent" /> }
+    { (activeTab === 'receivedTips') && <Tips tipsType="received" /> }
+    { (activeTab === 'sentGold') && <Gold goldType="sent" /> }
+    { (activeTab === 'receivedGold') && <Gold goldType="received" /> }
   </div>
 );
 

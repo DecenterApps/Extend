@@ -4,7 +4,8 @@ import {
   SEND_TIP, SEND_TIP_SUCCESS, SEND_TIP_ERROR, SET_ACTIVE_TAB,
   GET_TIPS, GET_TIPS_SUCCESS, GET_TIPS_ERROR, CHANGE_VIEW,
   CLEAR_PENDING, CONNECT_AGAIN, CONNECT_AGAIN_SUCCESS, CONNECT_AGAIN_ERROR,
-  BUY_GOLD, BUY_GOLD_SUCCESS, BUY_GOLD_ERROR
+  BUY_GOLD, BUY_GOLD_SUCCESS, BUY_GOLD_ERROR, GET_GOLD, GET_GOLD_ERROR,
+  GET_GOLD_SUCCESS, ADD_NEW_GOLD
 } from '../../../constants/actionTypes';
 import { NETWORK_URL, TABS, VIEWS } from '../../../constants/general';
 
@@ -33,7 +34,11 @@ const INITIAL_STATE = {
   connectingAgain: false,
   connectingAgainError: '',
   buyingGold: false,
-  buyingGoldError: ''
+  buyingGoldError: '',
+  sentGold: [],
+  receivedGold: [],
+  gettingGold: false,
+  gettingGoldError: ''
 };
 
 export const reducer = (state, action) => {
@@ -108,7 +113,7 @@ export const reducer = (state, action) => {
       return {
         ...state,
         gettingTips: false,
-        gettingTipsError: 'An error occurred while getting sent tips, please try again.'
+        gettingTipsError: 'An error occurred while getting tips, please try again.'
       };
     case ADD_NEW_TIP: {
       let receivedTips = [...state.receivedTips];
@@ -118,6 +123,32 @@ export const reducer = (state, action) => {
       if (payload.tip.to === payload.username) receivedTips = [payload.tip, ...receivedTips];
 
       return { ...state, sentTips, receivedTips };
+    }
+
+    case GET_GOLD:
+      return { ...state, gettingGold: true };
+    case GET_GOLD_SUCCESS:
+      return {
+        ...state,
+        sentGold: payload.sentGold,
+        receivedGold: payload.receivedGold,
+        gettingGold: false,
+        gettingGoldError: ''
+      };
+    case GET_GOLD_ERROR:
+      return {
+        ...state,
+        gettingGold: false,
+        gettingGoldError: 'An error occurred while getting gold, please try again.'
+      };
+    case ADD_NEW_GOLD: {
+      let receivedGold = [...state.receivedGold];
+      let sentGold = [...state.sentGold];
+
+      if (payload.gold.from === payload.address) sentGold = [payload.gold, ...sentGold];
+      if (payload.gold.to === payload.username) receivedGold = [payload.gold, ...receivedGold];
+
+      return { ...state, sentGold, receivedGold };
     }
 
     case CHANGE_VIEW:

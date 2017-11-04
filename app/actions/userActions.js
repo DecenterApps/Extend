@@ -3,9 +3,12 @@ import { getParameterByName } from '../actions/utils';
 import {
   NETWORK_UNAVAILABLE,
   REGISTER_USER, VERIFIED_USER, REGISTER_USER_ERROR, SET_ACTIVE_TAB, GET_TIPS, GET_TIPS_SUCCESS,
-  GET_TIPS_ERROR, CHANGE_VIEW, CONNECT_AGAIN, CONNECT_AGAIN_SUCCESS, CONNECT_AGAIN_ERROR, ADD_NEW_TIP
+  GET_TIPS_ERROR, CHANGE_VIEW, CONNECT_AGAIN, CONNECT_AGAIN_SUCCESS, CONNECT_AGAIN_ERROR, ADD_NEW_TIP,
+  ADD_NEW_GOLD, GET_GOLD, GET_GOLD_ERROR, GET_GOLD_SUCCESS
 } from '../constants/actionTypes';
-import { verifiedUserEvent, _createUser, listenForTips, getTipsFromEvent } from '../modules/ethereumService';
+import {
+  verifiedUserEvent, _createUser, listenForTips, getTipsFromEvent, listenForGold, getGoldFromEvent
+} from '../modules/ethereumService';
 import { setTipsBalance } from './accountActions';
 
 const keyStore = lightwallet.keystore;
@@ -41,6 +44,31 @@ const getTips = async (web3, contract, dispatch, getState) => {
   }
 };
 
+const getGold = async (web3, contract, dispatch, getState) => {
+  const state = getState();
+  const address = state.account.address;
+  const username = state.user.verifiedUsername;
+
+  dispatch({ type: GET_GOLD });
+
+  try {
+    const allGold = await getGoldFromEvent(web3, contract, address, web3.toHex(username));
+    const sentGold = [];
+    const receivedGold = [];
+
+    if (allGold.length > 0) {
+      allGold.forEach((gold) => {
+        if (gold.from === address) sentGold.push(tip);
+        if (gold.to === username) receivedGold.push(tip);
+      });
+    }
+
+    dispatch({ type: GET_GOLD_SUCCESS, payload: { sentGold, receivedGold } });
+  } catch(err) {
+    dispatch({ type: GET_GOLD_ERROR });
+  }
+};
+
 export const handleTips = (web3, contracts, getState, dispatch) => {
   const state = getState();
   const address = state.account.address;
@@ -54,6 +82,19 @@ export const handleTips = (web3, contracts, getState, dispatch) => {
   setTipsBalance(web3, contracts.func, dispatch, getState);
   getTips(web3, contracts.events, dispatch, getState);
   listenForTips(web3, contracts.events, dispatch, address, web3.toHex(username), handleNewTip);
+};
+
+export const handleGold = (web3, contracts, getState, dispatch) => {
+  const state = getState();
+  const address = state.account.address;
+  const username = state.user.verifiedUsername;
+
+  const handleNewGold = (gold) => {
+    dispatch({ type: ADD_NEW_GOLD, payload: { gold, address, username } });
+  };
+
+  getGold(web3, contracts.events, dispatch, getState);
+  listenForGold(web3, contracts.events, dispatch, address, web3.toHex(username), handleNewGold);
 };
 
 /**
@@ -74,6 +115,7 @@ export const setTab = (dispatch, selectedTab) => {
 export const verifiedUser = async (web3, contracts, getState, dispatch) => {
   await dispatch({ type: VERIFIED_USER });
   handleTips(web3, contracts, getState, dispatch);
+  handleGold(web3, contracts, getState, dispatch);
 };
 
 /**

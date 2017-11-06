@@ -1,6 +1,5 @@
 import EthereumTx from 'ethereumjs-tx';
 import { getPwDerivedKey, getPrivateKey } from '../actions/accountActions';
-import { encryptTokenOreclize } from '../actions/utils';
 import { CHANGE_TX_STATE } from '../constants/actionTypes';
 import config from './config.json';
 
@@ -266,35 +265,6 @@ export const sendTransaction =
     });
 
 /* CONTRACT SPECIFIC FUNCTIONS */
-
-/**
- * Initiates the createUser method on the contract
- *
- * @param {Object} contract - func contract
- * @param {Object} web3
- * @param {String} username
- * @param {String} token
- * @param {Object} ks
- * @param {String} address
- * @param {String} password
- * @param {String} gasPrice
- * @return {Promise} transaction hash once finished
- */
-export const _createUser = (contract, web3, username, token, ks, address, password, gasPrice) =>
-  new Promise(async (resolve, reject) => {
-    try {
-      const oreclizeTransactionCost = await getOraclizePrice(contract);
-      const value = oreclizeTransactionCost.toString();
-
-      const encryptedToken = await encryptTokenOreclize(token);
-      const params = [web3.toHex(username), encryptedToken];
-
-      const hash = await sendTransaction(web3, contract.createUser, ks, address, password, params, value, gasPrice);
-      resolve(hash);
-    } catch (err) {
-      reject({ message: err });
-    }
-  });
 
 export const _getTipBalance = (web3, contract) =>
   new Promise(async (resolve, reject) => {

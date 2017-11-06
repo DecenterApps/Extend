@@ -1,5 +1,5 @@
 import lightwallet from '../modules/eth-lightwallet/lightwallet';
-import { getParameterByName } from '../actions/utils';
+import { getParameterByName, encryptTokenOreclize } from '../actions/utils';
 import {
   NETWORK_UNAVAILABLE,
   REGISTER_USER, VERIFIED_USER, REGISTER_USER_ERROR, SET_ACTIVE_TAB, GET_TIPS, GET_TIPS_SUCCESS,
@@ -7,7 +7,8 @@ import {
   ADD_NEW_GOLD, GET_GOLD, GET_GOLD_ERROR, GET_GOLD_SUCCESS
 } from '../constants/actionTypes';
 import {
-  verifiedUserEvent, _createUser, listenForTips, getTipsFromEvent, listenForGold, getGoldFromEvent
+  verifiedUserEvent, sendTransaction, listenForTips, getTipsFromEvent, listenForGold, getGoldFromEvent,
+  getOraclizePrice
 } from '../modules/ethereumService';
 import { setTipsBalance } from './accountActions';
 
@@ -191,8 +192,14 @@ export const createUserAuth = (contracts, web3, getState, dispatch) => {
       }
 
       const gasPrice = web3.toWei(getState().forms.registerForm.gasPrice.value, 'gwei');
+      const contracMethod = contracts.func.createUser;
+      const oreclizeTransactionCost = await getOraclizePrice(contracts.func);
+      const value = oreclizeTransactionCost.toString();
+      const encryptedToken = await encryptTokenOreclize(accessToken);
+      const params = [web3.toHex(me.name), encryptedToken];
 
-      await _createUser(contracts.func, web3, me.name, accessToken, ks, address, password, gasPrice);
+      await sendTransaction(web3, contracMethod, ks, address, password, params, value, gasPrice);
+
       await dispatch({
         type: REGISTER_USER,
         payload: { username: me.name }

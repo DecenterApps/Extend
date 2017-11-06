@@ -36,6 +36,7 @@
     "incstr": "^1.2.1",
     "node-sass": "^4.5.3",
     "optimize-css-assets-webpack-plugin": "^3.0.0",
+    "p-queue": "^2.2.0",
     "path": "^0.12.7",
     "postcss-scss": "^1.0.2",
     "prop-types": "^15.5.10",

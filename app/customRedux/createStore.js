@@ -1,5 +1,8 @@
+import PQueue from 'p-queue';
 import { get, set, clearReducer } from './store';
 import { CLEAR_PENDING } from '../constants/actionTypes';
+
+const queue = new PQueue({ concurrency: 1 });
 
 /**
  * Load reducer state from chrome local store if it was already saved there.
@@ -86,32 +89,36 @@ const createStore = (reducersData) =>
 
     resolve({
       getState: () => state,
-      dispatch: (action) =>
-        new Promise(async (dispatchResolve) => {
-          let resolved = false;
-          let reducersFinished = 0;
+      dispatch: (action) => {
+        const handleDispatchAction = () =>
+          new Promise(async (dispatchResolve) => {
+            let resolved = false;
+            let reducersFinished = 0;
 
-          Object.keys(reducers).forEach(async (reducerName) => {
-            const reducer = reducers[reducerName];
-            const reducerState = state[reducerName];
+            Object.keys(reducers).forEach(async (reducerName) => {
+              const reducer = reducers[reducerName];
+              const reducerState = state[reducerName];
 
-            const newReducerState = reducer(reducerState, action);
+              const newReducerState = reducer(reducerState, action);
 
-            if (!newReducerState) {
+              if (!newReducerState) {
+                reducersFinished++;
+                handleReducerFinish(reducersFinished, reducers, resolved, dispatchResolve, state, action, reducerName);
+                return;
+              }
+
+              const setResult = await set(reducerName, newReducerState);
+              console.log('ACTION', action);
+              resolved = true;
+              state[reducerName] = setResult;
+
               reducersFinished++;
               handleReducerFinish(reducersFinished, reducers, resolved, dispatchResolve, state, action, reducerName);
-              return;
-            }
-
-            const setResult = await set(reducerName, newReducerState);
-            console.log('ACTION', action);
-            resolved = true;
-            state[reducerName] = setResult;
-
-            reducersFinished++;
-            handleReducerFinish(reducersFinished, reducers, resolved, dispatchResolve, state, action, reducerName);
+            });
           });
-        })
+
+        queue.add(handleDispatchAction);
+      }
     });
   });
 

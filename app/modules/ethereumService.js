@@ -340,22 +340,28 @@ export const _checkIfRefundAvailable = (web3, contract, username) =>
   });
 
 /* EVENT LISTENERS */
-export const verifiedUserEvent = async (web3, contract, callback) => {
+export const verifiedUserEvent = async (web3, contract, verifiedCallback, noMatchCallback) => {
   let latestBlock = 0;
 
   try {
     latestBlock = await getBlockNumber(web3);
   } catch (err) {
-    callback(err, null);
     return;
   }
 
   const VerifiedUser = contract.VerifiedUser({}, { fromBlock: latestBlock, toBlock: 'latest' });
+  const UsernameDoesNotMatch = contract.UsernameDoesNotMatch({}, { fromBlock: latestBlock, toBlock: 'latest' });
 
   VerifiedUser.watch((error, event) => {
-    if (error) return callback(error);
+    if (error) return verifiedCallback(error);
 
-    return callback(null, event, VerifiedUser);
+    return verifiedCallback(null, event, VerifiedUser, UsernameDoesNotMatch);
+  });
+
+  UsernameDoesNotMatch.watch((error, event) => {
+    if (error) return noMatchCallback(error);
+
+    return noMatchCallback(null, event, VerifiedUser, UsernameDoesNotMatch);
   });
 };
 

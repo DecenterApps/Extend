@@ -58,8 +58,8 @@ const getGold = async (web3, contract, dispatch, getState) => {
 
     if (allGold.length > 0) {
       allGold.forEach((gold) => {
-        if (gold.from === address) sentGold.push(tip);
-        if (gold.to === username) receivedGold.push(tip);
+        if (gold.from === address) sentGold.push(gold);
+        if (gold.to === username) receivedGold.push(gold);
       });
     }
 
@@ -128,14 +128,26 @@ export const verifiedUser = async (web3, contracts, getState, dispatch) => {
  */
 export const listenForVerifiedUser = (web3, contracts, dispatch, getState) => {
   console.log('LISTENING FOR VERIFIED USER');
-  const cb = (err, event, eventInstance) => {
+
+  const verifiedCallback = (err, event, verifiedEvent, noMatchEvent) => {
     if (web3.toUtf8(event.args.username) !== getState().user.registeringUsername) return;
 
     verifiedUser(web3, contracts, getState, dispatch);
-    eventInstance.stopWatching(() => {});
+
+    verifiedEvent.stopWatching(() => {});
+    noMatchEvent.stopWatching(() => {});
   };
 
-  verifiedUserEvent(web3, contracts.events, cb);
+  const noMatchCallback = (err, event, verifiedEvent, noMatchEvent) => {
+    if (web3.toUtf8(event.args.neededUsername) !== getState().user.registeringUsername) return;
+
+    dispatch({ type: REGISTER_USER_ERROR });
+
+    verifiedEvent.stopWatching(() => {});
+    noMatchEvent.stopWatching(() => {});
+  };
+
+  verifiedUserEvent(web3, contracts.events, verifiedCallback, noMatchCallback);
 };
 
 /**

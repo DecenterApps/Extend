@@ -3,7 +3,7 @@ import * as accountActions from '../actions/accountActions';
 const accountActionsHandler = (web3, contracts, getState, dispatch, funcName, payload) => {
   switch (funcName) {
     case 'createWallet':
-      return accountActions[funcName](web3, dispatch, payload);
+      return accountActions[funcName](web3, dispatch, getState, payload);
     case 'setBalance':
       return accountActions[funcName](dispatch, payload);
     case 'copiedSeed':

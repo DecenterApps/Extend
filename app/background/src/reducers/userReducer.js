@@ -5,7 +5,7 @@ import {
   GET_TIPS, GET_TIPS_SUCCESS, GET_TIPS_ERROR, CHANGE_VIEW,
   CLEAR_PENDING, CONNECT_AGAIN, CONNECT_AGAIN_SUCCESS, CONNECT_AGAIN_ERROR,
   BUY_GOLD, BUY_GOLD_SUCCESS, BUY_GOLD_ERROR, GET_GOLD, GET_GOLD_ERROR,
-  GET_GOLD_SUCCESS, ADD_NEW_GOLD
+  GET_GOLD_SUCCESS, ADD_NEW_GOLD, SET_DISCONNECTED
 } from '../../../constants/actionTypes';
 import { NETWORK_URL, TABS, VIEWS } from '../../../constants/general';
 
@@ -38,7 +38,8 @@ const INITIAL_STATE = {
   sentGold: [],
   receivedGold: [],
   gettingGold: false,
-  gettingGoldError: ''
+  gettingGoldError: '',
+  disconnected: false
 };
 
 export const reducer = (state, action) => {
@@ -52,8 +53,10 @@ export const reducer = (state, action) => {
         sendingTipError: '',
         gettingSentTips: false,
         gettingSentTipsError: '',
-        gettingReceivedTips: false,
-        gettingReceivedTipsError: '',
+        gettingTips: false,
+        gettingTipsError: '',
+        buyingGold: false,
+        buyingGoldError: '',
         connectingAgain: false,
         connectingAgainError: '',
       };
@@ -175,6 +178,9 @@ export const reducer = (state, action) => {
         buyingGold: false,
         buyingGoldError: 'An error occurred while buying gold, please try again.'
       };
+
+    case SET_DISCONNECTED:
+      return { ...state, disconnected: payload };
 
     default:
       return false;

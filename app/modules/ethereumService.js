@@ -1,6 +1,8 @@
 import EthereumTx from 'ethereumjs-tx';
 import { getPwDerivedKey, getPrivateKey } from '../actions/accountActions';
 import { CHANGE_TX_STATE } from '../constants/actionTypes';
+import AbstractWatcher from '../modules/AbstractWatcher';
+import AbstractPoller from '../modules/AbstractPoller';
 import config from './config.json';
 
 /* STANDARD FUNCTIONS REQUIRED TO SEND TRANSACTIONS */
@@ -106,15 +108,12 @@ const getTransactionReceipt = (web3, txHash) =>
 /**
  * Polls for Tx receipt and then dispatches action to change tx state
  *
- * @param {Function} dispatch
- * @param {Function} getState
- * @param {Null/Object} result - return value from getTransactionReceipt
- * @param {String} txHash
- * @param {Number} intervalId
  */
-const handleTransactionReceipt = (dispatch, getState, result, txHash, intervalId = null) => {
+const handleTransactionReceipt = async (web3, dispatch, getState, txHash, stopPollerFunc) => {
+  const result = await getTransactionReceipt(web3, txHash);
+
   if (!result) return;
-  if (intervalId) clearInterval(intervalId);
+  stopPollerFunc();
 
   const transactions = getState().account.transactions;
   const txIndex = transactions.findIndex((tx) => tx.hash === txHash);
@@ -131,16 +130,8 @@ const handleTransactionReceipt = (dispatch, getState, result, txHash, intervalId
  * @param {String} txHash
  */
 export const pollForReceipt = async (web3, dispatch, getState, txHash) => {
-  const result = await getTransactionReceipt(web3, txHash);
-  handleTransactionReceipt(dispatch, getState, result, txHash);
-
-  if (result) return;
-
-  const interval = setInterval(async () => {
-    const intervalResult = await getTransactionReceipt(web3, txHash);
-
-    handleTransactionReceipt(dispatch, getState, intervalResult, txHash, interval);
-  }, 1000);
+  const poller = new AbstractPoller(handleTransactionReceipt, 1000, web3, dispatch, getState, txHash);
+  poller.poll();
 };
 
 const sendRawTransaction = (web3, transactionParams, privateKey) =>
@@ -322,17 +313,23 @@ export const verifiedUserEvent = async (web3, contract, verifiedCallback, noMatc
   const VerifiedUser = contract.VerifiedUser({}, { fromBlock: latestBlock, toBlock: 'latest' });
   const UsernameDoesNotMatch = contract.UsernameDoesNotMatch({}, { fromBlock: latestBlock, toBlock: 'latest' });
 
-  VerifiedUser.watch((error, event) => {
+  const verifiedUserWatcherCb = (error, event) => {
     if (error) return verifiedCallback(error);
 
     return verifiedCallback(null, event, VerifiedUser, UsernameDoesNotMatch);
-  });
+  };
 
-  UsernameDoesNotMatch.watch((error, event) => {
+  const UsernameDoesNotMatchWatcherCb = (error, event) => {
     if (error) return noMatchCallback(error);
 
     return noMatchCallback(null, event, VerifiedUser, UsernameDoesNotMatch);
-  });
+  };
+
+  const VerifiedUserWatcherInstance = new AbstractWatcher(VerifiedUser, verifiedUserWatcherCb);
+  const UsernameDoesNotMatchWatcherInstance = new AbstractWatcher(UsernameDoesNotMatch, UsernameDoesNotMatchWatcherCb);
+
+  VerifiedUserWatcherInstance.watch();
+  UsernameDoesNotMatchWatcherInstance.watch();
 };
 
 export const listenForRefundSuccessful = async (web3, contract, username, callback) => {
@@ -347,11 +344,15 @@ export const listenForRefundSuccessful = async (web3, contract, username, callba
 
   const RefundSuccessful = contract.RefundSuccessful({ username }, { fromBlock: latestBlock, toBlock: 'latest' });
 
-  RefundSuccessful.watch((error, event) => {
+  const RefundSuccessfulWatcherCb = (error, event) => {
     if (error) return callback(error);
 
     return callback(null, event, RefundSuccessful);
-  });
+  };
+
+  const RefundSuccessfulInstance = new AbstractWatcher(RefundSuccessful, RefundSuccessfulWatcherCb);
+
+  RefundSuccessfulInstance.watch();
 };
 
 export const getTipsFromEvent = (web3, contract, address, hexUsername) =>
@@ -374,7 +375,7 @@ export const listenForTips = async (web3, contract, dispatch, address, hexUserna
 
     const UserTipped = contract.UserTipped([{ from: address }, { to: hexUsername }], { fromBlock, toBlock: 'latest' });
 
-    UserTipped.watch((error, event) => {
+    const UserTippedWatcherCb = (error, event) => {
       if (error) {
         callback(error);
         return;
@@ -386,7 +387,11 @@ export const listenForTips = async (web3, contract, dispatch, address, hexUserna
       const from = tip.from;
 
       callback({ to, val, from });
-    });
+    };
+
+    const UserTippedInstance = new AbstractWatcher(UserTipped, UserTippedWatcherCb);
+
+    UserTippedInstance.watch();
   } catch (err) {
     callback(err);
   }
@@ -412,7 +417,7 @@ export const listenForGold = async (web3, contract, dispatch, address, hexUserna
 
     const GoldBought = contract.GoldBought([{ from: address }, { to: hexUsername }], { fromBlock, toBlock: 'latest' });
 
-    GoldBought.watch((error, event) => {
+    const GoldBoughtdWatcherCb = (error, event) => {
       if (error) {
         callback(error);
         return;
@@ -424,7 +429,11 @@ export const listenForGold = async (web3, contract, dispatch, address, hexUserna
       const from = gold.from;
 
       callback({ to, val, from });
-    });
+    };
+
+    const GoldBoughtInstance = new AbstractWatcher(GoldBought, GoldBoughtdWatcherCb);
+
+    GoldBoughtInstance.watch();
   } catch (err) {
     callback(err);
   }

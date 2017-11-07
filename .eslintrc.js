@@ -26,7 +26,8 @@ module.exports = {
     'new-cap': ['error', { "properties": false }],
     'quote-props': ["error", "consistent"],
     'import/prefer-default-export': 0,
-    'no-return-await': 0
+    'no-return-await': 0,
+    'no-prototype-builtins': 0
   },
   'plugins': [
     'react', 'import'

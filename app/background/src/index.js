@@ -31,20 +31,38 @@ const startApp = () =>
 
       web3 = networkData.web3;
       contracts = networkData.contracts;
-      appLoaded = true;
 
       resolve();
     } catch (err) {
       await userActions.networkUnavailable(dispatch);
-      appLoaded = true;
       reject(err);
     }
+
+    appLoaded = true;
   });
 
-Promise.resolve(startApp());
+Promise.resolve(startApp()).then((err) => {
+  if (err) return;
+
+  setInterval(() => {
+    web3.version.getNetwork(async (error) => {
+      const disconnected = getState().user.disconnected;
+
+      if (error && !disconnected) {
+        await userActions.setDisconnected(dispatch, true);
+        return;
+      }
+
+      if (!error && disconnected) {
+        await userActions.setDisconnected(dispatch, false);
+        await startApp();
+      }
+    });
+  }, 2000);
+});
 
 chrome.runtime.onMessage.addListener(async (msg, sender) => {
-  if (!appLoaded) return false;
+  if (!appLoaded || getState().user.disconnected) return false;
 
   const funcName = msg.action;
   const handler = msg.handler;
@@ -54,7 +72,7 @@ chrome.runtime.onMessage.addListener(async (msg, sender) => {
     userActions.connectAgain(dispatch);
 
     try {
-      await startApp(false);
+      await startApp();
       userActions.connectingAgainSuccess(dispatch);
     } catch(err) {
       userActions.connectingAgainError(dispatch);

@@ -23,7 +23,7 @@ const handleUserVerification = (web3, dispatch, getState, state, contracts) =>
       if (alreadyVerified) {
         userActions.handleTips(web3, contracts, getState, dispatch);
         userActions.handleGold(web3, contracts, getState, dispatch);
-      };
+      }
 
       if (!alreadyVerified && state.account.address) {
         const isVerified = await _checkAddressVerified(web3, contracts.func);
@@ -57,10 +57,10 @@ const handleChangeNetwork = (Web3, contractConfig, dispatch, getState) =>
 
       await handleUserVerification(web3, dispatch, getState, state, contracts);
 
-      accountActions.pollForGasPrice(web3, dispatch);
+      accountActions.pollForGasPrice(web3, dispatch, getState);
 
       if (state.account.transactions.length > 0) accountActions.pollPendingTxs(web3, dispatch, getState);
-      if (state.account.address) accountActions.pollForBalance(web3, dispatch, state.account.address);
+      if (state.account.address) accountActions.pollForBalance(web3, dispatch, getState);
       if (state.account.password) accountActions.passwordReloader(dispatch);
 
       resolve({ web3, contracts });

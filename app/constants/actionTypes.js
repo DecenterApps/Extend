@@ -19,6 +19,7 @@ export const CHANGE_VIEW = 'change_view';
 export const CONNECT_AGAIN = 'connect_again';
 export const CONNECT_AGAIN_SUCCESS = 'connect_again_success';
 export const CONNECT_AGAIN_ERROR = 'connect_again_error';
+export const SET_DISCONNECTED = 'set_disconnected';
 
 // NETWORK
 export const TOGGLE_DROPDOWN = 'toggle_dropdown';

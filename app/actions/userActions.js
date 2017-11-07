@@ -4,7 +4,7 @@ import {
   NETWORK_UNAVAILABLE,
   REGISTER_USER, VERIFIED_USER, REGISTER_USER_ERROR, SET_ACTIVE_TAB, GET_TIPS, GET_TIPS_SUCCESS,
   GET_TIPS_ERROR, CHANGE_VIEW, CONNECT_AGAIN, CONNECT_AGAIN_SUCCESS, CONNECT_AGAIN_ERROR, ADD_NEW_TIP,
-  ADD_NEW_GOLD, GET_GOLD, GET_GOLD_ERROR, GET_GOLD_SUCCESS
+  ADD_NEW_GOLD, GET_GOLD, GET_GOLD_ERROR, GET_GOLD_SUCCESS, SET_DISCONNECTED
 } from '../constants/actionTypes';
 import {
   verifiedUserEvent, sendTransaction, listenForTips, getTipsFromEvent, listenForGold, getGoldFromEvent,
@@ -227,4 +227,10 @@ export const networkUnavailable = (dispatch) =>
 export const connectAgain = (dispatch) => { dispatch({ type: CONNECT_AGAIN }); };
 export const connectingAgainError = (dispatch) => { dispatch({ type: CONNECT_AGAIN_ERROR }); };
 export const connectingAgainSuccess = (dispatch) => { dispatch({ type: CONNECT_AGAIN_SUCCESS }); };
+
+export const setDisconnected = (dispatch, payload) =>
+  new Promise(async (resolve) => {
+    await dispatch({ type: SET_DISCONNECTED, payload });
+    resolve();
+  });
 

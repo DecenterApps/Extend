@@ -10,6 +10,7 @@ import {
   getBalanceForAddress, getGasPrice, transfer, pollForReceipt, getNonceForAddress, sendTransaction,
   _getTipBalance, _checkIfRefundAvailable, listenForRefundSuccessful
 } from '../modules/ethereumService';
+import AbstractPoller from '../modules/AbstractPoller';
 import { changeView } from './userActions';
 
 let lockTimeout = null;
@@ -92,35 +93,42 @@ export const setTipsBalance = async (web3, contract, dispatch, getState) => {
  *
  * @param {Object} web3
  * @param {Function} dispatch
- * @param {Number} currentGasPriceParam
+ * @param {Function} getState
  */
-export const setGasPrice = (web3, dispatch, currentGasPriceParam) =>
-  new Promise(async (resolve) => {
-    let currentGasPrice = currentGasPriceParam;
+export const setGasPrice = async (web3, dispatch, getState) => {
+  let currentGasPrice = getState().account.gasPrice;
 
-    let newGasPrice = await getGasPrice(web3);
-    newGasPrice = parseFloat(web3.fromWei(newGasPrice.toString(), 'gwei'));
+  let newGasPrice = await getGasPrice(web3);
+  newGasPrice = parseFloat(web3.fromWei(newGasPrice.toString(), 'gwei'));
 
-    if (currentGasPrice === newGasPrice) return;
+  if (currentGasPrice === newGasPrice) return;
 
-    currentGasPrice = newGasPrice;
-    dispatch({ type: SET_GAS_PRICE, payload: newGasPrice });
-    resolve(currentGasPrice);
-  });
+  dispatch({ type: SET_GAS_PRICE, payload: newGasPrice });
+};
 
 /**
  * Checks the median gas price by using web3 every minute and sets it if the value has changed
  *
  * @param {Object} web3
  * @param {Function} dispatch
+ * @param {Function} getState
  */
-export const pollForGasPrice = async (web3, dispatch) => {
-  let currentGasPrice = 0;
-  currentGasPrice = await setGasPrice(web3, dispatch, currentGasPrice);
+export const pollForGasPrice = async (web3, dispatch, getState) => {
+  const poller = new AbstractPoller(setGasPrice, 1000, web3, dispatch, getState);
+  poller.poll();
+};
 
-  setInterval(async () => {
-    currentGasPrice = await setGasPrice(web3, dispatch, currentGasPrice);
-  }, 1000);
+const setBalance = async (web3, dispatch, getState) => {
+  const account = getState().account;
+  let currentBalance = account.balance;
+  let address = account.address;
+
+  let newBalance = await getBalanceForAddress(web3, address);
+  newBalance = web3.fromWei(newBalance);
+
+  if (currentBalance === newBalance) return;
+
+  await dispatch({ type: SET_BALANCE, payload: newBalance });
 };
 
 /**
@@ -128,18 +136,11 @@ export const pollForGasPrice = async (web3, dispatch) => {
  *
  * @param {Object} web3
  * @param {Function} dispatch
- * @param {String} address
+ * @param {Function} getState
  */
-export const pollForBalance = (web3, dispatch, address) => {
-  let currentBalance = '';
-  setInterval(async () => {
-    const newBalance = await getBalanceForAddress(web3, address);
-
-    if (currentBalance === newBalance) return;
-
-    currentBalance = newBalance;
-    dispatch({ type: SET_BALANCE, payload: web3.fromWei(newBalance) });
-  }, 1000);
+export const pollForBalance = (web3, dispatch, getState) => {
+  const poller = new AbstractPoller(setBalance, 1000, web3, dispatch, getState);
+  poller.poll();
 };
 
 /**
@@ -218,9 +219,10 @@ export const checkIfPasswordValid = async (getState, dispatch, password) => {
  *
  * @param {Object} web3
  * @param {Function} dispatch
+ * @param {Function} getState
  * @param {String} password
  */
-export const createWallet = (web3, dispatch, password) => {
+export const createWallet = (web3, dispatch, getState, password) => {
   keyStore.createVault({
     password,
   }, async (err, ks) => {
@@ -244,7 +246,7 @@ export const createWallet = (web3, dispatch, password) => {
 
     await dispatch({ type: CREATE_WALLET, payload });
     changeView(dispatch, { viewName: 'copySeed' });
-    pollForBalance(web3, dispatch, address);
+    pollForBalance(web3, dispatch, getState);
   });
 };
 

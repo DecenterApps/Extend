@@ -82,10 +82,6 @@ const createForm = (formName, WrappedComponent, validator) => {
     registerField(fieldParam) {
       const field = fieldParam;
 
-      if (field.value !== '') {
-        field.touched = true;
-      }
-
       this.fields[field.name] = field;
 
       if (Object.keys(this.fields).length === this.numFields) {

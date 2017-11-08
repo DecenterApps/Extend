@@ -25,11 +25,16 @@ const createField = (WrappedComponent, formData) => {
     }
 
     componentWillMount() {
-      this.updateMergedProps();
+      if (this.props.value !== '') {
+        this.meta.value = this.props.value;
+        this.meta.touched = true;
+      }
 
       this.meta.name = this.props.name;
       formData.registerField(this.meta);
       delete this.meta.name;
+
+      this.updateMergedProps();
     }
 
     updateMergedProps() {
@@ -65,7 +70,12 @@ const createField = (WrappedComponent, formData) => {
     }
   }
 
+  Field.defaultProps = {
+    value: '',
+  };
+
   Field.propTypes = {
+    value: PropTypes.any,
     name: PropTypes.string.isRequired,
   };
 

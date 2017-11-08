@@ -1,10 +1,10 @@
 import { subscribe, unsubscribe } from '../customRedux/store';
 
-// Replace this abstract poller web3.subscribe when web3 1.0.0 is stable
+// Replace this abstract poller with web3.subscribe when web3 1.0.0 is stable
 class AbstractPoller {
-  constructor(functionToPoll, pollerInterval, ...functionParams) {
-    this.clearIntervalInstance = null;
-    this.pollerInterval = pollerInterval;
+  constructor(functionToPoll, engine, ...functionParams) {
+    this.newBlockHandler = null;
+    this.engine = engine;
     this.functionParams = functionParams;
     this.functionToPoll = functionToPoll;
     this.instanceDissconected = false;
@@ -15,7 +15,7 @@ class AbstractPoller {
 
   stopPoller() {
     this.instanceDissconected = true;
-    clearInterval(this.clearIntervalInstance);
+    this.engine.removeListener('block', this.newBlockHandler);
     unsubscribe(this.listenForStateChanges);
   }
 
@@ -32,11 +32,13 @@ class AbstractPoller {
   poll() {
     subscribe(this.listenForStateChanges);
 
-    this.functionToPoll(...this.functionParams, this.stopPoller);
-
-    this.clearIntervalInstance = setInterval(() => {
+    this.newBlockHandler = () => {
       this.functionToPoll(...this.functionParams, this.stopPoller);
-    }, this.pollerInterval);
+    };
+
+    this.engine.on('block', this.newBlockHandler);
+
+    this.functionToPoll(...this.functionParams, this.stopPoller);
   }
 }
 

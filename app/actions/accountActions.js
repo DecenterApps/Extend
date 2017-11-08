@@ -35,17 +35,17 @@ export const withdraw = async (web3, getState, dispatch, contracts) => {
   }
 };
 
-export const pollPendingTxs = (web3, dispatch, getState) => {
+export const pollPendingTxs = (web3, engine, dispatch, getState) => {
   const transactions = getState().account.transactions;
 
   transactions.forEach((transaction) => {
     if (transaction.status !== 'pending') return;
 
-    pollForReceipt(web3, dispatch, getState, transaction.hash);
+    pollForReceipt(web3, engine, dispatch, getState, transaction.hash);
   });
 };
 
-export const send = async (web3, getState, dispatch) => {
+export const send = async (web3, engine, getState, dispatch) => {
   const state = getState();
   const formData = state.forms.sendForm;
   const to = formData.to.value;
@@ -72,7 +72,7 @@ export const send = async (web3, getState, dispatch) => {
       }
     });
 
-    pollForReceipt(web3, dispatch, getState, txHash);
+    pollForReceipt(web3, engine, dispatch, getState, txHash);
   } catch(err) {
     dispatch({ type: SEND_ERROR });
   }
@@ -113,8 +113,8 @@ export const setGasPrice = async (web3, dispatch, getState) => {
  * @param {Function} dispatch
  * @param {Function} getState
  */
-export const pollForGasPrice = async (web3, dispatch, getState) => {
-  const poller = new AbstractPoller(setGasPrice, 1000, web3, dispatch, getState);
+export const pollForGasPrice = async (web3, engine, dispatch, getState) => {
+  const poller = new AbstractPoller(setGasPrice, engine, web3, dispatch, getState);
   poller.poll();
 };
 
@@ -138,8 +138,8 @@ const setBalance = async (web3, dispatch, getState) => {
  * @param {Function} dispatch
  * @param {Function} getState
  */
-export const pollForBalance = (web3, dispatch, getState) => {
-  const poller = new AbstractPoller(setBalance, 1000, web3, dispatch, getState);
+export const pollForBalance = (web3, engine, dispatch, getState) => {
+  const poller = new AbstractPoller(setBalance, engine, web3, dispatch, getState);
   poller.poll();
 };
 
@@ -222,7 +222,7 @@ export const checkIfPasswordValid = async (getState, dispatch, password) => {
  * @param {Function} getState
  * @param {String} password
  */
-export const createWallet = (web3, dispatch, getState, password) => {
+export const createWallet = (web3, engine, dispatch, getState, password) => {
   keyStore.createVault({
     password,
   }, async (err, ks) => {
@@ -246,7 +246,7 @@ export const createWallet = (web3, dispatch, getState, password) => {
 
     await dispatch({ type: CREATE_WALLET, payload });
     changeView(dispatch, { viewName: 'copySeed' });
-    pollForBalance(web3, dispatch, getState);
+    pollForBalance(web3, engine, dispatch, getState);
   });
 };
 

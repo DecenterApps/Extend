@@ -46,7 +46,8 @@ const handleChangeNetwork = (Web3, contractConfig, dispatch, getState) =>
     const state = getState();
 
     try {
-      let web3 = new Web3(getProviderSpecs(state.user.networkUrl));
+      const engine = getProviderSpecs(state.user.networkUrl);
+      let web3 = new Web3(engine);
 
       const eventsContract = web3.eth.contract(contractConfig.events.abi).at(contractConfig.events.contractAddress);
       const funcContract = web3.eth.contract(contractConfig.func.abi).at(contractConfig.func.contractAddress);
@@ -57,13 +58,13 @@ const handleChangeNetwork = (Web3, contractConfig, dispatch, getState) =>
 
       await handleUserVerification(web3, dispatch, getState, state, contracts);
 
-      accountActions.pollForGasPrice(web3, dispatch, getState);
+      accountActions.pollForGasPrice(web3, engine, dispatch, getState);
 
-      if (state.account.transactions.length > 0) accountActions.pollPendingTxs(web3, dispatch, getState);
-      if (state.account.address) accountActions.pollForBalance(web3, dispatch, getState);
+      if (state.account.transactions.length > 0) accountActions.pollPendingTxs(web3, engine, dispatch, getState);
+      if (state.account.address) accountActions.pollForBalance(web3, engine, dispatch, getState);
       if (state.account.password) accountActions.passwordReloader(dispatch);
 
-      resolve({ web3, contracts });
+      resolve({ web3, contracts, engine });
     } catch(err) {
       reject(err);
     }

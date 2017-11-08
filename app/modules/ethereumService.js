@@ -130,8 +130,8 @@ const handleTransactionReceipt = async (web3, dispatch, getState, txHash, stopPo
  * @param {Function} getState
  * @param {String} txHash
  */
-export const pollForReceipt = async (web3, dispatch, getState, txHash) => {
-  const poller = new AbstractPoller(handleTransactionReceipt, 1000, web3, dispatch, getState, txHash);
+export const pollForReceipt = async (web3, engine, dispatch, getState, txHash) => {
+  const poller = new AbstractPoller(handleTransactionReceipt, engine, web3, dispatch, getState, txHash);
   poller.poll();
 };
 

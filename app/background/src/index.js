@@ -18,6 +18,7 @@ let dispatch = null;
 let getState = null;
 let web3 = null;
 let contracts = null;
+let engine = null;
 
 const startApp = () =>
   new Promise(async (resolve, reject) => {
@@ -31,6 +32,7 @@ const startApp = () =>
 
       web3 = networkData.web3;
       contracts = networkData.contracts;
+      engine = networkData.engine;
 
       resolve();
     } catch (err) {
@@ -83,17 +85,17 @@ chrome.runtime.onMessage.addListener(async (msg, sender) => {
 
   switch (handler) {
     case 'account':
-      return accountHandler(web3, contracts, getState, dispatch, funcName, payload);
+      return accountHandler(web3, engine, contracts, getState, dispatch, funcName, payload);
     case 'dropdown':
-      return dropdownHandler(web3, contracts, getState, dispatch, funcName, payload);
+      return dropdownHandler(web3, engine, contracts, getState, dispatch, funcName, payload);
     case 'user':
-      return userHandler(web3, contracts, getState, dispatch, funcName, payload);
+      return userHandler(web3, engine, contracts, getState, dispatch, funcName, payload);
     case 'forms':
-      return formsHandler(web3, contracts, getState, dispatch, funcName, payload);
+      return formsHandler(web3, engine, contracts, getState, dispatch, funcName, payload);
     case 'page':
-      return pageHandler(web3, contracts, getState, dispatch, funcName, payload, sender.tab.id);
+      return pageHandler(web3, engine, contracts, getState, dispatch, funcName, payload, sender.tab.id);
     case 'modals':
-      return modalsActionsHandler(web3, contracts, getState, dispatch, funcName, payload);
+      return modalsActionsHandler(web3, engine, contracts, getState, dispatch, funcName, payload);
     default:
       throw Error('Action Handler not defined', handler);
   }

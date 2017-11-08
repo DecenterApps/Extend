@@ -1,6 +1,6 @@
 import * as userActions from '../actions/userActions';
 
-const userActionsHandler = (web3, contracts, getState, dispatch, funcName, payload) => {
+const userActionsHandler = (web3, engine, contracts, getState, dispatch, funcName, payload) => {
   switch (funcName) {
     case 'acceptPrivacyNotice':
       return userActions[funcName](dispatch);

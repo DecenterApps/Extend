@@ -1,6 +1,6 @@
 import * as pageActions from '../actions/pageActions';
 
-const pageHandler = (web3, contracts, getState, dispatch, funcName, payload, tabId) => {
+const pageHandler = (web3, engine, contracts, getState, dispatch, funcName, payload, tabId) => {
   switch (funcName) {
     case 'checkIfUsernameVerified':
       return pageActions[funcName](web3, contracts.func, payload, tabId);

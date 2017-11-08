@@ -1,6 +1,6 @@
 import * as formsActions from '../actions/formsActions';
 
-const formsActionsHandler = (web3, contracts, getState, dispatch, funcName, payload) => {
+const formsActionsHandler = (web3, engine, contracts, getState, dispatch, funcName, payload) => {
   switch (funcName) {
     case 'addForm':
     case 'updateFieldMeta':

@@ -1,6 +1,6 @@
 import * as dropdownActions from '../actions/dropdownActions';
 
-const dropdownActionsHandler = (web3, contract, getState, dispatch, funcName, payload) => {
+const dropdownActionsHandler = (web3, engine, contract, getState, dispatch, funcName, payload) => {
   switch (funcName) {
     case 'toggleDropdown':
       return dropdownActions[funcName](dispatch, payload);

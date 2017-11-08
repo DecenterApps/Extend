@@ -1,9 +1,9 @@
 import * as accountActions from '../actions/accountActions';
 
-const accountActionsHandler = (web3, contracts, getState, dispatch, funcName, payload) => {
+const accountActionsHandler = (web3, engine, contracts, getState, dispatch, funcName, payload) => {
   switch (funcName) {
     case 'createWallet':
-      return accountActions[funcName](web3, dispatch, getState, payload);
+      return accountActions[funcName](web3, engine, dispatch, getState, payload);
     case 'setBalance':
       return accountActions[funcName](dispatch, payload);
     case 'copiedSeed':
@@ -14,7 +14,7 @@ const accountActionsHandler = (web3, contracts, getState, dispatch, funcName, pa
     case 'checkIfPasswordValid':
       return accountActions[funcName](getState, dispatch, payload);
     case 'send':
-      return accountActions[funcName](web3, getState, dispatch);
+      return accountActions[funcName](web3, engine, getState, dispatch);
     case 'withdraw':
     case 'refund':
       return accountActions[funcName](web3, getState, dispatch, contracts);

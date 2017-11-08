@@ -2,7 +2,7 @@ import {
   CREATE_WALLET, COPIED_SEED, CLEAR_PASSWORD, UNLOCK_ERROR, UNLOCK, SET_BALANCE, SET_GAS_PRICE,
   SEND, SEND_ERROR, SEND_SUCCESS, CHANGE_TX_STATE, WITHDRAW, WITHDRAW_ERROR, WITHDRAW_SUCCESS,
   SET_TIPS_BALANCE, CLEAR_PENDING, REFUND, REFUND_ERROR, REFUND_SUCCESS, REFUND_UNAVAILABLE,
-  CLEAR_REFUND_VALUES
+  CLEAR_REFUND_VALUES, REFUND_AVAILABLE
 } from '../../../constants/actionTypes';
 
 const reducerName = 'account';
@@ -108,7 +108,9 @@ export const reducer = (state, action) => {
         refundingError: 'An error occurred while refunding ETH, please try again.'
       };
     case REFUND_UNAVAILABLE:
-      return { ...state, refundAvailable: false, refunding: false, refundingError: '' };
+      return { ...state, refundAvailable: false, refundingError: '' };
+    case REFUND_AVAILABLE:
+      return { ...state, refundAvailable: true, refundingError: '' };
     case CLEAR_REFUND_VALUES:
       return { ...state, refundAvailable: true, refunding: false, refundingError: '' };
 

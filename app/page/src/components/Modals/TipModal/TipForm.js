@@ -5,6 +5,7 @@ import createForm from '../../../../../customRedux/createForm';
 import createField from '../../../../../customRedux/createField';
 import InputFormField from '../../../../../commonComponents/InputFormField';
 import tipFormValidator from './tipFormValidator';
+import { setTipFormTxPriceMessage } from '../../../../../messages/formsActionsMessages';
 import { tipMessage } from '../../../../../messages/pageActionsMessages';
 
 import formStyle from '../../../../../commonComponents/forms.scss';
@@ -16,6 +17,19 @@ class TipForm extends Component {
     this.props.formData.setNumOfFields(2);
     this.AmountField = createField(InputFormField, this.props.formData);
     this.GasPriceField = createField(InputFormField, this.props.formData);
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (newProps.invalid) return;
+    if (!this.props.form) return;
+    if (Object.keys(this.props.form).length === 0) return;
+
+    if (
+      (newProps.form.gasPrice.value !== this.props.form.gasPrice.value) ||
+      (newProps.form.amount.value !== this.props.form.amount.value)
+    ) {
+      setTipFormTxPriceMessage();
+    }
   }
 
   render() {
@@ -44,7 +58,7 @@ class TipForm extends Component {
           showErrorText
           showLabel
           labelText="Gas price (Gwei):"
-          type="text"
+          type="number"
           value={this.props.gasPrice}
           wrapperClassName={formStyle['form-item-wrapper']}
           inputClassName={formStyle['form-item']}
@@ -52,10 +66,20 @@ class TipForm extends Component {
         />
 
         {
+          !this.props.invalid &&
+          <div styleName="tx-info">
+            <span>Max transaction fee:</span>
+            <div>
+              <span>{ this.props.currentFormTxCost.eth } ETH</span>
+              <span>{ this.props.currentFormTxCost.usd } USD</span>
+            </div>
+          </div>
+        }
+
+        {
           this.props.sendingTipError &&
           <div className="submit-error">Error: {this.props.sendingTipError}</div>
         }
-
 
         <button
           className={formStyle['submit-button']}
@@ -80,12 +104,16 @@ TipForm.propTypes = {
   sendingTip: PropTypes.bool.isRequired,
   sendingTipError: PropTypes.string.isRequired,
   gasPrice: PropTypes.number.isRequired,
+  form: PropTypes.object.isRequired,
+  currentFormTxCost: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   gasPrice: state.account.gasPrice,
   sendingTipError: state.user.sendingTipError,
-  sendingTip: state.user.sendingTip
+  sendingTip: state.user.sendingTip,
+  form: state.forms[FORM_NAME],
+  currentFormTxCost: state.forms.currentFormTxCost
 });
 
 const ExportComponent = createForm(FORM_NAME, TipForm, tipFormValidator);

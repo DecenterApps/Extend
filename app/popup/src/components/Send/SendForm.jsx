@@ -5,6 +5,7 @@ import createForm from '../../../../customRedux/createForm';
 import createField from '../../../../customRedux/createField';
 import InputFormField from '../../../../commonComponents/InputFormField';
 import { sendMessage } from '../../../../messages/accountActionMessages';
+import { setSendFormTxPriceMessage } from '../../../../messages/formsActionsMessages';
 import sendFormValidator from './sendFormValidator';
 
 import formStyle from '../../../../commonComponents/forms.scss';
@@ -17,6 +18,20 @@ class SendForm extends Component {
     this.AddressField = createField(InputFormField, this.props.formData);
     this.AmountField = createField(InputFormField, this.props.formData);
     this.GasPriceField = createField(InputFormField, this.props.formData);
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (newProps.invalid) return;
+    if (!this.props.form) return;
+    if (Object.keys(this.props.form).length === 0) return;
+
+    if (
+      (newProps.form.gasPrice.value !== this.props.form.gasPrice.value) ||
+      (newProps.form.to.value !== this.props.form.to.value) ||
+      (newProps.form.amount.value !== this.props.form.amount.value)
+    ) {
+      setSendFormTxPriceMessage();
+    }
   }
 
   render() {
@@ -66,8 +81,19 @@ class SendForm extends Component {
           />
 
           {
+            !this.props.invalid &&
+            <div styleName="tx-info">
+              <span>Max transaction fee:</span>
+              <div>
+                <span>{ this.props.currentFormTxCost.eth } ETH</span>
+                <span>{ this.props.currentFormTxCost.usd } USD</span>
+              </div>
+            </div>
+          }
+
+          {
             this.props.sendingError &&
-            <div className="submit-error">Error: {this.props.sendingError}</div>
+            <div styleName="submit-error">Error: {this.props.sendingError}</div>
           }
 
 
@@ -93,13 +119,17 @@ SendForm.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
   gasPrice: PropTypes.number.isRequired,
   sending: PropTypes.bool.isRequired,
-  sendingError: PropTypes.string.isRequired
+  sendingError: PropTypes.string.isRequired,
+  form: PropTypes.object.isRequired,
+  currentFormTxCost: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   gasPrice: state.account.gasPrice,
   sending: state.account.sending,
   sendingError: state.account.sendingError,
+  form: state.forms[FORM_NAME],
+  currentFormTxCost: state.forms.currentFormTxCost,
 });
 
 const ExportComponent = createForm(FORM_NAME, SendForm, sendFormValidator);

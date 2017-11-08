@@ -38,6 +38,14 @@ export const quickSort = (arr, left, right) => {
   return arr;
 };
 
+export const getValOfEthInUsd = () =>
+  new Promise(async (resolve) => {
+    const res = await fetch('https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD&e=Coinbase');
+    const data = await res.json();
+
+    resolve(parseFloat(data.USD));
+  });
+
 /**
  * Checks if a address checksum is valid
  *

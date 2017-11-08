@@ -29,6 +29,9 @@ export const NETWORK_UNAVAILABLE = 'network_unavailable';
 export const ADD_FORM = 'add_form';
 export const UPDATE_FIELD_META = 'update_field_meta';
 export const UPDATE_FIELD_ERROR = 'update_field_error';
+export const SET_TX_COST = 'set_tx_cost';
+export const SET_TX_VAL = 'set_tx_val';
+export const CLEAR_CURRENT_FORM_TX_VAL = 'clear_current_form_tx_val';
 
 // ACCOUNT
 export const CREATE_WALLET = 'create_wallet';
@@ -49,6 +52,7 @@ export const SET_TIPS_BALANCE = 'set_tips_balance';
 export const REFUND = 'refund';
 export const REFUND_ERROR = 'refund_error';
 export const REFUND_UNAVAILABLE = 'refund_unavailable';
+export const REFUND_AVAILABLE = 'refund_available';
 export const REFUND_SUCCESS = 'refund_success';
 export const CLEAR_REFUND_VALUES = 'clear_refund_values';
 

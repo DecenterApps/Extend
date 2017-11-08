@@ -1,6 +1,7 @@
 import EthereumTx from 'ethereumjs-tx';
 import { getPwDerivedKey, getPrivateKey } from '../actions/accountActions';
 import { CHANGE_TX_STATE } from '../constants/actionTypes';
+import { GAS_LIMIT_MODIFIER } from '../constants/general';
 import AbstractWatcher from '../modules/AbstractWatcher';
 import AbstractPoller from '../modules/AbstractPoller';
 import config from './config.json';
@@ -82,7 +83,7 @@ const getEncodedParams = (contractMethod, params = null) => {
  * @param {Object} paramsObj - to, data, value
  * @return {Promise}
  */
-const estimateGas = (web3, paramsObj) =>
+export const estimateGas = (web3, paramsObj) =>
   new Promise((resolve, reject) => {
     web3.eth.estimateGas(paramsObj, (err, gas) => {
       if (err) reject(err);
@@ -192,6 +193,27 @@ export const transfer = (web3, from, to, valueParam, gasPriceParam, ks, password
     }
   });
 
+export const estimateGasForTx = async (web3, contractMethod, params = null, valueParam = 0) => {
+  const value = web3.toHex(valueParam);
+  let gas = null;
+  let encParamsData = null;
+  let to = null;
+  let data = null;
+
+  if (params !== null) {
+    encParamsData = getEncodedParams(contractMethod, params);
+  } else {
+    encParamsData = getEncodedParams(contractMethod);
+  }
+
+  to = encParamsData.to;
+  data = encParamsData.data;
+
+  gas = await estimateGas(web3, { to, data, value });
+
+  return gas;
+};
+
 /**
  * Sends a transaction to a contract
  *
@@ -243,7 +265,7 @@ export const sendTransaction =
         }
 
         // Have to take in account that sometimes the default gas limit is wrong
-        let gasLimit = web3.toHex(Math.round((gas *= 1.1)));
+        let gasLimit = web3.toHex(Math.round((gas *= GAS_LIMIT_MODIFIER)));
         gas = web3.toHex(Math.round(gas));
 
         let transactionParams = { from, to, data, gas, gasPrice, value, nonce, gasLimit };

@@ -7,6 +7,7 @@ import createField from '../../../../customRedux/createField';
 import InputFormField from '../../../../commonComponents/InputFormField';
 import withdrawFormValidator from '../Withdraw/withdrawFormValidator';
 import { createUserAuthMessage } from '../../../../messages/userActionsMessages';
+import { setRegisterFormTxPriceMessage } from '../../../../messages/formsActionsMessages';
 
 import formStyle from '../../../../commonComponents/forms.scss';
 
@@ -16,6 +17,15 @@ class RegisterForm extends Component {
   componentWillMount() {
     this.props.formData.setNumOfFields(1);
     this.GasPriceField = createField(InputFormField, this.props.formData);
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (newProps.invalid) return;
+    if (!this.props.form) return;
+    if (Object.keys(this.props.form).length === 0) return;
+    if ((newProps.form.gasPrice.value === this.props.form.gasPrice.value)) return;
+
+    setRegisterFormTxPriceMessage();
   }
 
   render() {
@@ -39,6 +49,26 @@ class RegisterForm extends Component {
             inputClassName={formStyle['form-item']}
             errorClassName={formStyle['form-item-error']}
           />
+
+          {
+            !this.props.invalid &&
+            <div>
+              <div styleName="tx-info">
+                <span>Amount:</span>
+                <div>
+                  <span>{ this.props.currentFormTxVal.eth } ETH</span>
+                  <span>{ this.props.currentFormTxVal.usd } USD</span>
+                </div>
+              </div>
+              <div styleName="tx-info">
+                <span>Max transaction fee:</span>
+                <div>
+                  <span>{ this.props.currentFormTxCost.eth } ETH</span>
+                  <span>{ this.props.currentFormTxCost.usd } USD</span>
+                </div>
+              </div>
+            </div>
+          }
 
           <button
             className={formStyle['submit-button']}
@@ -72,11 +102,16 @@ RegisterForm.propTypes = {
   pristine: PropTypes.bool.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   gasPrice: PropTypes.number.isRequired,
-
+  currentFormTxVal: PropTypes.string.isRequired,
+  currentFormTxCost: PropTypes.string.isRequired,
+  form: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state) => ({
+  currentFormTxVal: state.forms.currentFormTxVal,
+  currentFormTxCost: state.forms.currentFormTxCost,
   gasPrice: state.account.gasPrice,
+  form: state.forms[FORM_NAME]
 });
 
 const ExportComponent = createForm(FORM_NAME, RegisterForm, withdrawFormValidator);

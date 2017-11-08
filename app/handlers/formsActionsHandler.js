@@ -7,6 +7,14 @@ const formsActionsHandler = (web3, contracts, getState, dispatch, funcName, payl
     case 'updateFieldError':
       return formsActions[funcName](dispatch, payload);
 
+    case 'setRegisterFormTxPrice':
+    case 'setSendFormTxPrice':
+    case 'setRefundFormTxPrice':
+    case 'setWithdrawFormTxPrice':
+    case 'setTipFormTxPrice':
+    case 'setBuyGoldFormTxPrice':
+      return formsActions[funcName](web3, contracts.func, dispatch, getState);
+
     default:
       throw Error('Function in handler not defined', funcName);
   }

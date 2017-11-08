@@ -17,11 +17,11 @@ const generateNewPasswordFormValidator = (values) => {
   }
 
   if (values.gasPrice) {
-    const commaError = values.amount && values.amount.indexOf(',') > 0;
     const nanError = isNaN(parseFloat(values.gasPrice));
+    const toSmallError = !nanError && parseFloat(values.gasPrice) < 1;
 
-    if (nanError) errors.amount = 'The provided input is not a number';
-    if (commaError) errors.amount = 'Use a full stop as a delimiter instead of a comma';
+    if (nanError) errors.gasPrice = 'The provided input is not a number';
+    if (toSmallError) errors.gasPrice = 'Smallest amount is one gwei';
   }
 
   return errors;

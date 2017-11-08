@@ -7,6 +7,7 @@ import createField from '../../../../customRedux/createField';
 import InputFormField from '../../../../commonComponents/InputFormField';
 import buyGoldFormValidator from './buyGoldFormValidator';
 import { buyGoldMessage } from '../../../../messages/pageActionsMessages';
+import { setBuyGoldFormTxPriceMessage } from '../../../../messages/formsActionsMessages';
 
 import formStyle from '../../../../commonComponents/forms.scss';
 
@@ -17,6 +18,19 @@ class buyGoldForm extends Component {
     this.props.formData.setNumOfFields(1);
     this.MonthsField = createField(InputFormField, this.props.formData);
     this.GasPriceField = createField(InputFormField, this.props.formData);
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (newProps.invalid) return;
+    if (!this.props.form) return;
+    if (Object.keys(this.props.form).length === 0) return;
+
+    if (
+      (newProps.form.gasPrice.value !== this.props.form.gasPrice.value) ||
+      (newProps.form.months.value !== this.props.form.months.value)
+    ) {
+      setBuyGoldFormTxPriceMessage();
+    }
   }
 
   render() {
@@ -51,6 +65,26 @@ class buyGoldForm extends Component {
           inputClassName={formStyle['form-item']}
           errorClassName={formStyle['form-item-error']}
         />
+
+        {
+          !this.props.invalid &&
+          <div>
+            <div styleName="tx-info">
+              <span>Amount:</span>
+              <div>
+                <span>{ this.props.currentFormTxVal.eth } ETH</span>
+                <span>{ this.props.currentFormTxVal.usd } USD</span>
+              </div>
+            </div>
+            <div styleName="tx-info">
+              <span>Max transaction fee:</span>
+              <div>
+                <span>{ this.props.currentFormTxCost.eth } ETH</span>
+                <span>{ this.props.currentFormTxCost.usd } USD</span>
+              </div>
+            </div>
+          </div>
+        }
 
         {
           this.props.buyingGoldError &&
@@ -89,12 +123,18 @@ buyGoldForm.propTypes = {
   gasPrice: PropTypes.number.isRequired,
   buyingGold: PropTypes.bool.isRequired,
   buyingGoldError: PropTypes.string.isRequired,
+  currentFormTxVal: PropTypes.string.isRequired,
+  currentFormTxCost: PropTypes.string.isRequired,
+  form: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state) => ({
   gasPrice: state.account.gasPrice,
   buyingGold: state.user.buyingGold,
-  buyingGoldError: state.user.buyingGoldError
+  buyingGoldError: state.user.buyingGoldError,
+  currentFormTxVal: state.forms.currentFormTxVal,
+  currentFormTxCost: state.forms.currentFormTxCost,
+  form: state.forms[FORM_NAME]
 });
 
 const ExportComponent = createForm(

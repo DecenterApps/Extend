@@ -2,7 +2,7 @@ import lightwallet from '../modules/eth-lightwallet/lightwallet';
 import {
   CREATE_WALLET, COPIED_SEED, CLEAR_PASSWORD, UNLOCK_ERROR, UNLOCK, SET_BALANCE, SET_GAS_PRICE,
   SEND, SEND_ERROR, SEND_SUCCESS, WITHDRAW, WITHDRAW_ERROR, WITHDRAW_SUCCESS, SET_TIPS_BALANCE,
-  REFUND, REFUND_ERROR, REFUND_SUCCESS, REFUND_UNAVAILABLE, CLEAR_REFUND_VALUES
+  REFUND, REFUND_ERROR, REFUND_SUCCESS, CLEAR_REFUND_VALUES
 } from '../constants/actionTypes';
 import { LOCK_INTERVAL } from '../constants/general';
 import { isJson, formatLargeNumber } from '../actions/utils';
@@ -290,14 +290,6 @@ export const refund = async (web3, getState, dispatch, contracts) => {
   dispatch({ type: REFUND });
 
   try {
-    const isAvailable = await _checkIfRefundAvailable(web3, contracts.func, username);
-
-    console.log('is available', isAvailable);
-    if (isAvailable) { // TODO change this for production (TESTING ONLY!)
-      dispatch({ type: REFUND_UNAVAILABLE });
-      return;
-    }
-
     const hash = await sendTransaction(web3, contracts.func.refundMoneyForUser, ks, address, password, [username], 0, gasPrice); // eslint-disable-line
     console.log('LISTENING FOR REFUNCD', hash);
     listenForRefundSuccessful(web3, contracts.events, username, cb);

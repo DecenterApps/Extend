@@ -88,7 +88,7 @@ WithdrawForm.propTypes = {
   gasPrice: PropTypes.number.isRequired,
   withdrawing: PropTypes.bool.isRequired,
   withdrawingError: PropTypes.string.isRequired,
-  currentFormTxCost: PropTypes.string.isRequired,
+  currentFormTxCost: PropTypes.object.isRequired,
   form: PropTypes.object.isRequired
 };
 

@@ -123,8 +123,8 @@ buyGoldForm.propTypes = {
   gasPrice: PropTypes.number.isRequired,
   buyingGold: PropTypes.bool.isRequired,
   buyingGoldError: PropTypes.string.isRequired,
-  currentFormTxVal: PropTypes.string.isRequired,
-  currentFormTxCost: PropTypes.string.isRequired,
+  currentFormTxVal: PropTypes.object.isRequired,
+  currentFormTxCost: PropTypes.object.isRequired,
   form: PropTypes.object.isRequired
 };
 

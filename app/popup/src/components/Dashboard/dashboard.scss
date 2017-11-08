@@ -42,10 +42,10 @@
 
         .large-section-btn {
           cursor: pointer;
-          color: $green;
+          color: $orange;
 
-          &:hover { color: $green-hover; }
-          &:disabled { color: $green-disabled; }
+          &:hover { color: $orange-hover; }
+          &:disabled { color: $orange-disabled; }
         }
       }
     }

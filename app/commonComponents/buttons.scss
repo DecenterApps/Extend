@@ -6,17 +6,17 @@
   width: 100%;
   font-size: 16px;
   text-align: center;
-  background: $green;
+  background: $orange;
   color: #fff;
   cursor: pointer;
 
   &:hover {
-    background: $green-hover;
+    background: $orange-hover;
   }
 
   &:disabled {
     user-select: none;
     cursor: not-allowed;
-    background: $green-disabled;
+    background: $orange-disabled;
   }
 }

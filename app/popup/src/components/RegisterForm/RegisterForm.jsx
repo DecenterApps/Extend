@@ -102,8 +102,8 @@ RegisterForm.propTypes = {
   pristine: PropTypes.bool.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   gasPrice: PropTypes.number.isRequired,
-  currentFormTxVal: PropTypes.string.isRequired,
-  currentFormTxCost: PropTypes.string.isRequired,
+  currentFormTxVal: PropTypes.object.isRequired,
+  currentFormTxCost: PropTypes.object.isRequired,
   form: PropTypes.object.isRequired
 };
 

@@ -121,7 +121,7 @@ SendForm.propTypes = {
   sending: PropTypes.bool.isRequired,
   sendingError: PropTypes.string.isRequired,
   form: PropTypes.object.isRequired,
-  currentFormTxCost: PropTypes.string.isRequired,
+  currentFormTxCost: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state) => ({

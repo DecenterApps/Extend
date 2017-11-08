@@ -105,7 +105,7 @@ TipForm.propTypes = {
   sendingTipError: PropTypes.string.isRequired,
   gasPrice: PropTypes.number.isRequired,
   form: PropTypes.object.isRequired,
-  currentFormTxCost: PropTypes.string.isRequired,
+  currentFormTxCost: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({

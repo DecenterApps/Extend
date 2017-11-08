@@ -79,7 +79,13 @@ const createForm = (formName, WrappedComponent, validator) => {
       this.setState({ mergedProps: this.mergedProps });
     }
 
-    registerField(field) {
+    registerField(fieldParam) {
+      const field = fieldParam;
+
+      if (field.value !== '') {
+        field.touched = true;
+      }
+
       this.fields[field.name] = field;
 
       if (Object.keys(this.fields).length === this.numFields) {
@@ -126,7 +132,7 @@ const createForm = (formName, WrappedComponent, validator) => {
     }
 
     handleFieldChange(fieldData) {
-      // Current soultion for when input is loaded beofre the form
+      // Current solution for when input is loaded before the form
       if (!this.props.forms[formName]) {
         this.pendingChanges.push(fieldData);
         return;
@@ -134,21 +140,16 @@ const createForm = (formName, WrappedComponent, validator) => {
 
       const field = this.fields[fieldData.name];
 
-      let dataForMessage = fieldData;
-      dataForMessage.formName = formName;
-
       const dataForValidator = generateDataForFormValidator(this.fields);
       const errors = validator(dataForValidator);
+
+      let dataForMessage = fieldData;
+      dataForMessage.formName = formName;
 
       if (field.touched && errors[fieldData.name]) {
         dataForMessage.meta.error = errors[fieldData.name];
       } else {
         dataForMessage.meta.error = '';
-      }
-
-      // TODO REFACTOR THIS TO CHECK ALL FORM FIELDS HAVE A DEFAULT VALUE ON FIRST RENDER
-      if (Object.keys(this.fields).length === 1 && !field.touched && (field.value !== undefined)) {
-        dataForMessage.meta.touched = true;
       }
 
       this.fields[fieldData.name] = dataForMessage.meta;

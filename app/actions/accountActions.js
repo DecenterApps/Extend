@@ -103,7 +103,7 @@ export const setGasPrice = async (web3, dispatch, getState) => {
 
   if (currentGasPrice === newGasPrice) return;
 
-  dispatch({ type: SET_GAS_PRICE, payload: newGasPrice });
+  await dispatch({ type: SET_GAS_PRICE, payload: newGasPrice });
 };
 
 /**
@@ -245,6 +245,7 @@ export const createWallet = (web3, engine, dispatch, getState, password) => {
     };
 
     await dispatch({ type: CREATE_WALLET, payload });
+
     changeView(dispatch, { viewName: 'copySeed' });
     pollForBalance(web3, engine, dispatch, getState);
   });

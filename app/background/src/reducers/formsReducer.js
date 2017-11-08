@@ -17,8 +17,14 @@ export const reducer = (state, action) => {
     case `${CLEAR_PENDING}-${reducerName}`:
       return {
         ...state,
-        currentFormTxVal: '',
-        currentFormTxCost: ''
+        currentFormTxVal: {
+          eth: '',
+          usd: '',
+        },
+        currentFormTxCost: {
+          eth: '',
+          usd: '',
+        }
       };
 
     case ADD_FORM:

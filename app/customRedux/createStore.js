@@ -117,7 +117,7 @@ const createStore = (reducersData) =>
             });
           });
 
-        queue.add(handleDispatchAction);
+        return queue.add(handleDispatchAction);
       }
     });
   });

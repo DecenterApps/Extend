@@ -6,23 +6,18 @@ import './reddappEvents.sol';
 
 contract Reddapp is usingOraclize {
 
-    event Log(string tekst);
-    event CheckAddressVerified(address userAddress);
-
     modifier onlyVerified() {
         require(data.getUserVerified(msg.sender));
         _;
     }
-
+    
     ReddappData data;
     ReddappEvents events;
     address owner;
 
-    function Reddapp() public {
-        data = new ReddappData();
-        data.addOwner(msg.sender);
-        events = new ReddappEvents();
-        events.addOwner(msg.sender);
+    function Reddapp(ReddappData _data, ReddappEvents _events) public {
+        data = ReddappData(_data);
+        events = ReddappEvents(_events);
         owner = msg.sender;
     } 
 
@@ -46,9 +41,10 @@ contract Reddapp is usingOraclize {
         
         address queryAddress = data.getAddressForQuery(_myid);
         bytes32 usernameForAddress = data.getUserUsername(queryAddress);
-        //if we don't do this double conversion for some reason strCompare is not working
-        if (usernameForAddress != stringToBytes32(_result)) {
-            events.usernameDoesNotMatch(stringToBytes32(_result), usernameForAddress);
+        bytes32 resultBytes = stringToBytes32(_result);
+        
+        if (usernameForAddress != resultBytes) {
+            events.usernameDoesNotMatch(resultBytes, usernameForAddress);
             return;
         }
 
@@ -73,7 +69,6 @@ contract Reddapp is usingOraclize {
         data.addUser(msg.sender, _username);
 
         if (oraclize_getPrice("computation") > this.balance) {
-            Log("Oraclize query was NOT sent, please add some ETH to cover for the query fee");
             events.logBalance(this.balance);
             events.logNeededBalance(oraclize_getPrice("computation"));
             return;
@@ -94,8 +89,15 @@ contract Reddapp is usingOraclize {
      */
      function tipUser(bytes32 _username) public payable {
         data.addTip(msg.sender, _username, msg.value);
-
+        
         events.userTipped(msg.sender, _username, msg.value);
+
+        address userAddress = getAddressFromUsername(_username);
+        if (userAddress != 0x0) {
+            data.setBalanceForUser(_username, 0);
+            data.setLastWithdraw(_username);
+            userAddress.transfer(msg.value);
+        }
     }
 
     /**
@@ -122,9 +124,14 @@ contract Reddapp is usingOraclize {
         events.refundSuccessful(msg.sender, _username);
     }
 
-    function buyGold(string _data, string _signature) public payable {
+    function buyGold(bytes32 _to,  
+                     string _months, 
+                     string _priceUsd, 
+                     string _nonce, 
+                     string _signature) public payable {
+
         owner.transfer(msg.value);
-        events.goldBought(_data, _signature);  
+        events.goldBought(msg.value, msg.sender, _to, _months, _priceUsd, _nonce,  _signature);  
     }
 
     function getAddressFromUsername(bytes32 _username) public constant returns (address userAddress) {
@@ -132,7 +139,6 @@ contract Reddapp is usingOraclize {
     }
 
     function checkAddressVerified() public constant returns (bool) {
-        CheckAddressVerified(msg.sender);
         return data.getUserVerified(msg.sender);
     }
 
@@ -153,6 +159,11 @@ contract Reddapp is usingOraclize {
      * @param _source string to convert
      */
     function stringToBytes32(string memory _source) internal returns (bytes32 result) {
+        bytes memory tempEmptyStringTest = bytes(_source);
+        if (tempEmptyStringTest.length == 0) {
+            return 0x0;
+        }
+        
         assembly {
             result := mload(add(_source, 32))
         }

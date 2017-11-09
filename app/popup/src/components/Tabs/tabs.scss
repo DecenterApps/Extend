@@ -23,6 +23,10 @@
     letter-spacing: 0;
     transition: all 0.2s ease-in-out;
 
+    &.large-tab {
+      max-width: 350px;
+    }
+
     .tab {
       position: relative;
       display: inline-block;

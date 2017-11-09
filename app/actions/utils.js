@@ -113,6 +113,13 @@ export const getEtherScanLinkByNetwork = (network, address) => {
   return `https://${network}.etherscan.io/address/${address}`;
 };
 
+export const getEtherScanTxByNetwork = (network, txHash) => {
+  if (network === 'unknown') return '';
+  if (network === 'mainnet') return `https://etherscan.io/tx/${txHash}`;
+
+  return `https://${network}.etherscan.io/tx/${txHash}`;
+};
+
 export const createRedditLink = ((user) => (`https://www.reddit.com/user/${user}`));
 
 /**

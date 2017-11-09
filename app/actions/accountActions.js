@@ -64,11 +64,10 @@ export const send = async (web3, engine, getState, dispatch) => {
       type: SEND_SUCCESS,
       payload: {
         state: 'pending',
-        time: new Date(), // format time here
         hash: txHash,
         from: address,
-        nonce,
-        to
+        to,
+        amount: formData.amount.value
       }
     });
 

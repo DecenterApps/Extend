@@ -2,32 +2,71 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import SendForm from './SendForm';
 import connect from '../../../../customRedux/connect';
+import { getEtherScanLinkByNetwork, getEtherScanTxByNetwork
+} from '../../../../actions/utils';
 
-import './send.scss';
+import send from './send.scss';
+import tabs from '../Tabs/tabs.scss';
 
 const Send = ({ transactions }) => (
-  <div styleName="send-wrapper">
-    <SendForm />
+  <div styleName="send.send-wrapper">
+    <div styleName="send.form-wrapper">
+      <SendForm />
+    </div>
 
-    <div styleName="transaction-list">
+    <ul styleName="tabs.tabs">
+      <li styleName="tabs.large-tab">
+        <span styleName="tabs.tab tabs.active">
+          <span styleName="tabs.tab-name">
+            Transfers
+          </span>
+        </span>
+      </li>
+    </ul>
+
+    <div styleName="send.transfers-wrapper">
       {
-        transactions.length > 0 &&
-        transactions.map((transaction) => (
-          <div key={transaction.hash} styleName="transaction">
-            <div>{ transaction.state }</div>
-            <div>Nonce: { transaction.nonce }</div>
-            <div>Hash: { transaction.hash }</div>
-            <div>From: { transaction.from }</div>
-            <div>To: { transaction.to }</div>
-          </div>
-        ))
+        transactions.length === 0 && 'You have not made any transactions yet'
       }
 
       {
-        transactions.length === 0 &&
-        <div styleName="no-transactions">
-          You have not made any transactions yet
-        </div>
+        transactions.length > 0 &&
+        transactions.map((transaction, i) => (
+          <div
+            key={transaction.hash}
+            styleName={`send.transaction ${(transactions.length - 1) === i ? 'send.last' : ''}`}
+          >
+            <div styleName="send.tx-info">
+              <span>Status:</span>
+              <span>{ transaction.state }</span>
+            </div>
+            <div styleName="send.tx-info">
+              <span>To:</span>
+              <a
+                href={getEtherScanLinkByNetwork('kovan', transaction.to)}
+                target="_blank"
+                rel="noopener"
+              >
+                { transaction.to }
+              </a>
+            </div>
+            <div styleName="send.tx-info">
+              <span>Hash:</span>
+              <a
+                styleName="send.hash"
+                href={getEtherScanTxByNetwork('kovan', transaction.hash)}
+                target="_blank"
+                rel="noopener"
+              >
+                { transaction.hash }
+              </a>
+            </div>
+            <div styleName="send.tx-info">
+              <span>Amount:</span>
+              <span>{ transaction.amount } ETH</span>
+            </div>
+          </div>
+        ))
       }
     </div>
   </div>

@@ -14,21 +14,42 @@
     cursor: pointer;
     line-height: 38px;
     max-width: 225px;
-    padding: 0;
     width: 100%;
     text-align: center;
-  }
-
-  span {
-    color: $green;
+    font-size: 14px;
+    color: #9B9B9B;
     font-weight: 500;
     display: block;
     letter-spacing: 0;
     transition: all 0.2s ease-in-out;
 
-    &.active {
-      color: #fff;
-      background: $green;
+    .tab {
+      position: relative;
+      display: inline-block;
+      width: 93%;
+
+      .tab-name {
+        position: relative;
+        top: 2px;
+      }
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0; right: 0; bottom: 0; left: 0;
+        z-index: -1;
+        background: #F0F0F0;
+        transform: perspective(4px) rotateX(1deg);
+        border-radius: 10px 10px 0 0;
+      }
+
+      &.active {
+        color: #fff;
+
+        &::before {
+          background: $orange;
+        }
+      }
     }
   }
 }

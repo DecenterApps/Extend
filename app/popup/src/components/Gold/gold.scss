@@ -6,16 +6,39 @@
   padding: 25px;
 
   .single-gold {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid #444;
-    padding: 5px 0;
+    border-bottom: 1px solid rgba(#888, 0.1);
+    width: 100%;
 
-    span:first-child {
-      max-width: 200px;
-      overflow: hidden;
-      text-overflow: ellipsis;
+    &.last {
+      border-bottom: none;
+
+      .content-wrapper {
+        padding-bottom: 0;
+      }
+    }
+
+    a {
+      text-decoration: none;
+      color: #444444;
+      transition: 0.2s ease-in;
+
+      &:hover {
+        color: #a1A1A1;
+      }
+    }
+
+    .content-wrapper {
+      padding: 10px 0;
+      width: 100%;
+
+      .item-section {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-bottom: 5px;
+
+        &.first { padding-top: 10px }
+      }
     }
   }
 }

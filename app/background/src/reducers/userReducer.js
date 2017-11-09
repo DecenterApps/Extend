@@ -25,18 +25,16 @@ const INITIAL_STATE = {
   networkUrl: NETWORK_URL,
   sendingTip: false,
   sendingTipError: '',
-  activeTab: TABS[0],
+  activeTab: TABS[0].slug,
   gettingTips: false,
   gettingTipsError: '',
-  sentTips: [],
-  receivedTips: [],
+  tips: [],
   view: VIEWS[0],
   connectingAgain: false,
   connectingAgainError: '',
   buyingGold: false,
   buyingGoldError: '',
-  sentGold: [],
-  receivedGold: [],
+  golds: [],
   gettingGold: false,
   gettingGoldError: '',
   disconnected: false
@@ -107,8 +105,7 @@ export const reducer = (state, action) => {
     case GET_TIPS_SUCCESS:
       return {
         ...state,
-        sentTips: payload.sentTips,
-        receivedTips: payload.receivedTips,
+        tips: payload,
         gettingTips: false,
         gettingTipsError: ''
       };
@@ -119,13 +116,22 @@ export const reducer = (state, action) => {
         gettingTipsError: 'An error occurred while getting tips, please try again.'
       };
     case ADD_NEW_TIP: {
-      let receivedTips = [...state.receivedTips];
-      let sentTips = [...state.sentTips];
+      const tips = [...state.tips];
+      const tip = payload.tip;
 
-      if (payload.tip.from === payload.address) sentTips = [payload.tip, ...sentTips];
-      if (payload.tip.to === payload.username) receivedTips = [payload.tip, ...receivedTips];
+      if (tip.from === payload.address) {
+        const sentTip = Object.assign({}, tip);
+        sentTip.type = 'sent';
+        tips.unshift(sentTip);
+      }
 
-      return { ...state, sentTips, receivedTips };
+      if (tip.to === payload.username) {
+        const receivedTip = Object.assign({}, tip);
+        receivedTip.type = 'received';
+        tips.unshift(receivedTip);
+      }
+
+      return { ...state, tips };
     }
 
     case GET_GOLD:
@@ -133,8 +139,7 @@ export const reducer = (state, action) => {
     case GET_GOLD_SUCCESS:
       return {
         ...state,
-        sentGold: payload.sentGold,
-        receivedGold: payload.receivedGold,
+        golds: payload,
         gettingGold: false,
         gettingGoldError: ''
       };
@@ -145,13 +150,22 @@ export const reducer = (state, action) => {
         gettingGoldError: 'An error occurred while getting gold, please try again.'
       };
     case ADD_NEW_GOLD: {
-      let receivedGold = [...state.receivedGold];
-      let sentGold = [...state.sentGold];
+      const golds = [...state.golds];
+      const gold = payload.gold;
 
-      if (payload.gold.from === payload.address) sentGold = [payload.gold, ...sentGold];
-      if (payload.gold.to === payload.username) receivedGold = [payload.gold, ...receivedGold];
+      if (gold.from === payload.address) {
+        const sentGold = Object.assign({}, gold);
+        sentGold.type = 'sent';
+        golds.unshift(sentGold);
+      }
 
-      return { ...state, sentGold, receivedGold };
+      if (gold.to === payload.username) {
+        const receivedGold = Object.assign({}, gold);
+        receivedGold.type = 'received';
+        golds.unshift(receivedGold);
+      }
+
+      return { ...state, golds };
     }
 
     case CHANGE_VIEW:

@@ -28,18 +28,26 @@ const getTips = async (web3, contract, dispatch, getState) => {
   dispatch({ type: GET_TIPS });
 
   try {
-    const tips = await getTipsFromEvent(web3, contract, address, web3.toHex(username));
-    const sentTips = [];
-    const receivedTips = [];
+    const tipsFromEvent = await getTipsFromEvent(web3, contract, address, web3.toHex(username));
+    const tips = [];
 
-    if (tips.length > 0) {
-      tips.forEach((tip) => {
-        if (tip.from === address) sentTips.push(tip);
-        if (tip.to === username) receivedTips.push(tip);
+    if (tipsFromEvent.length > 0) {
+      tipsFromEvent.forEach((tipParam) => {
+        if (tipParam.from === address) {
+          const tip = Object.assign({}, tipParam);
+          tip.type = 'sent';
+          tips.push(tip);
+        }
+
+        if (tipParam.to === username) {
+          const tip = Object.assign({}, tipParam);
+          tip.type = 'received';
+          tips.push(tip);
+        }
       });
     }
 
-    dispatch({ type: GET_TIPS_SUCCESS, payload: { sentTips, receivedTips } });
+    dispatch({ type: GET_TIPS_SUCCESS, payload: tips });
   } catch(err) {
     dispatch({ type: GET_TIPS_ERROR });
   }
@@ -53,18 +61,26 @@ const getGold = async (web3, contract, dispatch, getState) => {
   dispatch({ type: GET_GOLD });
 
   try {
-    const allGold = await getGoldFromEvent(web3, contract, address, web3.toHex(username));
-    const sentGold = [];
-    const receivedGold = [];
+    const goldsFromEvent = await getGoldFromEvent(web3, contract, address, web3.toHex(username));
+    const golds = [];
 
-    if (allGold.length > 0) {
-      allGold.forEach((gold) => {
-        if (gold.from === address) sentGold.push(gold);
-        if (gold.to === username) receivedGold.push(gold);
+    if (goldsFromEvent.length > 0) {
+      goldsFromEvent.forEach((goldParam) => {
+        if (goldParam.from === address) {
+          const gold = Object.assign({}, goldParam);
+          gold.type = 'sent';
+          golds.push(gold);
+        }
+
+        if (goldParam.to === username) {
+          const gold = Object.assign({}, goldParam);
+          gold.type = 'received';
+          golds.push(gold);
+        }
       });
     }
 
-    dispatch({ type: GET_GOLD_SUCCESS, payload: { sentGold, receivedGold } });
+    dispatch({ type: GET_GOLD_SUCCESS, payload: golds });
   } catch(err) {
     dispatch({ type: GET_GOLD_ERROR });
   }

@@ -1,11 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import SentIcon from '../../../../commonComponents/Decorative/SentIcon';
+import ReceivedIcon from '../../../../commonComponents/Decorative/ReceivedIcon';
 import connect from '../../../../customRedux/connect';
 import { createRedditLink, getEtherScanLinkByNetwork } from '../../../../actions/utils';
 
 import './gold.scss';
 
-const Gold = ({ gettingGold, gettingGoldError, sentGold, receivedGold, goldType }) => (
+const Gold = ({ gettingGold, gettingGoldError, golds }) => (
   <div styleName="gold-wrapper">
     {
       gettingGold &&
@@ -22,15 +24,19 @@ const Gold = ({ gettingGold, gettingGoldError, sentGold, receivedGold, goldType 
 
         {
           !gettingGoldError &&
-          <span>
+          <div>
             {
-              goldType === 'sent' &&
-              <div>
-                {
-                  sentGold.length > 0 &&
-                  sentGold.map((gold) => (
-                    <div styleName="single-gold" key={gold.to + Math.random()}>
-                      <span>
+              golds.length > 0 &&
+              golds.map((gold, i) => (
+                <div
+                  styleName={`single-gold ${(golds.length - 1) === i ? 'last' : ''}`}
+                  key={gold.to + Math.random()}
+                >
+                  {
+                    (gold.type === 'sent') &&
+                    <span styleName="content-wrapper">
+                      <div styleName="item-section first">
+                        <SentIcon />
                         <a
                           href={createRedditLink(gold.to)}
                           target="_blank"
@@ -38,26 +44,22 @@ const Gold = ({ gettingGold, gettingGoldError, sentGold, receivedGold, goldType 
                         >
                           /u/{ gold.to }
                         </a>
-                      </span>
-                      <span>{ gold.val } ETH</span>
-                    </div>
-                  ))
-                }
-
-                {
-                  sentGold.length === 0 &&
-                  <div>You did not send any gold yet</div>
-                }
-              </div>
-            }
-            {
-              goldType === 'received' &&
-              <div>
-                {
-                  receivedGold.length > 0 &&
-                  receivedGold.map((gold) => (
-                    <div styleName="single-gold" key={gold.from + Math.random()}>
-                      <span>
+                      </div>
+                      <div styleName="item-section">
+                        <span>Months:</span>
+                        <span>{ gold.months }</span>
+                      </div>
+                      <div styleName="item-section">
+                        <span>Amount: </span>
+                        <span>{ gold.val } ETH</span>
+                      </div>
+                    </span>
+                  }
+                  {
+                    (gold.type === 'received') &&
+                    <span styleName="content-wrapper">
+                      <div styleName="item-section first">
+                        <ReceivedIcon />
                         <a
                           href={getEtherScanLinkByNetwork('kovan', gold.from)}
                           target="_blank"
@@ -65,20 +67,26 @@ const Gold = ({ gettingGold, gettingGoldError, sentGold, receivedGold, goldType 
                         >
                           { gold.from }
                         </a>
-                      </span>
-                      <span>{ gold.val } ETH</span>
-                    </div>
-                  ))
-                }
-
-                {
-                  receivedGold.length === 0 &&
-                  <div>You did not receive any gold yet</div>
-                }
-              </div>
-
+                      </div>
+                      <div styleName="item-section">
+                        <span>Months:</span>
+                        <span>{ gold.months }</span>
+                      </div>
+                      <div styleName="item-section">
+                        <span>Amount: </span>
+                        <span>{ gold.val } ETH</span>
+                      </div>
+                    </span>
+                  }
+                </div>
+              ))
             }
-          </span>
+
+            {
+              golds.length === 0 &&
+              <div>You did not send or receive any gold</div>
+            }
+          </div>
         }
       </div>
     }
@@ -86,16 +94,13 @@ const Gold = ({ gettingGold, gettingGoldError, sentGold, receivedGold, goldType 
 );
 
 Gold.propTypes = {
-  receivedGold: PropTypes.array.isRequired,
-  sentGold: PropTypes.array.isRequired,
+  golds: PropTypes.array.isRequired,
   gettingGold: PropTypes.bool.isRequired,
   gettingGoldError: PropTypes.string.isRequired,
-  goldType: PropTypes.string.isRequired
 };
 
 const mapStateToProps = (state) => ({
-  receivedGold: state.user.receivedGold,
-  sentGold: state.user.sentGold,
+  golds: state.user.golds,
   gettingGold: state.user.gettingGold,
   gettingGoldError: state.user.gettingGoldError
 });

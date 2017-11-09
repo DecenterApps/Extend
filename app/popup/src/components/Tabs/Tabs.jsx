@@ -15,20 +15,20 @@ const Tabs = ({ activeTab }) => (
         TABS.map((tab) => (
           <li key={tab.slug}>
             <span
-              styleName={activeTab === tab.slug ? 'active' : ''}
+              styleName={`tab ${activeTab === tab.slug ? 'active' : ''}`}
               onClick={() => { setActiveTabMessage(tab.slug); }}
             >
-              { tab.name }
+              <span styleName="tab-name">
+                { tab.name }
+              </span>
             </span>
           </li>
         ))
       }
     </ul>
 
-    { (activeTab === 'sentTips') && <Tips tipsType="sent" /> }
-    { (activeTab === 'receivedTips') && <Tips tipsType="received" /> }
-    { (activeTab === 'sentGold') && <Gold goldType="sent" /> }
-    { (activeTab === 'receivedGold') && <Gold goldType="received" /> }
+    { (activeTab === 'tips') && <Tips /> }
+    { (activeTab === 'gold') && <Gold /> }
   </div>
 );
 

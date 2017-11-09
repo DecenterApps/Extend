@@ -71,14 +71,14 @@ class TipForm extends Component {
             <span>Max transaction fee:</span>
             <div>
               <span>{ this.props.currentFormTxCost.eth } ETH</span>
-              <span>{ this.props.currentFormTxCost.usd } USD</span>
+              <span styleName="second-price">{ this.props.currentFormTxCost.usd } USD</span>
             </div>
           </div>
         }
 
         {
           this.props.sendingTipError &&
-          <div className="submit-error">Error: {this.props.sendingTipError}</div>
+          <div styleName="submit-error">Error: {this.props.sendingTipError}</div>
         }
 
         <button

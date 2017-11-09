@@ -1,0 +1,14 @@
+@import "colors";
+
+.icon-wrapper {
+  display: flex;
+  cursor: pointer;
+  top: 4px;
+  position: relative;
+  margin-left: 10px;
+
+  &.verify-icon {
+    top: 1px;
+    cursor: default;
+  }
+}

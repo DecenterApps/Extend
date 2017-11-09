@@ -28,11 +28,11 @@ const Dashboard = ({
       <div styleName="small-section">
         <div styleName="small-section-title">Username</div>
         <div>
-          { !registering && !registeringError && !verifiedUsername && <span styleName="error">Not registered</span> }
+          { !registering && !registeringError && !verifiedUsername && <span styleName="error">Not verified</span> }
           { !registering && registeringError && <span styleName="error">There was an error, try again</span> }
           { registering &&
             <span styleName="pending">
-              Registering
+              Verifying
               <a
                 href={createRedditLink(registeringUsername)}
                 target="_blank"
@@ -108,7 +108,7 @@ const Dashboard = ({
       </div>
     }
     {
-      registering && <div styleName="registering-info">Username is currently being registered. Please wait...</div>
+      registering && <div styleName="registering-info">Username is currently being verified. Please wait...</div>
     }
     {
       !registering &&

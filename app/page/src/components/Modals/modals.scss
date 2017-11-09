@@ -1,3 +1,5 @@
+@import '../../../../commonComponents/colors';
+
 .modal-backdrop {
   position: fixed;
   top: 0;
@@ -23,10 +25,12 @@
     transition: all 0.3s ease-out;
 
     .modal-header {
-      padding: 25px 30px 20px 20px;
-      text-align: right;
+      background: $orange;
+      color: #fff;
+      margin-bottom: 20px;
+      height: 50px;
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
       align-items: center;
 
       h1 {
@@ -34,8 +38,15 @@
       }
 
       .icon-close {
+        display: flex;
+        position: absolute;
+        right: 25px;
         outline: none;
         cursor: pointer;
+
+        svg {
+          fill: #FFF;
+        }
       }
     }
 

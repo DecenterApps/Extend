@@ -1,14 +1,14 @@
 {
   "manifest_version": 2,
-  "name": "RCR",
-  "description": "React, Chrome, and Redux example",
+  "name": "Extend",
+  "description": "Chrome extension that lets users integrate with smart contract for tipping and buying gold on Reddit",
   "version": "0.0.0.1",
   "background": {
     "scripts": ["web3.js", "background.js"],
     "persistent": true
   },
   "browser_action": {
-    "default_title": "RCR Example",
+    "default_title": "Extend",
     "default_popup": "popup.html"
   },
   "content_scripts": [
@@ -23,5 +23,11 @@
     "identity",
     "*://*.google.com/*",
     "*://*.reddit.com/*"
-  ]
+  ],
+  "icons": {
+    "16": "icon16.png",
+    "32": "icon32.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  }
 }

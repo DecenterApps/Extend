@@ -86,7 +86,7 @@ class SendForm extends Component {
               <span>Max transaction fee:</span>
               <div>
                 <span>{ this.props.currentFormTxCost.eth } ETH</span>
-                <span>{ this.props.currentFormTxCost.usd } USD</span>
+                <span styleName="second-price">{ this.props.currentFormTxCost.usd } USD</span>
               </div>
             </div>
           }

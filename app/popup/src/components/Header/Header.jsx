@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import BackIcon from '../../../../commonComponents/Decorative/BackIcon';
+import Logo from '../../../../commonComponents/Decorative/Logo';
 import OptionsDropdown from '../OptionsDropdown/OptionsDropdown';
 import { changeViewMessage } from '../../../../messages/userActionsMessages';
 import { clearRefundValuesMessage } from '../../../../messages/accountActionMessages';
@@ -30,7 +31,7 @@ const Header = ({ view, generatedVault, copiedSeed, password }) => (
     { (view === 'privacyNotice') && <span>Privacy Notice</span> }
     { (view === 'createAccount') && <span>Create Account</span> }
     { (view === 'copySeed') && <span>Copy recovery phrase</span> }
-    { (view === 'dashboard') && <span>ReddApp</span> }
+    { (view === 'dashboard') && <span styleName="logo-wrapper"><Logo /></span> }
     { (view === 'unlockAccount') && <span>Unlock Account</span> }
     { (view === 'send') && <span>Send funds</span> }
     { (view === 'withdraw') && <span>Withdraw tips</span> }

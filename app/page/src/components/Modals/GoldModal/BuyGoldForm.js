@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Tooltip from 'react-tooltip-lite';
-import connect from '../.././../../customRedux/connect';
-import createForm from '../../../../customRedux/createForm';
-import createField from '../../../../customRedux/createField';
-import InputFormField from '../../../../commonComponents/InputFormField';
+import connect from '../../../../../customRedux/connect';
+import createForm from '../../../../../customRedux/createForm';
+import createField from '../../../../../customRedux/createField';
+import InputFormField from '../../../../../commonComponents/InputFormField';
 import buyGoldFormValidator from './buyGoldFormValidator';
-import { buyGoldMessage } from '../../../../messages/pageActionsMessages';
-import { setBuyGoldFormTxPriceMessage } from '../../../../messages/formsActionsMessages';
+import { buyGoldMessage } from '../../../../../messages/pageActionsMessages';
+import { setBuyGoldFormTxPriceMessage } from '../../../../../messages/formsActionsMessages';
 
-import formStyle from '../../../../commonComponents/forms.scss';
+import formStyle from '../../../../../commonComponents/forms.scss';
 
 const FORM_NAME = 'buyGoldForm';
 
@@ -73,14 +73,14 @@ class buyGoldForm extends Component {
               <span>Amount:</span>
               <div>
                 <span>{ this.props.currentFormTxVal.eth } ETH</span>
-                <span>{ this.props.currentFormTxVal.usd } USD</span>
+                <span styleName="second-price">{ this.props.currentFormTxVal.usd } USD</span>
               </div>
             </div>
             <div styleName="tx-info">
               <span>Max transaction fee:</span>
               <div>
                 <span>{ this.props.currentFormTxCost.eth } ETH</span>
-                <span>{ this.props.currentFormTxCost.usd } USD</span>
+                <span styleName="second-price">{ this.props.currentFormTxCost.usd } USD</span>
               </div>
             </div>
           </div>
@@ -88,7 +88,7 @@ class buyGoldForm extends Component {
 
         {
           this.props.buyingGoldError &&
-          <div className="submit-error">Error: {this.props.buyingGoldError}</div>
+          <div styleName="submit-error">Error: {this.props.buyingGoldError}</div>
         }
 
         <button

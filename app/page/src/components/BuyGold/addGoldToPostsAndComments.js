@@ -1,42 +1,32 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { checkIfUsernameVerifiedMessage } from '../../../../messages/pageActionsMessages';
 import BuyGold from './BuyGold';
 
-const insertTipToPosts = () => {
-  $('.sitetable.linklisting .thing .flat-list.buttons').append('<li class="reddapp-gold-post"></li>');
-  const Authors = $('.sitetable.linklisting .thing .tagline').map((i, el) => ($(el).find('.author').text()));
-  const divs = document.getElementsByClassName('reddapp-gold-post');
+const insertGoldToPosts = () => {
+  $('.sitetable.linklisting .thing .flat-list.buttons').append('<li class="extend-gold-post"></li>');
+  const authors = $('.sitetable.linklisting .thing .tagline').map((i, el) => ($(el).find('.author').text()));
+  const divs = document.getElementsByClassName('extend-gold-post');
 
-  Authors.each((i, author) => { checkIfUsernameVerifiedMessage(author, i, 'post'); });
-
-  return divs;
+  return { authors, divs };
 };
 
-const insertTipToComments = () => {
-  $('.commentarea .comment .flat-list').append('<li class="reddapp-tip-comment"></li>');
-  const Authors = $('.commentarea .comment .tagline').map((i, el) => ($(el).find('.author').text()));
-  const divs = document.getElementsByClassName('reddapp-gold-comment');
+const insertGoldToComments = () => {
+  $(".commentarea .comment .flat-list:contains('permalink')").append('<li class="extend-gold-comment"></li>');
+  const authors = $('.commentarea .comment .tagline').map((i, el) => ($(el).find('.author').text()));
+  const divs = document.getElementsByClassName('extend-gold-comment');
 
-  Authors.each((i, author) => { checkIfUsernameVerifiedMessage(author, i, 'comment'); });
-
-  return divs;
+  return { authors, divs };
 };
 
 export default () => {
-  const postElements = insertTipToPosts();
-  const commentElements = insertTipToComments();
+  const postCollection = insertGoldToPosts();
+  const commentCollection = insertGoldToComments();
 
-  chrome.runtime.onMessage.addListener((message) => {
-    if (message.type !== 'checkIfUsernameVerified') return;
+  Object.keys(postCollection.divs).forEach((index) => {
+    render(<BuyGold author={postCollection.authors[index]} />, postCollection.divs[index]);
+  });
 
-    const { username, index, isVerified, type } = message.payload;
-
-    if (type === 'post') {
-      render(<BuyGold author={username} isVerified={isVerified} />, postElements[index]);
-    }
-    if (type === 'comment') {
-      render(<BuyGold author={username} isVerified={isVerified} />, commentElements[index]);
-    }
+  Object.keys(commentCollection.divs).forEach((index) => {
+    render(<BuyGold author={commentCollection.authors[index]} />, commentCollection.divs[index]);
   });
 };

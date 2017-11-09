@@ -12,7 +12,13 @@
   .back {
     position: absolute;
     left: 25px;
-    top: 10px;
     cursor: pointer;
+    display: flex;
+  }
+
+  .logo-wrapper {
+    position: absolute;
+    left: 20px;
+    display: flex;
   }
 }

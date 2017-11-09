@@ -1,42 +1,32 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { checkIfUsernameVerifiedMessage } from '../../../../messages/pageActionsMessages';
 import Tip from './Tip';
 
 const insertTipToPosts = () => {
-  $('.sitetable.linklisting .thing .flat-list.buttons').append('<li class="reddapp-tip-post"></li>');
-  const Authors = $('.sitetable.linklisting .thing .tagline').map((i, el) => ($(el).find('.author').text()));
-  const divs = document.getElementsByClassName('reddapp-tip-post');
+  $('.sitetable.linklisting .thing .flat-list.buttons').append('<li class="extend-tip-post"></li>');
+  const authors = $('.sitetable.linklisting .thing .tagline').map((i, el) => ($(el).find('.author').text()));
+  const divs = document.getElementsByClassName('extend-tip-post');
 
-  Authors.each((i, author) => { checkIfUsernameVerifiedMessage(author, i, 'post'); });
-
-  return divs;
+  return { authors, divs };
 };
 
 const insertTipToComments = () => {
-  $('.commentarea .comment .flat-list').append('<li class="reddapp-tip-comment"></li>');
-  const Authors = $('.commentarea .comment .tagline').map((i, el) => ($(el).find('.author').text()));
-  const divs = document.getElementsByClassName('reddapp-tip-comment');
+  $(".commentarea .comment .flat-list:contains('permalink')").append('<li class="extend-tip-comment"></li>');
+  const authors = $('.commentarea .comment .tagline').map((i, el) => ($(el).find('.author').text()));
+  const divs = document.getElementsByClassName('extend-tip-comment');
 
-  Authors.each((i, author) => { checkIfUsernameVerifiedMessage(author, i, 'comment'); });
-
-  return divs;
+  return { divs, authors };
 };
 
 export default () => {
-  const postElements = insertTipToPosts();
-  const commentElements = insertTipToComments();
+  const postCollection = insertTipToPosts();
+  const commentCollection = insertTipToComments();
 
-  chrome.runtime.onMessage.addListener((message) => {
-    if (message.type !== 'checkIfUsernameVerified') return;
+  Object.keys(postCollection.divs).forEach((index) => {
+    render(<Tip author={postCollection.authors[index]} />, postCollection.divs[index]);
+  });
 
-    const { username, index, isVerified, type } = message.payload;
-
-    if (type === 'post') {
-      render(<Tip author={username} isVerified={isVerified} />, postElements[index]);
-    }
-    if (type === 'comment') {
-      render(<Tip author={username} isVerified={isVerified} />, commentElements[index]);
-    }
+  Object.keys(commentCollection.divs).forEach((index) => {
+    render(<Tip author={commentCollection.authors[index]} />, commentCollection.divs[index]);
   });
 };

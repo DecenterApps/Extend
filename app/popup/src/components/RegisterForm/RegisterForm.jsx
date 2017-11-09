@@ -17,6 +17,8 @@ class RegisterForm extends Component {
   componentWillMount() {
     this.props.formData.setNumOfFields(1);
     this.GasPriceField = createField(InputFormField, this.props.formData);
+
+    setRegisterFormTxPriceMessage();
   }
 
   componentWillReceiveProps(newProps) {
@@ -57,14 +59,14 @@ class RegisterForm extends Component {
                 <span>Amount:</span>
                 <div>
                   <span>{ this.props.currentFormTxVal.eth } ETH</span>
-                  <span>{ this.props.currentFormTxVal.usd } USD</span>
+                  <span styleName="second-price">{ this.props.currentFormTxVal.usd } USD</span>
                 </div>
               </div>
               <div styleName="tx-info">
                 <span>Max transaction fee:</span>
                 <div>
                   <span>{ this.props.currentFormTxCost.eth } ETH</span>
-                  <span>{ this.props.currentFormTxCost.usd } USD</span>
+                  <span styleName="second-price">{ this.props.currentFormTxCost.usd } USD</span>
                 </div>
               </div>
             </div>
@@ -87,7 +89,7 @@ class RegisterForm extends Component {
               useHover={this.props.pristine || this.props.invalid}
               useDefaultStyles
             >
-              Register Reddit username
+              VERIFY USERNAME
             </Tooltip>
           </button>
         </form>

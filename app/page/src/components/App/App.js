@@ -3,32 +3,25 @@ import PropTypes from 'prop-types';
 import connect from '../../../../customRedux/connect';
 import ModalRoot from '../Modals/ModalRoot';
 import addTipToPostsAndComments from '../Tip/addTipToPostsAndComments';
-import removeTipToPostsAndComments from '../Tip/removeTipToPostsAndComments';
-import removeGoldFromPostsAndComments from '../BuyGold/removeGoldFromPostsAndComments';
 import addGoldToPostsAndComments from '../BuyGold/addGoldToPostsAndComments';
+import addUserVerifiedToPostsAndComments from '../UserVerified/addUserVerifiedToPostsAndComments';
 
 class App extends Component {
   componentWillMount() {
     if (this.props.generatedVault && this.props.copiedSeed && this.props.password) {
       addTipToPostsAndComments();
       addGoldToPostsAndComments();
+      addUserVerifiedToPostsAndComments();
       this.added = true;
-      this.removed = false;
     }
   }
 
   componentWillReceiveProps(newProps) {
     if (newProps.generatedVault && newProps.copiedSeed && newProps.password && !this.added) {
       addTipToPostsAndComments();
+      addGoldToPostsAndComments();
+      addUserVerifiedToPostsAndComments();
       this.added = true;
-      this.removed = false;
-    }
-
-    if (!newProps.password && this.added && !this.removed) {
-      removeTipToPostsAndComments();
-      removeGoldFromPostsAndComments();
-      this.added = false;
-      this.removed = true;
     }
   }
 

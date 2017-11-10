@@ -12,7 +12,7 @@ const queue = new PQueue({ concurrency: 1 });
  */
 const initReducer = async (reducerData) =>
   new Promise(async (resolve) => {
-    await clearReducer(reducerData.name); // remove when finished
+    // await clearReducer(reducerData.name); // remove when finished
 
     const existingReducerState = await get(reducerData.name);
 

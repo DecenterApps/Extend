@@ -5,7 +5,7 @@ import {
   GET_TIPS, GET_TIPS_SUCCESS, GET_TIPS_ERROR, CHANGE_VIEW,
   CLEAR_PENDING, CONNECT_AGAIN, CONNECT_AGAIN_SUCCESS, CONNECT_AGAIN_ERROR,
   BUY_GOLD, BUY_GOLD_SUCCESS, BUY_GOLD_ERROR, GET_GOLD, GET_GOLD_ERROR,
-  GET_GOLD_SUCCESS, ADD_NEW_GOLD, SET_DISCONNECTED
+  GET_GOLD_SUCCESS, ADD_NEW_GOLD, SET_DISCONNECTED, SET_REFUND_TIPS
 } from '../../../constants/actionTypes';
 import { NETWORK_URL, TABS, VIEWS } from '../../../constants/general';
 
@@ -25,6 +25,8 @@ const INITIAL_STATE = {
   networkUrl: NETWORK_URL,
   sendingTip: false,
   sendingTipError: '',
+  refundTipIndex: '',
+  refundTipUsername: '',
   activeTab: TABS[0].slug,
   gettingTips: false,
   gettingTipsError: '',
@@ -194,6 +196,9 @@ export const reducer = (state, action) => {
 
     case SET_DISCONNECTED:
       return { ...state, disconnected: payload };
+
+    case SET_REFUND_TIPS:
+      return { ...state, tips: payload };
 
     default:
       return false;

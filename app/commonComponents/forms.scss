@@ -1,53 +1,6 @@
 @import './buttons';
 @import './colors';
 
-.form-name {
-  font-size: 24px;
-  text-align: center;
-  margin-bottom: 30px;
-}
-
-.form-wrapper {
-  width: 250px;
-
-  .form-item-wrapper {
-    position: relative;
-    display: flex;
-    margin-bottom: 35px;
-
-    .form-item {
-      border: 2px solid #E2E2E2;
-      border-radius: 3px;
-      padding: 10px;
-      margin: 0;
-      width: 100%;
-      font-size: 14px;
-    }
-
-    .form-item-error {
-      border-color: $red-error;
-      outline-color: $red-error;
-    }
-
-    div.form-item-error {
-      position: absolute;
-      color: $red-error;
-      top: 45px;
-      font-size: 16px;
-    }
-  }
-
-  .submit-error {
-    font-size: 18px;
-    margin-bottom: 20px;
-    color: $red-error;
-  }
-
-  .submit-button {
-    @include btn;
-  }
-}
-
 .form-wrapper-2 {
   width: 100%;
 
@@ -123,5 +76,24 @@
   .submit-button {
     display: block;
     @include btn;
+  }
+
+  .form-item-display {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #444;
+    font-size: 16px;
+    margin-bottom: 35px;
+
+    a {
+      text-decoration: none;
+      color: #444444;
+      transition: 0.2s ease-in;
+
+      &:hover {
+        color: #a1A1A1;
+      }
+    }
   }
 }

@@ -3,18 +3,26 @@ import PropTypes from 'prop-types';
 import ModalHeader from '../ModalHeader';
 import ModalBody from '../ModalBody';
 import TipForm from './TipForm';
+import connect from '../../../../../customRedux/connect';
+import TypeInPasswordForm from '../../../../../commonComponents/TypeInPasswordForm';
 
-const TipModal = ({ closeModal }) => (
+const TipModal = ({ closeModal, password }) => (
   <div>
-    <ModalHeader title={'Tip'} closeModal={closeModal} />
+    <ModalHeader title={password ? 'Buy gold' : 'Unlock account'} closeModal={closeModal} />
     <ModalBody>
-      <TipForm />
+      { password && <TipForm /> }
+      { !password && <TypeInPasswordForm /> }
     </ModalBody>
   </div>
 );
 
 TipModal.propTypes = {
-  closeModal: PropTypes.func.isRequired
+  closeModal: PropTypes.func.isRequired,
+  password: PropTypes.string.isRequired
 };
 
-export default TipModal;
+const mapStateToProps = (state) => ({
+  password: state.account.password
+});
+
+export default connect(TipModal, mapStateToProps);

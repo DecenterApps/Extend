@@ -4,11 +4,11 @@ import {
   NETWORK_UNAVAILABLE,
   REGISTER_USER, VERIFIED_USER, REGISTER_USER_ERROR, SET_ACTIVE_TAB, GET_TIPS, GET_TIPS_SUCCESS,
   GET_TIPS_ERROR, CHANGE_VIEW, CONNECT_AGAIN, CONNECT_AGAIN_SUCCESS, CONNECT_AGAIN_ERROR, ADD_NEW_TIP,
-  ADD_NEW_GOLD, GET_GOLD, GET_GOLD_ERROR, GET_GOLD_SUCCESS, SET_DISCONNECTED
+  ADD_NEW_GOLD, GET_GOLD, GET_GOLD_ERROR, GET_GOLD_SUCCESS, SET_DISCONNECTED, SET_REFUND_TIPS
 } from '../constants/actionTypes';
 import {
   verifiedUserEvent, sendTransaction, listenForTips, getTipsFromEvent, listenForGold, getGoldFromEvent,
-  getOraclizePrice
+  getOraclizePrice, _checkIfRefundAvailable
 } from '../modules/ethereumService';
 
 const keyStore = lightwallet.keystore;
@@ -18,6 +18,26 @@ export const changeView = (dispatch, payload) =>
     await dispatch({ type: CHANGE_VIEW, payload });
     resolve();
   });
+
+export const checkRefundForSentTips = async (web3, contract, getState, dispatch) => {
+  const tips = [...getState().user.tips];
+
+  if (tips.filter((tip) => tip.type === 'sent').length === 0) return;
+
+  const tipsWithRefund = tips.map(async (tip) => {
+    if (tip.type !== 'sent') return tip;
+
+    const refundAvailable = await _checkIfRefundAvailable(web3, contract, web3.toHex(tip.to));
+
+    if (refundAvailable) return Object.assign(tip, { refund: true });
+
+    return tip;
+  });
+
+  const result = await Promise.all(tipsWithRefund);
+
+  dispatch({ type: SET_REFUND_TIPS, payload: result });
+};
 
 const getTips = async (web3, contract, dispatch, getState) => {
   const state = getState();
@@ -246,4 +266,3 @@ export const setDisconnected = (dispatch, payload) =>
     await dispatch({ type: SET_DISCONNECTED, payload });
     resolve();
   });
-

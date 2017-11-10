@@ -1,5 +1,5 @@
 import React from 'react';
-import TypeInPasswordForm from './TypeInPasswordForm';
+import TypeInPasswordForm from '../../../../commonComponents/TypeInPasswordForm';
 
 import './type-in-password.scss';
 

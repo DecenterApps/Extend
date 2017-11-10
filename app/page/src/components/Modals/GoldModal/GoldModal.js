@@ -3,18 +3,26 @@ import PropTypes from 'prop-types';
 import ModalHeader from '../ModalHeader';
 import ModalBody from '../ModalBody';
 import BuyGoldForm from './BuyGoldForm';
+import connect from '../../../../../customRedux/connect';
+import TypeInPasswordForm from '../../../../../commonComponents/TypeInPasswordForm';
 
-const GoldModal = ({ closeModal }) => (
+const GoldModal = ({ closeModal, password }) => (
   <div>
-    <ModalHeader title={'Buy gold'} closeModal={closeModal} />
+    <ModalHeader title={password ? 'Buy gold' : 'Unlock account'} closeModal={closeModal} />
     <ModalBody>
-      <BuyGoldForm />
+      { password && <BuyGoldForm /> }
+      { !password && <TypeInPasswordForm /> }
     </ModalBody>
   </div>
 );
 
 GoldModal.propTypes = {
-  closeModal: PropTypes.func.isRequired
+  closeModal: PropTypes.func.isRequired,
+  password: PropTypes.string.isRequired
 };
 
-export default GoldModal;
+const mapStateToProps = (state) => ({
+  password: state.account.password
+});
+
+export default connect(GoldModal, mapStateToProps);

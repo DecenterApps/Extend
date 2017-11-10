@@ -7,7 +7,7 @@ const buyGoldFormValidator = (values) => {
   if (values.months) {
     const numMonths = parseFloat(values.months);
     const nanError = isNaN(numMonths);
-    const toSmallError = numMonths < 0;
+    const toSmallError = numMonths <= 0;
     const toLargeError = numMonths > 36;
 
     if (nanError) errors.months = 'The provided input is not a number';

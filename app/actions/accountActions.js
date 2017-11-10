@@ -7,7 +7,7 @@ import { LOCK_INTERVAL } from '../constants/general';
 import { isJson, formatLargeNumber } from '../actions/utils';
 import {
   getBalanceForAddress, getGasPrice, transfer, pollForReceipt, getNonceForAddress, sendTransaction,
-  _checkIfRefundAvailable, listenForRefundSuccessful
+  listenForRefundSuccessful
 } from '../modules/ethereumService';
 import AbstractPoller from '../modules/AbstractPoller';
 import { changeView } from './userActions';
@@ -241,7 +241,7 @@ export const refund = async (web3, getState, dispatch, contracts) => {
   const state = getState();
   const formData = state.forms.refundForm;
   const gasPrice = web3.toWei(formData.gasPrice.value, 'gwei');
-  const username = web3.toHex(formData.username.value);
+  const username = web3.toHex(state.user.refundTipUsername);
   const address = state.account.address;
   const ks = keyStore.deserialize(state.account.keyStore);
   const password = state.account.password;

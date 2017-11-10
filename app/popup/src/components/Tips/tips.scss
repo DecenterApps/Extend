@@ -45,14 +45,19 @@
           text-overflow: ellipsis;
         }
       }
+
+      .val-section {
+        display: flex;
+        align-items: center;
+      }
     }
   }
 
   .refund-btn {
     cursor: pointer;
     color: $green;
-    font-size: 16px;
-    margin-bottom: 15px;
+    font-size: 12px;
+    margin-left: 5px;
 
     &:hover {
       color: $green-hover;

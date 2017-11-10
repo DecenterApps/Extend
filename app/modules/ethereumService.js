@@ -410,10 +410,10 @@ export const getGoldFromEvent = (web3, contract, address, hexUsername) =>
         if (error) reject(error);
 
         const allGold = result.map((tx) => ({
-          to: web3.toUtf8(tx.args._to),
-          val: web3.fromWei(tx.args._price.toString()),
-          from: tx.args._from,
-          months: tx.args._months
+          to: web3.toUtf8(tx.args.to),
+          val: web3.fromWei(tx.args.price.toString()),
+          from: tx.args.from,
+          months: tx.args.months
         }));
 
         resolve(allGold.reverse());
@@ -433,10 +433,10 @@ export const listenForGold = async (web3, contract, dispatch, address, hexUserna
       }
 
       const gold = event.args;
-      const to = web3.toUtf8(gold._to);
-      const val = web3.fromWei(gold._price.toString());
-      const from = gold._from;
-      const months = gold._months;
+      const to = web3.toUtf8(gold.to);
+      const val = web3.fromWei(gold.price.toString());
+      const from = gold.from;
+      const months = gold.months;
 
       callback({ to, val, from, months });
     };

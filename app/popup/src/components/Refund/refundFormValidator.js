@@ -2,7 +2,6 @@ const refundFormValidator = (values) => {
   const errors = {};
 
   if (!values.gasPrice) errors.gasPrice = 'Required';
-  if (!values.username) errors.username = 'Required';
 
   if (values.gasPrice) {
     const nanError = isNaN(parseFloat(values.gasPrice));

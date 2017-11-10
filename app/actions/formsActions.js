@@ -58,15 +58,16 @@ export const setSendFormTxPrice = async (web3, contract, dispatch, getState) => 
 };
 
 export const setRefundFormTxPrice = async (web3, contract, dispatch, getState) => {
-  const form = getState().forms.refundForm;
+  const state = getState();
+  const form = state.forms.refundForm;
   const value = 0;
   const contractMethod = contract.refundMoneyForUser;
   const usdPerEth = await getValOfEthInUsd();
-  const username = form.username.value;
+  const username = state.user.refundTipUsername;
 
   const isAvailable = await _checkIfRefundAvailable(web3, contract, username);
 
-  if (isAvailable) { // TODO change this for production (TESTING ONLY!)
+  if (!isAvailable) {
     dispatch({ type: REFUND_UNAVAILABLE });
     return;
   }

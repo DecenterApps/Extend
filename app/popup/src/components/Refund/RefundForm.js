@@ -7,6 +7,7 @@ import InputFormField from '../../../../commonComponents/InputFormField';
 import refundFormValidator from './refundFormValidator';
 import { setRefundFormTxPriceMessage } from '../../../../messages/formsActionsMessages';
 import { refundMessage } from '../../../../messages/accountActionMessages';
+import { createRedditLink } from '../../../../actions/utils';
 
 import formStyle from '../../../../commonComponents/forms.scss';
 
@@ -14,26 +15,22 @@ const FORM_NAME = 'refundForm';
 
 class RefundForm extends Component {
   componentWillMount() {
-    this.props.formData.setNumOfFields(2);
-    this.UsernameField = createField(InputFormField, this.props.formData);
+    this.props.formData.setNumOfFields(1);
     this.GasPriceField = createField(InputFormField, this.props.formData);
+
+    setRefundFormTxPriceMessage();
   }
 
   componentWillReceiveProps(newProps) {
     if (newProps.invalid) return;
     if (!this.props.form) return;
     if (Object.keys(this.props.form).length === 0) return;
+    if ((newProps.form.gasPrice.value === this.props.form.gasPrice.value)) return;
 
-    if (
-      (newProps.form.gasPrice.value !== this.props.form.gasPrice.value) ||
-      (newProps.form.username.value !== this.props.form.username.value)
-    ) {
-      setRefundFormTxPriceMessage();
-    }
+    setRefundFormTxPriceMessage();
   }
 
   render() {
-    const UsernameField = this.UsernameField;
     const GasPriceField = this.GasPriceField;
 
     return (
@@ -43,16 +40,16 @@ class RefundForm extends Component {
           onSubmit={(e) => { this.props.handleSubmit(e, refundMessage); }}
         >
 
-          <UsernameField
-            name="username"
-            showErrorText
-            showLabel
-            labelText="Username:"
-            type="text"
-            wrapperClassName={formStyle['form-item-wrapper']}
-            inputClassName={formStyle['form-item']}
-            errorClassName={formStyle['form-item-error']}
-          />
+          <div styleName="form-item-display">
+            <span>Refund from:</span>
+            <a
+              href={createRedditLink(this.props.refundTipUsername)}
+              target="_blank"
+              rel="noopener"
+            >
+              /u/{ this.props.refundTipUsername }
+            </a>
+          </div>
 
           <GasPriceField
             name="gasPrice"
@@ -113,7 +110,8 @@ RefundForm.propTypes = {
   refundingError: PropTypes.string.isRequired,
   refundAvailable: PropTypes.bool.isRequired,
   form: PropTypes.object.isRequired,
-  currentFormTxCost: PropTypes.object.isRequired
+  currentFormTxCost: PropTypes.object.isRequired,
+  refundTipUsername: PropTypes.string.isRequired
 };
 
 const mapStateToProps = (state) => ({
@@ -123,6 +121,7 @@ const mapStateToProps = (state) => ({
   refundAvailable: state.account.refundAvailable,
   form: state.forms[FORM_NAME],
   currentFormTxCost: state.forms.currentFormTxCost,
+  refundTipUsername: state.user.refundTipUsername
 });
 
 const ExportComponent = createForm(FORM_NAME, RefundForm, refundFormValidator);

@@ -19,6 +19,7 @@
         text-decoration: none;
         color: #444444;
         transition: 0.2s ease-in;
+        outline: none;
 
         &:hover {
           color: #a1A1A1;
@@ -49,7 +50,6 @@
 
         .large-section-balance {
           font-size: 24px;
-          cursor: pointer;
           display: inline-block;
         }
 
@@ -58,8 +58,19 @@
           width: max-content;
           cursor: pointer;
           color: $green;
+          &:after {
+            display: inline-block;
+            content: '';
+            background: url('./btn-arrow.svg');
+            background-repeat: no-repeat;
+            background-position: 50%;
+            width: 7px;
+            height: 14px;
+            vertical-align: top;
+            margin-left: 2px;
+          }
 
-          &:hover { color: $green-hover; }
+          &:hover { opacity: .9; }
           &:disabled { color: $green-disabled; }
         }
       }

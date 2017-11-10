@@ -100,7 +100,7 @@ module.exports = {
           'image-webpack-loader?bypassOnDebug&optimizationLevel=7&interlaced=false'
         ]
       },
-      { test: /\.(eot|svg|ttf|woff|woff2)$/, loader: 'file-loader?name=[name].[ext]' },
+      { test: /\.(eot|ttf|woff|woff2)$/, loader: 'file-loader?name=[name].[ext]' },
     ]
   },
   resolve: {

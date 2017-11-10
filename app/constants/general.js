@@ -12,21 +12,21 @@ export const VIEWS = [
 
 export const OPTIONS_DROPDOWN_ITEMS = [
   {
-    id: 'lock_acc',
-    text: 'locc acc'
-  },
-  {
-    id: 'show_terms',
-    text: 'show terms'
+    id: 'app_info',
+    text: 'App info'
   },
   {
     id: 'show_seed',
-    text: 'show seed'
+    text: 'Show seed'
   },
   {
-    id: 'app_info',
-    text: 'app info'
-  }
+    id: 'show_terms',
+    text: 'Terms'
+  },
+  {
+    id: 'lock_acc',
+    text: 'Lock'
+  },
 ];
 
 export const TABS = [

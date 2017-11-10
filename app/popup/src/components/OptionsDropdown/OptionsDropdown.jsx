@@ -4,7 +4,7 @@ import connect from '../../../../customRedux/connect';
 import OutsideAlerter from '../../../../commonComponents/OutsideAlerter';
 import { toggleDropdownMessage } from '../../../../messages/dropdownActionMessages';
 import { clearPasswordMessage } from '../../../../messages/accountActionMessages';
-import BurgerMenu from '../BurgerMenu/BurgerMenu';
+import DotsMenu from '../DotsMenu/DotsMenu';
 
 import './options-dropdown.scss';
 
@@ -12,7 +12,7 @@ const OptionsDropdown = ({ optionsDropdownItems, dropdownVisible }) => (
   <OutsideAlerter onClickOutside={() => { toggleDropdownMessage(dropdownVisible, false); }}>
     <div styleName="network-select-wrapper">
       <span onClick={() => { toggleDropdownMessage(dropdownVisible, !dropdownVisible); }}>
-        <BurgerMenu active={dropdownVisible} />
+        <DotsMenu active={dropdownVisible} />
       </span>
 
       <span styleName="dropdown-wrappper">
@@ -25,13 +25,15 @@ const OptionsDropdown = ({ optionsDropdownItems, dropdownVisible }) => (
                 if (item.id === 'lock_acc') { itemOnClick = clearPasswordMessage; }
 
                 return (
-                  <div
-                    styleName="dropdown-item"
-                    onClick={itemOnClick}
-                    key={item + Math.random()}
-                  >
-                    { item.text }
-                  </div>
+                  <span onClick={() => { toggleDropdownMessage(dropdownVisible, false); }}>
+                    <div
+                      styleName="dropdown-item"
+                      onClick={itemOnClick}
+                      key={item + Math.random()}
+                    >
+                      { item.text }
+                    </div>
+                  </span>
                 );
               })
             }

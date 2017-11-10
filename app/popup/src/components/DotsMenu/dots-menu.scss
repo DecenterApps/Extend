@@ -1,0 +1,18 @@
+.dots-menu {
+  cursor: pointer;
+  position: absolute;
+  top: 7px;
+  right: 11px;
+  background: transparent;
+  display: flex;
+  padding: 10px;
+  border-radius: 6px;
+  height: 17px;
+  width: 17px;
+  align-items: center;
+  transition: 0.2s ease-in;
+
+  &.active {
+    background: rgba(#984306, 0.15);
+  }
+}

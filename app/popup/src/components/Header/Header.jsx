@@ -32,10 +32,10 @@ const Header = ({ view, generatedVault, copiedSeed, password }) => (
     { (view === 'createAccount') && <span>Create Account</span> }
     { (view === 'copySeed') && <span>Copy recovery phrase</span> }
     { (view === 'dashboard') && <span styleName="logo-wrapper"><Logo /></span> }
-    { (view === 'unlockAccount') && <span>Unlock Account</span> }
+    { (view === 'unlockAccount') && <span>Unlock account</span> }
     { (view === 'send') && <span>Send funds</span> }
     { (view === 'withdraw') && <span>Withdraw tips</span> }
-    { (view === 'networkUnavailable') && <span>Network Unavailable</span> }
+    { (view === 'networkUnavailable') && <span>Network unavailable</span> }
     { (view === 'refund') && <span>Refund tip</span> }
 
     {

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import connect from '../../../../customRedux/connect';
 import ModalRoot from '../Modals/ModalRoot';
 import addTipToPostsAndComments from '../Tip/addTipToPostsAndComments';
@@ -7,17 +6,26 @@ import addGoldToPostsAndComments from '../BuyGold/addGoldToPostsAndComments';
 import addUserVerifiedToPostsAndComments from '../UserVerified/addUserVerifiedToPostsAndComments';
 
 class App extends Component {
+  constructor() {
+    super();
+
+    this.added = false;
+
+    this.loadComponents = this.loadComponents.bind(this);
+  }
+
   componentWillMount() {
-    if (this.props.generatedVault && this.props.copiedSeed && this.props.password) {
-      addTipToPostsAndComments();
-      addGoldToPostsAndComments();
-      addUserVerifiedToPostsAndComments();
-      this.added = true;
-    }
+    this.loadComponents(this.props);
   }
 
   componentWillReceiveProps(newProps) {
-    if (newProps.generatedVault && newProps.copiedSeed && newProps.password && !this.added) {
+    this.loadComponents(newProps);
+  }
+
+  loadComponents(newProps) {
+    if (!window.location.pathname.includes('/comments/')) return;
+
+    if (newProps.generatedVault && newProps.copiedSeed && !this.added) {
       addTipToPostsAndComments();
       addGoldToPostsAndComments();
       addUserVerifiedToPostsAndComments();
@@ -31,12 +39,6 @@ class App extends Component {
     );
   }
 }
-
-App.propTypes = {
-  generatedVault: PropTypes.bool.isRequired,
-  copiedSeed: PropTypes.bool.isRequired,
-  password: PropTypes.string.isRequired,
-};
 
 const mapStateToProps = (state) => ({
   generatedVault: state.account.created,

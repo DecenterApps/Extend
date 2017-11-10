@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Tooltip from 'react-tooltip-lite';
+import Tooltip from '../../../../commonComponents/Tooltip/Tooltip';
 import VerifiedIcon from '../../../../commonComponents/Decorative/VerifiedIcon';
 
 import '../../../../commonComponents/pageIcons.scss';

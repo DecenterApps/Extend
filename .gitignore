@@ -1,7 +1,6 @@
 yarn.lock
 .DS_Store
 .idea/
-build/
 solidity/out
 node_modules/
 server/TSOTD.log

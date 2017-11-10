@@ -3,8 +3,8 @@ import React from 'react';
 
 const TipIcon = () => (
   <svg
-    width="12px"
-    height="16px"
+    width="1.5em"
+    height="1.5em"
     viewBox="0 0 16 18"
     version="1.1"
   >

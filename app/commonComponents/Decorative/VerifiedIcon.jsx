@@ -3,7 +3,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const VerifiedIcon = ({ isVerified }) => (
-  <svg width="12px" height="11px" viewBox="0 0 14 11" version="1.1">
+  <svg
+    width="1.5em"
+    height="1.5em"
+    viewBox="0 0 14 11"
+    version="1.1"
+  >
     <defs />
     <g id="Page-1" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round">
       <g id="Reddit-buttons" transform="translate(-324.000000, -91.000000)" strokeWidth="2" stroke={ isVerified ? '#FF791A' : '#888888' }>

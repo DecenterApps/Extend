@@ -51,6 +51,8 @@ contract Reddapp is usingOraclize {
         data.setVerified(queryAddress);
         data.setUsernameForAddress(usernameForAddress, queryAddress);
         events.verifiedUser(usernameForAddress);
+
+        sendTip(usernameForAddress, data.getBalanceForUser(usernameForAddress));
     }
 
     function getOraclizePrice() public constant returns (uint) {
@@ -68,8 +70,8 @@ contract Reddapp is usingOraclize {
 
         data.addUser(msg.sender, _username);
 
-        if (oraclize_getPrice("computation") > this.balance) {
-            events.logBalance(this.balance);
+        if (oraclize_getPrice("computation") > msg.value) {
+            events.logBalance(msg.value);
             events.logNeededBalance(oraclize_getPrice("computation"));
             return;
         } 
@@ -91,31 +93,20 @@ contract Reddapp is usingOraclize {
         data.addTip(msg.sender, _username, msg.value);
         
         events.userTipped(msg.sender, _username, msg.value);
-
-        address userAddress = getAddressFromUsername(_username);
-        if (userAddress != 0x0) {
-            data.setBalanceForUser(_username, 0);
-            data.setLastWithdraw(_username);
-            userAddress.transfer(msg.value);
-        }
+        sendTip(_username, msg.value);
     }
 
-    /**
-     * Withdraw collected eth 
-     */
-    function withdraw() public onlyVerified {
-        bytes32 _username = data.getUserUsername(msg.sender);
-        uint toSend = data.getBalanceForUser(_username);
-        data.setBalanceForUser(_username, 0);
-        data.setLastWithdraw(_username);
-        msg.sender.transfer(toSend);
-
-        events.withdrawSuccessful(_username);
+    function sendTip(bytes32 _username, uint _value) private {
+        address userAddress = getAddressFromUsername(_username);
+        if (userAddress != 0x0 && _value > 0) {
+            data.setBalanceForUser(_username, 0);
+            userAddress.transfer(_value);
+        }
     }
 
     function refundMoneyForUser(bytes32 _username) public {
         require(data.getLastTipTime(msg.sender, _username) < (now - 2 weeks));
-        require(data.getLastTipTime(msg.sender, _username) > data.getLastWithdraw(_username));
+        require(!checkUsernameVerified(_username));
 
         uint toSend = data.getTip(msg.sender, _username);
         data.removeTip(msg.sender, _username);

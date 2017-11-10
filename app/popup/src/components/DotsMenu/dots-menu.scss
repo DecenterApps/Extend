@@ -12,7 +12,7 @@
   align-items: center;
   transition: 0.2s ease-in;
 
-  &.active {
+  &.active, &:hover {
     background: rgba(#984306, 0.15);
   }
 }

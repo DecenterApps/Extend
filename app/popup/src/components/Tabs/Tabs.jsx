@@ -27,8 +27,8 @@ const Tabs = ({ activeTab }) => (
       }
     </ul>
 
-    { (activeTab === 'tips') && <Tips /> }
-    { (activeTab === 'gold') && <Gold /> }
+    { (activeTab.slug === 'tips') && <Tips /> }
+    { (activeTab.slug === 'gold') && <Gold /> }
   </div>
 );
 

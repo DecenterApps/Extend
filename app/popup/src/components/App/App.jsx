@@ -8,7 +8,6 @@ import GenerateNewPassword from '../GenerateNewPassword/GenerateNewPassword';
 import Dashboard from '../Dashboard/Dashboard';
 import TypeInPassword from '../TypeInPassword/TypeInPassword';
 import Send from '../Send/Send';
-import Withdraw from '../Withdraw/Withdraw';
 import NetworkUnavailable from '../NetworkUnavailable/NetworkUnavailable';
 import Refund from '../Refund/Refund';
 
@@ -24,7 +23,6 @@ const App = ({ acceptedNotice, generatedVault, copiedSeed, seed, password, view,
     { (view === 'dashboard') && generatedVault && acceptedNotice && copiedSeed && password && <Dashboard /> }
     { (view === 'unlockAccount') && generatedVault && acceptedNotice && copiedSeed && !password && <TypeInPassword /> }
     { (view === 'send') && <Send /> }
-    { (view === 'withdraw') && <Withdraw /> }
     { (view === 'networkUnavailable') && !networkActive && <NetworkUnavailable /> }
     { (view === 'refund') && <Refund /> }
   </div>

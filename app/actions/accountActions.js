@@ -1,39 +1,19 @@
 import lightwallet from '../modules/eth-lightwallet/lightwallet';
 import {
   CREATE_WALLET, COPIED_SEED, CLEAR_PASSWORD, UNLOCK_ERROR, UNLOCK, SET_BALANCE, SET_GAS_PRICE,
-  SEND, SEND_ERROR, SEND_SUCCESS, WITHDRAW, WITHDRAW_ERROR, WITHDRAW_SUCCESS, SET_TIPS_BALANCE,
-  REFUND, REFUND_ERROR, REFUND_SUCCESS, CLEAR_REFUND_VALUES
+  SEND, SEND_ERROR, SEND_SUCCESS, REFUND, REFUND_ERROR, REFUND_SUCCESS, CLEAR_REFUND_VALUES
 } from '../constants/actionTypes';
 import { LOCK_INTERVAL } from '../constants/general';
 import { isJson, formatLargeNumber } from '../actions/utils';
 import {
   getBalanceForAddress, getGasPrice, transfer, pollForReceipt, getNonceForAddress, sendTransaction,
-  _getTipBalance, _checkIfRefundAvailable, listenForRefundSuccessful
+  _checkIfRefundAvailable, listenForRefundSuccessful
 } from '../modules/ethereumService';
 import AbstractPoller from '../modules/AbstractPoller';
 import { changeView } from './userActions';
 
 let lockTimeout = null;
 const keyStore = lightwallet.keystore;
-
-export const withdraw = async (web3, getState, dispatch, contracts) => {
-  const state = getState();
-  const formData = state.forms.withdrawForm;
-  const gasPrice = web3.toWei(formData.gasPrice.value, 'gwei');
-  const address = state.account.address;
-  const ks = keyStore.deserialize(state.account.keyStore);
-  const password = state.account.password;
-
-  dispatch({ type: WITHDRAW });
-
-  try {
-    await sendTransaction(web3, contracts.func.withdraw, ks, address, password, null, 0, gasPrice);
-    await dispatch({ type: WITHDRAW_SUCCESS });
-    changeView(dispatch, { viewName: 'dashboard' });
-  } catch(err) {
-    dispatch({ type: WITHDRAW_ERROR });
-  }
-};
 
 export const pollPendingTxs = (web3, engine, dispatch, getState) => {
   const transactions = getState().account.transactions;
@@ -75,16 +55,6 @@ export const send = async (web3, engine, getState, dispatch) => {
   } catch(err) {
     dispatch({ type: SEND_ERROR });
   }
-};
-
-export const setTipsBalance = async (web3, contract, dispatch, getState) => {
-  const currentTipBalance = getState().account.tipsBalance;
-
-  const contractTipBalance = await _getTipBalance(web3, contract);
-
-  if (currentTipBalance === contractTipBalance) return;
-
-  dispatch({ type: SET_TIPS_BALANCE, payload: contractTipBalance });
 };
 
 /**

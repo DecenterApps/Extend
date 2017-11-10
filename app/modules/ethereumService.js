@@ -279,22 +279,6 @@ export const sendTransaction =
 
 /* CONTRACT SPECIFIC FUNCTIONS */
 
-export const _getTipBalance = (web3, contract) =>
-  new Promise(async (resolve, reject) => {
-    try {
-      contract.checkBalance({}, (error, result) => {
-        if (error) {
-          reject(error);
-          return;
-        }
-
-        resolve(web3.fromWei(result.toString()));
-      });
-    } catch(err) {
-      reject(err);
-    }
-  });
-
 export const _checkAddressVerified = (web3, contract) =>
   new Promise((resolve, reject) => {
     contract.checkAddressVerified((error, result) => {

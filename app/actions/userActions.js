@@ -10,7 +10,6 @@ import {
   verifiedUserEvent, sendTransaction, listenForTips, getTipsFromEvent, listenForGold, getGoldFromEvent,
   getOraclizePrice
 } from '../modules/ethereumService';
-import { setTipsBalance } from './accountActions';
 
 const keyStore = lightwallet.keystore;
 
@@ -92,11 +91,9 @@ export const handleTips = (web3, contracts, getState, dispatch) => {
   const username = state.user.verifiedUsername;
 
   const handleNewTip = (tip) => {
-    setTipsBalance(web3, contracts.func, dispatch, getState);
     dispatch({ type: ADD_NEW_TIP, payload: { tip, address, username } });
   };
 
-  setTipsBalance(web3, contracts.func, dispatch, getState);
   getTips(web3, contracts.events, dispatch, getState);
   listenForTips(web3, contracts.events, dispatch, address, web3.toHex(username), handleNewTip);
 };

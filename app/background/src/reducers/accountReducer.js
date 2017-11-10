@@ -1,8 +1,7 @@
 import {
   CREATE_WALLET, COPIED_SEED, CLEAR_PASSWORD, UNLOCK_ERROR, UNLOCK, SET_BALANCE, SET_GAS_PRICE,
-  SEND, SEND_ERROR, SEND_SUCCESS, CHANGE_TX_STATE, WITHDRAW, WITHDRAW_ERROR, WITHDRAW_SUCCESS,
-  SET_TIPS_BALANCE, CLEAR_PENDING, REFUND, REFUND_ERROR, REFUND_SUCCESS, REFUND_UNAVAILABLE,
-  CLEAR_REFUND_VALUES, REFUND_AVAILABLE
+  SEND, SEND_ERROR, SEND_SUCCESS, CHANGE_TX_STATE, CLEAR_REFUND_VALUES, REFUND_AVAILABLE,
+  CLEAR_PENDING, REFUND, REFUND_ERROR, REFUND_SUCCESS, REFUND_UNAVAILABLE,
 } from '../../../constants/actionTypes';
 
 const reducerName = 'account';
@@ -20,9 +19,6 @@ const INITIAL_STATE = {
   transactions: [],
   sending: false,
   sendingError: '',
-  withdrawing: false,
-  withdrawingError: '',
-  tipsBalance: '0',
   refunding: false,
   refundingError: '',
   refundAvailable: true
@@ -38,8 +34,6 @@ export const reducer = (state, action) => {
         unlockError: '',
         sending: false,
         sendingError: '',
-        withdrawing: false,
-        withdrawingError: '',
         refunding: false,
         refundingError: '',
         refundAvailable: true
@@ -85,17 +79,6 @@ export const reducer = (state, action) => {
       return { ...state, transactions: newTransactions };
     }
 
-    case WITHDRAW:
-      return { ...state, withdrawing: true };
-    case WITHDRAW_SUCCESS:
-      return { ...state, withdrawing: false, withdrawingError: '' };
-    case WITHDRAW_ERROR:
-      return {
-        ...state,
-        withdrawing: false,
-        withdrawingError: 'An error occurred while withdrawing ETH, please try again.'
-      };
-
     case REFUND:
       return { ...state, refunding: true };
     case REFUND_SUCCESS:
@@ -113,10 +96,6 @@ export const reducer = (state, action) => {
       return { ...state, refundAvailable: true, refundingError: '' };
     case CLEAR_REFUND_VALUES:
       return { ...state, refundAvailable: true, refunding: false, refundingError: '' };
-
-
-    case SET_TIPS_BALANCE:
-      return { ...state, tipsBalance: payload };
 
     default:
       return false;

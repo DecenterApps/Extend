@@ -82,17 +82,6 @@ export const setRefundFormTxPrice = async (web3, contract, dispatch, getState) =
   setTxValues(web3, dispatch, value, gas, gasPrice, usdPerEth, false);
 };
 
-export const setWithdrawFormTxPrice = async (web3, contract, dispatch, getState) => {
-  const contractMethod = contract.withdraw;
-  const usdPerEth = await getValOfEthInUsd();
-  const value = 0;
-
-  const gas = await estimateGasForTx(web3, contractMethod, null, 0);
-  const gasPrice = parseFloat(web3.toWei(getState().forms.withdrawForm.gasPrice.value, 'gwei'));
-
-  setTxValues(web3, dispatch, value, gas, gasPrice, usdPerEth, false);
-};
-
 export const setTipFormTxPrice = async (web3, contract, dispatch, getState) => {
   const state = getState();
   const form = state.forms.tipForm;

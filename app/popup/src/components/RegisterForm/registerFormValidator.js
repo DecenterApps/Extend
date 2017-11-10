@@ -1,4 +1,4 @@
-const withdrawFormValidator = (values) => {
+const registerFormValidator = (values) => {
   const errors = {};
 
   if (!values.gasPrice) errors.gasPrice = 'Required';
@@ -14,4 +14,4 @@ const withdrawFormValidator = (values) => {
   return errors;
 };
 
-export default withdrawFormValidator;
+export default registerFormValidator;

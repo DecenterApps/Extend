@@ -25,12 +25,11 @@ const OptionsDropdown = ({ optionsDropdownItems, dropdownVisible }) => (
                 if (item.id === 'lock_acc') { itemOnClick = clearPasswordMessage; }
 
                 return (
-                  <span onClick={() => { toggleDropdownMessage(dropdownVisible, false); }}>
-                    <div
-                      styleName="dropdown-item"
-                      onClick={itemOnClick}
-                      key={item + Math.random()}
-                    >
+                  <span
+                    key={item + Math.random()}
+                    onClick={() => { toggleDropdownMessage(dropdownVisible, false); }}
+                  >
+                    <div styleName="dropdown-item" onClick={itemOnClick}>
                       { item.text }
                     </div>
                   </span>

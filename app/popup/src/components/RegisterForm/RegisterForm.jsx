@@ -5,7 +5,7 @@ import connect from '../../../../customRedux/connect';
 import createForm from '../../../../customRedux/createForm';
 import createField from '../../../../customRedux/createField';
 import InputFormField from '../../../../commonComponents/InputFormField';
-import withdrawFormValidator from '../Withdraw/withdrawFormValidator';
+import registerFormValidator from './registerFormValidator';
 import { createUserAuthMessage } from '../../../../messages/userActionsMessages';
 import { setRegisterFormTxPriceMessage } from '../../../../messages/formsActionsMessages';
 
@@ -116,6 +116,6 @@ const mapStateToProps = (state) => ({
   form: state.forms[FORM_NAME]
 });
 
-const ExportComponent = createForm(FORM_NAME, RegisterForm, withdrawFormValidator);
+const ExportComponent = createForm(FORM_NAME, RegisterForm, registerFormValidator);
 
 export default connect(ExportComponent, mapStateToProps);

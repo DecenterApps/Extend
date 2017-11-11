@@ -8,10 +8,25 @@ import eventWebpackConfig from './app/background/webpack.config';
 import contentWebpackConfig from './app/page/webpack.config';
 import dialogWebpackConfig from './app/dialog/webpack.config';
 
+import popupWebpackProdConfig from './app/popup/webpack.prod.config';
+import eventWebpackProdConfig from './app/background/webpack.prod.config';
+import contentWebpackProdConfig from './app/page/webpack.prod.config';
+import dialogWebpackProdConfig from './app/dialog/webpack.prod.config';
+
 const plugins = loadPlugins();
 
 gulp.task('popup-js', (cb) => {
   webpack(popupWebpackConfig, (err, stats) => {
+    if(err) throw new plugins.util.PluginError('webpack', err);
+
+    plugins.util.log('[webpack]', stats.toString());
+
+    cb();
+  });
+});
+
+gulp.task('popup-prod-js', (cb) => {
+  webpack(popupWebpackProdConfig, (err, stats) => {
     if(err) throw new plugins.util.PluginError('webpack', err);
 
     plugins.util.log('[webpack]', stats.toString());
@@ -30,6 +45,16 @@ gulp.task('event-js', (cb) => {
   });
 });
 
+gulp.task('event-prod-js', (cb) => {
+  webpack(eventWebpackProdConfig, (err, stats) => {
+    if(err) throw new plugins.util.PluginError('webpack', err);
+
+    plugins.util.log('[webpack]', stats.toString());
+
+    cb();
+  });
+});
+
 gulp.task('content-js', (cb) => {
   webpack(contentWebpackConfig, (err, stats) => {
     if(err) throw new plugins.util.PluginError('webpack', err);
@@ -40,8 +65,28 @@ gulp.task('content-js', (cb) => {
   });
 });
 
+gulp.task('content-prod-js', (cb) => {
+  webpack(contentWebpackProdConfig, (err, stats) => {
+    if(err) throw new plugins.util.PluginError('webpack', err);
+
+    plugins.util.log('[webpack]', stats.toString());
+
+    cb();
+  });
+});
+
 gulp.task('dialog-js', (cb) => {
   webpack(dialogWebpackConfig, (err, stats) => {
+    if(err) throw new plugins.util.PluginError('webpack', err);
+
+    plugins.util.log('[webpack]', stats.toString());
+
+    cb();
+  });
+});
+
+gulp.task('dialog-prod-js', (cb) => {
+  webpack(dialogWebpackProdConfig, (err, stats) => {
     if(err) throw new plugins.util.PluginError('webpack', err);
 
     plugins.util.log('[webpack]', stats.toString());
@@ -95,3 +140,9 @@ gulp.task('watch', ['build'], () => {
 });
 
 gulp.task('default', ['build']);
+
+gulp.task('prod', [
+  'clean', 'copy-icons', 'copy-manifest', 'copy-jquery', 'copy-web3', 'popup-prod-js',
+  'event-prod-js', 'content-prod-js', 'dialog-prod-js'
+]);
+

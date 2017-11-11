@@ -14,11 +14,9 @@ module.exports = {
     path: path.join(__dirname, '../../', 'build'),
     publicPath: './'
   },
-
   resolve: {
     extensions: ['.js', '.jsx']
   },
-
   module: {
     loaders: [
       {

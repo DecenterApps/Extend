@@ -4,7 +4,7 @@ module.exports = {
   entry: [
     './app/background/src/index.js'
   ],
-
+  devtool: 'inline-source-map',
   output: {
     filename: 'background.js',
     path: path.join(__dirname, '../../', 'build')

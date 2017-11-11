@@ -7,9 +7,10 @@ import dropdownHandler from '../../handlers/dropdownActionsHandler';
 import userHandler from '../../handlers/userActionsHandler';
 import formsHandler from '../../handlers/formsActionsHandler';
 import pageHandler from '../../handlers/pageActionsHandler';
+import modalsHandler from '../../handlers/modalsActionsHandler';
+import dialogHandler from '../../handlers/dialogActionsHandler';
 import handleChangeNetwork from '../../modules/handleChangeNetwork';
 import clearPendingStates from '../../modules/clearPendingStates';
-import modalsActionsHandler from '../../handlers/modalsActionsHandler';
 
 let appLoaded = null;
 
@@ -95,7 +96,9 @@ chrome.runtime.onMessage.addListener(async (msg, sender) => {
     case 'page':
       return pageHandler(web3, engine, contracts, getState, dispatch, funcName, payload, sender.tab.id);
     case 'modals':
-      return modalsActionsHandler(web3, engine, contracts, getState, dispatch, funcName, payload);
+      return modalsHandler(web3, engine, contracts, getState, dispatch, funcName, payload);
+    case 'dialog':
+      return dialogHandler(web3, engine, contracts, getState, dispatch, funcName, payload);
     default:
       throw Error('Action Handler not defined', handler);
   }

@@ -5,8 +5,8 @@ const userActionsHandler = (web3, engine, contracts, getState, dispatch, funcNam
     case 'acceptPrivacyNotice':
       return userActions[funcName](dispatch);
 
-    case 'createUserAuth':
-      return userActions[funcName](contracts, web3, getState, dispatch);
+    case 'openAuthWindow':
+      return userActions[funcName](payload);
 
     case 'checkRefundForSentTips':
       return userActions[funcName](web3, contracts.func, getState, dispatch);

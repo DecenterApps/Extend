@@ -6,6 +6,7 @@ import rimraf from 'rimraf';
 import popupWebpackConfig from './app/popup/webpack.config';
 import eventWebpackConfig from './app/background/webpack.config';
 import contentWebpackConfig from './app/page/webpack.config';
+import dialogWebpackConfig from './app/dialog/webpack.config';
 
 const plugins = loadPlugins();
 
@@ -39,6 +40,16 @@ gulp.task('content-js', (cb) => {
   });
 });
 
+gulp.task('dialog-js', (cb) => {
+  webpack(dialogWebpackConfig, (err, stats) => {
+    if(err) throw new plugins.util.PluginError('webpack', err);
+
+    plugins.util.log('[webpack]', stats.toString());
+
+    cb();
+  });
+});
+
 gulp.task('copy-manifest', () => (
   gulp.src('manifest.json').pipe(gulp.dest('./build'))
 ));
@@ -60,13 +71,27 @@ gulp.task('clean', (cb) => {
 });
 
 gulp.task('build', [
-  'clean', 'copy-icons', 'copy-manifest', 'copy-jquery', 'copy-web3', 'popup-js', 'event-js', 'content-js'
+  'clean', 'copy-icons', 'copy-manifest', 'copy-jquery', 'copy-web3', 'popup-js', 'event-js', 'content-js', 'dialog-js'
 ]);
 
-gulp.task('watch', ['default'], () => {
-  gulp.watch('popup/**/*', ['build']);
-  gulp.watch('content/**/*', ['build']);
-  gulp.watch('event/**/*', ['build']);
+gulp.task('watch', ['build'], () => {
+  gulp.watch([
+    './app/popup/**/*',
+    './app/commonComponents/**/*',
+    './app/customRedux/**/*',
+  ], ['popup-js']);
+  gulp.watch([
+    './app/background/**/*',
+    './app/actions/**/*',
+    './app/messages/**/*',
+    './app/handlers/**/*',
+    './app/modules/**/*',
+    './app/constants/**/*',
+  ], ['event-js']);
+  gulp.watch('./app/actions/**/*', ['event-js']);
+  gulp.watch('./app/m/**/*', ['event-js']);
+  gulp.watch('./app/page/**/*', ['content-js']);
+  gulp.watch('./app/dialog/**/*', ['dialog-js']);
 });
 
 gulp.task('default', ['build']);

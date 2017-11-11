@@ -58,15 +58,16 @@
           width: max-content;
           cursor: pointer;
           color: $green;
+          display: flex;
+          align-items: center;
+
           &:after {
-            display: inline-block;
             content: '';
             background: url('./btn-arrow.svg');
             background-repeat: no-repeat;
             background-position: 50%;
-            width: 7px;
-            height: 14px;
-            vertical-align: top;
+            width: 10px;
+            height: 10px;
             margin-left: 2px;
           }
 

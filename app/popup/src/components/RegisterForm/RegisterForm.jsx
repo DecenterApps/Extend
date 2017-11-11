@@ -6,7 +6,7 @@ import createForm from '../../../../customRedux/createForm';
 import createField from '../../../../customRedux/createField';
 import InputFormField from '../../../../commonComponents/InputFormField';
 import registerFormValidator from './registerFormValidator';
-import { createUserAuthMessage } from '../../../../messages/userActionsMessages';
+import { openAuthWindowMessage } from '../../../../messages/userActionsMessages';
 import { setRegisterFormTxPriceMessage } from '../../../../messages/formsActionsMessages';
 
 import formStyle from '../../../../commonComponents/forms.scss';
@@ -37,7 +37,7 @@ class RegisterForm extends Component {
       <div>
         <form
           styleName="form-wrapper-2"
-          onSubmit={(e) => { this.props.handleSubmit(e, createUserAuthMessage); }}
+          onSubmit={(e) => { this.props.handleSubmit(e, openAuthWindowMessage); }}
         >
 
           <GasPriceField

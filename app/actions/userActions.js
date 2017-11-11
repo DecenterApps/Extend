@@ -1,17 +1,11 @@
-import lightwallet from '../modules/eth-lightwallet/lightwallet';
-import { getParameterByName, encryptTokenOreclize } from '../actions/utils';
 import {
-  NETWORK_UNAVAILABLE,
-  REGISTER_USER, VERIFIED_USER, REGISTER_USER_ERROR, SET_ACTIVE_TAB, GET_TIPS, GET_TIPS_SUCCESS,
+  NETWORK_UNAVAILABLE, VERIFIED_USER, REGISTER_USER_ERROR, SET_ACTIVE_TAB, GET_TIPS, GET_TIPS_SUCCESS,
   GET_TIPS_ERROR, CHANGE_VIEW, CONNECT_AGAIN, CONNECT_AGAIN_SUCCESS, CONNECT_AGAIN_ERROR, ADD_NEW_TIP,
   ADD_NEW_GOLD, GET_GOLD, GET_GOLD_ERROR, GET_GOLD_SUCCESS, SET_DISCONNECTED, SET_REFUND_TIPS
 } from '../constants/actionTypes';
 import {
-  verifiedUserEvent, sendTransaction, listenForTips, getTipsFromEvent, listenForGold, getGoldFromEvent,
-  getOraclizePrice, _checkIfRefundAvailable
+  verifiedUserEvent, listenForTips, getTipsFromEvent, listenForGold, getGoldFromEvent, _checkIfRefundAvailable
 } from '../modules/ethereumService';
-
-const keyStore = lightwallet.keystore;
 
 export const changeView = (dispatch, payload) =>
   new Promise(async (resolve) => {
@@ -184,64 +178,20 @@ export const listenForVerifiedUser = (web3, contracts, dispatch, getState) => {
   verifiedUserEvent(web3, contracts.events, verifiedCallback, noMatchCallback);
 };
 
-/**
- * Opens Reddit oauth window and receives user access_token. Access_token and
- * user address are sent to the contract
- *
- * @param {Array} contracts
- * @param {Object} web3
- * @param {Function} getState
- * @param {Function} dispatch
- */
-export const createUserAuth = (contracts, web3, getState, dispatch) => {
-  const redirectUri = chrome.identity.getRedirectURL('oauth2');
-  const account = getState().account;
-  const ks = keyStore.deserialize(account.keyStore);
-  const address = account.address;
-  const password = account.password;
+export const openAuthWindow = (payload) => {
+  const width = 500;
+  const height = 500;
+  const left = (payload.screenWidth / 2) - (width / 2);
+  const top = (payload.screenHeight / 2) - (height / 2);
 
-  chrome.identity.launchWebAuthFlow({
-    url: `https://www.reddit.com/api/v1/authorize?client_id=AFH0yVxKuLUlVQ&response_type=token&state=asdf&redirect_uri=${redirectUri}&scope=identity`, // eslint-disable-line
-    interactive: true
-  }, async (authResponse) => {
-    if (!authResponse) return;
-
-    const response = authResponse.replace(/#/g, '?');
-    const accessToken = getParameterByName('access_token', response);
-
-    const request = new Request('https://oauth.reddit.com/api/v1/me', {
-      headers: new Headers({
-        'Authorization': `bearer ${accessToken}`
-      })
-    });
-
-    try {
-      const redditMeResponse = await fetch(request);
-      const me = await redditMeResponse.json();
-
-      if (me.error) {
-        await dispatch({ type: REGISTER_USER_ERROR });
-        return;
-      }
-
-      const gasPrice = web3.toWei(getState().forms.registerForm.gasPrice.value, 'gwei');
-      const contracMethod = contracts.func.createUser;
-      const oreclizeTransactionCost = await getOraclizePrice(contracts.func);
-      const value = oreclizeTransactionCost.toString();
-      const encryptedToken = await encryptTokenOreclize(accessToken);
-      const params = [web3.toHex(me.name), encryptedToken];
-
-      await sendTransaction(web3, contracMethod, ks, address, password, params, value, gasPrice);
-
-      await dispatch({
-        type: REGISTER_USER,
-        payload: { username: me.name }
-      });
-
-      listenForVerifiedUser(web3, contracts, dispatch, getState);
-    } catch (err) {
-      dispatch({ type: REGISTER_USER_ERROR });
-    }
+  chrome.windows.create({
+    url: chrome.extension.getURL('dialog.html'),
+    focused: true,
+    type: 'popup',
+    width,
+    height,
+    left,
+    top
   });
 };
 

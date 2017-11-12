@@ -99,6 +99,7 @@ class buyGoldForm extends Component {
             useDefaultStyles
           >
             Submit
+            { this.props.buyingGold ? 'Submit' : 'Submitting' }
           </Tooltip>
         </button>
       </form>

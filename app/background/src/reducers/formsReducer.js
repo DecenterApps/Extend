@@ -1,12 +1,10 @@
 import {
-  ADD_FORM, UPDATE_FIELD_META, UPDATE_FIELD_ERROR, SET_TX_COST, SET_TX_VAL, CLEAR_PENDING,
-  CLEAR_CURRENT_FORM_TX_VAL
+  ADD_FORM, UPDATE_FIELD_META, UPDATE_FIELD_ERROR, SET_TX_COST, CLEAR_PENDING
 } from '../../../constants/actionTypes';
 
 const reducerName = 'forms';
 
 const INITIAL_STATE = {
-  currentFormTxVal: '',
   currentFormTxCost: ''
 };
 
@@ -17,10 +15,6 @@ export const reducer = (state, action) => {
     case `${CLEAR_PENDING}-${reducerName}`:
       return {
         ...state,
-        currentFormTxVal: {
-          eth: '',
-          usd: '',
-        },
         currentFormTxCost: {
           eth: '',
           usd: '',
@@ -48,10 +42,6 @@ export const reducer = (state, action) => {
 
     case SET_TX_COST:
       return { ...state, currentFormTxCost: payload };
-    case SET_TX_VAL:
-      return { ...state, currentFormTxVal: payload };
-    case CLEAR_CURRENT_FORM_TX_VAL:
-      return { ...state, currentFormTxVal: '', currentFormTxCost: '' };
 
     default:
       return false;

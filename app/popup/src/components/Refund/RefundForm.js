@@ -85,6 +85,13 @@ class RefundForm extends Component {
             <div styleName="submit-error">Error: Refund not available from this user</div>
           }
 
+          {
+            this.props.refundingSuccess &&
+            <div styleName="submit-success-2">
+              Refund request successfully sent to the contract
+            </div>
+          }
+
           <button
             className={formStyle['submit-button']}
             type="submit"
@@ -108,6 +115,7 @@ RefundForm.propTypes = {
   gasPrice: PropTypes.number.isRequired,
   refunding: PropTypes.bool.isRequired,
   refundingError: PropTypes.string.isRequired,
+  refundingSuccess: PropTypes.bool.isRequired,
   refundAvailable: PropTypes.bool.isRequired,
   form: PropTypes.object.isRequired,
   currentFormTxCost: PropTypes.object.isRequired,
@@ -118,6 +126,7 @@ const mapStateToProps = (state) => ({
   gasPrice: state.account.gasPrice,
   refunding: state.account.refunding,
   refundingError: state.account.refundingError,
+  refundingSuccess: state.account.refundingSuccess,
   refundAvailable: state.account.refundAvailable,
   form: state.forms[FORM_NAME],
   currentFormTxCost: state.forms.currentFormTxCost,

@@ -60,7 +60,9 @@ export const TOGGLE_MODAL = 'toggle_modal';
 export const SEND_TIP = 'send_tip';
 export const SEND_TIP_ERROR = 'send_tip_error';
 export const SEND_TIP_SUCCESS = 'send_tip_success';
+export const CLEAR_TIP_PENDING = 'clear_tip_pending';
 export const BUY_GOLD = 'buy_gold';
 export const BUY_GOLD_ERROR = 'buy_gold_error';
 export const BUY_GOLD_SUCCESS = 'buy_gold_success';
+export const CLEAR_GOLD_PENDING = 'clear_gold_pending';
 

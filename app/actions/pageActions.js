@@ -1,9 +1,8 @@
 import lightwallet from '../modules/eth-lightwallet/lightwallet';
 import { _checkUsernameVerified, sendTransaction } from '../modules/ethereumService';
-import { toggleModal } from './modalsActions';
 import {
-  SEND_TIP, SEND_TIP_ERROR, SEND_TIP_SUCCESS,
-  BUY_GOLD, BUY_GOLD_SUCCESS, BUY_GOLD_ERROR
+  SEND_TIP, SEND_TIP_ERROR, SEND_TIP_SUCCESS, CLEAR_TIP_PENDING,
+  BUY_GOLD, BUY_GOLD_SUCCESS, BUY_GOLD_ERROR, CLEAR_GOLD_PENDING
 } from '../constants/actionTypes';
 
 const keyStore = lightwallet.keystore;
@@ -16,6 +15,9 @@ export const checkIfUsernameVerified = async (web3, contract, payload, tabId) =>
 
   chrome.tabs.sendMessage(tabId, { type: 'checkIfUsernameVerified', payload: newPayload });
 };
+
+export const clearTipPending = (dispatch) => { dispatch({ type: CLEAR_TIP_PENDING }); };
+export const clearGoldPending = (dispatch) => { dispatch({ type: CLEAR_GOLD_PENDING }); };
 
 export const tip = async (web3, contract, dispatch, getState) => {
   const state = getState();
@@ -33,8 +35,6 @@ export const tip = async (web3, contract, dispatch, getState) => {
     await sendTransaction(web3, contractMethod, ks, address, password, [web3.toHex(author)], amount, gasPrice);
 
     dispatch({ type: SEND_TIP_SUCCESS });
-
-    toggleModal(dispatch, { modalType: '', modalProps: {}, action: false });
   } catch (err) {
     dispatch({ type: SEND_TIP_ERROR });
   }
@@ -71,7 +71,6 @@ export const buyGold = async (web3, contract, dispatch, getState) => {
     await sendTransaction(web3, contractMethod, ks, address, password, params, amount, gasPrice);
 
     dispatch({ type: BUY_GOLD_SUCCESS });
-    toggleModal(dispatch, { modalType: '', modalProps: {}, action: false });
   } catch (err) {
     dispatch({ type: BUY_GOLD_ERROR });
   }

@@ -73,6 +73,12 @@
     color: $red-error;
   }
 
+  .submit-success-2 {
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: $green;
+  }
+
   .submit-button {
     display: block;
     @include btn;
@@ -96,4 +102,10 @@
       }
     }
   }
+}
+
+.submit-success {
+  margin-top: 20px;
+  font-size: 16px;
+  color: $green;
 }

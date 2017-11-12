@@ -173,8 +173,12 @@ const createForm = (formName, WrappedComponent, validator) => {
     }
   }
 
+  Connect.defaultProps = {
+    forms: {}
+  };
+
   Connect.propTypes = {
-    forms: PropTypes.object.isRequired
+    forms: PropTypes.object
   };
 
   const mapStateToProps = (state) => ({

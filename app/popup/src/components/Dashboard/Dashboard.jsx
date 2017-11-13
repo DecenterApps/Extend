@@ -8,6 +8,11 @@ import RegisterForm from '../RegisterForm/RegisterForm';
 
 import './dashboard.scss';
 
+const copyAddress = () => {
+  document.getElementById('user-address').select();
+  document.execCommand('copy');
+};
+
 const Dashboard = ({
   address, balance, verifiedUsername, registering, registeringError, registeringUsername
 }) => (
@@ -22,6 +27,8 @@ const Dashboard = ({
         >
           { address }
         </a>
+        <input type="text" id="user-address" styleName="user-address" defaultValue={address} />
+        <button styleName="copy" onClick={copyAddress} />
       </div>
 
       <div styleName="small-section">

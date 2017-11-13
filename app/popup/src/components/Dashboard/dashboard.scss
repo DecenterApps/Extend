@@ -26,6 +26,30 @@
         }
       }
 
+      .user-address {
+        position: absolute;
+        opacity: 0;
+        width: 1px;
+        pointer-events: none;
+      }
+
+      .copy {
+        width: 18px;
+        height: 18px;
+        background: url('./copy.svg');
+        background-size: 18px;
+        background-repeat: no-repeat;
+        outline: none;
+        border: none;
+        opacity: .25;
+        cursor: pointer;
+        margin-left: 5px;
+
+        &:hover {
+          opacity: .4;
+        }
+      }
+
       .error { color: $red-error };
       .pending {
         color: $yellow-pending;

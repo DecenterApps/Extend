@@ -10,11 +10,14 @@
     flex-direction: column;
 
     .small-section {
-      margin-bottom: 25px;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #e6e6e6;
 
       .small-section-title {
-        font-size: 16px;
+        font-size: 12px;
         font-weight: 500;
+        opacity: .6;
       }
 
       a {
@@ -22,6 +25,9 @@
         color: #444444;
         transition: 0.2s ease-in;
         outline: none;
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 22px;
 
         &:hover {
           color: #a1A1A1;
@@ -36,17 +42,16 @@
       }
 
       .copy {
-        width: 18px;
-        height: 18px;
+        width: 16px;
+        height: 16px;
         background: url('./copy.svg');
-        background-size: 18px;
+        background-size: 16px;
         background-repeat: no-repeat;
         outline: none;
         border: none;
         opacity: .25;
         cursor: pointer;
         margin-left: 5px;
-        margin-top: -3px;
 
         &:hover {
           opacity: .4;
@@ -72,38 +77,43 @@
         flex-grow: 1;
 
         .large-section-title {
-          font-size: 16px;
+          font-size: 12px;
           font-weight: 500;
+          opacity: .6;
         }
 
         .large-section-balance {
           font-size: 24px;
-          display: inline-block;
-          font-weight: 300;
-        }
-
-        .large-section-btn {
-          transition: 0.2s ease-in;
-          width: max-content;
-          cursor: pointer;
-          color: $green;
           display: flex;
+          font-weight: 600;
+          justify-content: space-between;
           align-items: center;
-          font-weight: 500;
 
-          &:after {
-            content: '';
-            background: url('./btn-arrow.svg');
-            background-repeat: no-repeat;
-            background-position: 50%;
-            width: 10px;
-            height: 10px;
-            margin-left: 2px;
+          .large-section-btn {
+            transition: 0.2s ease-in;
+            width: max-content;
+            cursor: pointer;
+            color: $green;
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+            font-size: 14px;
+
+            &:after {
+              content: '';
+              background: url('./btn-arrow.svg');
+              background-repeat: no-repeat;
+              background-position: 50%;
+              width: 10px;
+              height: 10px;
+              margin-left: 2px;
+            }
+
+            &:hover { opacity: .9; }
+            &:disabled { color: $green-disabled; }
           }
-
-          &:hover { opacity: .9; }
-          &:disabled { color: $green-disabled; }
         }
+
       }
     }
   }

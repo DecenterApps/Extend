@@ -98,7 +98,6 @@ class buyGoldForm extends Component {
             useHover={this.props.pristine || this.props.invalid || this.props.buyingGold}
             useDefaultStyles
           >
-            Submit
             { this.props.buyingGold ? 'Submit' : 'Submitting' }
           </Tooltip>
         </button>

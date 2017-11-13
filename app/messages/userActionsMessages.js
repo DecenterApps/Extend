@@ -4,7 +4,9 @@ const pm = (actionParam) => {
   chrome.runtime.sendMessage(action);
 };
 
-export const createUserAuthMessage = () => { pm({ action: 'createUserAuth' }); };
+export const openAuthWindowMessage = () => {
+  pm({ action: 'openAuthWindow', payload: { screenWidth: screen.width, screenHeight: screen.height } });
+};
 
 export const setActiveTabMessage = (tabSlug) => {
   pm({ action: 'setTab', payload: tabSlug });

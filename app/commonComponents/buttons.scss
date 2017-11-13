@@ -11,6 +11,8 @@
   cursor: pointer;
   border-radius: 6px;
   transition: 0.2s ease-in;
+  outline: none;
+  font-family: 'Montserrat', sans-serif;
 
   &:hover {
     background: $orange-hover;

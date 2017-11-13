@@ -2,10 +2,10 @@ import {
   REGISTER_USER, REGISTER_USER_ERROR, VERIFIED_USER,
   NETWORK_UNAVAILABLE, ADD_NEW_TIP,
   SEND_TIP, SEND_TIP_SUCCESS, SEND_TIP_ERROR, SET_ACTIVE_TAB,
-  GET_TIPS, GET_TIPS_SUCCESS, GET_TIPS_ERROR, CHANGE_VIEW,
+  GET_TIPS, GET_TIPS_SUCCESS, GET_TIPS_ERROR, CHANGE_VIEW, CLEAR_TIP_PENDING,
   CLEAR_PENDING, CONNECT_AGAIN, CONNECT_AGAIN_SUCCESS, CONNECT_AGAIN_ERROR,
-  BUY_GOLD, BUY_GOLD_SUCCESS, BUY_GOLD_ERROR, GET_GOLD, GET_GOLD_ERROR,
-  GET_GOLD_SUCCESS, ADD_NEW_GOLD, SET_DISCONNECTED, SET_REFUND_TIPS
+  BUY_GOLD, BUY_GOLD_SUCCESS, BUY_GOLD_ERROR, GET_GOLD, GET_GOLD_ERROR, CLEAR_GOLD_PENDING,
+  GET_GOLD_SUCCESS, ADD_NEW_GOLD, SET_DISCONNECTED, SET_REFUND_TIPS, DIALOG_OPEN
 } from '../../../constants/actionTypes';
 import { NETWORK_URL, TABS, VIEWS } from '../../../constants/general';
 
@@ -25,6 +25,7 @@ const INITIAL_STATE = {
   networkUrl: NETWORK_URL,
   sendingTip: false,
   sendingTipError: '',
+  sendingTipSuccess: false,
   refundTipIndex: '',
   refundTipUsername: '',
   activeTab: TABS[0].slug,
@@ -36,10 +37,12 @@ const INITIAL_STATE = {
   connectingAgainError: '',
   buyingGold: false,
   buyingGoldError: '',
+  buyingGoldSuccess: false,
   golds: [],
   gettingGold: false,
   gettingGoldError: '',
-  disconnected: false
+  disconnected: false,
+  dialogWindowId: 0,
 };
 
 export const reducer = (state, action) => {
@@ -51,12 +54,14 @@ export const reducer = (state, action) => {
         ...state,
         sendingTip: false,
         sendingTipError: '',
+        sendingTipSuccess: false,
         gettingSentTips: false,
         gettingSentTipsError: '',
         gettingTips: false,
         gettingTipsError: '',
         buyingGold: false,
         buyingGoldError: '',
+        buyingGoldSuccess: false,
         connectingAgain: false,
         connectingAgainError: '',
       };
@@ -81,7 +86,13 @@ export const reducer = (state, action) => {
       return {
         ...state,
         registering: false,
-        registeringError: 'An error occurred while registering your username, please try again.'
+        registeringError: action.message,
+      };
+
+    case DIALOG_OPEN:
+      return {
+        ...state,
+        dialogWindowId: action.id,
       };
 
     case SET_ACTIVE_TAB:
@@ -93,12 +104,20 @@ export const reducer = (state, action) => {
     case SEND_TIP:
       return { ...state, sendingTip: true };
     case SEND_TIP_SUCCESS:
-      return { ...state, sendingTip: false, sendingTipError: '' };
+      return { ...state, sendingTip: false, sendingTipError: '', sendingTipSuccess: true };
     case SEND_TIP_ERROR:
       return {
         ...state,
         sendingTip: false,
+        sendingTipSuccess: false,
         sendingTipError: 'An error occurred while sending tip, please try again.'
+      };
+    case CLEAR_TIP_PENDING:
+      return {
+        ...state,
+        sendingTip: false,
+        sendingTipSuccess: false,
+        sendingTipError: ''
       };
 
     case GET_TIPS:
@@ -150,6 +169,7 @@ export const reducer = (state, action) => {
         gettingGold: false,
         gettingGoldError: 'An error occurred while getting gold, please try again.'
       };
+
     case ADD_NEW_GOLD: {
       const golds = [...state.golds];
       const gold = payload.gold;
@@ -186,12 +206,20 @@ export const reducer = (state, action) => {
     case BUY_GOLD:
       return { ...state, buyingGold: true };
     case BUY_GOLD_SUCCESS:
-      return { ...state, buyingGold: false, buyingGoldError: '' };
+      return { ...state, buyingGold: false, buyingGoldError: '', buyingGoldSuccess: true };
     case BUY_GOLD_ERROR:
       return {
         ...state,
         buyingGold: false,
+        buyingGoldSuccess: false,
         buyingGoldError: 'An error occurred while buying gold, please try again.'
+      };
+    case CLEAR_GOLD_PENDING:
+      return {
+        ...state,
+        buyingGold: false,
+        buyingGoldSuccess: false,
+        buyingGoldError: ''
       };
 
     case SET_DISCONNECTED:

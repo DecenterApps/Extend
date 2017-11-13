@@ -21,6 +21,7 @@ export const CONNECT_AGAIN_SUCCESS = 'connect_again_success';
 export const CONNECT_AGAIN_ERROR = 'connect_again_error';
 export const SET_DISCONNECTED = 'set_disconnected';
 export const SET_REFUND_TIPS = 'set_refund_tips';
+export const DIALOG_OPEN = 'dialog_open';
 
 // NETWORK
 export const TOGGLE_DROPDOWN = 'toggle_dropdown';
@@ -31,8 +32,6 @@ export const ADD_FORM = 'add_form';
 export const UPDATE_FIELD_META = 'update_field_meta';
 export const UPDATE_FIELD_ERROR = 'update_field_error';
 export const SET_TX_COST = 'set_tx_cost';
-export const SET_TX_VAL = 'set_tx_val';
-export const CLEAR_CURRENT_FORM_TX_VAL = 'clear_current_form_tx_val';
 
 // ACCOUNT
 export const CREATE_WALLET = 'create_wallet';
@@ -60,7 +59,9 @@ export const TOGGLE_MODAL = 'toggle_modal';
 export const SEND_TIP = 'send_tip';
 export const SEND_TIP_ERROR = 'send_tip_error';
 export const SEND_TIP_SUCCESS = 'send_tip_success';
+export const CLEAR_TIP_PENDING = 'clear_tip_pending';
 export const BUY_GOLD = 'buy_gold';
 export const BUY_GOLD_ERROR = 'buy_gold_error';
 export const BUY_GOLD_SUCCESS = 'buy_gold_success';
+export const CLEAR_GOLD_PENDING = 'clear_gold_pending';
 

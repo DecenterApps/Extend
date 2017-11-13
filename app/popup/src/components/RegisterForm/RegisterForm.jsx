@@ -6,7 +6,7 @@ import createForm from '../../../../customRedux/createForm';
 import createField from '../../../../customRedux/createField';
 import InputFormField from '../../../../commonComponents/InputFormField';
 import registerFormValidator from './registerFormValidator';
-import { createUserAuthMessage } from '../../../../messages/userActionsMessages';
+import { openAuthWindowMessage } from '../../../../messages/userActionsMessages';
 import { setRegisterFormTxPriceMessage } from '../../../../messages/formsActionsMessages';
 
 import formStyle from '../../../../commonComponents/forms.scss';
@@ -37,7 +37,7 @@ class RegisterForm extends Component {
       <div>
         <form
           styleName="form-wrapper-2"
-          onSubmit={(e) => { this.props.handleSubmit(e, createUserAuthMessage); }}
+          onSubmit={(e) => { this.props.handleSubmit(e, openAuthWindowMessage); }}
         >
 
           <GasPriceField
@@ -54,20 +54,11 @@ class RegisterForm extends Component {
 
           {
             !this.props.invalid &&
-            <div>
-              <div styleName="tx-info">
-                <span>Amount:</span>
-                <div>
-                  <span>{ this.props.currentFormTxVal.eth } ETH</span>
-                  <span styleName="second-price">{ this.props.currentFormTxVal.usd } USD</span>
-                </div>
-              </div>
-              <div styleName="tx-info">
-                <span>Max transaction fee:</span>
-                <div>
-                  <span>{ this.props.currentFormTxCost.eth } ETH</span>
-                  <span styleName="second-price">{ this.props.currentFormTxCost.usd } USD</span>
-                </div>
+            <div styleName="tx-info">
+              <span>Max transaction cost:</span>
+              <div>
+                <span>{ this.props.currentFormTxCost.eth } ETH</span>
+                <span styleName="second-price">{ this.props.currentFormTxCost.usd } USD</span>
               </div>
             </div>
           }
@@ -104,13 +95,11 @@ RegisterForm.propTypes = {
   pristine: PropTypes.bool.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   gasPrice: PropTypes.number.isRequired,
-  currentFormTxVal: PropTypes.object.isRequired,
   currentFormTxCost: PropTypes.object.isRequired,
   form: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state) => ({
-  currentFormTxVal: state.forms.currentFormTxVal,
   currentFormTxCost: state.forms.currentFormTxCost,
   gasPrice: state.account.gasPrice,
   form: state.forms[FORM_NAME]

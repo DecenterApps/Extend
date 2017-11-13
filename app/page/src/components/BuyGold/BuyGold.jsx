@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Tooltip from 'react-tooltip-lite';
+// import Tooltip from 'react-tooltip-lite';
+import Tooltip from '../../../../commonComponents/Tooltip/Tooltip';
 import { toggleModalMessage } from '../../../../messages/modalsActionsMessages';
 import { GOLD_MODAL } from '../Modals/modalTypes';
 import GoldIcon from '../../../../commonComponents/Decorative/GoldIcon';
@@ -12,14 +13,14 @@ const openGoldModal = (author) => {
 };
 
 const BuyGold = ({ author }) => (
-  <span styleName="icon-wrapper" onClick={() => { openGoldModal(author); }}>
+  <a href="#" styleName="icon-wrapper" onClick={() => { openGoldModal(author); }}>
     <Tooltip
       content="Give gold to user with ETH"
       useDefaultStyles
     >
-      <GoldIcon />
+      <GoldIcon />gold
     </Tooltip>
-  </span>
+  </a>
 );
 
 BuyGold.propTypes = {

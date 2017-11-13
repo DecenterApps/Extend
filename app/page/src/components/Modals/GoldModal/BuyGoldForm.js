@@ -68,20 +68,11 @@ class buyGoldForm extends Component {
 
         {
           !this.props.invalid &&
-          <div>
-            <div styleName="tx-info">
-              <span>Amount:</span>
-              <div>
-                <span>{ this.props.currentFormTxVal.eth } ETH</span>
-                <span styleName="second-price">{ this.props.currentFormTxVal.usd } USD</span>
-              </div>
-            </div>
-            <div styleName="tx-info">
-              <span>Max transaction fee:</span>
-              <div>
-                <span>{ this.props.currentFormTxCost.eth } ETH</span>
-                <span styleName="second-price">{ this.props.currentFormTxCost.usd } USD</span>
-              </div>
+          <div styleName="tx-info">
+            <span>Max transaction fee:</span>
+            <div>
+              <span>{ this.props.currentFormTxCost.eth } ETH</span>
+              <span styleName="second-price">{ this.props.currentFormTxCost.usd } USD</span>
             </div>
           </div>
         }
@@ -108,6 +99,7 @@ class buyGoldForm extends Component {
             useDefaultStyles
           >
             Submit
+            { this.props.buyingGold ? 'Submit' : 'Submitting' }
           </Tooltip>
         </button>
       </form>
@@ -123,7 +115,6 @@ buyGoldForm.propTypes = {
   gasPrice: PropTypes.number.isRequired,
   buyingGold: PropTypes.bool.isRequired,
   buyingGoldError: PropTypes.string.isRequired,
-  currentFormTxVal: PropTypes.object.isRequired,
   currentFormTxCost: PropTypes.object.isRequired,
   form: PropTypes.object.isRequired
 };
@@ -132,7 +123,6 @@ const mapStateToProps = (state) => ({
   gasPrice: state.account.gasPrice,
   buyingGold: state.user.buyingGold,
   buyingGoldError: state.user.buyingGoldError,
-  currentFormTxVal: state.forms.currentFormTxVal,
   currentFormTxCost: state.forms.currentFormTxCost,
   form: state.forms[FORM_NAME]
 });

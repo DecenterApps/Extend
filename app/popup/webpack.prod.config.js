@@ -1,7 +1,8 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
-const { generateScopedName } = require('../modules/buildTools');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const { createUniqueIdGenerator } = require('../modules/buildTools');
 
 const context = path.join(__dirname, '../');
 
@@ -11,21 +12,26 @@ const HtmlWebpackPluginConfig = new HtmlWebpackPlugin({
   inject: 'body'
 });
 
+const uniqueIdGenerator = createUniqueIdGenerator();
+
+const generateScopedName = (localName, resourcePath) => {
+  const componentName = resourcePath.split('/').slice(-2, -1);
+
+  return `${uniqueIdGenerator(componentName)}_${uniqueIdGenerator(localName)}`;
+};
 
 module.exports = {
-  entry: [
-    './app/popup/src/index.js'
-  ],
-  devtool: 'inline-source-map',
+  entry: './app/popup/src/index.js',
   output: {
-    filename: 'popup.js',
     path: path.join(__dirname, '../../', 'build'),
+    filename: 'popup.js',
+    chunkFilename: '[chunkhash]-[chunkhash].js',
     publicPath: './'
   },
   module: {
     loaders: [
       {
-        test: /\.(js|jsx)$/,
+        test: /\.js[x]?$/,
         include: [
           path.join(__dirname, 'src'),
           path.join(__dirname, '../', 'actions'),
@@ -33,16 +39,15 @@ module.exports = {
           path.join(__dirname, '../', 'customRedux'),
           path.join(__dirname, '../background/src/', 'reducers'),
         ],
-        exclude: /node_modules/,
         use: [
           {
             loader: 'babel-loader',
             query: {
-              babelrc: false,
               presets: ['es2015', 'react'],
               plugins: [
                 'transform-object-rest-spread',
                 'transform-react-jsx',
+
                 [
                   'react-css-modules',
                   {
@@ -59,10 +64,10 @@ module.exports = {
             }
           },
           { loader: 'eslint-loader' }
-        ]
+        ],
+        exclude: /node_modules/
       },
       {
-        test: /\.scss?$/,
         include: [path.join(__dirname, '../')],
         use: [
           { loader: 'style-loader' },
@@ -72,32 +77,44 @@ module.exports = {
               getLocalIdent: (contextParam, localIdentName, localName) => (
                 generateScopedName(localName, contextParam.resourcePath)
               ),
-              importLoaders: 2,
-              modules: true,
-              sourceMap: true
+              importLoaders: 1,
+              minimize: true,
+              modules: true
             }
           },
           { loader: 'resolve-url-loader' },
-          {
-            loader: 'sass-loader',
-            options: {
-              outputStyle: 'expanded',
-              sourceMap: true
-            }
-          },
+          { loader: 'sass-loader' },
           {
             loader: 'autoprefixer-loader',
             options: {
               browsers: 'last 4 version'
             }
           },
-        ]
+        ],
+        test: /\.scss?$/
       },
       {
         test: /\.(jpe?g|png|gif|svg)$/i,
-        loaders: [
+        use: [
           'file-loader?hash=sha512&digest=hex&name=[hash].[ext]',
-          'image-webpack-loader?bypassOnDebug&optimizationLevel=7&interlaced=false'
+          {
+            loader: 'image-webpack-loader',
+            options: {
+              mozjpeg: {
+                progressive: true,
+              },
+              gifsicle: {
+                interlaced: false,
+              },
+              optipng: {
+                optimizationLevel: 4,
+              },
+              pngquant: {
+                quality: '75-90',
+                speed: 3,
+              }
+            }
+          }
         ]
       },
       { test: /\.(eot|ttf|woff|woff2)$/, loader: 'file-loader?name=[name].[ext]' },
@@ -108,8 +125,13 @@ module.exports = {
   },
   plugins: [
     HtmlWebpackPluginConfig,
+    new webpack.optimize.OccurrenceOrderPlugin(),
+    new UglifyJSPlugin({ parallel: true }),
     new webpack.DefinePlugin({
-      process: { env: '"development"' }
+      'process.env': {
+        env: '"production"',
+        NODE_ENV: '"production"',
+      }
     })
   ]
 };

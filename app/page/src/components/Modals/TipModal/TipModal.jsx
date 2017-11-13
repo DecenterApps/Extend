@@ -6,23 +6,34 @@ import TipForm from './TipForm';
 import connect from '../../../../../customRedux/connect';
 import TypeInPasswordForm from '../../../../../commonComponents/TypeInPasswordForm';
 
-const TipModal = ({ closeModal, password }) => (
+import '../../../../../commonComponents/forms.scss';
+
+const TipModal = ({ closeModal, password, sendingTipSuccess }) => (
   <div>
     <ModalHeader title={password ? 'Buy gold' : 'Unlock account'} closeModal={closeModal} />
     <ModalBody>
       { password && <TipForm /> }
       { !password && <TypeInPasswordForm /> }
+
+      {
+        sendingTipSuccess &&
+        <div styleName="submit-success">
+          Tip successfully sent to the contract.
+        </div>
+      }
     </ModalBody>
   </div>
 );
 
 TipModal.propTypes = {
   closeModal: PropTypes.func.isRequired,
-  password: PropTypes.string.isRequired
+  password: PropTypes.string.isRequired,
+  sendingTipSuccess: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = (state) => ({
-  password: state.account.password
+  password: state.account.password,
+  sendingTipSuccess: state.user.sendingTipSuccess
 });
 
 export default connect(TipModal, mapStateToProps);

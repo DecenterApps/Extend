@@ -3,12 +3,19 @@
 .icon-wrapper {
   display: flex;
   cursor: pointer;
-  top: 4px;
   position: relative;
-  margin-left: 10px;
+  //margin-left: 10px;
 
   &.verify-icon {
-    top: 1px;
     cursor: default;
+  }
+
+  * {
+    vertical-align: top;
+    line-height: 1.4em;
+  }
+
+  svg {
+    margin-right: 3px;
   }
 }

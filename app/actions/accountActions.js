@@ -251,10 +251,7 @@ export const refund = async (web3, getState, dispatch, contracts) => {
 
     eventInstance.stopWatching(() => {});
 
-    await dispatch({ type: REFUND_SUCCESS });
-    await clearRefundValues(dispatch);
-
-    changeView(dispatch, { viewName: 'dashboard' });
+    dispatch({ type: REFUND_SUCCESS });
   };
 
   dispatch({ type: REFUND });

@@ -21,6 +21,7 @@ const INITIAL_STATE = {
   sendingError: '',
   refunding: false,
   refundingError: '',
+  refundingSuccess: false,
   refundAvailable: true
 };
 
@@ -36,6 +37,7 @@ export const reducer = (state, action) => {
         sendingError: '',
         refunding: false,
         refundingError: '',
+        refundingSuccess: false,
         refundAvailable: true
       };
 
@@ -82,20 +84,21 @@ export const reducer = (state, action) => {
     case REFUND:
       return { ...state, refunding: true };
     case REFUND_SUCCESS:
-      return { ...state, refunding: false, refundingError: '', refundAvailable: true };
+      return { ...state, refunding: false, refundingError: '', refundingSuccess: true, refundAvailable: true };
     case REFUND_ERROR:
       return {
         ...state,
         refunding: false,
         refundAvailable: true,
+        refundingSuccess: false,
         refundingError: 'An error occurred while refunding ETH, please try again.'
       };
     case REFUND_UNAVAILABLE:
-      return { ...state, refundAvailable: false, refundingError: '' };
+      return { ...state, refundAvailable: false, refundingError: '', refundingSuccess: false };
     case REFUND_AVAILABLE:
-      return { ...state, refundAvailable: true, refundingError: '' };
+      return { ...state, refundAvailable: true, refundingError: '', refundingSuccess: false };
     case CLEAR_REFUND_VALUES:
-      return { ...state, refundAvailable: true, refunding: false, refundingError: '' };
+      return { ...state, refundAvailable: true, refunding: false, refundingError: '', refundingSuccess: false };
 
     default:
       return false;

@@ -6,19 +6,18 @@ const { generateScopedName } = require('../modules/buildTools');
 const context = path.join(__dirname, '../');
 
 const HtmlWebpackPluginConfig = new HtmlWebpackPlugin({
-  template: './app/popup/src/index.html',
-  filename: 'popup.html',
+  template: './app/dialog/src/index.html',
+  filename: 'dialog.html',
   inject: 'body'
 });
 
-
 module.exports = {
   entry: [
-    './app/popup/src/index.js'
+    './app/dialog/src/index.js'
   ],
   devtool: 'inline-source-map',
   output: {
-    filename: 'popup.js',
+    filename: 'dialog.js',
     path: path.join(__dirname, '../../', 'build'),
     publicPath: './'
   },

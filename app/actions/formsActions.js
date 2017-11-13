@@ -1,5 +1,5 @@
 import {
-  ADD_FORM, UPDATE_FIELD_META, UPDATE_FIELD_ERROR, SET_TX_VAL, SET_TX_COST, REFUND_UNAVAILABLE, REFUND_AVAILABLE
+  ADD_FORM, UPDATE_FIELD_META, UPDATE_FIELD_ERROR, SET_TX_COST, REFUND_UNAVAILABLE, REFUND_AVAILABLE
 } from '../constants/actionTypes';
 import { getValOfEthInUsd } from '../actions/utils';
 import { estimateGasForTx, getOraclizePrice, estimateGas, _checkIfRefundAvailable } from '../modules/ethereumService';
@@ -16,15 +16,16 @@ export const updateFieldError = (dispatch, payload) => {
   dispatch({ type: UPDATE_FIELD_ERROR, payload });
 };
 
-const setTxValues = (web3, dispatch, value, gas, gasPrice, usdPerEth, setVal = true) => {
-  const txCostEth = web3.fromWei(gas * gasPrice);
+const setTxValues = (web3, dispatch, value, gas, gasPrice, usdPerEth, addVal = true) => {
+  let txCostEth = null;
+
+  if (addVal) {
+    txCostEth = web3.fromWei((gas * gasPrice) + parseFloat(value));
+  } else {
+    txCostEth = web3.fromWei(gas * gasPrice);
+  }
 
   dispatch({ type: SET_TX_COST, payload: { eth: txCostEth, usd: txCostEth * usdPerEth } });
-
-  if (!setVal) return;
-
-  const txValEth = web3.fromWei(value);
-  dispatch({ type: SET_TX_VAL, payload: { eth: txValEth, usd: txValEth * usdPerEth } });
 };
 
 export const setRegisterFormTxPrice = async (web3, contract, dispatch, getState) => {

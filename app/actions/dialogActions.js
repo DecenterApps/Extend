@@ -43,7 +43,7 @@ export const handleUserAuthentication = (contracts, web3, getState, dispatch) =>
       const me = await redditMeResponse.json();
 
       if (me.error) {
-        await dispatch({ type: REGISTER_USER_ERROR });
+        await dispatch({ type: REGISTER_USER_ERROR, message: me.error });
         return;
       }
 
@@ -63,7 +63,7 @@ export const handleUserAuthentication = (contracts, web3, getState, dispatch) =>
 
       listenForVerifiedUser(web3, contracts, dispatch, getState);
     } catch (err) {
-      dispatch({ type: REGISTER_USER_ERROR });
+      dispatch({ type: REGISTER_USER_ERROR, message: err });
     }
   });
 };

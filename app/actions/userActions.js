@@ -1,7 +1,7 @@
 import {
   NETWORK_UNAVAILABLE, VERIFIED_USER, REGISTER_USER_ERROR, SET_ACTIVE_TAB, GET_TIPS, GET_TIPS_SUCCESS,
   GET_TIPS_ERROR, CHANGE_VIEW, CONNECT_AGAIN, CONNECT_AGAIN_SUCCESS, CONNECT_AGAIN_ERROR, ADD_NEW_TIP,
-  ADD_NEW_GOLD, GET_GOLD, GET_GOLD_ERROR, GET_GOLD_SUCCESS, SET_DISCONNECTED, SET_REFUND_TIPS
+  ADD_NEW_GOLD, GET_GOLD, GET_GOLD_ERROR, GET_GOLD_SUCCESS, SET_DISCONNECTED, SET_REFUND_TIPS, DIALOG_OPEN
 } from '../constants/actionTypes';
 import {
   verifiedUserEvent, listenForTips, getTipsFromEvent, listenForGold, getGoldFromEvent, _checkIfRefundAvailable
@@ -169,7 +169,7 @@ export const listenForVerifiedUser = (web3, contracts, dispatch, getState) => {
   const noMatchCallback = (err, event, verifiedEvent, noMatchEvent) => {
     if (web3.toUtf8(event.args.neededUsername) !== getState().user.registeringUsername) return;
 
-    dispatch({ type: REGISTER_USER_ERROR });
+    dispatch({ type: REGISTER_USER_ERROR, message: 'Username not found. ' });
 
     verifiedEvent.stopWatching(() => {});
     noMatchEvent.stopWatching(() => {});
@@ -178,9 +178,9 @@ export const listenForVerifiedUser = (web3, contracts, dispatch, getState) => {
   verifiedUserEvent(web3, contracts.events, verifiedCallback, noMatchCallback);
 };
 
-export const openAuthWindow = (payload) => {
-  const width = 500;
-  const height = 500;
+export const openAuthWindow = (payload, dispatch) => {
+  const width = 400;
+  const height = 300;
   const left = (payload.screenWidth / 2) - (width / 2);
   const top = (payload.screenHeight / 2) - (height / 2);
 
@@ -192,6 +192,9 @@ export const openAuthWindow = (payload) => {
     height,
     left,
     top
+  }, (window) => {
+    dispatch({ type: DIALOG_OPEN, id: window.id });
+
   });
 };
 

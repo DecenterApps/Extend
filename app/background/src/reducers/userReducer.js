@@ -5,7 +5,7 @@ import {
   GET_TIPS, GET_TIPS_SUCCESS, GET_TIPS_ERROR, CHANGE_VIEW, CLEAR_TIP_PENDING,
   CLEAR_PENDING, CONNECT_AGAIN, CONNECT_AGAIN_SUCCESS, CONNECT_AGAIN_ERROR,
   BUY_GOLD, BUY_GOLD_SUCCESS, BUY_GOLD_ERROR, GET_GOLD, GET_GOLD_ERROR, CLEAR_GOLD_PENDING,
-  GET_GOLD_SUCCESS, ADD_NEW_GOLD, SET_DISCONNECTED, SET_REFUND_TIPS
+  GET_GOLD_SUCCESS, ADD_NEW_GOLD, SET_DISCONNECTED, SET_REFUND_TIPS, DIALOG_OPEN
 } from '../../../constants/actionTypes';
 import { NETWORK_URL, TABS, VIEWS } from '../../../constants/general';
 
@@ -41,7 +41,8 @@ const INITIAL_STATE = {
   golds: [],
   gettingGold: false,
   gettingGoldError: '',
-  disconnected: false
+  disconnected: false,
+  dialogWindowId: 0,
 };
 
 export const reducer = (state, action) => {
@@ -85,7 +86,13 @@ export const reducer = (state, action) => {
       return {
         ...state,
         registering: false,
-        registeringError: 'An error occurred while registering your username, please try again.'
+        registeringError: action.message,
+      };
+
+    case DIALOG_OPEN:
+      return {
+        ...state,
+        dialogWindowId: action.id,
       };
 
     case SET_ACTIVE_TAB:

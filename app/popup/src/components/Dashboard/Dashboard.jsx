@@ -5,6 +5,7 @@ import { getEtherScanLinkByNetwork, createRedditLink } from '../../../../actions
 import { changeViewMessage } from '../../../../messages/userActionsMessages';
 import Tabs from '../Tabs/Tabs';
 import RegisterForm from '../RegisterForm/RegisterForm';
+import Onboarding from '../Onboarding/Onboarding';
 
 import './dashboard.scss';
 
@@ -14,9 +15,12 @@ const copyAddress = () => {
 };
 
 const Dashboard = ({
-  address, balance, verifiedUsername, registering, registeringError, registeringUsername
+  address, balance, verifiedUsername, registering, registeringError, registeringUsername, onboardingUnVerified,
+  onboardingUnVerifiedStep
 }) => (
   <div styleName="dashboard-wrapper">
+    <Onboarding onboardingUnVerified={onboardingUnVerified} onboardingUnVerifiedStep={onboardingUnVerifiedStep} />
+
     <div styleName="account-info-wrapper">
       <div styleName="small-section">
         <a
@@ -63,7 +67,7 @@ const Dashboard = ({
         <div styleName="small-section-title">Username</div>
       </div>
 
-      <div styleName="large-section-wrapper">
+      <div styleName={`large-section-wrapper ${verifiedUsername ? '' : 'with-border'}`}>
         <div styleName="large-section">
           <div styleName="large-section-balance">
             { balance } ETH
@@ -102,8 +106,9 @@ Dashboard.propTypes = {
   verifiedUsername: PropTypes.string.isRequired,
   registeringError: PropTypes.string.isRequired,
   registering: PropTypes.bool.isRequired,
-  registeringUsername: PropTypes.string.isRequired
-
+  registeringUsername: PropTypes.string.isRequired,
+  onboardingUnVerified: PropTypes.bool.isRequired,
+  onboardingUnVerifiedStep: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -112,7 +117,9 @@ const mapStateToProps = (state) => ({
   verifiedUsername: state.user.verifiedUsername,
   registering: state.user.registering,
   registeringError: state.user.registeringError,
-  registeringUsername: state.user.registeringUsername
+  registeringUsername: state.user.registeringUsername,
+  onboardingUnVerified: state.onboarding.onboardingUnVerified,
+  onboardingUnVerifiedStep: state.onboarding.onboardingUnVerifiedStep,
 });
 
 export default connect(Dashboard, mapStateToProps);

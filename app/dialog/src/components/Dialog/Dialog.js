@@ -57,7 +57,7 @@ class Dialog extends Component {
         }
         {
           this.props.registeringError &&
-          <h2 styleName="error">Error occurred while verifying</h2>
+          <h2 styleName="error">{this.props.registeringError}</h2>
         }
       </div>
     );

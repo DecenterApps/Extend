@@ -65,3 +65,6 @@ export const BUY_GOLD_ERROR = 'buy_gold_error';
 export const BUY_GOLD_SUCCESS = 'buy_gold_success';
 export const CLEAR_GOLD_PENDING = 'clear_gold_pending';
 
+// ONBAORDING
+export const SWITCH_UNVERIFIED_STEP = 'switch_unverified_step';
+export const SKIP_UNVERIFIED_ONBOARDING = 'skip_unverified_onboarding';

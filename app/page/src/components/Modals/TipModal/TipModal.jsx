@@ -10,7 +10,7 @@ import '../../../../../commonComponents/forms.scss';
 
 const TipModal = ({ closeModal, password }) => (
   <div>
-    <ModalHeader title={password ? 'Buy gold' : 'Unlock account'} closeModal={closeModal} />
+    <ModalHeader title={password ? 'Tip' : 'Unlock account'} closeModal={closeModal} />
     <ModalBody>
       { password && <TipForm /> }
       { !password && <TypeInPasswordForm /> }

@@ -36,6 +36,9 @@ class buyGoldForm extends Component {
   render() {
     const MonthsField = this.MonthsField;
     const GasPriceField = this.GasPriceField;
+    const insufficientBalance =
+      !this.props.invalid && (((parseFloat(this.props.balance) - parseFloat(this.props.currentFormTxCost.eth)) < 0));
+
 
     return (
       <form
@@ -83,6 +86,11 @@ class buyGoldForm extends Component {
         }
 
         {
+          insufficientBalance &&
+          <div styleName="submit-error">Insufficient balance for transaction</div>
+        }
+
+        {
           this.props.buyingGoldSuccess &&
           <div styleName="submit-success">
             Tip successfully sent to the contract.
@@ -92,7 +100,7 @@ class buyGoldForm extends Component {
         <button
           className={formStyle['submit-button']}
           type="submit"
-          disabled={this.props.pristine || this.props.invalid || this.props.buyingGold}
+          disabled={this.props.pristine || this.props.invalid || this.props.buyingGold || insufficientBalance}
         >
           <Tooltip
             content={(
@@ -123,7 +131,8 @@ buyGoldForm.propTypes = {
   buyingGoldError: PropTypes.string.isRequired,
   currentFormTxCost: PropTypes.object.isRequired,
   form: PropTypes.object.isRequired,
-  buyingGoldSuccess: PropTypes.bool.isRequired
+  buyingGoldSuccess: PropTypes.bool.isRequired,
+  balance: PropTypes.string.isRequired
 };
 
 const mapStateToProps = (state) => ({
@@ -132,7 +141,8 @@ const mapStateToProps = (state) => ({
   buyingGoldError: state.user.buyingGoldError,
   currentFormTxCost: state.forms.currentFormTxCost,
   form: state.forms[FORM_NAME],
-  buyingGoldSuccess: state.user.buyingGoldSuccess
+  buyingGoldSuccess: state.user.buyingGoldSuccess,
+  balance: state.account.balance
 });
 
 const ExportComponent = createForm(

@@ -32,6 +32,8 @@ class RefundForm extends Component {
 
   render() {
     const GasPriceField = this.GasPriceField;
+    const insufficientBalance =
+      !this.props.invalid && (((parseFloat(this.props.balance) - parseFloat(this.props.currentFormTxCost.eth)) < 0));
 
     return (
       <div>
@@ -79,10 +81,13 @@ class RefundForm extends Component {
             this.props.refundingError &&
             <div styleName="submit-error">Error: {this.props.refundingError}</div>
           }
-
           {
             !this.props.refundAvailable &&
             <div styleName="submit-error">Error: Refund not available from this user</div>
+          }
+          {
+            insufficientBalance &&
+            <div styleName="submit-error">Insufficient balance for transaction</div>
           }
 
           {
@@ -96,7 +101,8 @@ class RefundForm extends Component {
             className={formStyle['submit-button']}
             type="submit"
             disabled={
-              this.props.pristine || this.props.invalid || this.props.refunding || !this.props.refundAvailable
+              this.props.pristine || this.props.invalid || this.props.refunding || !this.props.refundAvailable ||
+              insufficientBalance
             }
           >
             { this.props.refunding ? 'Refunding' : 'Refund' }
@@ -119,7 +125,8 @@ RefundForm.propTypes = {
   refundAvailable: PropTypes.bool.isRequired,
   form: PropTypes.object.isRequired,
   currentFormTxCost: PropTypes.object.isRequired,
-  refundTipUsername: PropTypes.string.isRequired
+  refundTipUsername: PropTypes.string.isRequired,
+  balance: PropTypes.string.isRequired
 };
 
 const mapStateToProps = (state) => ({
@@ -130,7 +137,8 @@ const mapStateToProps = (state) => ({
   refundAvailable: state.account.refundAvailable,
   form: state.forms[FORM_NAME],
   currentFormTxCost: state.forms.currentFormTxCost,
-  refundTipUsername: state.user.refundTipUsername
+  refundTipUsername: state.user.refundTipUsername,
+  balance: state.account.balance
 });
 
 const ExportComponent = createForm(FORM_NAME, RefundForm, refundFormValidator);

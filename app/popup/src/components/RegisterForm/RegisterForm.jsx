@@ -32,6 +32,8 @@ class RegisterForm extends Component {
 
   render() {
     const GasPriceField = this.GasPriceField;
+    const insufficientBalance =
+      !this.props.invalid && (((parseFloat(this.props.balance) - parseFloat(this.props.currentFormTxCost.eth)) < 0));
 
     return (
       <div>
@@ -63,11 +65,16 @@ class RegisterForm extends Component {
             </div>
           }
 
+          {
+            insufficientBalance &&
+            <div styleName="submit-error">Insufficient balance for transaction</div>
+          }
+
           <button
             className={formStyle['submit-button']}
             type="submit"
             disabled={
-              this.props.pristine || this.props.invalid
+              this.props.pristine || this.props.invalid || insufficientBalance
             }
           >
             <Tooltip
@@ -96,13 +103,15 @@ RegisterForm.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
   gasPrice: PropTypes.number.isRequired,
   currentFormTxCost: PropTypes.object.isRequired,
-  form: PropTypes.object.isRequired
+  form: PropTypes.object.isRequired,
+  balance: PropTypes.string.isRequired
 };
 
 const mapStateToProps = (state) => ({
   currentFormTxCost: state.forms.currentFormTxCost,
   gasPrice: state.account.gasPrice,
-  form: state.forms[FORM_NAME]
+  form: state.forms[FORM_NAME],
+  balance: state.account.balance
 });
 
 const ExportComponent = createForm(FORM_NAME, RegisterForm, registerFormValidator);

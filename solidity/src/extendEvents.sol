@@ -1,6 +1,6 @@
 pragma solidity ^0.4.17;
 
-contract ReddappEvents {
+contract ExtendEvents {
 
     event LogQuery(bytes32 query, address userAddress);
     event LogBalance(uint balance);
@@ -21,7 +21,7 @@ contract ReddappEvents {
         _;
     }
 
-    function ReddappEvents() {
+    function ExtendEvents() {
         owners[msg.sender] = true;
     }
 

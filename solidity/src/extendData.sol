@@ -1,6 +1,6 @@
 pragma solidity ^0.4.17;
 
-contract ReddappData {
+contract ExtendData {
     
    struct User {
         bytes32 username;
@@ -20,10 +20,9 @@ contract ReddappData {
     mapping(address => User) users;   
     mapping(address => bool) owners;
     
-    function ReddappData() public {
+    function ExtendData() public {
         owners[msg.sender] = true;
     }
-    
     
     //getters
     function getAddressForUsername(bytes32 _username) public constant onlyOwners returns (address) {
@@ -67,6 +66,10 @@ contract ReddappData {
         usernameToAddress[_username] = _address;
     }
 
+    function setVerified(address _address) public onlyOwners {
+        users[_address].verified = true;
+    }
+
     function addTip(address _from, bytes32 _to, uint _tip) public onlyOwners {
         tips[_from][_to] += _tip;
         balances[_to] += _tip;
@@ -78,10 +81,6 @@ contract ReddappData {
                 username: _username,
                 verified: false
             });
-    }
-    
-    function setVerified(address _address) public onlyOwners {
-        users[_address].verified = true;
     }
 
     function removeTip(address _from, bytes32 _to) public onlyOwners {

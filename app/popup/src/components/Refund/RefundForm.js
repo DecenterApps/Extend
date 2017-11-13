@@ -87,7 +87,7 @@ class RefundForm extends Component {
 
           {
             this.props.refundingSuccess &&
-            <div styleName="submit-success-2">
+            <div styleName="submit-success">
               Refund request successfully sent to the contract
             </div>
           }

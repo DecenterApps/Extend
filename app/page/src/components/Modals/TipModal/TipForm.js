@@ -81,6 +81,13 @@ class TipForm extends Component {
           <div styleName="submit-error">Error: {this.props.sendingTipError}</div>
         }
 
+        {
+          this.pros.sendingTipSuccess &&
+          <div styleName="submit-success">
+            Tip successfully sent to the contract.
+          </div>
+        }
+
         <button
           className={formStyle['submit-button']}
           type="submit"
@@ -106,6 +113,7 @@ TipForm.propTypes = {
   gasPrice: PropTypes.number.isRequired,
   form: PropTypes.object.isRequired,
   currentFormTxCost: PropTypes.object.isRequired,
+  sendingTipSuccess: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = (state) => ({
@@ -113,7 +121,8 @@ const mapStateToProps = (state) => ({
   sendingTipError: state.user.sendingTipError,
   sendingTip: state.user.sendingTip,
   form: state.forms[FORM_NAME],
-  currentFormTxCost: state.forms.currentFormTxCost
+  currentFormTxCost: state.forms.currentFormTxCost,
+  sendingTipSuccess: state.user.sendingTipSuccess
 });
 
 const ExportComponent = createForm(FORM_NAME, TipForm, tipFormValidator);

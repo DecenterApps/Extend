@@ -82,6 +82,13 @@ class buyGoldForm extends Component {
           <div styleName="submit-error">Error: {this.props.buyingGoldError}</div>
         }
 
+        {
+          this.props.buyingGoldSuccess &&
+          <div styleName="submit-success">
+            Tip successfully sent to the contract.
+          </div>
+        }
+
         <button
           className={formStyle['submit-button']}
           type="submit"
@@ -98,7 +105,7 @@ class buyGoldForm extends Component {
             useHover={this.props.pristine || this.props.invalid || this.props.buyingGold}
             useDefaultStyles
           >
-            { this.props.buyingGold ? 'Submit' : 'Submitting' }
+            { this.props.buyingGold ? 'Submitting' : 'Submit' }
           </Tooltip>
         </button>
       </form>
@@ -115,7 +122,8 @@ buyGoldForm.propTypes = {
   buyingGold: PropTypes.bool.isRequired,
   buyingGoldError: PropTypes.string.isRequired,
   currentFormTxCost: PropTypes.object.isRequired,
-  form: PropTypes.object.isRequired
+  form: PropTypes.object.isRequired,
+  buyingGoldSuccess: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = (state) => ({
@@ -123,7 +131,8 @@ const mapStateToProps = (state) => ({
   buyingGold: state.user.buyingGold,
   buyingGoldError: state.user.buyingGoldError,
   currentFormTxCost: state.forms.currentFormTxCost,
-  form: state.forms[FORM_NAME]
+  form: state.forms[FORM_NAME],
+  buyingGoldSuccess: state.user.buyingGoldSuccess
 });
 
 const ExportComponent = createForm(

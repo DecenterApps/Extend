@@ -8,32 +8,23 @@ import TypeInPasswordForm from '../../../../../commonComponents/TypeInPasswordFo
 
 import '../../../../../commonComponents/forms.scss';
 
-const GoldModal = ({ closeModal, password, buyingGoldSuccess }) => (
+const GoldModal = ({ closeModal, password }) => (
   <div>
     <ModalHeader title={password ? 'Buy gold' : 'Unlock account'} closeModal={closeModal} />
     <ModalBody>
       { password && <BuyGoldForm /> }
       { !password && <TypeInPasswordForm /> }
-
-      {
-        buyingGoldSuccess &&
-        <div styleName="submit-success">
-          Tip successfully sent to the contract.
-        </div>
-      }
     </ModalBody>
   </div>
 );
 
 GoldModal.propTypes = {
   closeModal: PropTypes.func.isRequired,
-  password: PropTypes.string.isRequired,
-  buyingGoldSuccess: PropTypes.bool.isRequired,
+  password: PropTypes.string.isRequired
 };
 
 const mapStateToProps = (state) => ({
-  password: state.account.password,
-  buyingGoldSuccess: state.user.buyingGoldSuccess
+  password: state.account.password
 });
 
 export default connect(GoldModal, mapStateToProps);

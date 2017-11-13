@@ -47,28 +47,6 @@ export const getValOfEthInUsd = () =>
   });
 
 /**
- * Checks if a address checksum is valid
- *
- * @param {String} addressParam
- * @return {boolean}
- */
-export const isValidChecksumAddress = (addressParam) => {
-  if (addressParam.length < 42) return false;
-
-  const address = addressParam.replace('0x', '');
-  let addressHash = sha3(address.toLowerCase());
-
-  for (let i = 0; i < 40; i++) {
-    // The nth letter should be uppercase if the nth digit of casemap is 1
-    if ((parseInt(addressHash[i], 16) > 7 && address[i].toUpperCase() !== address[i]) ||
-      (parseInt(addressHash[i], 16) <= 7 && address[i].toLowerCase() !== address[i])) {
-      return false;
-    }
-  }
-  return true;
-};
-
-/**
  * Checks if a address is valid
  *
  * @param {String} address

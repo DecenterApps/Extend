@@ -100,7 +100,10 @@ class Tips extends Component {
 
                 {
                   this.props.tips.length === 0 &&
-                  <div>You did not send or receive any tips yet</div>
+                  <div>
+                    You did not send or receive any tips yet <br />
+                    (It might take a minute or two until new transactions are displayed)
+                  </div>
                 }
               </div>
             }

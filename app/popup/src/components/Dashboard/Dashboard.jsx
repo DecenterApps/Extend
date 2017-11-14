@@ -26,7 +26,7 @@ const Dashboard = ({
         <a
           href={getEtherScanLinkByNetwork('kovan', address)}
           target="_blank"
-          rel="noopener"
+          rel="noopener noreferrer"
         >
           { address }
         </a>
@@ -45,7 +45,7 @@ const Dashboard = ({
               <a
                 href={createRedditLink(registeringUsername)}
                 target="_blank"
-                rel="noopener"
+                rel="noopener noreferrer"
               >
                 /u/{registeringUsername }
               </a>
@@ -57,7 +57,7 @@ const Dashboard = ({
               <a
                 href={createRedditLink(verifiedUsername)}
                 target="_blank"
-                rel="noopener"
+                rel="noopener noreferrer"
               >
                 /u/{verifiedUsername }
               </a>
@@ -72,7 +72,7 @@ const Dashboard = ({
           <div styleName="large-section-balance">
             { balance } ETH
             <div styleName="large-section-btn" onClick={() => { changeViewMessage('send'); }}>
-              Send
+              Transfer
             </div>
           </div>
           <div styleName="large-section-title">

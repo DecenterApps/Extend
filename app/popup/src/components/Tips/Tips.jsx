@@ -51,7 +51,7 @@ class Tips extends Component {
                             <a
                               href={createRedditLink(tip.to)}
                               target="_blank"
-                              rel="noopener"
+                              rel="noopener noreferrer"
                             >
                               /u/{ tip.to }
                             </a>
@@ -86,7 +86,7 @@ class Tips extends Component {
                             <a
                               href={getEtherScanLinkByNetwork('kovan', tip.from)}
                               target="_blank"
-                              rel="noopener"
+                              rel="noopener noreferrer"
                             >
                               { tip.from }
                             </a>

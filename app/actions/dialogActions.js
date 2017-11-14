@@ -1,5 +1,5 @@
 import { REGISTER_USER, REGISTER_USER_ERROR } from '../constants/actionTypes';
-import { CLIENT_ID } from '../constants/general';
+import { CLIENT_ID } from '../constants/config.local';
 import lightwallet from '../modules/eth-lightwallet/lightwallet';
 import { getParameterByName, encryptTokenOreclize } from '../actions/utils';
 import { sendTransaction, getOraclizePrice } from '../modules/ethereumService';

@@ -110,7 +110,7 @@ class SendForm extends Component {
               this.props.pristine || this.props.invalid || this.props.sending || this.props.insufficientBalance
             }
           >
-            { this.props.sending ? 'Sending' : 'Send' }
+            { this.props.sending ? 'Transferring' : 'Transfer' }
           </button>
         </form>
       </div>

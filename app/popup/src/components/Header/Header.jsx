@@ -20,21 +20,19 @@ const Header = ({ view, generatedVault, copiedSeed, password }) => (
 
     {
       (
-        (view === 'send') ||
-        (view === 'withdraw')
+        (view === 'send')
       ) &&
       <span styleName="back" onClick={() => { changeViewMessage('dashboard'); }}>
         <BackIcon />
       </span>
     }
 
-    { (view === 'privacyNotice') && <span>Privacy Notice</span> }
-    { (view === 'createAccount') && <span>Create Account</span> }
+    { (view === 'privacyNotice') && <span>Terms of agreement</span> }
+    { (view === 'createAccount') && <span>Chose passphrase</span> }
     { (view === 'copySeed') && <span>Copy recovery phrase</span> }
     { (view === 'dashboard') && <span styleName="logo-wrapper"><Logo /></span> }
     { (view === 'unlockAccount') && <span>Unlock account</span> }
-    { (view === 'send') && <span>Send funds</span> }
-    { (view === 'withdraw') && <span>Withdraw tips</span> }
+    { (view === 'send') && <span>Transfer funds</span> }
     { (view === 'networkUnavailable') && <span>Network unavailable</span> }
     { (view === 'refund') && <span>Refund tip</span> }
 

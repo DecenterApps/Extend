@@ -13,6 +13,8 @@
       margin-bottom: 12px;
       padding-bottom: 10px;
       border-bottom: 1px solid #e6e6e6;
+      font-size: 16px;
+      font-weight: 600;
 
       .small-section-title {
         font-size: 12px;
@@ -73,6 +75,11 @@
       align-items: center;
       justify-content: space-between;
 
+      &.with-border {
+        border-bottom: 1px solid #e6e6e6;
+        padding-bottom: 10px;
+      }
+
       .large-section {
         flex-grow: 1;
 
@@ -84,6 +91,7 @@
 
         .large-section-balance {
           font-size: 24px;
+          line-height: 24px;
           display: flex;
           font-weight: 600;
           justify-content: space-between;
@@ -125,7 +133,7 @@
   }
 
   .register-btn-wrapper {
-    padding: 0 25px 25px 25px;
+    padding: 0 25px 20px 25px;
 
     .register-btn {
       @include btn;

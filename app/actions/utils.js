@@ -52,7 +52,7 @@ export const getValOfEthInUsd = () =>
  * @param {String} addressParam
  * @return {boolean}
  */
-export const isValidChecksumAddress = (addressParam) => {
+const isValidChecksumAddress = (addressParam) => {
   if (addressParam.length < 42) return false;
 
   const address = addressParam.replace('0x', '');

@@ -79,15 +79,19 @@ class RefundForm extends Component {
             this.props.refundingError &&
             <div styleName="submit-error">Error: {this.props.refundingError}</div>
           }
-
           {
             !this.props.refundAvailable &&
             <div styleName="submit-error">Error: Refund not available from this user</div>
           }
+          {
+            !this.props.invalid &&
+            this.props.insufficientBalance &&
+            <div styleName="submit-error">Insufficient balance for transaction</div>
+          }
 
           {
             this.props.refundingSuccess &&
-            <div styleName="submit-success-2">
+            <div styleName="submit-success">
               Refund request successfully sent to the contract
             </div>
           }
@@ -96,7 +100,8 @@ class RefundForm extends Component {
             className={formStyle['submit-button']}
             type="submit"
             disabled={
-              this.props.pristine || this.props.invalid || this.props.refunding || !this.props.refundAvailable
+              this.props.pristine || this.props.invalid || this.props.refunding || !this.props.refundAvailable ||
+              this.props.insufficientBalance
             }
           >
             { this.props.refunding ? 'Refunding' : 'Refund' }
@@ -119,7 +124,8 @@ RefundForm.propTypes = {
   refundAvailable: PropTypes.bool.isRequired,
   form: PropTypes.object.isRequired,
   currentFormTxCost: PropTypes.object.isRequired,
-  refundTipUsername: PropTypes.string.isRequired
+  refundTipUsername: PropTypes.string.isRequired,
+  insufficientBalance: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = (state) => ({
@@ -130,7 +136,9 @@ const mapStateToProps = (state) => ({
   refundAvailable: state.account.refundAvailable,
   form: state.forms[FORM_NAME],
   currentFormTxCost: state.forms.currentFormTxCost,
-  refundTipUsername: state.user.refundTipUsername
+  refundTipUsername: state.user.refundTipUsername,
+  balance: state.account.balance,
+  insufficientBalance: state.forms.insufficientBalance
 });
 
 const ExportComponent = createForm(FORM_NAME, RefundForm, refundFormValidator);

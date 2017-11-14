@@ -82,12 +82,25 @@ class TipForm extends Component {
           <div styleName="submit-error">Error: {this.props.sendingTipError}</div>
         }
 
+        {
+          !this.props.invalid &&
+          this.props.insufficientBalance &&
+          <div styleName="submit-error">Insufficient balance for transaction</div>
+        }
+
+        {
+          this.props.sendingTipSuccess &&
+          <div styleName="submit-success">
+            Tip successfully sent to the contract.
+          </div>
+        }
+
         <button
           className={formStyle['submit-button']}
           type="submit"
           disabled={
             this.props.pristine || this.props.invalid ||
-            this.props.sendingTip
+            this.props.sendingTip || this.props.insufficientBalance
           }
         >
           { this.props.sendingTip ? 'Sending' : 'Send' }
@@ -107,6 +120,8 @@ TipForm.propTypes = {
   gasPrice: PropTypes.number.isRequired,
   form: PropTypes.object.isRequired,
   currentFormTxCost: PropTypes.object.isRequired,
+  sendingTipSuccess: PropTypes.bool.isRequired,
+  insufficientBalance: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = (state) => ({
@@ -114,7 +129,9 @@ const mapStateToProps = (state) => ({
   sendingTipError: state.user.sendingTipError,
   sendingTip: state.user.sendingTip,
   form: state.forms[FORM_NAME],
-  currentFormTxCost: state.forms.currentFormTxCost
+  currentFormTxCost: state.forms.currentFormTxCost,
+  sendingTipSuccess: state.user.sendingTipSuccess,
+  insufficientBalance: state.forms.insufficientBalance
 });
 
 const ExportComponent = createForm(FORM_NAME, TipForm, tipFormValidator);

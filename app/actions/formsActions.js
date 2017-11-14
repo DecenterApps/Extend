@@ -16,19 +16,30 @@ export const updateFieldError = (dispatch, payload) => {
   dispatch({ type: UPDATE_FIELD_ERROR, payload });
 };
 
-const setTxValues = (web3, dispatch, value, gas, gasPrice, usdPerEth, addVal = true) => {
+const setTxValues = (web3, dispatch, value, gas, gasPrice, usdPerEth, balance, addVal = true) => {
   let txCostEth = null;
+  let insufficientBalance = false;
 
   if (addVal) {
     txCostEth = web3.fromWei((gas * gasPrice) + parseFloat(value));
+    insufficientBalance = (parseFloat(balance) - parseFloat(txCostEth)) < 0;
   } else {
     txCostEth = web3.fromWei(gas * gasPrice);
+    insufficientBalance = (parseFloat(balance) - (parseFloat(txCostEth) + parseFloat(web3.fromWei(value)))) < 0;
   }
 
-  dispatch({ type: SET_TX_COST, payload: { eth: txCostEth, usd: txCostEth * usdPerEth } });
+  dispatch({
+    type: SET_TX_COST,
+    payload: {
+      currentFormTxCost: { eth: txCostEth, usd: txCostEth * usdPerEth },
+      insufficientBalance
+    }
+  });
 };
 
 export const setRegisterFormTxPrice = async (web3, contract, dispatch, getState) => {
+  const state = getState();
+  const balance = state.account.balance;
   const oreclizeTransactionCost = await getOraclizePrice(contract);
   const value = oreclizeTransactionCost.toString();
   const contractMethod = contract.createUser;
@@ -41,13 +52,15 @@ export const setRegisterFormTxPrice = async (web3, contract, dispatch, getState)
   ];
 
   const gas = await estimateGasForTx(web3, contractMethod, params, value);
-  const gasPrice = parseFloat(web3.toWei(getState().forms.registerForm.gasPrice.value, 'gwei'));
+  const gasPrice = parseFloat(web3.toWei(state.forms.registerForm.gasPrice.value, 'gwei'));
 
-  setTxValues(web3, dispatch, value, gas, gasPrice, usdPerEth);
+  setTxValues(web3, dispatch, value, gas, gasPrice, usdPerEth, balance);
 };
 
 export const setSendFormTxPrice = async (web3, contract, dispatch, getState) => {
-  const form = getState().forms.sendForm;
+  const state = getState();
+  const form = state.forms.sendForm;
+  const balance = state.account.balance;
   const value = web3.toWei(form.amount.value);
   const to = form.amount.to;
   const usdPerEth = await getValOfEthInUsd();
@@ -55,12 +68,13 @@ export const setSendFormTxPrice = async (web3, contract, dispatch, getState) => 
   const gas = await estimateGas(web3, { to, value });
   const gasPrice = parseFloat(web3.toWei(form.gasPrice.value, 'gwei'));
 
-  setTxValues(web3, dispatch, value, gas, gasPrice, usdPerEth, false);
+  setTxValues(web3, dispatch, value, gas, gasPrice, usdPerEth, balance, false);
 };
 
 export const setRefundFormTxPrice = async (web3, contract, dispatch, getState) => {
   const state = getState();
   const form = state.forms.refundForm;
+  const balance = state.account.balance;
   const value = 0;
   const contractMethod = contract.refundMoneyForUser;
   const usdPerEth = await getValOfEthInUsd();
@@ -81,11 +95,12 @@ export const setRefundFormTxPrice = async (web3, contract, dispatch, getState) =
 
   const gas = await estimateGasForTx(web3, contractMethod, params, value);
 
-  setTxValues(web3, dispatch, value, gas, gasPrice, usdPerEth, false);
+  setTxValues(web3, dispatch, value, gas, gasPrice, usdPerEth, balance, false);
 };
 
 export const setTipFormTxPrice = async (web3, contract, dispatch, getState) => {
   const state = getState();
+  const balance = state.account.balance;
   const form = state.forms.tipForm;
   const value = web3.toWei(form.amount.value);
   const contractMethod = contract.tipUser;
@@ -95,11 +110,12 @@ export const setTipFormTxPrice = async (web3, contract, dispatch, getState) => {
   const gas = await estimateGasForTx(web3, contractMethod, [web3.toHex(author)], value);
   const gasPrice = parseFloat(web3.toWei(form.gasPrice.value, 'gwei'));
 
-  setTxValues(web3, dispatch, value, gas, gasPrice, usdPerEth, false);
+  setTxValues(web3, dispatch, value, gas, gasPrice, usdPerEth, balance, false);
 };
 
 export const setBuyGoldFormTxPrice = async (web3, contract, dispatch, getState) => {
   const state = getState();
+  const balance = state.account.balance;
   const form = state.forms.buyGoldForm;
   const months = form.months.value.toString();
   const contractMethod = contract.buyGold;
@@ -125,5 +141,5 @@ export const setBuyGoldFormTxPrice = async (web3, contract, dispatch, getState) 
   const gas = await estimateGasForTx(web3, contractMethod, params, value);
   const gasPrice = parseFloat(web3.toWei(form.gasPrice.value, 'gwei'));
 
-  setTxValues(web3, dispatch, value, gas, gasPrice, usdPerEth);
+  setTxValues(web3, dispatch, value, gas, gasPrice, usdPerEth, balance);
 };

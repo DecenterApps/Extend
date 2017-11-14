@@ -69,7 +69,7 @@ class buyGoldForm extends Component {
         {
           !this.props.invalid &&
           <div styleName="tx-info">
-            <span>Max transaction fee:</span>
+            <span>Max transaction cost:</span>
             <div>
               <span>{ this.props.currentFormTxCost.eth } ETH</span>
               <span styleName="second-price">{ this.props.currentFormTxCost.usd } USD</span>
@@ -82,10 +82,28 @@ class buyGoldForm extends Component {
           <div styleName="submit-error">Error: {this.props.buyingGoldError}</div>
         }
 
+        {
+          !this.props.invalid &&
+          this.props.insufficientBalance &&
+          <div styleName="submit-error">Insufficient balance for transaction</div>
+        }
+
+        {
+          this.props.buyingGoldSuccess &&
+          <div styleName="submit-success">
+            Tip successfully sent to the contract.
+          </div>
+        }
+
         <button
           className={formStyle['submit-button']}
           type="submit"
-          disabled={this.props.pristine || this.props.invalid || this.props.buyingGold}
+          disabled={
+            this.props.pristine ||
+            this.props.invalid ||
+            this.props.buyingGold ||
+            this.props.insufficientBalance
+          }
         >
           <Tooltip
             content={(
@@ -98,8 +116,7 @@ class buyGoldForm extends Component {
             useHover={this.props.pristine || this.props.invalid || this.props.buyingGold}
             useDefaultStyles
           >
-            Submit
-            { this.props.buyingGold ? 'Submit' : 'Submitting' }
+            { this.props.buyingGold ? 'Submitting' : 'Submit' }
           </Tooltip>
         </button>
       </form>
@@ -116,7 +133,9 @@ buyGoldForm.propTypes = {
   buyingGold: PropTypes.bool.isRequired,
   buyingGoldError: PropTypes.string.isRequired,
   currentFormTxCost: PropTypes.object.isRequired,
-  form: PropTypes.object.isRequired
+  form: PropTypes.object.isRequired,
+  buyingGoldSuccess: PropTypes.bool.isRequired,
+  insufficientBalance: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = (state) => ({
@@ -124,7 +143,9 @@ const mapStateToProps = (state) => ({
   buyingGold: state.user.buyingGold,
   buyingGoldError: state.user.buyingGoldError,
   currentFormTxCost: state.forms.currentFormTxCost,
-  form: state.forms[FORM_NAME]
+  form: state.forms[FORM_NAME],
+  buyingGoldSuccess: state.user.buyingGoldSuccess,
+  insufficientBalance: state.forms.insufficientBalance
 });
 
 const ExportComponent = createForm(

@@ -97,12 +97,17 @@ class SendForm extends Component {
             <div styleName="submit-error">Error: {this.props.sendingError}</div>
           }
 
+          {
+            !this.props.invalid &&
+            this.props.insufficientBalance &&
+            <div styleName="submit-error">Insufficient balance for transaction</div>
+          }
 
           <button
             className={formStyle['submit-button']}
             type="submit"
             disabled={
-              this.props.pristine || this.props.invalid || this.props.sending
+              this.props.pristine || this.props.invalid || this.props.sending || this.props.insufficientBalance
             }
           >
             { this.props.sending ? 'Sending' : 'Send' }
@@ -122,7 +127,8 @@ SendForm.propTypes = {
   sending: PropTypes.bool.isRequired,
   sendingError: PropTypes.string.isRequired,
   form: PropTypes.object.isRequired,
-  currentFormTxCost: PropTypes.object.isRequired
+  currentFormTxCost: PropTypes.object.isRequired,
+  insufficientBalance: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = (state) => ({
@@ -131,6 +137,7 @@ const mapStateToProps = (state) => ({
   sendingError: state.account.sendingError,
   form: state.forms[FORM_NAME],
   currentFormTxCost: state.forms.currentFormTxCost,
+  insufficientBalance: state.forms.insufficientBalance
 });
 
 const ExportComponent = createForm(FORM_NAME, SendForm, sendFormValidator);

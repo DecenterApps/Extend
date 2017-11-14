@@ -1,5 +1,5 @@
 import { weiPerEth } from '../../../../constants/general';
-import { isValidChecksumAddress, isValidAddress } from '../../../../actions/utils';
+import { isValidAddress } from '../../../../actions/utils';
 
 const sendFormValidator = (values) => {
   const errors = {};
@@ -9,11 +9,9 @@ const sendFormValidator = (values) => {
   if (!values.gasPrice) errors.gasPrice = 'Required';
 
   if (values.to) {
-    const invalidChecksum = !isValidChecksumAddress(values.to);
     const invalidAddress = !isValidAddress(values.to);
 
     if (invalidAddress) errors.to = 'Address is invalid.';
-    if (invalidChecksum) errors.to = 'Address checksum is invalid.';
   }
 
   if (values.amount) {

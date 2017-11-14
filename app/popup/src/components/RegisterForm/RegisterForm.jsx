@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Tooltip from 'react-tooltip-lite';
+import Tooltip from '../../../../commonComponents/Tooltip/Tooltip';
 import connect from '../../../../customRedux/connect';
 import createForm from '../../../../customRedux/createForm';
 import createField from '../../../../customRedux/createField';
@@ -67,17 +67,20 @@ class RegisterForm extends Component {
             className={formStyle['submit-button']}
             type="submit"
             disabled={
-              this.props.pristine || this.props.invalid
+              this.props.pristine || this.props.invalid || this.props.insufficientBalance
             }
           >
             <Tooltip
               content={(
-                <span>
+                <div>
                   { this.props.pristine && 'Form has not been touched' }
                   { this.props.invalid && 'Form is not valid, check errors' }
-                </span>
+                  { !this.props.invalid && this.props.insufficientBalance && 'Insufficient balance for transaction' }
+                </div>
               )}
-              useHover={this.props.pristine || this.props.invalid}
+              useHover={
+                this.props.pristine || this.props.invalid || (!this.props.invalid && this.props.insufficientBalance)
+              }
               useDefaultStyles
             >
               VERIFY USERNAME
@@ -96,13 +99,15 @@ RegisterForm.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
   gasPrice: PropTypes.number.isRequired,
   currentFormTxCost: PropTypes.object.isRequired,
-  form: PropTypes.object.isRequired
+  form: PropTypes.object.isRequired,
+  insufficientBalance: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = (state) => ({
   currentFormTxCost: state.forms.currentFormTxCost,
   gasPrice: state.account.gasPrice,
-  form: state.forms[FORM_NAME]
+  form: state.forms[FORM_NAME],
+  insufficientBalance: state.forms.insufficientBalance
 });
 
 const ExportComponent = createForm(FORM_NAME, RegisterForm, registerFormValidator);

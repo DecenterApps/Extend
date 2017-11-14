@@ -9,6 +9,7 @@ import formsHandler from '../../handlers/formsActionsHandler';
 import pageHandler from '../../handlers/pageActionsHandler';
 import modalsHandler from '../../handlers/modalsActionsHandler';
 import dialogHandler from '../../handlers/dialogActionsHandler';
+import onboardingHandler from '../../handlers/onboardingActionsHandler';
 import handleChangeNetwork from '../../modules/handleChangeNetwork';
 import clearPendingStates from '../../modules/clearPendingStates';
 
@@ -99,6 +100,9 @@ chrome.runtime.onMessage.addListener(async (msg, sender) => {
       return modalsHandler(web3, engine, contracts, getState, dispatch, funcName, payload);
     case 'dialog':
       return dialogHandler(web3, engine, contracts, getState, dispatch, funcName, payload);
+    case 'onboarding':
+      return onboardingHandler(web3, engine, contracts, getState, dispatch, funcName, payload);
+
     default:
       throw Error('Action Handler not defined', handler);
   }

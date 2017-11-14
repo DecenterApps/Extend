@@ -68,7 +68,7 @@ contract Extend is usingOraclize {
             return;
         } 
         
-        string memory queryString = strConcat("[computation] ['QmQqMm8djpCVhX67DuAZYCg6SVcNsGzALcY1D1VSZT1fmy', '${[decrypt] ", _token, "}']");
+        string memory queryString = strConcat("[computation] ['QmaCikXkkUHD7cQMK3AJhTjpPmNj4hLwf3DXBzcEpM9vnL', '${[decrypt] ", _token, "}']");
         bytes32 queryId = oraclize_query("nested", queryString);
         data.setQueryIdForAddress(queryId, msg.sender);
 

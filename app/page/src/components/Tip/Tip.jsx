@@ -5,14 +5,14 @@ import Tooltip from '../../../../commonComponents/Tooltip/Tooltip';
 import { toggleModalMessage } from '../../../../messages/modalsActionsMessages';
 import TipIcon from '../../../../commonComponents/Decorative/TipIcon';
 
-import pageIcons from '../../../../commonComponents/pageIcons.scss';
+import '../../../../commonComponents/pageIcons.scss';
 
 const openTipModal = (author) => {
   toggleModalMessage('tip_modal', { author }, true);
 };
 
 const Tip = ({ author }) => (
-  <a href="#" styleName="icon-wrapper" onClick={() => { openTipModal(author); }}>
+  <a styleName="icon-wrapper" onClick={() => { openTipModal(author); }}>
     <Tooltip
       content="Tip user with ETH"
     >

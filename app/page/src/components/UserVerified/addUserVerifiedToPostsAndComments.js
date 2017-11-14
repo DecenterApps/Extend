@@ -15,8 +15,7 @@ const insertUserVerifiedToPosts = () => {
 
 const insertUserVerifiedToComments = () => {
   $(".commentarea .comment .flat-list:contains('permalink')").append('<li class="extend-verified-comment"></li>');
-  const authors = $('.commentarea .comment .tagline')
-    .map((i, el) => ($(el).find('.author').text()));
+  const authors = $('.commentarea .comment .tagline .author').map((i, el) => (el.textContent));
   const divs = document.getElementsByClassName('extend-verified-comment');
 
   authors.each((i, author) => { checkIfUsernameVerifiedMessage(author, i, 'comment'); });
@@ -33,10 +32,10 @@ export default () => {
 
     const { index, isVerified, type } = message.payload;
 
-    if (type === 'post') {
+    if (type === 'post' && isVerified) {
       render(<UserVerified isVerified={isVerified} />, postElements[index]);
     }
-    if (type === 'comment') {
+    if (type === 'comment' && isVerified) {
       render(<UserVerified isVerified={isVerified} />, commentElements[index]);
     }
   });

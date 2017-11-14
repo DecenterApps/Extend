@@ -72,7 +72,7 @@ const Dashboard = ({
           <div styleName="large-section-balance">
             { balance } ETH
             <div styleName="large-section-btn" onClick={() => { changeViewMessage('send'); }}>
-              Send
+              Transfer
             </div>
           </div>
           <div styleName="large-section-title">

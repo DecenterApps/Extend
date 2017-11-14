@@ -18,6 +18,7 @@ class buyGoldForm extends Component {
     this.props.formData.setNumOfFields(1);
     this.MonthsField = createField(InputFormField, this.props.formData);
     this.GasPriceField = createField(InputFormField, this.props.formData);
+    setBuyGoldFormTxPriceMessage();
   }
 
   componentWillReceiveProps(newProps) {
@@ -52,6 +53,7 @@ class buyGoldForm extends Component {
           wrapperClassName={formStyle['form-item-wrapper']}
           inputClassName={formStyle['form-item']}
           errorClassName={formStyle['form-item-error']}
+          value="1"
         />
 
         <GasPriceField

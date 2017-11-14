@@ -12,7 +12,7 @@ class InputFormField extends Component {
   render() {
     const {
       input, placeholder, wrapperClassName, inputClassName, errorClassName, showErrorText,
-      type, id, showLabel, labelText, labelClass, meta: { touched, error }, value
+      type, id, showLabel, labelText, labelClass, meta: { touched, error }, value, autoFocus,
     } = this.props;
     return (
       <div className={wrapperClassName}>
@@ -23,6 +23,7 @@ class InputFormField extends Component {
           id={id}
           className={`${inputClassName} ${touched && error ? errorClassName : ''}`}
           type={type}
+          autoFocus={autoFocus}
         />
         {showLabel && <label className={labelClass} htmlFor={id || ''}>{ labelText }</label>}
         {touched && ((error && showErrorText && <div className={errorClassName}>{error}</div>))}
@@ -38,7 +39,8 @@ InputFormField.defaultProps = {
   labelClass: '',
   id: '',
   placeholder: '',
-  showErrorText: false
+  showErrorText: false,
+  autoFocus: false,
 };
 
 InputFormField.propTypes = {
@@ -54,7 +56,8 @@ InputFormField.propTypes = {
   labelText: PropTypes.string,
   labelClass: PropTypes.string,
   meta: PropTypes.object.isRequired,
-  showErrorText: PropTypes.bool
+  showErrorText: PropTypes.bool,
+  autoFocus: PropTypes.bool,
 };
 
 export default InputFormField;

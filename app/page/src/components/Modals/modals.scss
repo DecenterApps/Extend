@@ -1,4 +1,5 @@
 @import '../../../../commonComponents/colors';
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,600');
 
 .modal-backdrop {
   position: fixed;
@@ -11,6 +12,7 @@
   transition: all 0.15s ease-out;
   text-align: center;
   visibility: hidden;
+  font-family: 'Montserrat', sans-serif;
 
   .modal {
     position: relative;
@@ -23,6 +25,9 @@
     transform: translateY(0);
     opacity: 0;
     transition: all 0.3s ease-out;
+    overflow: hidden;
+    border-radius: 6px !important;
+    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.25);
 
     .modal-header {
       background: $orange;

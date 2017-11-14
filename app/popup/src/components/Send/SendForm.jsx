@@ -55,6 +55,7 @@ class SendForm extends Component {
             wrapperClassName={`${formStyle['form-item-wrapper']} ${formStyle['form-item-wrapper-long']}`}
             inputClassName={formStyle['form-item']}
             errorClassName={formStyle['form-item-error']}
+            autoFocus
           />
 
           <AmountField
@@ -83,7 +84,7 @@ class SendForm extends Component {
           {
             !this.props.invalid &&
             <div styleName="tx-info">
-              <span>Max transaction fee:</span>
+              <span>Max transaction cost:</span>
               <div>
                 <span>{ this.props.currentFormTxCost.eth } ETH</span>
                 <span styleName="second-price">{ this.props.currentFormTxCost.usd } USD</span>
@@ -109,7 +110,7 @@ class SendForm extends Component {
               this.props.pristine || this.props.invalid || this.props.sending || this.props.insufficientBalance
             }
           >
-            { this.props.sending ? 'Sending' : 'Send' }
+            { this.props.sending ? 'Transferring' : 'Transfer' }
           </button>
         </form>
       </div>

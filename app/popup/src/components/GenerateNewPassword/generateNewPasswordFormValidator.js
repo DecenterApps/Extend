@@ -6,7 +6,7 @@ const generateNewPasswordFormValidator = (values) => {
 
   if (values.password && values.repeatPassword) {
     if (values.password !== values.repeatPassword) {
-      errors.repeatPassword = 'Passwords do not match';
+      errors.repeatPassword = 'Passphrases do not match';
     }
   }
 

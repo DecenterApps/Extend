@@ -84,7 +84,10 @@ const Gold = ({ gettingGold, gettingGoldError, golds }) => (
 
             {
               golds.length === 0 &&
-              <div>You did not send or receive any gold</div>
+              <div>
+                You did not send or receive any gold <br />
+                (It might take a minute or two until new transactions are displayed)
+              </div>
             }
           </div>
         }

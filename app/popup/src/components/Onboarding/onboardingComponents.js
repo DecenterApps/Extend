@@ -1,38 +1,61 @@
 import React from 'react';
 
-import pageComponent from './page-components.png';
+import pageComponentsUnveried from './page-components-unverified.png';
+import pageComponentVerified from './page-components-verified.png';
 
 export const onboardingComponents = {
   'intro': () => (
-    <div><h3>Welcome aboard!</h3><div>Now we will tell you a little about how EXTEND works</div></div>
+    <div>
+      <h3>Welcome aboard!</h3>
+      <div>Let us give you a quick tour and demonstrate how ΞXTΞND works.</div>
+    </div>
   ),
   'description': () => (
     <div>
-      Short description that goes over what the app does. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-      Maecenas venenatis purus urna, in iaculis nisl venenatis in. Pellentesque id velit turpis. Nunc ultricies, nisi
-      a sagittis accumsan, quam urna tempus eros, vitae iaculis turpis urna quis est. Vivamus a augue ut diam
-      hendrerit vulputate. Donec metus mi, condime
+      ΞXTΞND is a Chrome extension that aims to build a bridge between Ethereum blockchain and popular social websites
+      such as Reddit. We accomplish this by incorporating Ethereum light client into the extension while making slight
+      modifications to certain web pages (such as Reddit posts) in order to make extra features available to the users.
+      In this initial release, the extension allows you to send one-click tips to other Reddit users or buy them gold
+      with ETH directly.
     </div>
   ),
   'address': () => (
-    <div>This is your address, other users need it to send you a tip, gold, ethereum etc.</div>
+    <div>This is an address associeted with the Ethereum wallet that we have created for you. You can load it by
+      sending Eher to it.</div>
   ),
   'component': () => (
     <div>
-      <img src={pageComponent} alt="Page components info" />
-      Desciption of tip/gold icons that are inserted + image
+      <img src={pageComponentsUnveried} alt="Page components info" />
+      <p>
+        As you can see in the image above, ΞXTΞND will add some extra options to Reddit posts. This example shows a
+        post from a user that has not installed ΞXTΞND yet, but whom you can still tip. He will then be notified about
+        the tip via Reddit private message and able to claim the tip after installing the extension and verifying his
+        username
+      </p>
+
+      <img src={pageComponentVerified} alt="Page components info" />
+      <p>
+        This image shows a post from verified ΞXTΞND user. The tips send to this user will go to his wallet directly.
+      </p>
     </div>
   ),
   'verified': () => (
-    <div>Description about Reddit username verification + link to blog post</div>
-  ),
-  'balance': () => (
-    <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum pharetra metus id nisl</div>
+    <p>
+      Although you can start sending tips as soon as you load your ΞXTΞND wallet, in order to receive tips you will
+      need to link your Reddit username to your wallet&apos;s Ethereum address. This is somewhat complex but safe
+      process which combines Reddit OAuth, Ethereum smart contract and Oraclize service in order to ensure that you are
+      the true owner of your Reddit username. If you want to read more details, our [blog post] goes in depth on this
+      procedure.
+    </p>
   ),
   'formDescription': () => (
-    <div>Desciption on what Max transaction cost means and that you can change gas price</div>
+    <div>
+      We made gas price flexible, so that if you are not in a rush you can pay smaller fee and wait a bit longer for
+      your transactions to get confirmed. Maximum transaction cost show the full amount that will be deducted from your
+      wallet. This includes tip amount or gold price and transaction fee (potentially including Oraclize fee as well).
+    </div>
   ),
   'final': () => (
-    <h3>Now you are all set to go, enjoy the app!</h3>
+    <h2>Now that you have seen how everything works, you can try it out for yourself. Happy tipping! :)</h2>
   )
 };

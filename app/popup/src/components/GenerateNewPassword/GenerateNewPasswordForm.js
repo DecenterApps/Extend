@@ -37,6 +37,7 @@ class GenerateNewPasswordForm extends Component {
           wrapperClassName={formStyle['form-item-wrapper']}
           inputClassName={formStyle['form-item']}
           errorClassName={formStyle['form-item-error']}
+          autoFocus
         />
 
         <RepeatPasswordField

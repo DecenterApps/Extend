@@ -27,7 +27,7 @@ const PrivacyNotice = () => (
       </div>
     </div>
 
-    <button onClick={() => { changeViewMessage('createAccount', { acceptedNotice: true }); }}>
+    <button tabIndex="-1" onClick={() => { changeViewMessage('createAccount', { acceptedNotice: true }); }}>
       Accept
     </button>
   </div>

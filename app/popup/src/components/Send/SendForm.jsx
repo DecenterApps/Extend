@@ -55,6 +55,7 @@ class SendForm extends Component {
             wrapperClassName={`${formStyle['form-item-wrapper']} ${formStyle['form-item-wrapper-long']}`}
             inputClassName={formStyle['form-item']}
             errorClassName={formStyle['form-item-error']}
+            autoFocus
           />
 
           <AmountField

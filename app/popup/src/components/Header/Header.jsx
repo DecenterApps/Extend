@@ -27,7 +27,7 @@ const Header = ({ view, generatedVault, copiedSeed, password }) => (
       </span>
     }
 
-    { (view === 'privacyNotice') && <span>Privacy notice</span> }
+    { (view === 'privacyNotice') && <span>Terms of agreement</span> }
     { (view === 'createAccount') && <span>Chose passphrase</span> }
     { (view === 'copySeed') && <span>Copy recovery phrase</span> }
     { (view === 'dashboard') && <span styleName="logo-wrapper"><Logo /></span> }

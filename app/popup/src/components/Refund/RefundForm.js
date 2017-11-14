@@ -45,7 +45,7 @@ class RefundForm extends Component {
             <a
               href={createRedditLink(this.props.refundTipUsername)}
               target="_blank"
-              rel="noopener"
+              rel="noopener noreferrer"
             >
               /u/{ this.props.refundTipUsername }
             </a>

@@ -44,14 +44,15 @@ export const onboardingComponents = {
       Although you can start sending tips as soon as you load your ΞXTΞND wallet, in order to receive tips you will
       need to link your Reddit username to your wallet&apos;s Ethereum address. This is somewhat complex but safe
       process which combines Reddit OAuth, Ethereum smart contract and Oraclize service in order to ensure that you are
-      the true owner of your Reddit username. If you want to read more details, our [blog post] goes in depth on this
-      procedure.
+      the true owner of your Reddit username. If you want to read more details, our
+      <a href="https://blog.decenter.com/2017/11/14/extend/" target="_blank" rel="noopener noreferrer">blog post</a>
+      goes in depth on this procedure.
     </p>
   ),
   'formDescription': () => (
     <div>
       We made gas price flexible, so that if you are not in a rush you can pay smaller fee and wait a bit longer for
-      your transactions to get confirmed. Maximum transaction cost show the full amount that will be deducted from your
+      your transactions to get confirmed. Maximum transaction cost shows the full amount that will be deducted from your
       wallet. This includes tip amount or gold price and transaction fee (potentially including Oraclize fee as well).
     </div>
   ),

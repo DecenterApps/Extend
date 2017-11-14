@@ -40,7 +40,7 @@ const Gold = ({ gettingGold, gettingGoldError, golds }) => (
                         <a
                           href={createRedditLink(gold.to)}
                           target="_blank"
-                          rel="noopener"
+                          rel="noopener noreferrer"
                         >
                           /u/{ gold.to }
                         </a>
@@ -63,7 +63,7 @@ const Gold = ({ gettingGold, gettingGoldError, golds }) => (
                         <a
                           href={getEtherScanLinkByNetwork('kovan', gold.from)}
                           target="_blank"
-                          rel="noopener"
+                          rel="noopener noreferrer"
                         >
                           { gold.from }
                         </a>

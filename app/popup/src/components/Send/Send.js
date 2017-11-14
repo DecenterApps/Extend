@@ -45,7 +45,7 @@ const Send = ({ transactions }) => (
               <a
                 href={getEtherScanLinkByNetwork('kovan', transaction.to)}
                 target="_blank"
-                rel="noopener"
+                rel="noopener noreferrer"
               >
                 { transaction.to }
               </a>
@@ -56,7 +56,7 @@ const Send = ({ transactions }) => (
                 styleName="send.hash"
                 href={getEtherScanTxByNetwork('kovan', transaction.hash)}
                 target="_blank"
-                rel="noopener"
+                rel="noopener noreferrer"
               >
                 { transaction.hash }
               </a>

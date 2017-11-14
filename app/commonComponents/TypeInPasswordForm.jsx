@@ -31,7 +31,7 @@ class TypeInPasswordForm extends Component {
           name="password"
           showErrorText
           showLabel
-          labelText="Password:"
+          labelText="Passphrase:"
           type="password"
           wrapperClassName={formStyle['form-item-wrapper']}
           inputClassName={formStyle['form-item']}

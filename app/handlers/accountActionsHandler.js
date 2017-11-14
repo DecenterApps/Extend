@@ -15,7 +15,6 @@ const accountActionsHandler = (web3, engine, contracts, getState, dispatch, func
       return accountActions[funcName](getState, dispatch, payload);
     case 'send':
       return accountActions[funcName](web3, engine, getState, dispatch);
-    case 'withdraw':
     case 'refund':
       return accountActions[funcName](web3, getState, dispatch, contracts);
 

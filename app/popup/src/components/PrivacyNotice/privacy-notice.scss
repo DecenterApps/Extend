@@ -1,10 +1,10 @@
 @import '../../../../commonComponents/buttons';
 
 .privacy-notice-wrapper {
-  height: 400px;
   overflow: auto;
   padding: 25px;
   font-size: 16px;
+  line-height: 30px;
 
   .privacy-notice-body {
     h2 {

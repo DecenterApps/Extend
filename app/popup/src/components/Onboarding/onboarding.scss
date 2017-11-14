@@ -21,19 +21,32 @@
     text-align: center;
     position: absolute;
     box-sizing: border-box;
-    padding: 0 50px;
+    padding: 0 30px;
     line-height: 30px;
     width: 100%;
+
+    h2 {
+      line-height: 40px;
+      font-size: 30px;
+      margin: 0;
+    }
 
     h3 {
       font-size: 30px;
       margin: 0 0 15px 0;
     }
+
     div { font-size: 18px; }
+
     img {
       border-radius: 4px;
       width: 100%;
-      margin-bottom: 20px;
+    }
+
+    p {
+      font-size: 14px;
+      line-height: 23px;
+      margin: 0 0 10px 0;
     }
   }
 

@@ -35,8 +35,6 @@ class TipForm extends Component {
   render() {
     const AmountField = this.AmountField;
     const GasPriceField = this.GasPriceField;
-    const insufficientBalance =
-      !this.props.invalid && (((parseFloat(this.props.balance) - parseFloat(this.props.currentFormTxCost.eth)) < 0));
 
     return (
       <form
@@ -84,7 +82,8 @@ class TipForm extends Component {
         }
 
         {
-          insufficientBalance &&
+          !this.props.invalid &&
+          this.props.insufficientBalance &&
           <div styleName="submit-error">Insufficient balance for transaction</div>
         }
 
@@ -100,7 +99,7 @@ class TipForm extends Component {
           type="submit"
           disabled={
             this.props.pristine || this.props.invalid ||
-            this.props.sendingTip || insufficientBalance
+            this.props.sendingTip || this.props.insufficientBalance
           }
         >
           { this.props.sendingTip ? 'Sending' : 'Send' }
@@ -121,7 +120,7 @@ TipForm.propTypes = {
   form: PropTypes.object.isRequired,
   currentFormTxCost: PropTypes.object.isRequired,
   sendingTipSuccess: PropTypes.bool.isRequired,
-  balance: PropTypes.string.isRequired
+  insufficientBalance: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = (state) => ({
@@ -131,7 +130,7 @@ const mapStateToProps = (state) => ({
   form: state.forms[FORM_NAME],
   currentFormTxCost: state.forms.currentFormTxCost,
   sendingTipSuccess: state.user.sendingTipSuccess,
-  balance: state.account.balance
+  insufficientBalance: state.forms.insufficientBalance
 });
 
 const ExportComponent = createForm(FORM_NAME, TipForm, tipFormValidator);

@@ -5,7 +5,8 @@ import {
 const reducerName = 'forms';
 
 const INITIAL_STATE = {
-  currentFormTxCost: ''
+  currentFormTxCost: '',
+  insufficientBalance: false
 };
 
 export const reducer = (state, action) => {
@@ -41,7 +42,11 @@ export const reducer = (state, action) => {
     }
 
     case SET_TX_COST:
-      return { ...state, currentFormTxCost: payload };
+      return {
+        ...state,
+        currentFormTxCost: payload.currentFormTxCost,
+        insufficientBalance: payload.insufficientBalance
+      };
 
     default:
       return false;

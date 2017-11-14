@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Tooltip from 'react-tooltip-lite';
+import Tooltip from '../../../../commonComponents/Tooltip/Tooltip';
 import connect from '../../../../customRedux/connect';
 import createForm from '../../../../customRedux/createForm';
 import createField from '../../../../customRedux/createField';
@@ -32,8 +32,6 @@ class RegisterForm extends Component {
 
   render() {
     const GasPriceField = this.GasPriceField;
-    const insufficientBalance =
-      !this.props.invalid && (((parseFloat(this.props.balance) - parseFloat(this.props.currentFormTxCost.eth)) < 0));
 
     return (
       <div>
@@ -65,26 +63,24 @@ class RegisterForm extends Component {
             </div>
           }
 
-          {
-            insufficientBalance &&
-            <div styleName="submit-error">Insufficient balance for transaction</div>
-          }
-
           <button
             className={formStyle['submit-button']}
             type="submit"
             disabled={
-              this.props.pristine || this.props.invalid || insufficientBalance
+              this.props.pristine || this.props.invalid || this.props.insufficientBalance
             }
           >
             <Tooltip
               content={(
-                <span>
+                <div>
                   { this.props.pristine && 'Form has not been touched' }
                   { this.props.invalid && 'Form is not valid, check errors' }
-                </span>
+                  { !this.props.invalid && this.props.insufficientBalance && 'Insufficient balance for transaction' }
+                </div>
               )}
-              useHover={this.props.pristine || this.props.invalid}
+              useHover={
+                this.props.pristine || this.props.invalid || (!this.props.invalid && this.props.insufficientBalance)
+              }
               useDefaultStyles
             >
               VERIFY USERNAME
@@ -104,14 +100,14 @@ RegisterForm.propTypes = {
   gasPrice: PropTypes.number.isRequired,
   currentFormTxCost: PropTypes.object.isRequired,
   form: PropTypes.object.isRequired,
-  balance: PropTypes.string.isRequired
+  insufficientBalance: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = (state) => ({
   currentFormTxCost: state.forms.currentFormTxCost,
   gasPrice: state.account.gasPrice,
   form: state.forms[FORM_NAME],
-  balance: state.account.balance
+  insufficientBalance: state.forms.insufficientBalance
 });
 
 const ExportComponent = createForm(FORM_NAME, RegisterForm, registerFormValidator);

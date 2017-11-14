@@ -32,8 +32,6 @@ class RefundForm extends Component {
 
   render() {
     const GasPriceField = this.GasPriceField;
-    const insufficientBalance =
-      !this.props.invalid && (((parseFloat(this.props.balance) - parseFloat(this.props.currentFormTxCost.eth)) < 0));
 
     return (
       <div>
@@ -86,7 +84,8 @@ class RefundForm extends Component {
             <div styleName="submit-error">Error: Refund not available from this user</div>
           }
           {
-            insufficientBalance &&
+            !this.props.invalid &&
+            this.props.insufficientBalance &&
             <div styleName="submit-error">Insufficient balance for transaction</div>
           }
 
@@ -102,7 +101,7 @@ class RefundForm extends Component {
             type="submit"
             disabled={
               this.props.pristine || this.props.invalid || this.props.refunding || !this.props.refundAvailable ||
-              insufficientBalance
+              this.props.insufficientBalance
             }
           >
             { this.props.refunding ? 'Refunding' : 'Refund' }
@@ -126,7 +125,7 @@ RefundForm.propTypes = {
   form: PropTypes.object.isRequired,
   currentFormTxCost: PropTypes.object.isRequired,
   refundTipUsername: PropTypes.string.isRequired,
-  balance: PropTypes.string.isRequired
+  insufficientBalance: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = (state) => ({
@@ -138,7 +137,8 @@ const mapStateToProps = (state) => ({
   form: state.forms[FORM_NAME],
   currentFormTxCost: state.forms.currentFormTxCost,
   refundTipUsername: state.user.refundTipUsername,
-  balance: state.account.balance
+  balance: state.account.balance,
+  insufficientBalance: state.forms.insufficientBalance
 });
 
 const ExportComponent = createForm(FORM_NAME, RefundForm, refundFormValidator);

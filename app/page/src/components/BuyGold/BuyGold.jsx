@@ -13,7 +13,7 @@ const openGoldModal = (author) => {
 };
 
 const BuyGold = ({ author }) => (
-  <a href="#" styleName="icon-wrapper" onClick={() => { openGoldModal(author); }}>
+  <a styleName="icon-wrapper" onClick={() => { openGoldModal(author); }}>
     <Tooltip
       content="Give gold to user with ETH"
       useDefaultStyles

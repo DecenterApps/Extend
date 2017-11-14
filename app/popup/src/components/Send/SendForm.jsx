@@ -84,7 +84,7 @@ class SendForm extends Component {
           {
             !this.props.invalid &&
             <div styleName="tx-info">
-              <span>Max transaction fee:</span>
+              <span>Max transaction cost:</span>
               <div>
                 <span>{ this.props.currentFormTxCost.eth } ETH</span>
                 <span styleName="second-price">{ this.props.currentFormTxCost.usd } USD</span>

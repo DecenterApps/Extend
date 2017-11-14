@@ -52,6 +52,7 @@ class buyGoldForm extends Component {
           wrapperClassName={formStyle['form-item-wrapper']}
           inputClassName={formStyle['form-item']}
           errorClassName={formStyle['form-item-error']}
+          value="1"
         />
 
         <GasPriceField

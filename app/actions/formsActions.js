@@ -31,7 +31,10 @@ const setTxValues = (web3, dispatch, value, gas, gasPrice, usdPerEth, balance, a
   dispatch({
     type: SET_TX_COST,
     payload: {
-      currentFormTxCost: { eth: txCostEth, usd: txCostEth * usdPerEth },
+      currentFormTxCost: {
+        eth: txCostEth,
+        usd: (txCostEth * usdPerEth).toFixed(2),
+      },
       insufficientBalance
     }
   });
@@ -68,7 +71,7 @@ export const setSendFormTxPrice = async (web3, contract, dispatch, getState) => 
   const gas = await estimateGas(web3, { to, value });
   const gasPrice = parseFloat(web3.toWei(form.gasPrice.value, 'gwei'));
 
-  setTxValues(web3, dispatch, value, gas, gasPrice, usdPerEth, balance, false);
+  setTxValues(web3, dispatch, value, gas, gasPrice, usdPerEth, balance);
 };
 
 export const setRefundFormTxPrice = async (web3, contract, dispatch, getState) => {
@@ -110,7 +113,7 @@ export const setTipFormTxPrice = async (web3, contract, dispatch, getState) => {
   const gas = await estimateGasForTx(web3, contractMethod, [web3.toHex(author)], value);
   const gasPrice = parseFloat(web3.toWei(form.gasPrice.value, 'gwei'));
 
-  setTxValues(web3, dispatch, value, gas, gasPrice, usdPerEth, balance, false);
+  setTxValues(web3, dispatch, value, gas, gasPrice, usdPerEth, balance);
 };
 
 export const setBuyGoldFormTxPrice = async (web3, contract, dispatch, getState) => {

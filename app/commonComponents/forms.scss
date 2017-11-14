@@ -71,12 +71,15 @@
     font-size: 18px;
     margin-bottom: 20px;
     color: $red-error;
+    text-align: center;
+    font-weight: 600;
   }
 
   .submit-success {
     font-size: 18px;
-    margin-bottom: 20px;
     color: $green;
+    text-align: center;
+    font-weight: 600;
   }
 
   .submit-button {

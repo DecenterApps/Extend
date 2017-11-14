@@ -12,7 +12,7 @@ const TipModal = ({ closeModal, password }) => (
   <div>
     <ModalHeader title={password ? 'Tip' : 'Unlock account'} closeModal={closeModal} />
     <ModalBody>
-      { password && <TipForm /> }
+      { password && <TipForm closeModal={closeModal} /> }
       { !password && <TypeInPasswordForm /> }
     </ModalBody>
   </div>

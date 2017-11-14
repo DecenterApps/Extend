@@ -32,6 +32,13 @@ class buyGoldForm extends Component {
     ) {
       setBuyGoldFormTxPriceMessage();
     }
+
+    if (
+      newProps.buyingGoldSuccess &&
+      !this.props.buyingGoldSuccess
+    ) {
+      setTimeout(this.props.closeModal, 3000);
+    }
   }
 
   render() {
@@ -97,30 +104,34 @@ class buyGoldForm extends Component {
           </div>
         }
 
-        <button
-          className={formStyle['submit-button']}
-          type="submit"
-          disabled={
-            this.props.pristine ||
-            this.props.invalid ||
-            this.props.buyingGold ||
-            this.props.insufficientBalance
-          }
-        >
-          <Tooltip
-            content={(
-              <span>
-                { this.props.pristine && 'Form has not been touched' }
-                { this.props.invalid && 'Form is not valid, check errors' }
-                { this.props.buyingGold && 'Sending transaction' }
-              </span>
-            )}
-            useHover={this.props.pristine || this.props.invalid || this.props.buyingGold}
-            useDefaultStyles
+
+        {
+          !this.props.buyingGoldSuccess &&
+          <button
+            className={formStyle['submit-button']}
+            type="submit"
+            disabled={
+              this.props.pristine ||
+              this.props.invalid ||
+              this.props.buyingGold ||
+              this.props.insufficientBalance
+            }
           >
-            { this.props.buyingGold ? 'Submitting' : 'Submit' }
-          </Tooltip>
-        </button>
+            <Tooltip
+              content={(
+                <span>
+                  {this.props.pristine && 'Form has not been touched'}
+                  {this.props.invalid && 'Form is not valid, check errors'}
+                  {this.props.buyingGold && 'Sending transaction'}
+                </span>
+              )}
+              useHover={this.props.pristine || this.props.invalid || this.props.buyingGold}
+              useDefaultStyles
+            >
+              {this.props.buyingGold ? 'Submitting' : 'Submit'}
+            </Tooltip>
+          </button>
+        }
       </form>
     );
   }
@@ -137,7 +148,8 @@ buyGoldForm.propTypes = {
   currentFormTxCost: PropTypes.object.isRequired,
   form: PropTypes.object.isRequired,
   buyingGoldSuccess: PropTypes.bool.isRequired,
-  insufficientBalance: PropTypes.bool.isRequired
+  insufficientBalance: PropTypes.bool.isRequired,
+  closeModal: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({

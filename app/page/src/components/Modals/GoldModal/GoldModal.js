@@ -12,7 +12,7 @@ const GoldModal = ({ closeModal, password }) => (
   <div>
     <ModalHeader title={password ? 'Buy gold' : 'Unlock account'} closeModal={closeModal} />
     <ModalBody>
-      { password && <BuyGoldForm /> }
+      { password && <BuyGoldForm closeModal={closeModal} /> }
       { !password && <TypeInPasswordForm /> }
     </ModalBody>
   </div>

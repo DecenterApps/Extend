@@ -1,17 +1,12 @@
 import {
   NETWORK_UNAVAILABLE, VERIFIED_USER, REGISTER_USER_ERROR, SET_ACTIVE_TAB, GET_TIPS, GET_TIPS_SUCCESS,
-  GET_TIPS_ERROR, CHANGE_VIEW, CONNECT_AGAIN, CONNECT_AGAIN_SUCCESS, CONNECT_AGAIN_ERROR, ADD_NEW_TIP,
+  GET_TIPS_ERROR, CONNECT_AGAIN, CONNECT_AGAIN_SUCCESS, CONNECT_AGAIN_ERROR, ADD_NEW_TIP,
   ADD_NEW_GOLD, GET_GOLD, GET_GOLD_ERROR, GET_GOLD_SUCCESS, SET_DISCONNECTED, SET_REFUND_TIPS, DIALOG_OPEN
 } from '../constants/actionTypes';
 import {
   verifiedUserEvent, listenForTips, getTipsFromEvent, listenForGold, getGoldFromEvent, _checkIfRefundAvailable
 } from '../modules/ethereumService';
-
-export const changeView = (dispatch, payload) =>
-  new Promise(async (resolve) => {
-    await dispatch({ type: CHANGE_VIEW, payload });
-    resolve();
-  });
+import { changeView } from './permanentActions';
 
 export const checkRefundForSentTips = async (web3, contract, getState, dispatch) => {
   const tips = [...getState().user.tips];

@@ -6,7 +6,7 @@ import createForm from '../customRedux/createForm';
 import createField from '../customRedux/createField';
 import InputFormField from './InputFormField';
 import typeInPasswordFormValidator from './typeInPasswordFormValidator';
-import { checkIfPasswordValidMessage } from '../messages/accountActionMessages';
+import { checkIfPasswordValidMessage } from '../messages/keyStoreActionMessages';
 
 import formStyle from './forms.scss';
 

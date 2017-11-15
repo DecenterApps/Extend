@@ -10,7 +10,7 @@ const queue = new PQueue({ concurrency: 1 });
  *
  * @param reducerData Object that has reducer name initial state and handle function
  */
-const initReducer = async (reducerData) =>
+const initAsyncReducer = async (reducerData) =>
   new Promise(async (resolve) => {
     await clearReducer(reducerData.name); // remove when finished
 
@@ -19,9 +19,9 @@ const initReducer = async (reducerData) =>
     if (existingReducerState === undefined) {
       await set(reducerData.name, reducerData.initialState);
       resolve(reducerData.initialState);
+    } else {
+      resolve(existingReducerState);
     }
-
-    resolve(existingReducerState);
   });
 
 /**
@@ -42,7 +42,7 @@ const combineReducers = (reducersData) =>
       // If the reducer is saved locally check if there is already saved state
       // else serve new reducer instance
       if (reducerData.async) {
-        store.state[reducerData.name] = await initReducer(reducerData);
+        store.state[reducerData.name] = await initAsyncReducer(reducerData);
       } else {
         store.state[reducerData.name] = reducerData.initialState;
       }
@@ -78,6 +78,11 @@ const handleReducerFinish = (reducersFinished, reducers, resolved, resolve, stat
   throw Error('Dispatch was not handled in any reducer', action);
 };
 
+const combinedReducersByAsync = (reducersArr) => {
+  const reducersByAsync = {};
+  reducersArr.forEach((reducer) => { reducersByAsync[reducer.name] = reducer.async; });
+  return reducersByAsync;
+};
 
 // TODO Try to clean this code up
 /**
@@ -92,6 +97,7 @@ const createStore = (reducersData) =>
 
     let state = combinedReducers.state;
     const reducers = combinedReducers.reducers;
+    const reducersByAsync = combinedReducersByAsync(reducersData);
 
     chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       if (request.type !== 'getState') return;
@@ -121,7 +127,7 @@ const createStore = (reducersData) =>
 
               let setResult = {};
 
-              if (reducers[reducerName].async) {
+              if (reducersByAsync[reducerName]) {
                 setResult = await set(reducerName, newReducerState);
               } else {
                 setResult = newReducerState;

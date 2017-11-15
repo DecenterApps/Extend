@@ -8,8 +8,6 @@ const accountActionsHandler = (web3, engine, contracts, getState, dispatch, func
     case 'passwordReloader':
     case 'clearRefundValues':
       return accountActions[funcName](dispatch);
-    case 'checkIfPasswordValid':
-      return accountActions[funcName](getState, dispatch, payload);
     case 'send':
       return accountActions[funcName](web3, engine, getState, dispatch);
     case 'refund':

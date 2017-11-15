@@ -5,7 +5,8 @@ import connect from '../../../../customRedux/connect';
 import SentIcon from '../../../../commonComponents/Decorative/SentIcon';
 import ReceivedIcon from '../../../../commonComponents/Decorative/ReceivedIcon';
 import RefundIcon from '../../../../commonComponents/Decorative/RefundIcon';
-import { checkRefundForSentTipsMessage, changeViewMessage } from '../../../../messages/userActionsMessages';
+import { checkRefundForSentTipsMessage } from '../../../../messages/userActionsMessages';
+import { changeViewMessage } from '../../../../messages/permanentActionsMessages';
 import { createRedditLink, getEtherScanLinkByNetwork } from '../../../../actions/utils';
 
 import './tips.scss';
@@ -63,7 +64,9 @@ class Tips extends Component {
                               <span
                                 styleName="refund-btn"
                                 onClick={() => {
-                                  changeViewMessage('refund', { refundTipIndex: i, refundTipUsername: tip.to });
+                                  changeViewMessage('refund');
+                                  // TODO change this to another dispatch
+                                  // { refundTipIndex: i, refundTipUsername: tip.to }
                                 }}
                               >
                                 <Tooltip

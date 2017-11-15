@@ -6,6 +6,9 @@ const permanentActionsHandler = (web3, engine, contracts, getState, dispatch, fu
     case 'acceptNotice':
       return permanentActions[funcName](dispatch);
 
+    case 'changeView':
+      return permanentActions[funcName](dispatch, payload);
+
     default:
       throw Error('Function in handler not defined', funcName);
   }

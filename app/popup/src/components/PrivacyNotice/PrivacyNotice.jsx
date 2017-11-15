@@ -1,6 +1,5 @@
 import React from 'react';
-import { changeViewMessage } from '../../../../messages/userActionsMessages';
-import { acceptNoticeMessage } from '../../../../messages/permanentActionsMessages';
+import { acceptNoticeMessage, changeViewMessage } from '../../../../messages/permanentActionsMessages';
 
 import './privacy-notice.scss';
 
@@ -20,7 +19,7 @@ const PrivacyNotice = () => (
       </div>
     </div>
 
-    <button tabIndex="-1" onClick={() => { acceptPrivacyNotice() }}>
+    <button tabIndex="-1" onClick={() => { acceptPrivacyNotice(); }}>
       Accept
     </button>
   </div>

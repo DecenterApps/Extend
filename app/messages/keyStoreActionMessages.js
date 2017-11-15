@@ -7,3 +7,7 @@ const pm = (actionParam) => {
 export const createWalletMessage = (fields) => {
   pm({ action: 'createWallet', payload: fields.password.value });
 };
+
+export const checkIfPasswordValidMessage = (fields) => {
+  pm({ action: 'checkIfPasswordValid', payload: fields.password.value });
+};

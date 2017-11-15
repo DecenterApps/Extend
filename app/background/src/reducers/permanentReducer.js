@@ -1,4 +1,5 @@
-import { ACCEPT_NOTICE, COPIED_SEED } from '../../../constants/actionTypes';
+import { ACCEPT_NOTICE, COPIED_SEED, CHANGE_VIEW } from '../../../constants/actionTypes';
+import { VIEWS } from '../../../constants/general';
 
 const reducerName = 'permanent';
 
@@ -10,6 +11,7 @@ const INITIAL_STATE = {
   registeringError: '',
   verified: false,
   verifiedUsername: '',
+  view: VIEWS[0]
 };
 
 export const reducer = (state, action) => {
@@ -21,6 +23,9 @@ export const reducer = (state, action) => {
 
     case COPIED_SEED:
       return { ...state, copiedSeed: true };
+
+    case CHANGE_VIEW:
+      return { ...state, view: payload.viewName };
 
     default:
       return false;

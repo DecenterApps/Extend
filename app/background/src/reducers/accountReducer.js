@@ -1,5 +1,5 @@
 import {
-  UNLOCK_ERROR, UNLOCK, SET_BALANCE, SET_GAS_PRICE,
+  UNLOCK_ERROR, UNLOCK_SUCCESS, SET_BALANCE, SET_GAS_PRICE,
   SEND, SEND_ERROR, SEND_SUCCESS, CHANGE_TX_STATE, CLEAR_REFUND_VALUES, REFUND_AVAILABLE,
   CLEAR_PENDING, REFUND, REFUND_ERROR, REFUND_SUCCESS, REFUND_UNAVAILABLE,
 } from '../../../constants/actionTypes';
@@ -35,9 +35,8 @@ export const reducer = (state, action) => {
         refundAvailable: true
       };
 
-    case UNLOCK:
-      return { ...state, password: payload, unlockError: '' };
-
+    case UNLOCK_SUCCESS:
+      return { ...state, unlockError: '' };
     case UNLOCK_ERROR:
       return { ...state, unlockError: 'Password not valid' };
 

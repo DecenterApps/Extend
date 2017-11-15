@@ -1,4 +1,4 @@
-import { CREATE_WALLET, CLEAR_PASSWORD } from '../../../constants/actionTypes';
+import { CREATE_WALLET, CLEAR_PASSWORD, UNLOCK } from '../../../constants/actionTypes';
 
 const reducerName = 'keyStore';
 
@@ -19,6 +19,9 @@ export const reducer = (state, action) => {
 
     case CLEAR_PASSWORD:
       return { ...state, password: '' };
+
+    case UNLOCK:
+      return { ...state, password: payload };
 
     default:
       return false;

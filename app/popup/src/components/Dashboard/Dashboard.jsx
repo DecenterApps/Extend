@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import connect from '../../../../customRedux/connect';
 import { getEtherScanLinkByNetwork, createRedditLink } from '../../../../actions/utils';
-import { changeViewMessage } from '../../../../messages/userActionsMessages';
+import { changeViewMessage } from '../../../../messages/permanentActionsMessages';
 import Tabs from '../Tabs/Tabs';
 import RegisterForm from '../RegisterForm/RegisterForm';
 import Onboarding from '../Onboarding/Onboarding';

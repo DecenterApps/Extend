@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import BackIcon from '../../../../commonComponents/Decorative/BackIcon';
 import Logo from '../../../../commonComponents/Decorative/Logo';
 import OptionsDropdown from '../OptionsDropdown/OptionsDropdown';
-import { changeViewMessage } from '../../../../messages/userActionsMessages';
 import { clearRefundValuesMessage } from '../../../../messages/accountActionMessages';
+import { changeViewMessage } from '../../../../messages/permanentActionsMessages';
 
 import './header.scss';
 

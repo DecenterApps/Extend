@@ -1,5 +1,5 @@
 import EthereumTx from 'ethereumjs-tx';
-import { getPwDerivedKey, getPrivateKey } from '../actions/accountActions';
+import { getPwDerivedKey, getPrivateKey } from '../actions/keyStoreActions';
 import { CHANGE_TX_STATE } from '../constants/actionTypes';
 import { GAS_LIMIT_MODIFIER } from '../constants/general';
 import AbstractWatcher from '../modules/AbstractWatcher';

@@ -12,7 +12,6 @@ const userActionsHandler = (web3, engine, contracts, getState, dispatch, funcNam
       return userActions[funcName](web3, contracts.func, getState, dispatch);
 
     case 'setTab':
-    case 'changeView':
       return userActions[funcName](dispatch, payload);
 
     default:

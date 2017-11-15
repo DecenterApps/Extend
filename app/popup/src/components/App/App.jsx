@@ -17,8 +17,6 @@ const App = ({ acceptedNotice, generatedVault, copiedSeed, seed, password, view,
   <div styleName="popup-wrapper">
     <Header view={view} password={password} copiedSeed={copiedSeed} generatedVault={generatedVault} />
 
-    <h1>{ view }</h1>
-
     { view === 'privacyNotice' && <PrivacyNotice /> }
     { (view === 'createAccount') && !generatedVault && acceptedNotice && <GenerateNewPassword /> }
     { (view === 'copySeed') && generatedVault && !copiedSeed && <CopySeed seed={seed} /> }
@@ -46,7 +44,7 @@ const mapStateToProps = (state) => ({
   password: state.keyStore.password,
   copiedSeed: state.permanent.copiedSeed,
   seed: state.keyStore.seed,
-  view: state.user.view,
+  view: state.permanent.view,
   networkActive: state.user.networkActive
 });
 

@@ -4,6 +4,9 @@ export const CLEAR_PENDING = 'clear_pending';
 // PERMANENT
 export const ACCEPT_NOTICE = 'accept_notice';
 
+// KEYSTORE
+export const UNLOCK = 'unlock';
+
 // USER
 export const REGISTER_USER = 'register_user';
 export const REGISTER_USER_ERROR = 'register_user_error';
@@ -40,8 +43,8 @@ export const SET_TX_COST = 'set_tx_cost';
 export const CREATE_WALLET = 'create_wallet';
 export const COPIED_SEED = 'copied_seed';
 export const CLEAR_PASSWORD = 'clear_password';
-export const UNLOCK = 'unlock';
 export const UNLOCK_ERROR = 'unlock_error';
+export const UNLOCK_SUCCESS = 'unlock_success';
 export const SET_BALANCE = 'set_balance';
 export const SET_GAS_PRICE = 'set_gas_price';
 export const SEND = 'send';

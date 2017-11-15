@@ -1,6 +1,11 @@
-import { ACCEPT_NOTICE, COPIED_SEED } from '../constants/actionTypes';
-import { changeView } from './userActions';
+import { ACCEPT_NOTICE, COPIED_SEED, CHANGE_VIEW } from '../constants/actionTypes';
 import { passwordReloader } from './keyStoreActions';
+
+export const changeView = (dispatch, payload) =>
+  new Promise(async (resolve) => {
+    await dispatch({ type: CHANGE_VIEW, payload });
+    resolve();
+  });
 
 export const acceptNotice = (dispatch) => { dispatch({ type: ACCEPT_NOTICE }); };
 

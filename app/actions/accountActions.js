@@ -1,16 +1,13 @@
 import lightwallet from '../modules/eth-lightwallet/lightwallet';
 import {
-  UNLOCK_ERROR, UNLOCK, SET_BALANCE, SET_GAS_PRICE,
+  SET_BALANCE, SET_GAS_PRICE,
   SEND, SEND_ERROR, SEND_SUCCESS, REFUND, REFUND_ERROR, REFUND_SUCCESS, CLEAR_REFUND_VALUES
 } from '../constants/actionTypes';
-import { isJson } from '../actions/utils';
 import {
   getBalanceForAddress, getGasPrice, transfer, pollForReceipt, getNonceForAddress, sendTransaction,
   listenForRefundSuccessful
 } from '../modules/ethereumService';
 import AbstractPoller from '../modules/AbstractPoller';
-import { changeView } from './userActions';
-import { passwordReloader } from './keyStoreActions';
 
 const keyStore = lightwallet.keystore;
 
@@ -109,56 +106,6 @@ const setBalance = async (web3, dispatch, getState) => {
 export const pollForBalance = (web3, engine, dispatch, getState) => {
   const poller = new AbstractPoller(setBalance, engine, web3, dispatch, getState);
   poller.poll();
-};
-
-/**
- * Returns a pw derived key from key store and password
- *
- * @param {Object} ks
- * @param {String} password
- * @return {Promise} pwDerivedKey
- */
-export const getPwDerivedKey = (ks, password) =>
-  new Promise((resolve, reject) => {
-    ks.keyFromPassword(password, (err, pwDerivedKey) => {
-      if (err) reject(err);
-      resolve(pwDerivedKey);
-    });
-  });
-
-/**
- * Returns a private key for a given address
- *
- * @param {JSON} keyStoreParam
- * @param {String} address
- * @param {Uint8Array} pwDerivedKey
- *
- * @return {String}
- */
-export const getPrivateKey = (keyStoreParam, address, pwDerivedKey) => {
-  let ks = keyStoreParam;
-
-  if (isJson()) ks = keyStore.deserialize(ks);
-
-  return ks.exportPrivateKey(address, pwDerivedKey);
-};
-
-/**
- *  Checks if the unlock account password matches the key store
- */
-export const checkIfPasswordValid = async (getState, dispatch, password) => {
-  const ks = keyStore.deserialize(getState().keyStore.keyStore);
-
-  try {
-    const pwDerivedKey = await getPwDerivedKey(ks, password);
-    getPrivateKey(ks, getState().keyStore.address, pwDerivedKey);
-
-    await dispatch({ type: UNLOCK, payload: password });
-    changeView(dispatch, { viewName: 'dashboard' });
-    passwordReloader(dispatch);
-  } catch(err) {
-    dispatch({ type: UNLOCK_ERROR });
-  }
 };
 
 export const clearRefundValues = (dispatch) =>

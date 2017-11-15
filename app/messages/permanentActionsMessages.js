@@ -5,5 +5,8 @@ const pm = (actionParam) => {
 };
 
 export const acceptNoticeMessage = () => { pm({ action: 'acceptNotice' }); };
-
 export const copiedSeedMessage = () => { pm({ action: 'copiedSeed' }); };
+
+export const changeViewMessage = (viewName, additionalChanges) => {
+  pm({ action: 'changeView', payload: { viewName, additionalChanges } });
+};

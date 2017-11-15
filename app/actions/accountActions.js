@@ -1,4 +1,4 @@
-import lightwallet from '../modules/eth-lightwallet/lightwallet';
+import lightwallet from 'eth-lightwallet';
 import {
   SET_BALANCE, SET_GAS_PRICE,
   SEND, SEND_ERROR, SEND_SUCCESS, REFUND, REFUND_ERROR, REFUND_SUCCESS, CLEAR_REFUND_VALUES

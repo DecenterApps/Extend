@@ -1,4 +1,4 @@
-import lightwallet from '../modules/eth-lightwallet/lightwallet';
+import lightwallet from 'eth-lightwallet';
 import { _checkUsernameVerified, sendTransaction } from '../modules/ethereumService';
 import {
   SEND_TIP, SEND_TIP_ERROR, SEND_TIP_SUCCESS, CLEAR_TIP_PENDING,

@@ -1,7 +1,7 @@
-import lightwallet from '../modules/eth-lightwallet/lightwallet';
+import lightwallet from 'eth-lightwallet';
 import { isJson } from '../actions/utils';
 import { CREATE_WALLET, CLEAR_PASSWORD, UNLOCK_ERROR, UNLOCK, UNLOCK_SUCCESS } from '../constants/actionTypes';
-import {  pollForBalance } from './accountActions';
+import { pollForBalance } from './accountActions';
 import { changeView } from './permanentActions';
 import { LOCK_INTERVAL } from '../constants/general';
 

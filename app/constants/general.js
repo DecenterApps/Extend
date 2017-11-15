@@ -12,7 +12,7 @@ export const VIEWS = [
 
 export const OPTIONS_DROPDOWN_ITEMS = [
   {
-    id: 'app_info',
+    id: 'ext_info',
     text: 'Extension info'
   },
   {

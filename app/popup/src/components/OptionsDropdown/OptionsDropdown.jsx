@@ -26,6 +26,7 @@ const OptionsDropdown = ({ optionsDropdownItems, dropdownVisible }) => (
                 if (item.id === 'lock_acc') { itemOnClick = clearPasswordMessage; }
                 if (item.id === 'show_seed') { itemOnClick = () => { changeViewMessage('showSeed'); }; }
                 if (item.id === 'show_terms') { itemOnClick = () => { changeViewMessage('showPrivacy'); }; }
+                if (item.id === 'ext_info') { itemOnClick = () => { changeViewMessage('showInfo'); }; }
 
                 return (
                   <span

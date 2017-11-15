@@ -26,7 +26,7 @@ export const reducer = (state, action) => {
     case UNLOCK_SUCCESS:
       return { ...state, unlockError: '' };
     case UNLOCK_ERROR:
-      return { ...state, unlockError: 'Password not valid' };
+      return { ...state, unlockError: 'Passphrase not valid' };
 
     case SET_BALANCE:
       return { ...state, balance: payload };

@@ -48,6 +48,18 @@
       line-height: 23px;
       margin: 0 0 10px 0;
     }
+
+    a {
+      text-decoration: none;
+      color: #fff;
+      font-weight: 600;
+      transition: 0.2s ease-in;
+      margin: 0 5px;
+
+      &:hover {
+        color: #e4e4e4;
+      }
+    }
   }
 
   .buttons-wrapper {

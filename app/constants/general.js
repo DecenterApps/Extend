@@ -1,6 +1,3 @@
-// Reddit app client_id
-export const CLIENT_ID = 'AFH0yVxKuLUlVQ';
-
 export const LOCK_INTERVAL = 1800000; // 30 minutes miliseconds
 export const weiPerEth = 1000000000000000000;
 
@@ -16,7 +13,7 @@ export const VIEWS = [
 export const OPTIONS_DROPDOWN_ITEMS = [
   {
     id: 'app_info',
-    text: 'App info'
+    text: 'Extension info'
   },
   {
     id: 'show_seed',

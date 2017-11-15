@@ -30,6 +30,13 @@ class TipForm extends Component {
     ) {
       setTipFormTxPriceMessage();
     }
+
+    if (
+      newProps.sendingTipSuccess &&
+      !this.props.sendingTipSuccess
+    ) {
+      setTimeout(this.props.closeModal, 3000);
+    }
   }
 
   render() {
@@ -95,16 +102,19 @@ class TipForm extends Component {
           </div>
         }
 
-        <button
-          className={formStyle['submit-button']}
-          type="submit"
-          disabled={
-            this.props.pristine || this.props.invalid ||
-            this.props.sendingTip || this.props.insufficientBalance
-          }
-        >
-          { this.props.sendingTip ? 'Sending' : 'Send' }
-        </button>
+        {
+          !this.props.sendingTipSuccess &&
+          <button
+            className={formStyle['submit-button']}
+            type="submit"
+            disabled={
+              this.props.pristine || this.props.invalid ||
+              this.props.sendingTip || this.props.insufficientBalance
+            }
+          >
+            { this.props.sendingTip ? 'Sending' : 'Send' }
+          </button>
+        }
       </form>
     );
   }
@@ -121,7 +131,8 @@ TipForm.propTypes = {
   form: PropTypes.object.isRequired,
   currentFormTxCost: PropTypes.object.isRequired,
   sendingTipSuccess: PropTypes.bool.isRequired,
-  insufficientBalance: PropTypes.bool.isRequired
+  insufficientBalance: PropTypes.bool.isRequired,
+  closeModal: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({

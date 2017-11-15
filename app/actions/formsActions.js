@@ -17,8 +17,8 @@ export const updateFieldError = (dispatch, payload) => {
 };
 
 const setTxValues = (web3, dispatch, value, gas, gasPrice, usdPerEth, balance) => {
-  const txCostEth = web3.fromWei(gas * gasPrice);
-  const insufficientBalance = (parseFloat(balance) - (parseFloat(txCostEth) + parseFloat(web3.fromWei(value)))) < 0;
+  const txCostEth = web3.fromWei((gas * gasPrice) + parseFloat(value));
+  const insufficientBalance = (parseFloat(balance) - parseFloat(txCostEth)) < 0;
 
   dispatch({
     type: SET_TX_COST,

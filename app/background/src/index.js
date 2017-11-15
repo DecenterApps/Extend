@@ -97,7 +97,7 @@ chrome.runtime.onMessage.addListener(async (msg, sender) => {
     case 'dropdown':
       return dropdownHandler(web3, engine, contracts, getState, dispatch, funcName, payload);
     case 'user':
-      return userHandler(web3, engine, contracts, getState, dispatch, funcName, payload, sender.tab.id);
+      return userHandler(web3, engine, contracts, getState, dispatch, funcName, payload, sender);
     case 'forms':
       return formsHandler(web3, engine, contracts, getState, dispatch, funcName, payload);
     case 'page':

@@ -27,9 +27,11 @@ class RefundForm extends Component {
     if (newProps.invalid) return;
     if (!this.props.form) return;
     if (Object.keys(this.props.form).length === 0) return;
-    if ((newProps.form.gasPrice.value === this.props.form.gasPrice.value)) return;
-
-    setRefundFormTxPriceMessage();
+    if (
+      (newProps.form.gasPrice.value !== this.props.form.gasPrice.value) ||
+      (newProps.balance !== this.props.balance)) {
+      setRefundFormTxPriceMessage();
+    }
   }
 
   render() {
@@ -127,7 +129,8 @@ RefundForm.propTypes = {
   form: PropTypes.object.isRequired,
   currentFormTxCost: PropTypes.object.isRequired,
   refundTipUsername: PropTypes.string.isRequired,
-  insufficientBalance: PropTypes.bool.isRequired
+  insufficientBalance: PropTypes.bool.isRequired,
+  balance: PropTypes.string.isRequired
 };
 
 const mapStateToProps = (state) => ({
@@ -140,7 +143,7 @@ const mapStateToProps = (state) => ({
   currentFormTxCost: state.forms.currentFormTxCost,
   refundTipUsername: state.user.refundTipUsername,
   balance: state.account.balance,
-  insufficientBalance: state.forms.insufficientBalance
+  insufficientBalance: state.forms.insufficientBalance,
 });
 
 const ExportComponent = createForm(FORM_NAME, RefundForm, refundFormValidator);

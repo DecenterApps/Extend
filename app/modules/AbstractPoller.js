@@ -37,6 +37,8 @@ class AbstractPoller {
     };
 
     this.engine.on('block', this.newBlockHandler);
+
+    this.functionToPoll(...this.functionParams, this.stopPoller);
   }
 }
 

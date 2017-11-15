@@ -30,7 +30,8 @@ class TipForm extends Component {
 
     if (
       (newProps.form.gasPrice.value !== this.props.form.gasPrice.value) ||
-      (newProps.form.amount.value !== this.props.form.amount.value)
+      (newProps.form.amount.value !== this.props.form.amount.value) ||
+      (newProps.balance !== this.props.balance)
     ) {
       setTipFormTxPriceMessage();
     }
@@ -137,6 +138,7 @@ TipForm.propTypes = {
   sendingTipSuccess: PropTypes.bool.isRequired,
   insufficientBalance: PropTypes.bool.isRequired,
   closeModal: PropTypes.func.isRequired,
+  balance: PropTypes.string.isRequired
 };
 
 const mapStateToProps = (state) => ({
@@ -146,7 +148,8 @@ const mapStateToProps = (state) => ({
   form: state.forms[FORM_NAME],
   currentFormTxCost: state.forms.currentFormTxCost,
   sendingTipSuccess: state.user.sendingTipSuccess,
-  insufficientBalance: state.forms.insufficientBalance
+  insufficientBalance: state.forms.insufficientBalance,
+  balance: state.account.balance
 });
 
 const ExportComponent = createForm(FORM_NAME, TipForm, tipFormValidator);

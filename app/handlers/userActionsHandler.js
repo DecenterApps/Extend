@@ -1,6 +1,6 @@
 import * as userActions from '../actions/userActions';
 
-const userActionsHandler = (web3, engine, contracts, getState, dispatch, funcName, payload, tabId) => {
+const userActionsHandler = (web3, engine, contracts, getState, dispatch, funcName, payload, sender) => {
   switch (funcName) {
     case 'acceptPrivacyNotice':
       return userActions[funcName](dispatch);
@@ -15,7 +15,7 @@ const userActionsHandler = (web3, engine, contracts, getState, dispatch, funcNam
       return userActions[funcName](dispatch, payload);
 
     case 'addTabId':
-      return userActions[funcName](dispatch, tabId);
+      return userActions[funcName](dispatch, sender.tab.id);
 
     default:
       throw Error('Function in handler not defined', funcName);

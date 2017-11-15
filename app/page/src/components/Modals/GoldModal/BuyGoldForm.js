@@ -31,7 +31,8 @@ class buyGoldForm extends Component {
 
     if (
       (newProps.form.gasPrice.value !== this.props.form.gasPrice.value) ||
-      (newProps.form.months.value !== this.props.form.months.value)
+      (newProps.form.months.value !== this.props.form.months.value) ||
+      (newProps.balance !== this.props.balance)
     ) {
       setBuyGoldFormTxPriceMessage();
     }
@@ -153,6 +154,7 @@ buyGoldForm.propTypes = {
   buyingGoldSuccess: PropTypes.bool.isRequired,
   insufficientBalance: PropTypes.bool.isRequired,
   closeModal: PropTypes.func.isRequired,
+  balance: PropTypes.string.isRequired
 };
 
 const mapStateToProps = (state) => ({
@@ -162,7 +164,8 @@ const mapStateToProps = (state) => ({
   currentFormTxCost: state.forms.currentFormTxCost,
   form: state.forms[FORM_NAME],
   buyingGoldSuccess: state.user.buyingGoldSuccess,
-  insufficientBalance: state.forms.insufficientBalance
+  insufficientBalance: state.forms.insufficientBalance,
+  balance: state.account.balance
 });
 
 const ExportComponent = createForm(

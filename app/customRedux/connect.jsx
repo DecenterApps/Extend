@@ -20,9 +20,10 @@ const connect = (WrappedComponent, mapStateToProps) => (
     }
 
     componentWillReceiveProps(nextProps) {
-      if (Object.keys(nextProps).length === 0) return;
+      if ((Object.keys(nextProps).length === 0) || this.willUnmount) return;
 
       this.componentProps = { ...nextProps, ...this.componentProps };
+      this.forceUpdate();
     }
 
     componentWillUnmount() {

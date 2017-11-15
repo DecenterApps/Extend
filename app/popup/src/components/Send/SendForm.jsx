@@ -32,7 +32,8 @@ class SendForm extends Component {
     if (
       (newProps.form.gasPrice.value !== this.props.form.gasPrice.value) ||
       (newProps.form.to.value !== this.props.form.to.value) ||
-      (newProps.form.amount.value !== this.props.form.amount.value)
+      (newProps.form.amount.value !== this.props.form.amount.value) ||
+      (newProps.balance !== this.props.balance)
     ) {
       setSendFormTxPriceMessage();
     }
@@ -132,7 +133,8 @@ SendForm.propTypes = {
   sendingError: PropTypes.string.isRequired,
   form: PropTypes.object.isRequired,
   currentFormTxCost: PropTypes.object.isRequired,
-  insufficientBalance: PropTypes.bool.isRequired
+  insufficientBalance: PropTypes.bool.isRequired,
+  balance: PropTypes.string.isRequired
 };
 
 const mapStateToProps = (state) => ({
@@ -141,7 +143,8 @@ const mapStateToProps = (state) => ({
   sendingError: state.account.sendingError,
   form: state.forms[FORM_NAME],
   currentFormTxCost: state.forms.currentFormTxCost,
-  insufficientBalance: state.forms.insufficientBalance
+  insufficientBalance: state.forms.insufficientBalance,
+  balance: state.account.balance
 });
 
 const ExportComponent = createForm(FORM_NAME, SendForm, sendFormValidator);

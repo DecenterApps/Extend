@@ -27,9 +27,11 @@ class RegisterForm extends Component {
     if (newProps.invalid) return;
     if (!this.props.form) return;
     if (Object.keys(this.props.form).length === 0) return;
-    if ((newProps.form.gasPrice.value === this.props.form.gasPrice.value)) return;
-
-    setRegisterFormTxPriceMessage();
+    if (
+      (newProps.form.gasPrice.value !== this.props.form.gasPrice.value) ||
+      (newProps.balance !== this.props.balance)) {
+      setRegisterFormTxPriceMessage();
+    }
   }
 
   render() {
@@ -102,14 +104,16 @@ RegisterForm.propTypes = {
   gasPrice: PropTypes.number.isRequired,
   currentFormTxCost: PropTypes.object.isRequired,
   form: PropTypes.object.isRequired,
-  insufficientBalance: PropTypes.bool.isRequired
+  insufficientBalance: PropTypes.bool.isRequired,
+  balance: PropTypes.string.isRequired
 };
 
 const mapStateToProps = (state) => ({
   currentFormTxCost: state.forms.currentFormTxCost,
   gasPrice: state.account.gasPrice,
   form: state.forms[FORM_NAME],
-  insufficientBalance: state.forms.insufficientBalance
+  insufficientBalance: state.forms.insufficientBalance,
+  balance: state.account.balance
 });
 
 const ExportComponent = createForm(FORM_NAME, RegisterForm, registerFormValidator);

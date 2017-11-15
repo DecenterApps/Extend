@@ -1,6 +1,9 @@
 export const SET_ADDRESS = 'set_address';
 export const CLEAR_PENDING = 'clear_pending';
 
+// PERMANENT
+export const ACCEPT_NOTICE = 'accept_notice';
+
 // USER
 export const REGISTER_USER = 'register_user';
 export const REGISTER_USER_ERROR = 'register_user_error';

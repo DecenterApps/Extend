@@ -1,18 +1,17 @@
 import lightwallet from '../modules/eth-lightwallet/lightwallet';
 import {
-  CREATE_WALLET, COPIED_SEED, CLEAR_PASSWORD, UNLOCK_ERROR, UNLOCK, SET_BALANCE, SET_GAS_PRICE,
+  UNLOCK_ERROR, UNLOCK, SET_BALANCE, SET_GAS_PRICE,
   SEND, SEND_ERROR, SEND_SUCCESS, REFUND, REFUND_ERROR, REFUND_SUCCESS, CLEAR_REFUND_VALUES
 } from '../constants/actionTypes';
-import { LOCK_INTERVAL } from '../constants/general';
-import { isJson, formatLargeNumber } from '../actions/utils';
+import { isJson } from '../actions/utils';
 import {
   getBalanceForAddress, getGasPrice, transfer, pollForReceipt, getNonceForAddress, sendTransaction,
   listenForRefundSuccessful
 } from '../modules/ethereumService';
 import AbstractPoller from '../modules/AbstractPoller';
 import { changeView } from './userActions';
+import { passwordReloader } from './keyStoreActions';
 
-let lockTimeout = null;
 const keyStore = lightwallet.keystore;
 
 export const pollPendingTxs = (web3, engine, dispatch, getState) => {
@@ -31,9 +30,9 @@ export const send = async (web3, engine, getState, dispatch) => {
   const to = formData.to.value;
   const amount = web3.toWei(parseFloat(formData.amount.value));
   const gasPrice = web3.toWei(formData.gasPrice.value, 'gwei');
-  const address = state.account.address;
-  const ks = keyStore.deserialize(state.account.keyStore);
-  const password = state.account.password;
+  const address = state.keyStore.address;
+  const ks = keyStore.deserialize(state.keyStore.keyStore);
+  const password = state.keyStore.password;
   const nonce = await getNonceForAddress(web3, address);
 
   dispatch({ type: SEND });
@@ -88,9 +87,9 @@ export const pollForGasPrice = async (web3, engine, dispatch, getState) => {
 };
 
 const setBalance = async (web3, dispatch, getState) => {
-  const account = getState().account;
-  let currentBalance = account.balance;
-  let address = account.address;
+  const state = getState();
+  let currentBalance = state.account.balance;
+  let address = state.keyStore.address;
 
   let newBalance = await getBalanceForAddress(web3, address);
   newBalance = web3.fromWei(newBalance);
@@ -110,27 +109,6 @@ const setBalance = async (web3, dispatch, getState) => {
 export const pollForBalance = (web3, engine, dispatch, getState) => {
   const poller = new AbstractPoller(setBalance, engine, web3, dispatch, getState);
   poller.poll();
-};
-
-/**
- * Clears password timeout and dispatches action to clear password
- *
- * @param {Function} dispatch
- */
-export const clearPassword = (dispatch) => {
-  clearTimeout(lockTimeout);
-  dispatch({ type: CLEAR_PASSWORD });
-  changeView(dispatch, { viewName: 'unlockAccount' });
-};
-
-/**
- *  Sets timeout to clear password after the user has created or unlocked the account
- */
-export const passwordReloader = (dispatch) => {
-  lockTimeout = setTimeout(() => {
-    dispatch({ type: CLEAR_PASSWORD });
-    changeView(dispatch, { viewName: 'unlockAccount' });
-  }, LOCK_INTERVAL);
 };
 
 /**
@@ -169,11 +147,11 @@ export const getPrivateKey = (keyStoreParam, address, pwDerivedKey) => {
  *  Checks if the unlock account password matches the key store
  */
 export const checkIfPasswordValid = async (getState, dispatch, password) => {
-  const ks = keyStore.deserialize(getState().account.keyStore);
+  const ks = keyStore.deserialize(getState().keyStore.keyStore);
 
   try {
     const pwDerivedKey = await getPwDerivedKey(ks, password);
-    getPrivateKey(ks, getState().account.address, pwDerivedKey);
+    getPrivateKey(ks, getState().keyStore.address, pwDerivedKey);
 
     await dispatch({ type: UNLOCK, payload: password });
     changeView(dispatch, { viewName: 'dashboard' });
@@ -181,54 +159,6 @@ export const checkIfPasswordValid = async (getState, dispatch, password) => {
   } catch(err) {
     dispatch({ type: UNLOCK_ERROR });
   }
-};
-
-/**
- * Create a new key store with the users password
- *
- * @param {Object} web3
- * @param {Function} dispatch
- * @param {Function} getState
- * @param {String} password
- */
-export const createWallet = (web3, engine, dispatch, getState, password) => {
-  keyStore.createVault({
-    password,
-  }, async (err, ks) => {
-    const pwDerivedKey = await getPwDerivedKey(ks, password);
-    const seed = ks.getSeed(pwDerivedKey);
-
-    ks.generateNewAddress(pwDerivedKey, 1);
-
-    const addresses = ks.getAddresses();
-    const address = `0x${addresses[0]}`;
-    const searializedKeyStore = ks.serialize();
-    let balance = await getBalanceForAddress(web3, address);
-    const unformatedNum = parseFloat(web3.fromWei(balance));
-    balance = formatLargeNumber(unformatedNum);
-
-    web3.eth.defaultAccount = address; // eslint-disable-line
-
-    const payload = {
-      seed, password, address, keyStore: searializedKeyStore, balance
-    };
-
-    await dispatch({ type: CREATE_WALLET, payload });
-
-    changeView(dispatch, { viewName: 'copySeed' });
-    pollForBalance(web3, engine, dispatch, getState);
-  });
-};
-
-/**
- * Dispatches action that the user has copied the seed
- *
- * @param {Function} dispatch
- */
-export const copiedSeed = (dispatch) => {
-  dispatch({ type: COPIED_SEED });
-  changeView(dispatch, { viewName: 'dashboard' });
-  passwordReloader(dispatch);
 };
 
 export const clearRefundValues = (dispatch) =>
@@ -242,9 +172,9 @@ export const refund = async (web3, getState, dispatch, contracts) => {
   const formData = state.forms.refundForm;
   const gasPrice = web3.toWei(formData.gasPrice.value, 'gwei');
   const username = web3.toHex(state.user.refundTipUsername);
-  const address = state.account.address;
-  const ks = keyStore.deserialize(state.account.keyStore);
-  const password = state.account.password;
+  const address = state.keyStore.address;
+  const ks = keyStore.deserialize(state.keyStore.keyStore);
+  const password = state.keyStore.password;
 
   const cb = async (err, event, eventInstance) => {
     if (web3.toUtf8(event.args.username) !== formData.username.value) return;

@@ -3,6 +3,8 @@ import combinedReducers from './reducers/index';
 import contractConfig from '../../modules/config.json';
 import * as userActions from '../../actions/userActions';
 import accountHandler from '../../handlers/accountActionsHandler';
+import permanentHandler from '../../handlers/permanentActionsHandler';
+import keyStoreHandler from '../../handlers/keyStoreActionsHandler';
 import dropdownHandler from '../../handlers/dropdownActionsHandler';
 import userHandler from '../../handlers/userActionsHandler';
 import formsHandler from '../../handlers/formsActionsHandler';
@@ -11,7 +13,6 @@ import modalsHandler from '../../handlers/modalsActionsHandler';
 import dialogHandler from '../../handlers/dialogActionsHandler';
 import onboardingHandler from '../../handlers/onboardingActionsHandler';
 import handleChangeNetwork from '../../modules/handleChangeNetwork';
-import clearPendingStates from '../../modules/clearPendingStates';
 
 let appLoaded = null;
 
@@ -29,7 +30,6 @@ const startApp = () =>
     getState = store.getState;
 
     try {
-      await clearPendingStates(dispatch, combinedReducers);
       let networkData = await handleChangeNetwork(Web3, contractConfig, dispatch, getState);
 
       web3 = networkData.web3;
@@ -66,6 +66,8 @@ Promise.resolve(startApp()).then((err) => {
 });
 
 chrome.runtime.onMessage.addListener(async (msg, sender) => {
+  // TODO add type to msg
+  if (!msg.handler) return false;
   if (!appLoaded || getState().user.disconnected) return false;
 
   const funcName = msg.action;
@@ -86,6 +88,10 @@ chrome.runtime.onMessage.addListener(async (msg, sender) => {
   }
 
   switch (handler) {
+    case 'permanent':
+      return permanentHandler(web3, engine, contracts, getState, dispatch, funcName, payload);
+    case 'keyStore':
+      return keyStoreHandler(web3, engine, contracts, getState, dispatch, funcName, payload);
     case 'account':
       return accountHandler(web3, engine, contracts, getState, dispatch, funcName, payload);
     case 'dropdown':

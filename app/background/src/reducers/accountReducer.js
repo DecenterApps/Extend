@@ -1,5 +1,5 @@
 import {
-  CREATE_WALLET, COPIED_SEED, CLEAR_PASSWORD, UNLOCK_ERROR, UNLOCK, SET_BALANCE, SET_GAS_PRICE,
+  UNLOCK_ERROR, UNLOCK, SET_BALANCE, SET_GAS_PRICE,
   SEND, SEND_ERROR, SEND_SUCCESS, CHANGE_TX_STATE, CLEAR_REFUND_VALUES, REFUND_AVAILABLE,
   CLEAR_PENDING, REFUND, REFUND_ERROR, REFUND_SUCCESS, REFUND_UNAVAILABLE,
 } from '../../../constants/actionTypes';
@@ -7,12 +7,6 @@ import {
 const reducerName = 'account';
 
 const INITIAL_STATE = {
-  created: false,
-  copiedSeed: false,
-  address: '',
-  password: '',
-  keyStore: {},
-  seed: '',
   unlockError: '',
   balance: '',
   gasPrice: 0,
@@ -40,15 +34,6 @@ export const reducer = (state, action) => {
         refundingSuccess: false,
         refundAvailable: true
       };
-
-    case CREATE_WALLET:
-      return { ...state, created: true, ...payload };
-
-    case COPIED_SEED:
-      return { ...state, copiedSeed: true };
-
-    case CLEAR_PASSWORD:
-      return { ...state, password: '' };
 
     case UNLOCK:
       return { ...state, password: payload, unlockError: '' };
@@ -108,5 +93,6 @@ export const reducer = (state, action) => {
 export const data = {
   name: reducerName,
   initialState: INITIAL_STATE,
-  handle: reducer
+  handle: reducer,
+  async: false
 };

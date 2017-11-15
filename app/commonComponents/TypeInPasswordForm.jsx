@@ -72,7 +72,7 @@ TypeInPasswordForm.propTypes = {
 
 const mapStateToProps = (state) => ({
   unlockError: state.account.unlockError,
-  test: state.account.address
+  test: state.keyStore.address
 });
 
 const ExportComponent = createForm(

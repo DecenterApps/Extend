@@ -1,6 +1,7 @@
 import { _checkAddressVerified } from './ethereumService';
 import * as userActions from '../actions/userActions';
 import * as accountActions from '../actions/accountActions';
+import * as keyStoreActions from '../actions/keyStoreActions';
 import * as zeroClientProvider from './ZeroClientProvider';
 
 const getProviderSpecs = (url) => (
@@ -62,7 +63,7 @@ const handleChangeNetwork = (Web3, contractConfig, dispatch, getState) =>
 
       if (state.account.transactions.length > 0) accountActions.pollPendingTxs(web3, engine, dispatch, getState);
       if (state.account.address) accountActions.pollForBalance(web3, engine, dispatch, getState);
-      if (state.account.password) accountActions.passwordReloader(dispatch);
+      if (state.account.password) keyStoreActions.passwordReloader(dispatch);
 
       resolve({ web3, contracts, engine });
     } catch(err) {

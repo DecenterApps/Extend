@@ -112,12 +112,12 @@ Dashboard.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-  address: state.account.address,
+  address: state.keyStore.address,
   balance: state.account.balance,
-  verifiedUsername: state.user.verifiedUsername,
-  registering: state.user.registering,
-  registeringError: state.user.registeringError,
-  registeringUsername: state.user.registeringUsername,
+  verifiedUsername: state.permanent.verifiedUsername,
+  registering: state.permanent.registering,
+  registeringError: state.permanent.registeringError,
+  registeringUsername: state.permanent.registeringUsername,
   onboardingUnVerified: state.onboarding.onboardingUnVerified,
   onboardingUnVerifiedStep: state.onboarding.onboardingUnVerifiedStep,
 });

@@ -12,7 +12,7 @@ const queue = new PQueue({ concurrency: 1 });
  */
 const initReducer = async (reducerData) =>
   new Promise(async (resolve) => {
-    // await clearReducer(reducerData.name); // remove when finished
+    await clearReducer(reducerData.name); // remove when finished
 
     const existingReducerState = await get(reducerData.name);
 
@@ -39,10 +39,19 @@ const combineReducers = (reducersData) =>
     };
 
     reducersData.forEach(async (reducerData, index) => {
-      store.state[reducerData.name] = await initReducer(reducerData);
+      // If the reducer is saved locally check if there is already saved state
+      // else serve new reducer instance
+      if (reducerData.async) {
+        store.state[reducerData.name] = await initReducer(reducerData);
+      } else {
+        store.state[reducerData.name] = reducerData.initialState;
+      }
+
       store.reducers[reducerData.name] = reducerData.handle;
 
-      if (index === reducersData.length - 1) resolve(store);
+      if (index === reducersData.length - 1) {
+        resolve(store);
+      }
     });
   });
 
@@ -61,15 +70,12 @@ const handleReducerFinish = (reducersFinished, reducers, resolved, resolve, stat
   if (reducersFinished !== Object.keys(reducers).length) return;
 
   if (resolved) {
+    chrome.runtime.sendMessage({ type: 'dispatch', state });
     resolve(state[reducerName]);
-  } else {
-    if (action.type.includes(CLEAR_PENDING)) {
-      resolve();
-      return;
-    }
-
-    throw Error('Dispatch was not handled in any reducer', action);
+    return;
   }
+
+  throw Error('Dispatch was not handled in any reducer', action);
 };
 
 
@@ -86,6 +92,12 @@ const createStore = (reducersData) =>
 
     let state = combinedReducers.state;
     const reducers = combinedReducers.reducers;
+
+    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+      if (request.type !== 'getState') return;
+
+      sendResponse(state);
+    });
 
     resolve({
       getState: () => state,
@@ -107,10 +119,18 @@ const createStore = (reducersData) =>
                 return;
               }
 
-              const setResult = await set(reducerName, newReducerState);
-              console.log('ACTION', action);
+              let setResult = {};
+
+              if (reducers[reducerName].async) {
+                setResult = await set(reducerName, newReducerState);
+              } else {
+                setResult = newReducerState;
+              }
+
               resolved = true;
               state[reducerName] = setResult;
+
+              console.log('ACTION', action);
 
               reducersFinished++;
               handleReducerFinish(reducersFinished, reducers, resolved, dispatchResolve, state, action, reducerName);

@@ -4,14 +4,6 @@ const pm = (actionParam) => {
   chrome.runtime.sendMessage(action);
 };
 
-export const createWalletMessage = (fields) => {
-  pm({ action: 'createWallet', payload: fields.password.value });
-};
-
-export const copiedSeedMessage = () => {
-  pm({ action: 'copiedSeed' });
-};
-
 export const checkIfPasswordValidMessage = (fields) => {
   pm({ action: 'checkIfPasswordValid', payload: fields.password.value });
 };

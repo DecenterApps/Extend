@@ -18,10 +18,10 @@ const keyStore = lightwallet.keystore;
  */
 export const handleUserAuthentication = (contracts, web3, getState, dispatch) => {
   const redirectUri = chrome.identity.getRedirectURL('oauth2');
-  const account = getState().account;
-  const ks = keyStore.deserialize(account.keyStore);
-  const address = account.address;
-  const password = account.password;
+  const keyStoreState = getState().keyStore;
+  const ks = keyStoreState.deserialize(account.keyStore);
+  const address = keyStoreState.address;
+  const password = keyStoreState.password;
 
   chrome.identity.launchWebAuthFlow({
     url: `https://www.reddit.com/api/v1/authorize?client_id=${CLIENT_ID}&response_type=token&state=asdf&redirect_uri=${redirectUri}&scope=identity`, // eslint-disable-line

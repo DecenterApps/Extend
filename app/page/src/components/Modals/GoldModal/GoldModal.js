@@ -24,7 +24,7 @@ GoldModal.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-  password: state.account.password
+  password: state.keyStore.password
 });
 
 export default connect(GoldModal, mapStateToProps);

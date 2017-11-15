@@ -24,7 +24,7 @@ TipModal.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-  password: state.account.password,
+  password: state.keyStore.password,
 });
 
 export default connect(TipModal, mapStateToProps);

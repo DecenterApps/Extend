@@ -16,12 +16,6 @@ export const reducerName = 'user';
 
 const INITIAL_STATE = {
   networkActive: true,
-  acceptedNotice: false,
-  registering: false,
-  registeringError: '',
-  verified: false,
-  verifiedUsername: '',
-  registeringUsername: '',
   networkUrl: NETWORK_URL,
   sendingTip: false,
   sendingTipError: '',
@@ -236,5 +230,6 @@ export const reducer = (state, action) => {
 export const data = {
   name: reducerName,
   initialState: INITIAL_STATE,
-  handle: reducer
+  handle: reducer,
+  async: false
 };

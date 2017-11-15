@@ -7,36 +7,52 @@ const connect = (WrappedComponent, mapStateToProps) => (
       super(props);
 
       this.willUnmount = false;
+      this.handleGetState = this.handleGetState.bind(this);
+      this.handleChangeOfState = this.handleChangeOfState.bind(this);
       this.updateComponent = this.updateComponent.bind(this);
-      this.listenForStateChanges = this.listenForStateChanges.bind(this);
+      this.handleWillReceiveProps = this.handleWillReceiveProps.bind(this);
     }
 
-    async componentDidMount() {
-      this.updateComponent(this.props);
-      subscribe(this.listenForStateChanges);
+    async componentWillMount() {
+      chrome.runtime.sendMessage({ type: 'getState' }, this.handleGetState);
+
+      chrome.runtime.onMessage.addListener(this.handleChangeOfState);
     }
 
     componentWillReceiveProps(nextProps) {
-      this.updateComponent(nextProps);
+      if (Object.keys(nextProps).length === 0) return;
+
+      this.componentProps = { ...nextProps, ...this.componentProps };
     }
 
     componentWillUnmount() {
       this.willUnmount = true;
-      unsubscribe(this.listenForStateChanges);
+
+      chrome.runtime.onMessage.removeListener(this.handleChangeOfState);
     }
 
-    async listenForStateChanges(changes) {
-      if (changes[Object.keys(changes)[0]].newValue === undefined) return;
-
-      this.updateComponent(this.props);
+    handleGetState(state) {
+      this.updateComponent(this.props, state);
     }
 
-    async updateComponent(ownProps) {
-      // TODO remove await get state if it happens to be a bottleneck
-      const mappedStateProps = mapStateToProps(await getState());
-      this.componentProps = { ...mappedStateProps, ...ownProps };
+    handleWillReceiveProps(nextProps, state) {
+      this.updateComponent(nextProps, state);
+    }
 
-      if (!this.willUnmount) this.forceUpdate();
+    handleChangeOfState(request) {
+      if (request.type !== 'dispatch') return;
+
+      this.updateComponent(this.props, request.state);
+    }
+
+    async updateComponent(ownProps, state) {
+      const mappedStateProps = mapStateToProps(state);
+      const newProps = { ...mappedStateProps, ...ownProps };
+
+      if (this.willUnmount || (JSON.stringify(newProps) === JSON.stringify(this.componentProps))) return;
+
+      this.componentProps = newProps;
+      this.forceUpdate();
     }
 
     render() {

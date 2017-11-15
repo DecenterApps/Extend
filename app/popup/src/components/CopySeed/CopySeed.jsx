@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { copiedSeedMessage } from '../../../../messages/accountActionMessages';
+import { copiedSeedMessage } from '../../../../messages/permanentActionsMessages';
 
 import './copy-seed.scss';
 

@@ -5,7 +5,7 @@ import createForm from '../../../../customRedux/createForm';
 import createField from '../../../../customRedux/createField';
 import InputFormField from '../../../../commonComponents/InputFormField';
 import generateNewPasswordFormValidator from './generateNewPasswordFormValidator';
-import { createWalletMessage } from '../../../../messages/accountActionMessages';
+import { createWalletMessage } from '../../../../messages/keyStoreActionMessages';
 
 import formStyle from '../../../../commonComponents/forms.scss';
 

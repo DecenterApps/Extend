@@ -41,9 +41,9 @@ class App extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  generatedVault: state.account.created,
-  password: state.account.password,
-  copiedSeed: state.account.copiedSeed,
+  generatedVault: state.keyStore.created,
+  password: state.keyStore.password,
+  copiedSeed: state.permanent.copiedSeed,
 });
 
 export default connect(App, mapStateToProps);

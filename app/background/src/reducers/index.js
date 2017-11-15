@@ -4,6 +4,8 @@ import * as formsReducer from './formsReducer';
 import * as accountReducer from './accountReducer';
 import * as modalsReducer from './modalsReducer';
 import * as onboardingReducer from './onboardingReducer';
+import * as keyStoreReducer from './keystoreReducer';
+import * as permanentReducer from './permanentReducer';
 
 const combinedReducers = [
   formsReducer.data,
@@ -12,6 +14,8 @@ const combinedReducers = [
   accountReducer.data,
   modalsReducer.data,
   onboardingReducer.data,
+  keyStoreReducer.data,
+  permanentReducer.data
 ];
 
 export default combinedReducers;

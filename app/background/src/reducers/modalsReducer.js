@@ -38,5 +38,6 @@ const reducer = (state, action) => {
 export const data = {
   name: reducerName,
   initialState: INITIAL_STATE,
-  handle: reducer
+  handle: reducer,
+  async: false
 };

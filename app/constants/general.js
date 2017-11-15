@@ -17,7 +17,7 @@ export const OPTIONS_DROPDOWN_ITEMS = [
   },
   {
     id: 'show_seed',
-    text: 'Show seed'
+    text: 'Recovery phrase'
   },
   {
     id: 'show_terms',

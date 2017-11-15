@@ -74,6 +74,8 @@ export const passwordReloader = (dispatch) => {
 export const createWallet = (web3, engine, dispatch, getState, password) => {
   keyStore.createVault({
     password,
+    hdPathString: 'm/0\'/0\'/0\'',
+    seedPhrase: keyStore.generateRandomSeed()
   }, async (err, ks) => {
     const pwDerivedKey = await getPwDerivedKey(ks, password);
     const seed = ks.getSeed(pwDerivedKey);
@@ -81,7 +83,7 @@ export const createWallet = (web3, engine, dispatch, getState, password) => {
     ks.generateNewAddress(pwDerivedKey, 1);
 
     const addresses = ks.getAddresses();
-    const address = `0x${addresses[0]}`;
+    const address = addresses[0];
     const searializedKeyStore = ks.serialize();
 
     web3.eth.defaultAccount = address; // eslint-disable-line

@@ -7,7 +7,7 @@ import './dialog.scss';
 
 class Dialog extends Component {
   componentDidMount() {
-    if (this.props.registering || this.props.verifiedUsername) return;
+    if (this.props.registeringUsername || this.props.verifiedUsername) return;
 
     handleUserAuthenticationMessage();
   }
@@ -16,7 +16,7 @@ class Dialog extends Component {
     return(
       <div styleName="dialog-wrapper">
         {
-          !this.props.registering &&
+          !this.props.registeringUsername &&
           !this.props.verifiedUsername &&
           <div>
             <h1>
@@ -29,7 +29,7 @@ class Dialog extends Component {
           </div>
         }
         {
-          this.props.registering &&
+          this.props.registeringUsername &&
           !this.props.verifiedUsername &&
           <div>
             <h1 styleName="success">Success</h1>
@@ -41,7 +41,7 @@ class Dialog extends Component {
           </div>
         }
         {
-          !this.props.registering &&
+          !this.props.registeringUsername &&
           this.props.verifiedUsername &&
           <div>
             <h1 styleName="success">Success</h1>
@@ -51,7 +51,7 @@ class Dialog extends Component {
           </div>
         }
         {
-          (this.props.registering ||
+          (this.props.registeringUsername ||
           this.props.verifiedUsername) &&
           <p>
             <a onClick={() => chrome.windows.remove(this.props.dialogWindowId)}>You can close this window.</a>
@@ -67,14 +67,14 @@ class Dialog extends Component {
 }
 
 Dialog.propTypes = {
-  registering: PropTypes.bool.isRequired,
+  registeringUsername: PropTypes.string.isRequired,
   verifiedUsername: PropTypes.string.isRequired,
   registeringError: PropTypes.string.isRequired,
   dialogWindowId: PropTypes.number.isRequired,
 };
 
 const mapStateToProps = (state) => ({
-  registering: state.permanent.registering,
+  registeringUsername: state.permanent.registeringUsername,
   verifiedUsername: state.permanent.verifiedUsername,
   registeringError: state.permanent.registeringError,
   dialogWindowId: state.user.dialogWindowId,

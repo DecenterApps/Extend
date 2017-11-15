@@ -13,7 +13,7 @@ class AbstractWatcher {
 
   async listenForStateChanges(changes) {
     if (changes.hasOwnProperty('permanent') && changes.permanent.hasOwnProperty('newValue')) {
-      if (changes.user.newValue.disconnected && !this.instanceDissconected) {
+      if (changes.permanent.newValue.disconnected && !this.instanceDissconected) {
         this.instanceDissconected = true;
         this.contractMethodInstance.stopWatching(() => {});
         unsubscribe(this.listenForStateChanges);

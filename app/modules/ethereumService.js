@@ -297,6 +297,15 @@ export const _checkUsernameVerified = (web3, contract, username) =>
     });
   });
 
+export const _getUsernameForAddress = (web3, contract, address) =>
+  new Promise((resolve, reject) => {
+    contract.getUsernameForAddress(address, (error, result) => {
+      if (error) return reject(error);
+
+      return resolve(result);
+    });
+  });
+
 export const _checkIfRefundAvailable = (web3, contract, username) =>
   new Promise((resolve, reject) => {
     contract.checkIfRefundAvailable(username, (error, result) => {

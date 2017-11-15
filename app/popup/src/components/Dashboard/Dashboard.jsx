@@ -15,7 +15,7 @@ const copyAddress = () => {
 };
 
 const Dashboard = ({
-  address, balance, verifiedUsername, registering, registeringError, registeringUsername, onboardingUnVerified,
+  address, balance, verifiedUsername, registeringError, registeringUsername, onboardingUnVerified,
   onboardingUnVerifiedStep
 }) => (
   <div styleName="dashboard-wrapper">
@@ -37,11 +37,21 @@ const Dashboard = ({
 
       <div styleName="small-section">
         <div>
-          { !registering && !registeringError && !verifiedUsername && <span styleName="error">Not verified</span> }
-          { !registering && registeringError && !verifiedUsername &&
+          {
+            !registeringUsername &&
+            !registeringError &&
+            !verifiedUsername &&
+            <span styleName="error">Not verified</span>
+          }
+
+          {
+            !registeringUsername &&
+            registeringError &&
+            !verifiedUsername &&
             <span styleName="error">There was an error, try again</span>
           }
-          { registering &&
+
+          { registeringUsername &&
             <span styleName="pending">
               Verifying
               <a
@@ -53,6 +63,7 @@ const Dashboard = ({
               </a>
             </span>
           }
+
           {
             verifiedUsername &&
             <span>
@@ -86,17 +97,18 @@ const Dashboard = ({
     </div>
 
     {
-      !registering &&
+      !registeringUsername &&
       !verifiedUsername &&
       <div styleName="register-btn-wrapper">
         <RegisterForm />
       </div>
     }
     {
-      registering && <div styleName="registering-info">Username is currently being verified. Please wait...</div>
+      registeringUsername &&
+      <div styleName="registering-info">Username is currently being verified. Please wait...</div>
     }
     {
-      !registering &&
+      !registeringUsername &&
       verifiedUsername &&
       <Tabs />
     }
@@ -108,7 +120,6 @@ Dashboard.propTypes = {
   balance: PropTypes.string.isRequired,
   verifiedUsername: PropTypes.string.isRequired,
   registeringError: PropTypes.string.isRequired,
-  registering: PropTypes.bool.isRequired,
   registeringUsername: PropTypes.string.isRequired,
   onboardingUnVerified: PropTypes.bool.isRequired,
   onboardingUnVerifiedStep: PropTypes.object.isRequired,
@@ -118,7 +129,6 @@ const mapStateToProps = (state) => ({
   address: state.keyStore.address,
   balance: state.account.balance,
   verifiedUsername: state.permanent.verifiedUsername,
-  registering: state.permanent.registering,
   registeringError: state.permanent.registeringError,
   registeringUsername: state.permanent.registeringUsername,
   onboardingUnVerified: state.onboarding.onboardingUnVerified,

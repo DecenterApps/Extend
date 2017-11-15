@@ -10,10 +10,8 @@ const INITIAL_STATE = {
   disconnected: false,
   acceptedNotice: false,
   copiedSeed: false,
-  registering: false,
   registeringUsername: '',
   registeringError: '',
-  verified: false,
   verifiedUsername: '',
   view: VIEWS[0]
 };
@@ -34,7 +32,6 @@ export const reducer = (state, action) => {
     case REGISTER_USER:
       return {
         ...state,
-        registering: true,
         registeringUsername: payload.username,
         registeringError: ''
       };
@@ -42,17 +39,14 @@ export const reducer = (state, action) => {
     case REGISTER_USER_ERROR:
       return {
         ...state,
-        registering: false,
         registeringError: action.message,
       };
 
     case VERIFIED_USER:
       return {
         ...state,
-        registering: false,
-        verified: true,
         registeringUsername: '',
-        verifiedUsername: state.registeringUsername,
+        verifiedUsername: payload,
       };
 
     case SET_DISCONNECTED:

@@ -136,8 +136,8 @@ export const setTab = (dispatch, selectedTab) => {
  *
  * @param {Function} dispatch
  */
-export const verifiedUser = async (web3, contracts, getState, dispatch) => {
-  await dispatch({ type: VERIFIED_USER });
+export const verifiedUser = async (web3, contracts, getState, dispatch, verifiedUsername) => {
+  await dispatch({ type: VERIFIED_USER, payload: verifiedUsername });
   handleTips(web3, contracts, getState, dispatch);
   handleGold(web3, contracts, getState, dispatch);
 };
@@ -154,9 +154,11 @@ export const listenForVerifiedUser = (web3, contracts, dispatch, getState) => {
   console.log('LISTENING FOR VERIFIED USER');
 
   const verifiedCallback = (err, event, verifiedEvent, noMatchEvent) => {
-    if (web3.toUtf8(event.args.username) !== getState().permanent.registeringUsername) return;
+    const registeringUsername = getState().permanent.registeringUsername;
 
-    verifiedUser(web3, contracts, getState, dispatch);
+    if (web3.toUtf8(event.args.username) !== registeringUsername) return;
+
+    verifiedUser(web3, contracts, getState, dispatch, registeringUsername);
 
     verifiedEvent.stopWatching(() => {});
     noMatchEvent.stopWatching(() => {});

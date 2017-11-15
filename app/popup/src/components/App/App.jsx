@@ -19,7 +19,8 @@ const App = ({ acceptedNotice, generatedVault, copiedSeed, seed, password, view,
 
     { view === 'privacyNotice' && <PrivacyNotice /> }
     { (view === 'createAccount') && !generatedVault && acceptedNotice && <GenerateNewPassword /> }
-    { (view === 'copySeed') && generatedVault && !copiedSeed && <CopySeed seed={seed} /> }
+    { (view === 'copySeed') && generatedVault && !copiedSeed && <CopySeed copiedSeed={copiedSeed} seed={seed} /> }
+    { (view === 'showSeed') && generatedVault && copiedSeed && <CopySeed copiedSeed={copiedSeed} seed={seed} /> }
     { (view === 'dashboard') && generatedVault && acceptedNotice && copiedSeed && password && <Dashboard /> }
     { (view === 'unlockAccount') && generatedVault && acceptedNotice && copiedSeed && !password && <TypeInPassword /> }
     { (view === 'send') && <Send /> }

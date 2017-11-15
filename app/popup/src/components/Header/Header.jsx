@@ -20,7 +20,8 @@ const Header = ({ view, generatedVault, copiedSeed, password }) => (
 
     {
       (
-        (view === 'send')
+        (view === 'send') ||
+        (view === 'showSeed')
       ) &&
       <span styleName="back" onClick={() => { changeViewMessage('dashboard'); }}>
         <BackIcon />

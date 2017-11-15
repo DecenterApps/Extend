@@ -24,9 +24,9 @@ export const tip = async (web3, contract, dispatch, getState) => {
   const amount = web3.toWei(state.forms.tipForm.amount.value);
   const gasPrice = web3.toWei(state.forms.tipForm.gasPrice.value, 'gwei');
   const author = state.modals.modalProps.author;
-  const ks = keyStore.deserialize(state.account.keyStore);
-  const address = state.account.address;
-  const password = state.account.password;
+  const ks = keyStore.deserialize(state.keyStore.keyStore);
+  const address = state.keyStore.address;
+  const password = state.keyStore.password;
   const contractMethod = contract.tipUser;
 
   try {
@@ -45,9 +45,9 @@ export const buyGold = async (web3, contract, dispatch, getState) => {
   const gasPrice = web3.toWei(state.forms.buyGoldForm.gasPrice.value, 'gwei');
   const months = state.forms.buyGoldForm.months.value.toString();
   const author = state.modals.modalProps.author;
-  const ks = keyStore.deserialize(state.account.keyStore);
-  const address = state.account.address;
-  const password = state.account.password;
+  const ks = keyStore.deserialize(state.keyStore.keyStore);
+  const address = state.keyStore.address;
+  const password = state.keyStore.password;
   const contractMethod = contract.buyGold;
 
   dispatch({ type: BUY_GOLD });

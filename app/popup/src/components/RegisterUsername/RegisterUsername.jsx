@@ -38,7 +38,7 @@ RegisterUsername.propTypes = {
 const mapStateToProps = (state) => ({
   registering: state.permanent.registering,
   registeringError: state.permanent.registeringError,
-  registeringUsername: state.user.registeringUsername,
+  registeringUsername: state.permanent.registeringUsername,
 });
 
 export default connect(RegisterUsername, mapStateToProps);

@@ -19,7 +19,7 @@ const getProviderSpecs = (url) => (
 const handleUserVerification = (web3, dispatch, getState, state, contracts) =>
   new Promise(async (resolve, reject) => {
     try {
-      const alreadyVerified = state.user.verified;
+      const alreadyVerified = state.permanent.verified;
 
       if (alreadyVerified) {
         userActions.handleTips(web3, contracts, getState, dispatch);
@@ -31,7 +31,7 @@ const handleUserVerification = (web3, dispatch, getState, state, contracts) =>
 
         if (isVerified) {
           userActions.verifiedUser(web3, contracts, getState, dispatch);
-        } else if (!isVerified && state.user.registering && !state.user.verifiedUsername) {
+        } else if (!isVerified && state.permanent.registering && !state.permanent.verifiedUsername) {
           userActions.listenForVerifiedUser(web3, contracts, dispatch, getState);
         }
       }

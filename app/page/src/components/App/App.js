@@ -4,6 +4,7 @@ import ModalRoot from '../Modals/ModalRoot';
 import addTipToPostsAndComments from '../Tip/addTipToPostsAndComments';
 import addGoldToPostsAndComments from '../BuyGold/addGoldToPostsAndComments';
 import addUserVerifiedToPostsAndComments from '../UserVerified/addUserVerifiedToPostsAndComments';
+import { addTabIdMessage } from '../../../../messages/userActionsMessages';
 
 class App extends Component {
   constructor() {
@@ -16,6 +17,7 @@ class App extends Component {
 
   componentWillMount() {
     this.loadComponents(this.props);
+    addTabIdMessage();
   }
 
   componentWillReceiveProps(newProps) {

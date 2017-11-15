@@ -70,6 +70,11 @@ const handleReducerFinish = (reducersFinished, reducers, resolved, resolve, stat
 
   if (resolved) {
     chrome.runtime.sendMessage({ type: 'dispatch', state });
+
+    if (state.user.tabsIds.length > 0) {
+      state.user.tabsIds.forEach((tabId) => chrome.tabs.sendMessage(tabId, { type: 'dispatch', state }));
+    }
+
     resolve(state[reducerName]);
     return;
   }

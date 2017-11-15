@@ -15,3 +15,5 @@ export const setActiveTabMessage = (tabSlug) => {
 export const checkRefundForSentTipsMessage = () => { pm({ action: 'checkRefundForSentTips' }); };
 
 export const connectAgainMessage = () => { pm({ action: 'connectAgain' }); };
+
+export const addTabIdMessage = () => { pm({ action: 'addTabId' }); };

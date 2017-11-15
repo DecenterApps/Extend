@@ -38,7 +38,7 @@ const Dashboard = ({
       <div styleName="small-section">
         <div>
           { !registering && !registeringError && !verifiedUsername && <span styleName="error">Not verified</span> }
-          { !registering && registeringError &&  !verifiedUsername &&
+          { !registering && registeringError && !verifiedUsername &&
             <span styleName="error">There was an error, try again</span>
           }
           { registering &&

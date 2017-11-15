@@ -97,7 +97,7 @@ chrome.runtime.onMessage.addListener(async (msg, sender) => {
     case 'dropdown':
       return dropdownHandler(web3, engine, contracts, getState, dispatch, funcName, payload);
     case 'user':
-      return userHandler(web3, engine, contracts, getState, dispatch, funcName, payload);
+      return userHandler(web3, engine, contracts, getState, dispatch, funcName, payload, sender.tab.id);
     case 'forms':
       return formsHandler(web3, engine, contracts, getState, dispatch, funcName, payload);
     case 'page':
@@ -112,4 +112,10 @@ chrome.runtime.onMessage.addListener(async (msg, sender) => {
     default:
       throw Error('Action Handler not defined', handler);
   }
+});
+
+chrome.tabs.onRemoved.addListener((tabId) => {
+  if (!getState().user.tabsIds.includes(tabId)) return;
+
+  userActions.removeTabId(dispatch, tabId);
 });

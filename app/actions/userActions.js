@@ -1,7 +1,8 @@
 import {
   NETWORK_UNAVAILABLE, VERIFIED_USER, REGISTER_USER_ERROR, SET_ACTIVE_TAB, GET_TIPS, GET_TIPS_SUCCESS,
   GET_TIPS_ERROR, CONNECT_AGAIN, CONNECT_AGAIN_SUCCESS, CONNECT_AGAIN_ERROR, ADD_NEW_TIP,
-  ADD_NEW_GOLD, GET_GOLD, GET_GOLD_ERROR, GET_GOLD_SUCCESS, SET_DISCONNECTED, SET_REFUND_TIPS, DIALOG_OPEN
+  ADD_NEW_GOLD, GET_GOLD, GET_GOLD_ERROR, GET_GOLD_SUCCESS, SET_DISCONNECTED, SET_REFUND_TIPS, DIALOG_OPEN, ADD_TAB_ID,
+  REMOVE_TAB_ID
 } from '../constants/actionTypes';
 import {
   verifiedUserEvent, listenForTips, getTipsFromEvent, listenForGold, getGoldFromEvent, _checkIfRefundAvailable
@@ -30,8 +31,8 @@ export const checkRefundForSentTips = async (web3, contract, getState, dispatch)
 
 const getTips = async (web3, contract, dispatch, getState) => {
   const state = getState();
-  const address = state.account.address;
-  const username = state.user.verifiedUsername;
+  const address = state.keyStore.address;
+  const username = state.permanent.verifiedUsername;
 
   dispatch({ type: GET_TIPS });
 
@@ -63,8 +64,8 @@ const getTips = async (web3, contract, dispatch, getState) => {
 
 const getGold = async (web3, contract, dispatch, getState) => {
   const state = getState();
-  const address = state.account.address;
-  const username = state.user.verifiedUsername;
+  const address = state.keyStore.address;
+  const username = state.permanent.verifiedUsername;
 
   dispatch({ type: GET_GOLD });
 
@@ -96,8 +97,8 @@ const getGold = async (web3, contract, dispatch, getState) => {
 
 export const handleTips = (web3, contracts, getState, dispatch) => {
   const state = getState();
-  const address = state.account.address;
-  const username = state.user.verifiedUsername;
+  const address = state.keyStore.address;
+  const username = state.permanent.verifiedUsername;
 
   const handleNewTip = (tip) => {
     dispatch({ type: ADD_NEW_TIP, payload: { tip, address, username } });
@@ -109,8 +110,8 @@ export const handleTips = (web3, contracts, getState, dispatch) => {
 
 export const handleGold = (web3, contracts, getState, dispatch) => {
   const state = getState();
-  const address = state.account.address;
-  const username = state.user.verifiedUsername;
+  const address = state.keyStore.address;
+  const username = state.permanent.verifiedUsername;
 
   const handleNewGold = (gold) => {
     dispatch({ type: ADD_NEW_GOLD, payload: { gold, address, username } });
@@ -153,7 +154,7 @@ export const listenForVerifiedUser = (web3, contracts, dispatch, getState) => {
   console.log('LISTENING FOR VERIFIED USER');
 
   const verifiedCallback = (err, event, verifiedEvent, noMatchEvent) => {
-    if (web3.toUtf8(event.args.username) !== getState().user.registeringUsername) return;
+    if (web3.toUtf8(event.args.username) !== getState().permanent.registeringUsername) return;
 
     verifiedUser(web3, contracts, getState, dispatch);
 
@@ -162,7 +163,7 @@ export const listenForVerifiedUser = (web3, contracts, dispatch, getState) => {
   };
 
   const noMatchCallback = (err, event, verifiedEvent, noMatchEvent) => {
-    if (web3.toUtf8(event.args.neededUsername) !== getState().user.registeringUsername) return;
+    if (web3.toUtf8(event.args.neededUsername) !== getState().permanent.registeringUsername) return;
 
     dispatch({ type: REGISTER_USER_ERROR, message: 'Verified username does not match Reddit username.' });
 
@@ -189,7 +190,6 @@ export const openAuthWindow = (payload, dispatch) => {
     top
   }, (window) => {
     dispatch({ type: DIALOG_OPEN, id: window.id });
-
   });
 };
 
@@ -214,3 +214,6 @@ export const setDisconnected = (dispatch, payload) =>
     await dispatch({ type: SET_DISCONNECTED, payload });
     resolve();
   });
+
+export const addTabId = (dispatch, payload) => { dispatch({ type: ADD_TAB_ID, payload }); };
+export const removeTabId = (dispatch, payload) => { dispatch({ type: REMOVE_TAB_ID, payload }); };

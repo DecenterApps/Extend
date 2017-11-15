@@ -38,7 +38,9 @@ const Dashboard = ({
       <div styleName="small-section">
         <div>
           { !registering && !registeringError && !verifiedUsername && <span styleName="error">Not verified</span> }
-          { !registering && registeringError && <span styleName="error">There was an error, try again</span> }
+          { !registering && registeringError &&  !verifiedUsername &&
+            <span styleName="error">There was an error, try again</span>
+          }
           { registering &&
             <span styleName="pending">
               Verifying
@@ -54,6 +56,7 @@ const Dashboard = ({
           {
             verifiedUsername &&
             <span>
+              <span styleName="success">Verified</span>
               <a
                 href={createRedditLink(verifiedUsername)}
                 target="_blank"

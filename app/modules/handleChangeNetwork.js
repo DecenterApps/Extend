@@ -26,7 +26,7 @@ const handleUserVerification = (web3, dispatch, getState, state, contracts) =>
         userActions.handleGold(web3, contracts, getState, dispatch);
       }
 
-      if (!alreadyVerified && state.account.address) {
+      if (!alreadyVerified && state.keyStore.address) {
         const isVerified = await _checkAddressVerified(web3, contracts.func);
 
         if (isVerified) {
@@ -55,15 +55,15 @@ const handleChangeNetwork = (Web3, contractConfig, dispatch, getState) =>
 
       const contracts = { events: eventsContract, func: funcContract };
 
-      web3.eth.defaultAccount = state.account.address; //eslint-disable-line
+      web3.eth.defaultAccount = state.keyStore.address; //eslint-disable-line
 
       await handleUserVerification(web3, dispatch, getState, state, contracts);
 
       accountActions.pollForGasPrice(web3, engine, dispatch, getState);
 
       if (state.account.transactions.length > 0) accountActions.pollPendingTxs(web3, engine, dispatch, getState);
-      if (state.account.address) accountActions.pollForBalance(web3, engine, dispatch, getState);
-      if (state.account.password) keyStoreActions.passwordReloader(dispatch);
+      if (state.keyStore.address) accountActions.pollForBalance(web3, engine, dispatch, getState);
+      if (state.keyStore.password) keyStoreActions.passwordReloader(dispatch);
 
       resolve({ web3, contracts, engine });
     } catch(err) {

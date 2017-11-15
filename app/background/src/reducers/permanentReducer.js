@@ -1,4 +1,7 @@
-import { ACCEPT_NOTICE, COPIED_SEED, CHANGE_VIEW } from '../../../constants/actionTypes';
+import {
+  REGISTER_USER, REGISTER_USER_ERROR, VERIFIED_USER,
+  ACCEPT_NOTICE, COPIED_SEED, CHANGE_VIEW
+} from '../../../constants/actionTypes';
 import { VIEWS } from '../../../constants/general';
 
 const reducerName = 'permanent';
@@ -26,6 +29,30 @@ export const reducer = (state, action) => {
 
     case CHANGE_VIEW:
       return { ...state, view: payload.viewName };
+
+    case REGISTER_USER:
+      return {
+        ...state,
+        registering: true,
+        registeringUsername: payload.username,
+        registeringError: ''
+      };
+
+    case REGISTER_USER_ERROR:
+      return {
+        ...state,
+        registering: false,
+        registeringError: action.message,
+      };
+
+    case VERIFIED_USER:
+      return {
+        ...state,
+        registering: false,
+        verified: true,
+        registeringUsername: '',
+        verifiedUsername: state.registeringUsername,
+      };
 
     default:
       return false;

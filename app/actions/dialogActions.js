@@ -19,7 +19,7 @@ const keyStore = lightwallet.keystore;
 export const handleUserAuthentication = (contracts, web3, getState, dispatch) => {
   const redirectUri = chrome.identity.getRedirectURL('oauth2');
   const keyStoreState = getState().keyStore;
-  const ks = keyStoreState.deserialize(account.keyStore);
+  const ks = keyStore.deserialize(keyStoreState.keyStore);
   const address = keyStoreState.address;
   const password = keyStoreState.password;
 

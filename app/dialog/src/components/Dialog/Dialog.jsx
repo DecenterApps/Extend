@@ -7,6 +7,8 @@ import './dialog.scss';
 
 class Dialog extends Component {
   componentDidMount() {
+    if (this.props.registering || this.props.verifiedUsername) return;
+
     handleUserAuthenticationMessage();
   }
 
@@ -72,9 +74,9 @@ Dialog.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-  registering: state.user.registering,
-  verifiedUsername: state.user.verifiedUsername,
-  registeringError: state.user.registeringError,
+  registering: state.permanent.registering,
+  verifiedUsername: state.permanent.verifiedUsername,
+  registeringError: state.permanent.registeringError,
   dialogWindowId: state.user.dialogWindowId,
 });
 

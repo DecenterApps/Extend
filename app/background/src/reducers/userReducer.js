@@ -1,5 +1,4 @@
 import {
-  REGISTER_USER, REGISTER_USER_ERROR, VERIFIED_USER,
   NETWORK_UNAVAILABLE, ADD_NEW_TIP,
   SEND_TIP, SEND_TIP_SUCCESS, SEND_TIP_ERROR, SET_ACTIVE_TAB,
   GET_TIPS, GET_TIPS_SUCCESS, GET_TIPS_ERROR, CLEAR_TIP_PENDING,
@@ -42,29 +41,6 @@ export const reducer = (state, action) => {
   const payload = action.payload;
 
   switch (action.type) {
-    case REGISTER_USER:
-      return {
-        ...state,
-        registering: true,
-        registeringUsername: payload.username,
-        registeringError: ''
-      };
-    case VERIFIED_USER:
-      return {
-        ...state,
-        registering: false,
-        verified: true,
-        registeringUsername: '',
-        verifiedUsername: state.registeringUsername,
-      };
-
-    case REGISTER_USER_ERROR:
-      return {
-        ...state,
-        registering: false,
-        registeringError: action.message,
-      };
-
     case DIALOG_OPEN:
       return {
         ...state,

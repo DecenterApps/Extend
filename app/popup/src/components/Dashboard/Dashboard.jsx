@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import connect from '../../../../customRedux/connect';
+import Tooltip from '../../../../commonComponents/Tooltip/Tooltip';
 import { getEtherScanLinkByNetwork, createRedditLink } from '../../../../actions/utils';
 import { changeViewMessage } from '../../../../messages/permanentActionsMessages';
 import Tabs from '../Tabs/Tabs';
@@ -31,7 +32,15 @@ const Dashboard = ({
           { address }
         </a>
         <input type="text" id="user-address" styleName="user-address" defaultValue={address} />
-        <button styleName="copy" onClick={copyAddress} />
+        <Tooltip
+          tagName="span"
+          content="Copied"
+          eventOn="onClick"
+          eventOff="onMouseMove"
+          useDefaultStyles
+        >
+          <button styleName="copy" onClick={copyAddress} />
+        </Tooltip>
         <div styleName="small-section-title">Address</div>
       </div>
 

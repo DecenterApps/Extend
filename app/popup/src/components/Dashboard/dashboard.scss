@@ -51,12 +51,13 @@
         background-repeat: no-repeat;
         outline: none;
         border: none;
-        opacity: .25;
+        opacity: .4;
         cursor: pointer;
         margin-left: 5px;
+        transition: 0.2s ease-in;
 
         &:hover {
-          opacity: .4;
+          opacity: .6;
         }
       }
 

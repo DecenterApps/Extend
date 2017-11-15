@@ -25,6 +25,7 @@ const OptionsDropdown = ({ optionsDropdownItems, dropdownVisible }) => (
                 let itemOnClick = null;
                 if (item.id === 'lock_acc') { itemOnClick = clearPasswordMessage; }
                 if (item.id === 'show_seed') { itemOnClick = () => { changeViewMessage('showSeed'); }; }
+                if (item.id === 'show_terms') { itemOnClick = () => { changeViewMessage('showPrivacy'); }; }
 
                 return (
                   <span

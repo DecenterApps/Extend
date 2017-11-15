@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { acceptNoticeMessage, changeViewMessage } from '../../../../messages/permanentActionsMessages';
 
 import './privacy-notice.scss';
@@ -8,7 +9,7 @@ const acceptPrivacyNotice = () => {
   acceptNoticeMessage();
 };
 
-const PrivacyNotice = () => (
+const PrivacyNotice = ({ acceptedNotice }) => (
   <div styleName="privacy-notice-wrapper">
     <div styleName="privacy-notice-body">
       <div>
@@ -19,10 +20,17 @@ const PrivacyNotice = () => (
       </div>
     </div>
 
-    <button tabIndex="-1" onClick={() => { acceptPrivacyNotice(); }}>
-      Accept
-    </button>
+    {
+      !acceptedNotice &&
+      <button tabIndex="-1" onClick={() => { acceptPrivacyNotice(); }}>
+        Accept
+      </button>
+    }
   </div>
 );
+
+PrivacyNotice.propTypes = {
+  acceptedNotice: PropTypes.bool.isRequired
+};
 
 export default PrivacyNotice;

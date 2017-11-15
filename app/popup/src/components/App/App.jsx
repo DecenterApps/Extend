@@ -17,7 +17,8 @@ const App = ({ acceptedNotice, generatedVault, copiedSeed, seed, password, view,
   <div styleName="popup-wrapper">
     <Header view={view} password={password} copiedSeed={copiedSeed} generatedVault={generatedVault} />
 
-    { view === 'privacyNotice' && <PrivacyNotice /> }
+    { view === 'privacyNotice' && <PrivacyNotice acceptedNotice={acceptedNotice} /> }
+    { view === 'showPrivacy' && <PrivacyNotice acceptedNotice={acceptedNotice} /> }
     { (view === 'createAccount') && !generatedVault && acceptedNotice && <GenerateNewPassword /> }
     { (view === 'copySeed') && generatedVault && !copiedSeed && <CopySeed copiedSeed={copiedSeed} seed={seed} /> }
     { (view === 'showSeed') && generatedVault && copiedSeed && <CopySeed copiedSeed={copiedSeed} seed={seed} /> }

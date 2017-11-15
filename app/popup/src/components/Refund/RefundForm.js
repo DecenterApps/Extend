@@ -17,7 +17,9 @@ class RefundForm extends Component {
   componentWillMount() {
     this.props.formData.setNumOfFields(1);
     this.GasPriceField = createField(InputFormField, this.props.formData);
+  }
 
+  componentDidMount() {
     setRefundFormTxPriceMessage();
   }
 

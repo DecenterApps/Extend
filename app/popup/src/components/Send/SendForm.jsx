@@ -20,6 +20,10 @@ class SendForm extends Component {
     this.GasPriceField = createField(InputFormField, this.props.formData);
   }
 
+  componentDidMount() {
+    setSendFormTxPriceMessage();
+  }
+
   componentWillReceiveProps(newProps) {
     if (newProps.invalid) return;
     if (!this.props.form) return;

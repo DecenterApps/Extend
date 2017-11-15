@@ -5,7 +5,7 @@ import {
 const reducerName = 'forms';
 
 const INITIAL_STATE = {
-  currentFormTxCost: '',
+  currentFormTxCost: {},
   insufficientBalance: false
 };
 
@@ -13,7 +13,6 @@ export const reducer = (state, action) => {
   const payload = action.payload;
 
   switch (action.type) {
-
     case ADD_FORM:
       return { ...state, [payload.name]: payload.state };
 

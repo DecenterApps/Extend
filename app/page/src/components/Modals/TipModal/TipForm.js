@@ -19,6 +19,10 @@ class TipForm extends Component {
     this.GasPriceField = createField(InputFormField, this.props.formData);
   }
 
+  componentDidMount() {
+    setTipFormTxPriceMessage();
+  }
+
   componentWillReceiveProps(newProps) {
     if (newProps.invalid) return;
     if (!this.props.form) return;

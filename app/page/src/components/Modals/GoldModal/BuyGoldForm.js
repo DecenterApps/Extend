@@ -18,6 +18,9 @@ class buyGoldForm extends Component {
     this.props.formData.setNumOfFields(1);
     this.MonthsField = createField(InputFormField, this.props.formData);
     this.GasPriceField = createField(InputFormField, this.props.formData);
+  }
+
+  componentDidMount() {
     setBuyGoldFormTxPriceMessage();
   }
 

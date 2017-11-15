@@ -37,6 +37,13 @@ contract Extend is usingOraclize {
         return data.getAddressForUsername(_username);
     }
 
+    function getUsernameForAddress(address _address) public constant returns (bytes32) {
+        if (data.getUserVerified(_address))
+            return data.getUserUsername(_address);
+        
+        return 0x0;
+    }
+
     function checkAddressVerified() public constant returns (bool) {
         return data.getUserVerified(msg.sender);
     }
@@ -103,7 +110,7 @@ contract Extend is usingOraclize {
     }
 
     /**
-     * Refund your money for tipping user
+     * Buy gold for user
      * @param _to reddit username for user
      * @param _months for using gold
      * @param _priceUsd price returned from server

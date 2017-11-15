@@ -4,10 +4,6 @@ const pm = (actionParam) => {
   chrome.runtime.sendMessage(action);
 };
 
-export const clearPasswordMessage = () => {
-  pm({ action: 'clearPassword' });
-};
-
 export const sendMessage = () => {
   pm({ action: 'send' });
 };

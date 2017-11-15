@@ -4,8 +4,6 @@ const accountActionsHandler = (web3, engine, contracts, getState, dispatch, func
   switch (funcName) {
     case 'setBalance':
       return accountActions[funcName](dispatch, payload);
-    case 'clearPassword':
-    case 'passwordReloader':
     case 'clearRefundValues':
       return accountActions[funcName](dispatch);
     case 'send':

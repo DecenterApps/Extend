@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import connect from '../../../../customRedux/connect';
 import OutsideAlerter from '../../../../commonComponents/OutsideAlerter';
 import { toggleDropdownMessage } from '../../../../messages/dropdownActionMessages';
-import { clearPasswordMessage } from '../../../../messages/accountActionMessages';
+import { clearPasswordMessage } from '../../../../messages/keyStoreActionMessages';
 import DotsMenu from '../DotsMenu/DotsMenu';
 
 import './options-dropdown.scss';

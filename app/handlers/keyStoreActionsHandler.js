@@ -2,6 +2,9 @@ import * as keyStoreActions from '../actions/keyStoreActions';
 
 const keyStoreActionsHandler = (web3, engine, contracts, getState, dispatch, funcName, payload) => {
   switch (funcName) {
+    case 'clearPassword':
+      return keyStoreActions[funcName](dispatch);
+
     case 'createWallet':
       return keyStoreActions[funcName](web3, engine, dispatch, getState, payload);
     case 'checkIfPasswordValid':

@@ -1,4 +1,4 @@
-import { ACCEPT_NOTICE, COPIED_SEED, CHANGE_VIEW } from '../constants/actionTypes';
+import { ACCEPT_NOTICE, COPIED_SEED, CHANGE_VIEW, SET_DISCONNECTED } from '../constants/actionTypes';
 import { passwordReloader } from './keyStoreActions';
 
 export const changeView = (dispatch, payload) =>
@@ -19,3 +19,9 @@ export const copiedSeed = (dispatch) => {
   changeView(dispatch, { viewName: 'dashboard' });
   passwordReloader(dispatch);
 };
+
+export const setDisconnected = (dispatch, payload) =>
+  new Promise(async (resolve) => {
+    await dispatch({ type: SET_DISCONNECTED, payload });
+    resolve();
+  });

@@ -2,6 +2,7 @@ import createStore from '../../customRedux/createStore';
 import combinedReducers from './reducers/index';
 import contractConfig from '../../modules/config.json';
 import * as userActions from '../../actions/userActions';
+import * as permanentActions from '../../actions/permanentActions';
 import accountHandler from '../../handlers/accountActionsHandler';
 import permanentHandler from '../../handlers/permanentActionsHandler';
 import keyStoreHandler from '../../handlers/keyStoreActionsHandler';
@@ -50,15 +51,15 @@ Promise.resolve(startApp()).then((err) => {
 
   setInterval(() => {
     web3.version.getNetwork(async (error) => {
-      const disconnected = getState().user.disconnected;
+      const disconnected = getState().permanent.disconnected;
 
       if (error && !disconnected) {
-        await userActions.setDisconnected(dispatch, true);
+        await permanentActions.setDisconnected(dispatch, true);
         return;
       }
 
       if (!error && disconnected) {
-        await userActions.setDisconnected(dispatch, false);
+        await permanentActions.setDisconnected(dispatch, false);
         await startApp();
       }
     });

@@ -1,12 +1,13 @@
 import {
   REGISTER_USER, REGISTER_USER_ERROR, VERIFIED_USER,
-  ACCEPT_NOTICE, COPIED_SEED, CHANGE_VIEW
+  ACCEPT_NOTICE, COPIED_SEED, CHANGE_VIEW, SET_DISCONNECTED
 } from '../../../constants/actionTypes';
 import { VIEWS } from '../../../constants/general';
 
 const reducerName = 'permanent';
 
 const INITIAL_STATE = {
+  disconnected: false,
   acceptedNotice: false,
   copiedSeed: false,
   registering: false,
@@ -53,6 +54,9 @@ export const reducer = (state, action) => {
         registeringUsername: '',
         verifiedUsername: state.registeringUsername,
       };
+
+    case SET_DISCONNECTED:
+      return { ...state, disconnected: payload };
 
     default:
       return false;

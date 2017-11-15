@@ -4,7 +4,7 @@ import {
   GET_TIPS, GET_TIPS_SUCCESS, GET_TIPS_ERROR, CLEAR_TIP_PENDING,
   CONNECT_AGAIN, CONNECT_AGAIN_SUCCESS, CONNECT_AGAIN_ERROR,
   BUY_GOLD, BUY_GOLD_SUCCESS, BUY_GOLD_ERROR, GET_GOLD, GET_GOLD_ERROR, CLEAR_GOLD_PENDING,
-  GET_GOLD_SUCCESS, ADD_NEW_GOLD, SET_DISCONNECTED, SET_REFUND_TIPS, DIALOG_OPEN, ADD_TAB_ID, REMOVE_TAB_ID
+  GET_GOLD_SUCCESS, ADD_NEW_GOLD, SET_REFUND_TIPS, DIALOG_OPEN, ADD_TAB_ID, REMOVE_TAB_ID
 } from '../../../constants/actionTypes';
 import { NETWORK_URL, TABS } from '../../../constants/general';
 
@@ -33,7 +33,6 @@ const INITIAL_STATE = {
   golds: [],
   gettingGold: false,
   gettingGoldError: '',
-  disconnected: false,
   dialogWindowId: 0,
   tabsIds: []
 };
@@ -172,9 +171,6 @@ export const reducer = (state, action) => {
         buyingGoldError: ''
       };
 
-    case SET_DISCONNECTED:
-      return { ...state, disconnected: payload };
-
     case SET_REFUND_TIPS:
       return { ...state, tips: payload };
 
@@ -184,7 +180,7 @@ export const reducer = (state, action) => {
     case REMOVE_TAB_ID: {
       let allTabIds = [state.tabsIds];
       const tabIndex = allTabIds.findIndex((id) => id === payload);
-      allTabIds.splice(tabIndex, 1);
+      allTabIds = tabIndex.splice(tabIndex, 1);
 
       return { ...state, tabsIds: allTabIds };
     }

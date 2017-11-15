@@ -1,7 +1,7 @@
 import {
   NETWORK_UNAVAILABLE, VERIFIED_USER, REGISTER_USER_ERROR, SET_ACTIVE_TAB, GET_TIPS, GET_TIPS_SUCCESS,
   GET_TIPS_ERROR, CONNECT_AGAIN, CONNECT_AGAIN_SUCCESS, CONNECT_AGAIN_ERROR, ADD_NEW_TIP,
-  ADD_NEW_GOLD, GET_GOLD, GET_GOLD_ERROR, GET_GOLD_SUCCESS, SET_DISCONNECTED, SET_REFUND_TIPS, DIALOG_OPEN, ADD_TAB_ID,
+  ADD_NEW_GOLD, GET_GOLD, GET_GOLD_ERROR, GET_GOLD_SUCCESS, SET_REFUND_TIPS, DIALOG_OPEN, ADD_TAB_ID,
   REMOVE_TAB_ID
 } from '../constants/actionTypes';
 import {
@@ -208,12 +208,6 @@ export const networkUnavailable = (dispatch) =>
 export const connectAgain = (dispatch) => { dispatch({ type: CONNECT_AGAIN }); };
 export const connectingAgainError = (dispatch) => { dispatch({ type: CONNECT_AGAIN_ERROR }); };
 export const connectingAgainSuccess = (dispatch) => { dispatch({ type: CONNECT_AGAIN_SUCCESS }); };
-
-export const setDisconnected = (dispatch, payload) =>
-  new Promise(async (resolve) => {
-    await dispatch({ type: SET_DISCONNECTED, payload });
-    resolve();
-  });
 
 export const addTabId = (dispatch, payload) => { dispatch({ type: ADD_TAB_ID, payload }); };
 export const removeTabId = (dispatch, payload) => { dispatch({ type: REMOVE_TAB_ID, payload }); };

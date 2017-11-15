@@ -1,5 +1,4 @@
 export const SET_ADDRESS = 'set_address';
-export const CLEAR_PENDING = 'clear_pending';
 
 // PERMANENT
 export const ACCEPT_NOTICE = 'accept_notice';

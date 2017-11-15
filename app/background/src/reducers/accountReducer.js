@@ -1,7 +1,7 @@
 import {
   UNLOCK_ERROR, UNLOCK_SUCCESS, SET_BALANCE, SET_GAS_PRICE,
   SEND, SEND_ERROR, SEND_SUCCESS, CHANGE_TX_STATE, CLEAR_REFUND_VALUES, REFUND_AVAILABLE,
-  CLEAR_PENDING, REFUND, REFUND_ERROR, REFUND_SUCCESS, REFUND_UNAVAILABLE,
+  REFUND, REFUND_ERROR, REFUND_SUCCESS, REFUND_UNAVAILABLE,
 } from '../../../constants/actionTypes';
 
 const reducerName = 'account';
@@ -23,18 +23,6 @@ export const reducer = (state, action) => {
   const payload = action.payload;
 
   switch (action.type) {
-    case `${CLEAR_PENDING}-${reducerName}`:
-      return {
-        ...state,
-        unlockError: '',
-        sending: false,
-        sendingError: '',
-        refunding: false,
-        refundingError: '',
-        refundingSuccess: false,
-        refundAvailable: true
-      };
-
     case UNLOCK_SUCCESS:
       return { ...state, unlockError: '' };
     case UNLOCK_ERROR:

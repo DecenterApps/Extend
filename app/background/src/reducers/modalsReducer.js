@@ -1,4 +1,4 @@
-import { TOGGLE_MODAL, CLEAR_PENDING } from '../../../constants/actionTypes';
+import { TOGGLE_MODAL } from '../../../constants/actionTypes';
 
 const reducerName = 'modals';
 
@@ -11,12 +11,6 @@ const reducer = (state, action) => {
   const payload = action.payload;
 
   switch (action.type) {
-    case `${CLEAR_PENDING}-${reducerName}`:
-      return {
-        ...state,
-        modalType: '',
-        modalProps: {}
-      };
     case TOGGLE_MODAL: {
       const close = !payload.action;
 

@@ -1,5 +1,5 @@
 import {
-  ADD_FORM, UPDATE_FIELD_META, UPDATE_FIELD_ERROR, SET_TX_COST, CLEAR_PENDING
+  ADD_FORM, UPDATE_FIELD_META, UPDATE_FIELD_ERROR, SET_TX_COST
 } from '../../../constants/actionTypes';
 
 const reducerName = 'forms';
@@ -13,14 +13,6 @@ export const reducer = (state, action) => {
   const payload = action.payload;
 
   switch (action.type) {
-    case `${CLEAR_PENDING}-${reducerName}`:
-      return {
-        ...state,
-        currentFormTxCost: {
-          eth: '',
-          usd: '',
-        }
-      };
 
     case ADD_FORM:
       return { ...state, [payload.name]: payload.state };

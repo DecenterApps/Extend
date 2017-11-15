@@ -1,6 +1,5 @@
 import PQueue from 'p-queue';
 import { get, set, clearReducer } from './store';
-import { CLEAR_PENDING } from '../constants/actionTypes';
 
 const queue = new PQueue({ concurrency: 1 });
 

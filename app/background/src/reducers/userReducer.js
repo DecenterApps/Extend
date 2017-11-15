@@ -3,7 +3,7 @@ import {
   NETWORK_UNAVAILABLE, ADD_NEW_TIP,
   SEND_TIP, SEND_TIP_SUCCESS, SEND_TIP_ERROR, SET_ACTIVE_TAB,
   GET_TIPS, GET_TIPS_SUCCESS, GET_TIPS_ERROR, CLEAR_TIP_PENDING,
-  CLEAR_PENDING, CONNECT_AGAIN, CONNECT_AGAIN_SUCCESS, CONNECT_AGAIN_ERROR,
+  CONNECT_AGAIN, CONNECT_AGAIN_SUCCESS, CONNECT_AGAIN_ERROR,
   BUY_GOLD, BUY_GOLD_SUCCESS, BUY_GOLD_ERROR, GET_GOLD, GET_GOLD_ERROR, CLEAR_GOLD_PENDING,
   GET_GOLD_SUCCESS, ADD_NEW_GOLD, SET_DISCONNECTED, SET_REFUND_TIPS, DIALOG_OPEN
 } from '../../../constants/actionTypes';
@@ -42,23 +42,6 @@ export const reducer = (state, action) => {
   const payload = action.payload;
 
   switch (action.type) {
-    case `${CLEAR_PENDING}-${reducerName}`:
-      return {
-        ...state,
-        sendingTip: false,
-        sendingTipError: '',
-        sendingTipSuccess: false,
-        gettingSentTips: false,
-        gettingSentTipsError: '',
-        gettingTips: false,
-        gettingTipsError: '',
-        buyingGold: false,
-        buyingGoldError: '',
-        buyingGoldSuccess: false,
-        connectingAgain: false,
-        connectingAgainError: '',
-      };
-
     case REGISTER_USER:
       return {
         ...state,

@@ -8,7 +8,7 @@ import { listenForVerifiedUser, clearRegisteringError } from './userActions';
 const keyStore = lightwallet.keystore;
 
 /**
- * Opens Reddit oauth window and receives user access_token. Access_token and
+ * Opens reddit oauth window and receives user access_token. Access_token and
  * user address are sent to the contract
  *
  * @param {Array} contracts

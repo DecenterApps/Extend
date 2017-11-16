@@ -169,7 +169,7 @@ export const listenForVerifiedUser = (web3, contracts, dispatch, getState) => {
   const noMatchCallback = (err, event, verifiedEvent, noMatchEvent) => {
     if (web3.toUtf8(event.args.neededUsername) !== getState().permanent.registeringUsername) return;
 
-    dispatch({ type: REGISTER_USER_ERROR, message: 'Verified username does not match Reddit username.' });
+    dispatch({ type: REGISTER_USER_ERROR, message: 'Verified username does not match reddit username.' });
 
     verifiedEvent.stopWatching(() => {});
     noMatchEvent.stopWatching(() => {});

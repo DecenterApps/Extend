@@ -13,9 +13,9 @@ export const onboardingComponents = {
   'description': () => (
     <div>
       ΞXTΞND is a Chrome extension that aims to build a bridge between Ethereum blockchain and popular social websites
-      such as Reddit. We accomplish this by incorporating Ethereum light client into the extension while making slight
-      modifications to certain web pages (such as Reddit posts) in order to make extra features available to the users.
-      In this initial release, the extension allows you to send one-click tips to other Reddit users or buy them gold
+      such as reddit. We accomplish this by incorporating Ethereum light client into the extension while making slight
+      modifications to certain web pages (such as reddit posts) in order to make extra features available to the users.
+      In this initial release, the extension allows you to send one-click tips to other reddit users or buy them gold
       with ETH directly.
     </div>
   ),
@@ -27,9 +27,9 @@ export const onboardingComponents = {
     <div>
       <img src={pageComponentsUnveried} alt="Page components info" />
       <p>
-        As you can see in the image above, ΞXTΞND will add some extra options to Reddit posts. This example shows a
+        As you can see in the image above, ΞXTΞND will add some extra options to reddit posts. This example shows a
         post from a user that has not installed ΞXTΞND yet, but whom you can still tip. He will then be notified about
-        the tip via Reddit private message and able to claim the tip after installing the extension and verifying his
+        the tip via reddit private message and able to claim the tip after installing the extension and verifying his
         username
       </p>
 
@@ -42,9 +42,9 @@ export const onboardingComponents = {
   'verified': () => (
     <p>
       Although you can start sending tips as soon as you load your ΞXTΞND wallet, in order to receive tips you will
-      need to link your Reddit username to your wallet&apos;s Ethereum address. This is somewhat complex but safe
-      process which combines Reddit OAuth, Ethereum smart contract and Oraclize service in order to ensure that you are
-      the true owner of your Reddit username. If you want to read more details, our
+      need to link your reddit username to your wallet&apos;s Ethereum address. This is somewhat complex but safe
+      process which combines reddit OAuth, Ethereum smart contract and Oraclize service in order to ensure that you are
+      the true owner of your reddit username. If you want to read more details, our
       <a href="https://blog.decenter.com/2017/11/14/extend/" target="_blank" rel="noopener noreferrer">blog post</a>
       goes in depth on this procedure.
     </p>

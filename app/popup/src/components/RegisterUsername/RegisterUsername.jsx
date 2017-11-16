@@ -17,13 +17,13 @@ const RegisterUsername = ({ registeringError, registeringUsername }) => (
     {
       !registeringUsername &&
       <button onClick={createUserAuthMessage} styleName="register-username">
-        Register Reddit username
+        Register reddit username
       </button>
     }
     {
       registeringUsername &&
       <div styleName="info-wrapper">
-        We are verifying your Reddit username: { registeringUsername }. Awaiting confirmation.
+        We are verifying your reddit username: { registeringUsername }. Awaiting confirmation.
       </div>
     }
   </div>

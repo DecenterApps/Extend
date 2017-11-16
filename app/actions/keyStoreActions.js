@@ -74,7 +74,7 @@ export const passwordReloader = (dispatch) => {
 export const createWallet = (web3, engine, dispatch, getState, password) => {
   keyStore.createVault({
     password,
-    hdPathString: 'm/0\'/0\'/0\'',
+    hdPathString: 'm/44\'/60\'/0\'/0',
     seedPhrase: keyStore.generateRandomSeed()
   }, async (err, ks) => {
     const pwDerivedKey = await getPwDerivedKey(ks, password);

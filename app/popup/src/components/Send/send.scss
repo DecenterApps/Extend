@@ -4,48 +4,4 @@
     padding: 25px;
     font-size: 14px;
   }
-
-  .transfers-wrapper {
-    max-height: 72px;
-    overflow: auto;
-    padding: 25px;
-    text-align: center;
-  }
-
-  .transaction {
-    border-bottom: 1px solid rgba(#888, 0.1);
-    width: 100%;
-
-    &.last {
-      border-bottom: none;
-
-      .tx-info {
-        padding-bottom: 0;
-      }
-    }
-
-    .tx-info {
-      padding: 10px 0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-
-      .hash {
-        max-width: 350px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-
-
-      a {
-        text-decoration: none;
-        color: #444444;
-        transition: 0.2s ease-in;
-
-        &:hover {
-          color: #a1A1A1;
-        }
-      }
-    }
-  }
 }

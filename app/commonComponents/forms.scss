@@ -88,6 +88,10 @@
     color: $green;
     text-align: center;
     font-weight: 600;
+
+    &.margin {
+      margin-bottom: 20px;
+    }
   }
 
   .submit-button {

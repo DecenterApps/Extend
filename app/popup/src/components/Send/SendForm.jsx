@@ -108,6 +108,13 @@ class SendForm extends Component {
             <div styleName="submit-error">Insufficient balance for transaction</div>
           }
 
+          {
+            this.props.sendingSuccess &&
+            <div styleName="submit-success margin">
+              Transaction successfully sent.
+            </div>
+          }
+
           <button
             className={formStyle['submit-button']}
             type="submit"
@@ -134,7 +141,8 @@ SendForm.propTypes = {
   form: PropTypes.object.isRequired,
   currentFormTxCost: PropTypes.object.isRequired,
   insufficientBalance: PropTypes.bool.isRequired,
-  balance: PropTypes.string.isRequired
+  balance: PropTypes.string.isRequired,
+  sendingSuccess: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = (state) => ({
@@ -144,7 +152,8 @@ const mapStateToProps = (state) => ({
   form: state.forms[FORM_NAME],
   currentFormTxCost: state.forms.currentFormTxCost,
   insufficientBalance: state.forms.insufficientBalance,
-  balance: state.account.balance
+  balance: state.account.balance,
+  sendingSuccess: state.account.sendingSuccess
 });
 
 const ExportComponent = createForm(FORM_NAME, SendForm, sendFormValidator);

@@ -60,7 +60,6 @@ const handleChangeNetwork = (Web3, contractConfig, dispatch, getState) =>
 
       accountActions.pollForGasPrice(web3, engine, dispatch, getState);
 
-      if (state.account.transactions.length > 0) accountActions.pollPendingTxs(web3, engine, dispatch, getState);
       if (state.keyStore.address) accountActions.pollForBalance(web3, engine, dispatch, getState);
       if (state.keyStore.password) keyStoreActions.passwordReloader(dispatch, getState);
 

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import BackIcon from '../../../../commonComponents/Decorative/BackIcon';
 import Logo from '../../../../commonComponents/Decorative/Logo';
 import OptionsDropdown from '../OptionsDropdown/OptionsDropdown';
-import { clearRefundValuesMessage } from '../../../../messages/accountActionMessages';
+import { clearRefundValuesMessage, clearSendValuesMessage } from '../../../../messages/accountActionMessages';
 import { changeViewMessage } from '../../../../messages/permanentActionsMessages';
 
 import './header.scss';
@@ -11,7 +11,6 @@ import './header.scss';
 const Header = ({ view, generatedVault, copiedSeed, password }) => (
   <div styleName="header-wrapper">
     {
-
       (view === 'refund') &&
       <span styleName="back" onClick={() => { changeViewMessage('dashboard'); clearRefundValuesMessage(); }}>
         <BackIcon />
@@ -19,8 +18,14 @@ const Header = ({ view, generatedVault, copiedSeed, password }) => (
     }
 
     {
+      (view === 'send') &&
+      <span styleName="back" onClick={() => { changeViewMessage('dashboard'); clearSendValuesMessage(); }}>
+        <BackIcon />
+      </span>
+    }
+
+    {
       (
-        (view === 'send') ||
         (view === 'showSeed') ||
         (view === 'showPrivacy') ||
         (view === 'showInfo')

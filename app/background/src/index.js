@@ -3,6 +3,7 @@ import combinedReducers from './reducers/index';
 import contractConfig from '../../modules/config.json';
 import * as userActions from '../../actions/userActions';
 import * as permanentActions from '../../actions/permanentActions';
+import * as accountActions from '../../actions/accountActions';
 import accountHandler from '../../handlers/accountActionsHandler';
 import permanentHandler from '../../handlers/permanentActionsHandler';
 import keyStoreHandler from '../../handlers/keyStoreActionsHandler';
@@ -134,7 +135,12 @@ chrome.runtime.onConnect.addListener((_port) => {
 
   // dispatch actions when the user closes the popup
   port.onDisconnect.addListener(() => {
+    const state = getState();
+
     permanentActions.checkIfSeenDashboard(dispatch, getState);
+    if (state.permanent.view === 'refund') accountActions.clearRefundValues(dispatch);
+    if (state.permanent.view === 'send') accountActions.clearSendValues(dispatch);
+
     port = null;
   });
 });

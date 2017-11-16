@@ -1,25 +1,14 @@
 import lightwallet from 'eth-lightwallet';
 import {
-  SET_BALANCE, SET_GAS_PRICE,
-  SEND, SEND_ERROR, SEND_SUCCESS, REFUND, REFUND_ERROR, REFUND_SUCCESS, CLEAR_REFUND_VALUES
+  SET_BALANCE, SET_GAS_PRICE, SEND, SEND_ERROR, SEND_SUCCESS, REFUND, REFUND_ERROR,
+  REFUND_SUCCESS, CLEAR_REFUND_VALUES, CLEAR_SEND_VALUES
 } from '../constants/actionTypes';
 import {
-  getBalanceForAddress, getGasPrice, transfer, pollForReceipt, getNonceForAddress, sendTransaction,
-  listenForRefundSuccessful
+  getBalanceForAddress, getGasPrice, transfer, getNonceForAddress, sendTransaction, listenForRefundSuccessful
 } from '../modules/ethereumService';
 import AbstractPoller from '../modules/AbstractPoller';
 
 const keyStore = lightwallet.keystore;
-
-export const pollPendingTxs = (web3, engine, dispatch, getState) => {
-  const transactions = getState().account.transactions;
-
-  transactions.forEach((transaction) => {
-    if (transaction.status !== 'pending') return;
-
-    pollForReceipt(web3, engine, dispatch, getState, transaction.hash);
-  });
-};
 
 export const send = async (web3, engine, getState, dispatch) => {
   const state = getState();
@@ -35,19 +24,8 @@ export const send = async (web3, engine, getState, dispatch) => {
   dispatch({ type: SEND });
 
   try {
-    const txHash = await transfer(web3, address, to, amount, gasPrice, ks, password, nonce);
-    dispatch({
-      type: SEND_SUCCESS,
-      payload: {
-        state: 'pending',
-        hash: txHash,
-        from: address,
-        to,
-        amount: formData.amount.value
-      }
-    });
-
-    pollForReceipt(web3, engine, dispatch, getState, txHash);
+    await transfer(web3, address, to, amount, gasPrice, ks, password, nonce);
+    dispatch({ type: SEND_SUCCESS });
   } catch(err) {
     dispatch({ type: SEND_ERROR });
   }
@@ -108,11 +86,9 @@ export const pollForBalance = (web3, engine, dispatch, getState) => {
   poller.poll();
 };
 
-export const clearRefundValues = (dispatch) =>
-  new Promise(async (resolve) => {
-    await dispatch({ type: CLEAR_REFUND_VALUES });
-    resolve();
-  });
+export const clearRefundValues = (dispatch) => { dispatch({ type: CLEAR_REFUND_VALUES }); };
+
+export const clearSendValues = (dispatch) => { dispatch({ type: CLEAR_SEND_VALUES }); };
 
 export const refund = async (web3, getState, dispatch, contracts) => {
   const state = getState();

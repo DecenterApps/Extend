@@ -1,9 +1,7 @@
 import EthereumTx from 'ethereumjs-tx';
 import { getPwDerivedKey, getPrivateKey } from '../actions/keyStoreActions';
-import { CHANGE_TX_STATE } from '../constants/actionTypes';
 import { GAS_LIMIT_MODIFIER } from '../constants/general';
 import AbstractWatcher from '../modules/AbstractWatcher';
-import AbstractPoller from '../modules/AbstractPoller';
 import { isEmptyAddress } from '../actions/utils';
 
 /* STANDARD FUNCTIONS REQUIRED TO SEND TRANSACTIONS */
@@ -105,35 +103,6 @@ const getTransactionReceipt = (web3, txHash) =>
       resolve(result);
     });
   });
-
-/**
- * Polls for Tx receipt and then dispatches action to change tx state
- *
- */
-const handleTransactionReceipt = async (web3, dispatch, getState, txHash, stopPollerFunc) => {
-  const result = await getTransactionReceipt(web3, txHash);
-
-  if (!result) return;
-  stopPollerFunc();
-
-  const transactions = getState().account.transactions;
-  const txIndex = transactions.findIndex((tx) => tx.hash === txHash);
-
-  dispatch({ type: CHANGE_TX_STATE, payload: txIndex });
-};
-
-/**
- * Polls for Tx receipt and then dispatches action to change tx state
- *
- * @param {Object} web3
- * @param {Function} dispatch
- * @param {Function} getState
- * @param {String} txHash
- */
-export const pollForReceipt = async (web3, engine, dispatch, getState, txHash) => {
-  const poller = new AbstractPoller(handleTransactionReceipt, engine, web3, dispatch, getState, txHash);
-  poller.poll();
-};
 
 const sendRawTransaction = (web3, transactionParams, privateKey) =>
   new Promise((resolve, reject) => {

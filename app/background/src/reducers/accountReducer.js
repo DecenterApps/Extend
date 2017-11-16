@@ -1,7 +1,7 @@
 import {
   UNLOCK_ERROR, UNLOCK_SUCCESS, SET_BALANCE, SET_GAS_PRICE,
-  SEND, SEND_ERROR, SEND_SUCCESS, CHANGE_TX_STATE, CLEAR_REFUND_VALUES, REFUND_AVAILABLE,
-  REFUND, REFUND_ERROR, REFUND_SUCCESS, REFUND_UNAVAILABLE,
+  SEND, SEND_ERROR, SEND_SUCCESS, CLEAR_REFUND_VALUES, REFUND_AVAILABLE,
+  REFUND, REFUND_ERROR, REFUND_SUCCESS, REFUND_UNAVAILABLE, CLEAR_SEND_VALUES
 } from '../../../constants/actionTypes';
 
 const reducerName = 'account';
@@ -10,8 +10,8 @@ const INITIAL_STATE = {
   unlockError: '',
   balance: '',
   gasPrice: 0,
-  transactions: [],
   sending: false,
+  sendingSuccess: false,
   sendingError: '',
   refunding: false,
   refundingError: '',
@@ -36,22 +36,17 @@ export const reducer = (state, action) => {
 
     case SEND:
       return { ...state, sending: true };
-
-    case SEND_SUCCESS: {
-      let transactions = [...state.transactions];
-      if (transactions.length > 10) transactions.pop();
-
-      return { ...state, sending: false, transactions: [payload, ...transactions], sendingError: '' };
-    }
-
+    case SEND_SUCCESS:
+      return{ ...state, sending: false, sendingSuccess: true, sendingError: '' };
     case SEND_ERROR:
-      return { ...state, sending: false, sendingError: 'An error occurred while sending ETH, please try again.' };
-
-    case CHANGE_TX_STATE: {
-      const newTransactions = [...state.transactions];
-      newTransactions[payload].state = 'mined';
-      return { ...state, transactions: newTransactions };
-    }
+      return {
+        ...state,
+        sending: false,
+        sendingSuccess: false,
+        sendingError: 'An error occurred while sending ETH, please try again.'
+      };
+    case CLEAR_SEND_VALUES:
+      return{ ...state, sending: false, sendingSuccess: false, sendingError: '' };
 
     case REFUND:
       return { ...state, refunding: true };

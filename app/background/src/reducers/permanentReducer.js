@@ -1,6 +1,5 @@
 import {
-  REGISTER_USER, REGISTER_USER_ERROR, VERIFIED_USER,
-  ACCEPT_NOTICE, COPIED_SEED, CHANGE_VIEW, SET_DISCONNECTED
+  REGISTER_USER, ACCEPT_NOTICE, COPIED_SEED, CHANGE_VIEW, SET_DISCONNECTED, CLEAR_REGISTER_USER
 } from '../../../constants/actionTypes';
 import { VIEWS } from '../../../constants/general';
 
@@ -11,8 +10,6 @@ const INITIAL_STATE = {
   acceptedNotice: false,
   copiedSeed: false,
   registeringUsername: '',
-  registeringError: '',
-  verifiedUsername: '',
   view: VIEWS[0]
 };
 
@@ -30,24 +27,10 @@ export const reducer = (state, action) => {
       return { ...state, view: payload.viewName };
 
     case REGISTER_USER:
-      return {
-        ...state,
-        registeringUsername: payload.username,
-        registeringError: ''
-      };
+      return { ...state, registeringUsername: payload.username };
 
-    case REGISTER_USER_ERROR:
-      return {
-        ...state,
-        registeringError: action.message,
-      };
-
-    case VERIFIED_USER:
-      return {
-        ...state,
-        registeringUsername: '',
-        verifiedUsername: payload,
-      };
+    case CLEAR_REGISTER_USER:
+      return { ...state, registeringUsername: '' };
 
     case SET_DISCONNECTED:
       return { ...state, disconnected: payload };

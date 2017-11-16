@@ -3,7 +3,7 @@ import { REGISTER_USER, REGISTER_USER_ERROR } from '../constants/actionTypes';
 import { CLIENT_ID } from '../constants/config.local';
 import { getParameterByName, encryptTokenOreclize } from '../actions/utils';
 import { sendTransaction, getOraclizePrice } from '../modules/ethereumService';
-import { listenForVerifiedUser } from './userActions';
+import { listenForVerifiedUser, clearRegisteringError } from './userActions';
 
 const keyStore = lightwallet.keystore;
 
@@ -56,6 +56,7 @@ export const handleUserAuthentication = (contracts, web3, getState, dispatch) =>
 
       await sendTransaction(web3, contracMethod, ks, address, password, params, value, gasPrice);
 
+      await clearRegisteringError(dispatch);
       await dispatch({
         type: REGISTER_USER,
         payload: { username: me.name }

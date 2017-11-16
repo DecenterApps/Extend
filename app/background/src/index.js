@@ -120,3 +120,9 @@ chrome.tabs.onRemoved.addListener((tabId) => {
 
   userActions.removeTabId(dispatch, tabId);
 });
+
+chrome.windows.onRemoved.addListener((windowId) => {
+  if (windowId !== getState().user.dialogWindowId) return;
+
+  userActions.clearRegisteringError(dispatch);
+});

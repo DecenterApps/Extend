@@ -57,7 +57,7 @@ const Dashboard = ({
             !registeringUsername &&
             registeringError &&
             !verifiedUsername &&
-            <span styleName="error">There was an error, try again</span>
+            <span styleName="error">{ registeringError }</span>
           }
 
           { registeringUsername &&
@@ -134,15 +134,19 @@ Dashboard.propTypes = {
   onboardingUnVerifiedStep: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = (state) => ({
-  address: state.keyStore.address,
-  balance: state.account.balance,
-  verifiedUsername: state.permanent.verifiedUsername,
-  registeringError: state.permanent.registeringError,
-  registeringUsername: state.permanent.registeringUsername,
-  onboardingUnVerified: state.onboarding.onboardingUnVerified,
-  onboardingUnVerifiedStep: state.onboarding.onboardingUnVerifiedStep,
-});
+const mapStateToProps = (state) => {
+  console.log('DASHBOARD STATE', state)
+
+  return {
+    address: state.keyStore.address,
+    balance: state.account.balance,
+    verifiedUsername: state.user.verifiedUsername,
+    registeringError: state.user.registeringError,
+    registeringUsername: state.permanent.registeringUsername,
+    onboardingUnVerified: state.onboarding.onboardingUnVerified,
+    onboardingUnVerifiedStep: state.onboarding.onboardingUnVerifiedStep,
+  }
+};
 
 export default connect(Dashboard, mapStateToProps);
 

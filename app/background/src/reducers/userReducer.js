@@ -1,10 +1,11 @@
 import {
-  NETWORK_UNAVAILABLE, ADD_NEW_TIP,
+  NETWORK_UNAVAILABLE, ADD_NEW_TIP, VERIFIED_USER,
   SEND_TIP, SEND_TIP_SUCCESS, SEND_TIP_ERROR, SET_ACTIVE_TAB,
   GET_TIPS, GET_TIPS_SUCCESS, GET_TIPS_ERROR, CLEAR_TIP_PENDING,
   CONNECT_AGAIN, CONNECT_AGAIN_SUCCESS, CONNECT_AGAIN_ERROR,
   BUY_GOLD, BUY_GOLD_SUCCESS, BUY_GOLD_ERROR, GET_GOLD, GET_GOLD_ERROR, CLEAR_GOLD_PENDING,
-  GET_GOLD_SUCCESS, ADD_NEW_GOLD, SET_REFUND_TIPS, DIALOG_OPEN, ADD_TAB_ID, REMOVE_TAB_ID
+  GET_GOLD_SUCCESS, ADD_NEW_GOLD, SET_REFUND_TIPS, DIALOG_OPEN, ADD_TAB_ID, REMOVE_TAB_ID,
+  CLEAR_REGISTERING_ERROR, REGISTER_USER_ERROR
 } from '../../../constants/actionTypes';
 import { NETWORK_URL, TABS } from '../../../constants/general';
 
@@ -14,6 +15,8 @@ export const reducerName = 'user';
 // Verifying is when he is waiting for a response from Oreclize
 
 const INITIAL_STATE = {
+  registeringError: '',
+  verifiedUsername: '',
   networkActive: true,
   networkUrl: NETWORK_URL,
   sendingTip: false,
@@ -52,6 +55,15 @@ export const reducer = (state, action) => {
 
     case NETWORK_UNAVAILABLE:
       return { ...state, networkActive: false };
+
+    case VERIFIED_USER:
+      return { ...state, verifiedUsername: payload };
+
+    case REGISTER_USER_ERROR:
+      return { ...state, registeringError: action.message, };
+
+    case CLEAR_REGISTERING_ERROR:
+      return { ...state, registeringError: '' };
 
     case SEND_TIP:
       return { ...state, sendingTip: true };

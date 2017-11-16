@@ -2,7 +2,7 @@ import {
   NETWORK_UNAVAILABLE, VERIFIED_USER, REGISTER_USER_ERROR, SET_ACTIVE_TAB, GET_TIPS, GET_TIPS_SUCCESS,
   GET_TIPS_ERROR, CONNECT_AGAIN, CONNECT_AGAIN_SUCCESS, CONNECT_AGAIN_ERROR, ADD_NEW_TIP,
   ADD_NEW_GOLD, GET_GOLD, GET_GOLD_ERROR, GET_GOLD_SUCCESS, SET_REFUND_TIPS, DIALOG_OPEN, ADD_TAB_ID,
-  REMOVE_TAB_ID
+  REMOVE_TAB_ID, CLEAR_REGISTERING_ERROR, CLEAR_REGISTER_USER
 } from '../constants/actionTypes';
 import {
   verifiedUserEvent, listenForTips, getTipsFromEvent, listenForGold, getGoldFromEvent, _checkIfRefundAvailable
@@ -32,7 +32,7 @@ export const checkRefundForSentTips = async (web3, contract, getState, dispatch)
 const getTips = async (web3, contract, dispatch, getState) => {
   const state = getState();
   const address = state.keyStore.address;
-  const username = state.permanent.verifiedUsername;
+  const username = state.user.verifiedUsername;
 
   dispatch({ type: GET_TIPS });
 
@@ -65,7 +65,7 @@ const getTips = async (web3, contract, dispatch, getState) => {
 const getGold = async (web3, contract, dispatch, getState) => {
   const state = getState();
   const address = state.keyStore.address;
-  const username = state.permanent.verifiedUsername;
+  const username = state.user.verifiedUsername;
 
   dispatch({ type: GET_GOLD });
 
@@ -98,7 +98,7 @@ const getGold = async (web3, contract, dispatch, getState) => {
 export const handleTips = (web3, contracts, getState, dispatch) => {
   const state = getState();
   const address = state.keyStore.address;
-  const username = state.permanent.verifiedUsername;
+  const username = state.user.verifiedUsername;
 
   const handleNewTip = (tip) => {
     dispatch({ type: ADD_NEW_TIP, payload: { tip, address, username } });
@@ -111,7 +111,7 @@ export const handleTips = (web3, contracts, getState, dispatch) => {
 export const handleGold = (web3, contracts, getState, dispatch) => {
   const state = getState();
   const address = state.keyStore.address;
-  const username = state.permanent.verifiedUsername;
+  const username = state.user.verifiedUsername;
 
   const handleNewGold = (gold) => {
     dispatch({ type: ADD_NEW_GOLD, payload: { gold, address, username } });
@@ -137,6 +137,7 @@ export const setTab = (dispatch, selectedTab) => {
  * @param {Function} dispatch
  */
 export const verifiedUser = async (web3, contracts, getState, dispatch, verifiedUsername) => {
+  await dispatch({ type: CLEAR_REGISTER_USER });
   await dispatch({ type: VERIFIED_USER, payload: verifiedUsername });
   handleTips(web3, contracts, getState, dispatch);
   handleGold(web3, contracts, getState, dispatch);
@@ -178,9 +179,9 @@ export const listenForVerifiedUser = (web3, contracts, dispatch, getState) => {
 
 export const openAuthWindow = (payload, dispatch) => {
   const width = 400;
-  const height = 300;
-  const left = (payload.screenWidth / 2) - (width / 2);
-  const top = (payload.screenHeight / 2) - (height / 2);
+  const height = 250;
+  const left = 25;
+  const top = 25;
 
   chrome.windows.create({
     url: chrome.extension.getURL('dialog.html'),
@@ -204,6 +205,12 @@ export const networkUnavailable = (dispatch) =>
   new Promise(async (resolve) => {
     await dispatch({ type: NETWORK_UNAVAILABLE });
     await changeView(dispatch, { viewName: 'networkUnavailable' });
+    resolve();
+  });
+
+export const clearRegisteringError = (dispatch) =>
+  new Promise(async (resolve) => {
+    await dispatch({ type: CLEAR_REGISTERING_ERROR });
     resolve();
   });
 

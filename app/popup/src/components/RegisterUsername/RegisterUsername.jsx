@@ -35,7 +35,7 @@ RegisterUsername.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-  registeringError: state.permanent.registeringError,
+  registeringError: state.user.registeringError,
   registeringUsername: state.permanent.registeringUsername,
 });
 

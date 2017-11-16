@@ -2,6 +2,7 @@ export const SET_ADDRESS = 'set_address';
 
 // PERMANENT
 export const ACCEPT_NOTICE = 'accept_notice';
+export const CLEAR_REGISTER_USER = 'clear_registering_user';
 
 // KEYSTORE
 export const UNLOCK = 'unlock';
@@ -29,6 +30,7 @@ export const SET_REFUND_TIPS = 'set_refund_tips';
 export const DIALOG_OPEN = 'dialog_open';
 export const ADD_TAB_ID = 'add_tab_id';
 export const REMOVE_TAB_ID = 'remove_tab_id';
+export const CLEAR_REGISTERING_ERROR = 'clear_registering_error';
 
 // NETWORK
 export const TOGGLE_DROPDOWN = 'toggle_dropdown';

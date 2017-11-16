@@ -30,8 +30,8 @@ export const OPTIONS_DROPDOWN_ITEMS = [
 ];
 
 export const TABS = [
-  { slug: 'tips', name: 'Tips' },
-  { slug: 'gold', name: 'Gold' }
+  { slug: 'tips', name: 'Tips history' },
+  { slug: 'gold', name: 'Gold history' }
 ];
 
 export const ONBOARDING_UNVERIFIED_STEPS = [

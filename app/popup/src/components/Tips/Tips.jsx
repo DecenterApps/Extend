@@ -104,8 +104,8 @@ class Tips extends Component {
                 {
                   this.props.tips.length === 0 &&
                   <div>
-                    You did not send or receive any tips yet <br />
-                    (It might take a minute or two until new transactions are displayed)
+                    <div styleName="info-line">You did not send or receive any tips yet.</div>
+                    It might take a minute or two until new transactions are displayed
                   </div>
                 }
               </div>

@@ -134,19 +134,15 @@ Dashboard.propTypes = {
   onboardingUnVerifiedStep: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = (state) => {
-  console.log('DASHBOARD STATE', state)
-
-  return {
-    address: state.keyStore.address,
-    balance: state.account.balance,
-    verifiedUsername: state.user.verifiedUsername,
-    registeringError: state.user.registeringError,
-    registeringUsername: state.permanent.registeringUsername,
-    onboardingUnVerified: state.onboarding.onboardingUnVerified,
-    onboardingUnVerifiedStep: state.onboarding.onboardingUnVerifiedStep,
-  }
-};
+const mapStateToProps = (state) => ({
+  address: state.keyStore.address,
+  balance: state.account.balance,
+  verifiedUsername: state.user.verifiedUsername,
+  registeringError: state.user.registeringError,
+  registeringUsername: state.permanent.registeringUsername,
+  onboardingUnVerified: state.onboarding.onboardingUnVerified,
+  onboardingUnVerifiedStep: state.onboarding.onboardingUnVerifiedStep,
+});
 
 export default connect(Dashboard, mapStateToProps);
 

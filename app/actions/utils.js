@@ -46,6 +46,8 @@ export const getValOfEthInUsd = () =>
     resolve(parseFloat(data.USD));
   });
 
+export const isEmptyAddress = (address) => (address === '0x0000000000000000000000000000000000000000');
+
 /**
  * Checks if a address checksum is valid
  *

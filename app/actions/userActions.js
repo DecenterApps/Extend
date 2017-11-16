@@ -29,7 +29,7 @@ export const checkRefundForSentTips = async (web3, contract, getState, dispatch)
   dispatch({ type: SET_REFUND_TIPS, payload: result });
 };
 
-const getTips = async (web3, contract, dispatch, getState) => {
+const getTips = async (web3, contracts, dispatch, getState) => {
   const state = getState();
   const address = state.keyStore.address;
   const username = state.user.verifiedUsername;
@@ -37,12 +37,12 @@ const getTips = async (web3, contract, dispatch, getState) => {
   dispatch({ type: GET_TIPS });
 
   try {
-    const tipsFromEvent = await getTipsFromEvent(web3, contract, address, web3.toHex(username));
+    const tipsFromEvent = await getTipsFromEvent(web3, contracts, address, web3.toHex(username));
     const tips = [];
 
     if (tipsFromEvent.length > 0) {
       tipsFromEvent.forEach((tipParam) => {
-        if (tipParam.from === address) {
+        if ((tipParam.from === address) || (tipParam.from === username)) {
           const tip = Object.assign({}, tipParam);
           tip.type = 'sent';
           tips.push(tip);
@@ -75,7 +75,7 @@ const getGold = async (web3, contract, dispatch, getState) => {
 
     if (goldsFromEvent.length > 0) {
       goldsFromEvent.forEach((goldParam) => {
-        if (goldParam.from === address) {
+        if ((goldParam.from === address) || (goldParam.from === username)) {
           const gold = Object.assign({}, goldParam);
           gold.type = 'sent';
           golds.push(gold);
@@ -104,8 +104,8 @@ export const handleTips = (web3, contracts, getState, dispatch) => {
     dispatch({ type: ADD_NEW_TIP, payload: { tip, address, username } });
   };
 
-  getTips(web3, contracts.events, dispatch, getState);
-  listenForTips(web3, contracts.events, dispatch, address, web3.toHex(username), handleNewTip);
+  getTips(web3, contracts, dispatch, getState);
+  listenForTips(web3, contracts, dispatch, address, web3.toHex(username), handleNewTip);
 };
 
 export const handleGold = (web3, contracts, getState, dispatch) => {
@@ -117,8 +117,8 @@ export const handleGold = (web3, contracts, getState, dispatch) => {
     dispatch({ type: ADD_NEW_GOLD, payload: { gold, address, username } });
   };
 
-  getGold(web3, contracts.events, dispatch, getState);
-  listenForGold(web3, contracts.events, dispatch, address, web3.toHex(username), handleNewGold);
+  getGold(web3, contracts, dispatch, getState);
+  listenForGold(web3, contracts, dispatch, address, web3.toHex(username), handleNewGold);
 };
 
 /**

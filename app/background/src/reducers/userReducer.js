@@ -103,7 +103,7 @@ export const reducer = (state, action) => {
       const tips = [...state.tips];
       const tip = payload.tip;
 
-      if (tip.from === payload.address) {
+      if ((tip.from === payload.address) || (tip.from === payload.username)) {
         const sentTip = Object.assign({}, tip);
         sentTip.type = 'sent';
         tips.unshift(sentTip);
@@ -138,7 +138,7 @@ export const reducer = (state, action) => {
       const golds = [...state.golds];
       const gold = payload.gold;
 
-      if (gold.from === payload.address) {
+      if ((gold.from === payload.address) || (gold.from === payload.gold)) {
         const sentGold = Object.assign({}, gold);
         sentGold.type = 'sent';
         golds.unshift(sentGold);
@@ -192,7 +192,7 @@ export const reducer = (state, action) => {
     case REMOVE_TAB_ID: {
       let allTabIds = [state.tabsIds];
       const tabIndex = allTabIds.findIndex((id) => id === payload);
-      allTabIds = tabIndex.splice(tabIndex, 1);
+      allTabIds = allTabIds.splice(tabIndex, 1);
 
       return { ...state, tabsIds: allTabIds };
     }

@@ -4,7 +4,7 @@ import { CHANGE_TX_STATE } from '../constants/actionTypes';
 import { GAS_LIMIT_MODIFIER } from '../constants/general';
 import AbstractWatcher from '../modules/AbstractWatcher';
 import AbstractPoller from '../modules/AbstractPoller';
-import config from './config.json';
+import { isEmptyAddress } from '../actions/utils';
 
 /* STANDARD FUNCTIONS REQUIRED TO SEND TRANSACTIONS */
 
@@ -370,27 +370,35 @@ export const listenForRefundSuccessful = async (web3, contract, username, callba
   RefundSuccessfulInstance.watch();
 };
 
-export const getTipsFromEvent = (web3, contract, address, hexUsername) =>
+export const getTipsFromEvent = (web3, contracts, address, hexUsername) =>
   new Promise((resolve, reject) => {
-    contract.UserTipped([{ from: address }, { to: hexUsername }], { fromBlock: 4447379, toBlock: 'latest' })
-      .get((error, result) => {
+    contracts.events.UserTipped([{ from: address }, { to: hexUsername }], { fromBlock: 4447379, toBlock: 'latest' })
+      .get(async (error, result) => {
         if (error) reject(error);
 
-        const tips = result.map((tx) => ({
-          to: web3.toUtf8(tx.args.username), val: web3.fromWei(tx.args.val.toString()), from: tx.args.from
+        const tips = await Promise.all(result.map(async (tx) => {
+          const username = web3.toUtf8(await _getUsernameForAddress(web3, contracts.func, tx.args.from));
+
+          return {
+            to: web3.toUtf8(tx.args.username),
+            val: web3.fromWei(tx.args.val.toString()),
+            from: isEmptyAddress(username) ? tx.args.from : username
+          };
         }));
 
         resolve(tips.reverse());
       });
   });
 
-export const listenForTips = async (web3, contract, dispatch, address, hexUsername, callback) => {
+
+export const listenForTips = async (web3, contracts, dispatch, address, hexUsername, callback) => {
   try {
     const fromBlock = await getBlockNumber(web3);
 
-    const UserTipped = contract.UserTipped([{ from: address }, { to: hexUsername }], { fromBlock, toBlock: 'latest' });
+    const UserTipped =
+      contracts.events.UserTipped([{ from: address }, { to: hexUsername }], { fromBlock, toBlock: 'latest' });
 
-    const UserTippedWatcherCb = (error, event) => {
+    const UserTippedWatcherCb = async (error, event) => {
       if (error) {
         callback(error);
         return;
@@ -399,7 +407,9 @@ export const listenForTips = async (web3, contract, dispatch, address, hexUserna
       const tip = event.args;
       const to = web3.toUtf8(tip.username);
       const val = web3.fromWei(tip.val.toString());
-      const from = tip.from;
+
+      let from = web3.toUtf8(await _getUsernameForAddress(web3, contracts.func, tip.from));
+      from = isEmptyAddress(from) ? tip.from : from;
 
       callback({ to, val, from });
     };
@@ -412,30 +422,35 @@ export const listenForTips = async (web3, contract, dispatch, address, hexUserna
   }
 };
 
-export const getGoldFromEvent = (web3, contract, address, hexUsername) =>
+export const getGoldFromEvent = (web3, contracts, address, hexUsername) =>
   new Promise((resolve, reject) => {
-    contract.GoldBought([{ from: address }, { to: hexUsername }], { fromBlock: 4447379, toBlock: 'latest' })
-      .get((error, result) => {
+    contracts.events.GoldBought([{ from: address }, { to: hexUsername }], { fromBlock: 4447379, toBlock: 'latest' })
+      .get(async (error, result) => {
         if (error) reject(error);
 
-        const allGold = result.map((tx) => ({
-          to: web3.toUtf8(tx.args.to),
-          val: web3.fromWei(tx.args.price.toString()),
-          from: tx.args.from,
-          months: tx.args.months
+        const allGold = await Promise.all(result.map(async (tx) => {
+          const username = web3.toUtf8(await _getUsernameForAddress(web3, contracts.func, tx.args.from));
+
+          return {
+            to: web3.toUtf8(tx.args.to),
+            val: web3.fromWei(tx.args.price.toString()),
+            from: isEmptyAddress(username) ? tx.args.from : username,
+            months: tx.args.months
+          };
         }));
 
         resolve(allGold.reverse());
       });
   });
 
-export const listenForGold = async (web3, contract, dispatch, address, hexUsername, callback) => {
+export const listenForGold = async (web3, contracts, dispatch, address, hexUsername, callback) => {
   try {
     const fromBlock = await getBlockNumber(web3);
 
-    const GoldBought = contract.GoldBought([{ from: address }, { to: hexUsername }], { fromBlock, toBlock: 'latest' });
+    const GoldBought =
+      contracts.events.GoldBought([{ from: address }, { to: hexUsername }], { fromBlock, toBlock: 'latest' });
 
-    const GoldBoughtdWatcherCb = (error, event) => {
+    const GoldBoughtdWatcherCb = async (error, event) => {
       if (error) {
         callback(error);
         return;
@@ -444,8 +459,10 @@ export const listenForGold = async (web3, contract, dispatch, address, hexUserna
       const gold = event.args;
       const to = web3.toUtf8(gold.to);
       const val = web3.fromWei(gold.price.toString());
-      const from = gold.from;
       const months = gold.months;
+
+      let from = web3.toUtf8(await _getUsernameForAddress(web3, contracts.func, gold.from));
+      from = isEmptyAddress(from) ? gold.from : from;
 
       callback({ to, val, from, months });
     };

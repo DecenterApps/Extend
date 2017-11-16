@@ -54,6 +54,14 @@ class TipForm extends Component {
         onSubmit={(e) => { this.props.handleSubmit(e, tipMessage); }}
       >
 
+        {
+          (this.props.isVerified === false) &&
+          <div styleName="info-wrapper">
+            The user you are trying to tip is not using Extend yet. You can still tip him after which we will send him a
+            message explaining how to claim the tip (Our smart contract will hold the funds in the meantime).
+          </div>
+        }
+
         <AmountField
           name="amount"
           showErrorText
@@ -137,8 +145,9 @@ TipForm.propTypes = {
   currentFormTxCost: PropTypes.object.isRequired,
   sendingTipSuccess: PropTypes.bool.isRequired,
   insufficientBalance: PropTypes.bool.isRequired,
+  isVerified: PropTypes.bool.isRequired,
   closeModal: PropTypes.func.isRequired,
-  balance: PropTypes.string.isRequired
+  balance: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -149,7 +158,8 @@ const mapStateToProps = (state) => ({
   currentFormTxCost: state.forms.currentFormTxCost,
   sendingTipSuccess: state.user.sendingTipSuccess,
   insufficientBalance: state.forms.insufficientBalance,
-  balance: state.account.balance
+  balance: state.account.balance,
+  isVerified: state.modals.modalProps.isVerified
 });
 
 const ExportComponent = createForm(FORM_NAME, TipForm, tipFormValidator);

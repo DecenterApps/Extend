@@ -15,7 +15,7 @@ const FORM_NAME = 'buyGoldForm';
 
 class buyGoldForm extends Component {
   componentWillMount() {
-    this.props.formData.setNumOfFields(1);
+    this.props.formData.setNumOfFields(2);
     this.MonthsField = createField(InputFormField, this.props.formData);
     this.GasPriceField = createField(InputFormField, this.props.formData);
   }
@@ -104,7 +104,7 @@ class buyGoldForm extends Component {
         {
           this.props.buyingGoldSuccess &&
           <div styleName="submit-success">
-            Tip successfully sent to the contract.
+            Buy gold request successfully sent to the contract.
           </div>
         }
 

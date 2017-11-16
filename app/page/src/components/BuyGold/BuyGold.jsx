@@ -8,12 +8,12 @@ import GoldIcon from '../../../../commonComponents/Decorative/GoldIcon';
 
 import '../../../../commonComponents/pageIcons.scss';
 
-const openGoldModal = (author) => {
-  toggleModalMessage(GOLD_MODAL, { author }, true);
+const openGoldModal = (author, id) => {
+  toggleModalMessage(GOLD_MODAL, { author, id }, true);
 };
 
-const BuyGold = ({ author }) => (
-  <a styleName="icon-wrapper" onClick={() => { openGoldModal(author); }}>
+const BuyGold = ({ author, id }) => (
+  <a styleName="icon-wrapper" onClick={() => { openGoldModal(author, id); }}>
     <Tooltip
       content="Give gold to user with ETH"
       useDefaultStyles
@@ -24,7 +24,8 @@ const BuyGold = ({ author }) => (
 );
 
 BuyGold.propTypes = {
-  author: PropTypes.string.isRequired
+  author: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired
 };
 
 export default BuyGold;

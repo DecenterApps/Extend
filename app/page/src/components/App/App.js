@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import connect from '../../../../customRedux/connect';
 import ModalRoot from '../Modals/ModalRoot';
-import addTipToPostsAndComments from '../Tip/addTipToPostsAndComments';
-import addGoldToPostsAndComments from '../BuyGold/addGoldToPostsAndComments';
-import addUserVerifiedToPostsAndComments from '../UserVerified/addUserVerifiedToPostsAndComments';
+import insertPageComponents from './insertPageComponents';
 import { addTabIdMessage } from '../../../../messages/userActionsMessages';
 
 class App extends Component {
@@ -28,9 +26,7 @@ class App extends Component {
     if (!window.location.pathname.includes('/comments/')) return;
 
     if (newProps.generatedVault && newProps.copiedSeed && !this.added) {
-      addTipToPostsAndComments();
-      addGoldToPostsAndComments();
-      addUserVerifiedToPostsAndComments();
+      insertPageComponents();
       this.added = true;
     }
   }

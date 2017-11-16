@@ -115,11 +115,12 @@ export const setBuyGoldFormTxPrice = async (web3, contract, dispatch, getState) 
   const months = form.months.value.toString();
   const contractMethod = contract.buyGold;
   const author = state.modals.modalProps.author;
+  const id = state.modals.modalProps.id;
   const usdPerEth = await getValOfEthInUsd();
-  const address = state.keystore.address;
+  const address = state.keyStore.address;
 
   const res = await fetch(
-    `https://reddapp.decenter.com/gold.php?months=${months}&toUsername=${author}&fromAddress=${address}`
+    `https://reddapp.decenter.com/gold.php?months=${months}&toUsername=${author}&fromAddress=${address}&id=${id}`
   );
   const data = await res.json();
 

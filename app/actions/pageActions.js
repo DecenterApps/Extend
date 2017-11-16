@@ -45,6 +45,7 @@ export const buyGold = async (web3, contract, dispatch, getState) => {
   const gasPrice = web3.toWei(state.forms.buyGoldForm.gasPrice.value, 'gwei');
   const months = state.forms.buyGoldForm.months.value.toString();
   const author = state.modals.modalProps.author;
+  const id = state.modals.modalProps.id;
   const ks = keyStore.deserialize(state.keyStore.keyStore);
   const address = state.keyStore.address;
   const password = state.keyStore.password;
@@ -54,7 +55,7 @@ export const buyGold = async (web3, contract, dispatch, getState) => {
 
   try {
     const res = await fetch(
-      `https://reddapp.decenter.com/gold.php?months=${months}&toUsername=${author}&fromAddress=${address}`
+      `https://reddapp.decenter.com/gold.php?months=${months}&toUsername=${author}&fromAddress=${address}&id=${id}`
     );
     const data = await res.json();
 

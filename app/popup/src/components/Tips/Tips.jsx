@@ -39,6 +39,14 @@ class Tips extends Component {
               <div>
                 {
                   this.props.tips.length > 0 &&
+                  !this.props.seenDash &&
+                  <div styleName="info-box">
+                    These are are tips you received so far. They have now been added to your balance.
+                  </div>
+                }
+
+                {
+                  this.props.tips.length > 0 &&
                   this.props.tips.map((tip, i) => (
                     <div
                       styleName={`single-tip ${(this.props.tips.length - 1) === i ? 'last' : ''}`}
@@ -121,12 +129,14 @@ Tips.propTypes = {
   tips: PropTypes.array.isRequired,
   gettingTips: PropTypes.bool.isRequired,
   gettingTipsError: PropTypes.string.isRequired,
+  seenDash: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   tips: state.user.tips,
   gettingTips: state.user.gettingTips,
-  gettingTipsError: state.user.gettingTipsError
+  gettingTipsError: state.user.gettingTipsError,
+  seenDash: state.permanent.seenDash
 });
 
 export default connect(Tips, mapStateToProps);

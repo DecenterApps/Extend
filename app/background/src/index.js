@@ -39,7 +39,7 @@ const startApp = () =>
 
       resolve();
     } catch (err) {
-      await userActions.networkUnavailable(dispatch);
+      await userActions.networkUnavailable(dispatch, getState);
       reject(err);
     }
 
@@ -125,4 +125,16 @@ chrome.windows.onRemoved.addListener((windowId) => {
   if (windowId !== getState().user.dialogWindowId) return;
 
   userActions.clearRegisteringError(dispatch);
+});
+
+chrome.runtime.onConnect.addListener((_port) => {
+  if (_port.name !== 'popup') return;
+
+  let port = _port;
+
+  // dispatch actions when the user closes the popup
+  port.onDisconnect.addListener(() => {
+    permanentActions.checkIfSeenDashboard(dispatch, getState);
+    port = null;
+  });
 });

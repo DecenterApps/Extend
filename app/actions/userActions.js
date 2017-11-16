@@ -2,7 +2,7 @@ import {
   NETWORK_UNAVAILABLE, VERIFIED_USER, REGISTER_USER_ERROR, SET_ACTIVE_TAB, GET_TIPS, GET_TIPS_SUCCESS,
   GET_TIPS_ERROR, CONNECT_AGAIN, CONNECT_AGAIN_SUCCESS, CONNECT_AGAIN_ERROR, ADD_NEW_TIP,
   ADD_NEW_GOLD, GET_GOLD, GET_GOLD_ERROR, GET_GOLD_SUCCESS, SET_REFUND_TIPS, DIALOG_OPEN, ADD_TAB_ID,
-  REMOVE_TAB_ID, CLEAR_REGISTERING_ERROR, CLEAR_REGISTER_USER
+  REMOVE_TAB_ID, CLEAR_REGISTERING_ERROR, CLEAR_REGISTERING_USER
 } from '../constants/actionTypes';
 import {
   verifiedUserEvent, listenForTips, getTipsFromEvent, listenForGold, getGoldFromEvent, _checkIfRefundAvailable
@@ -137,7 +137,8 @@ export const setTab = (dispatch, selectedTab) => {
  * @param {Function} dispatch
  */
 export const verifiedUser = async (web3, contracts, getState, dispatch, verifiedUsername) => {
-  await dispatch({ type: CLEAR_REGISTER_USER });
+  if (getState().permanent.registeringUsername) await dispatch({ type: CLEAR_REGISTERING_USER });
+
   await dispatch({ type: VERIFIED_USER, payload: verifiedUsername });
   handleTips(web3, contracts, getState, dispatch);
   handleGold(web3, contracts, getState, dispatch);
@@ -201,10 +202,10 @@ export const openAuthWindow = (payload, dispatch) => {
  *
  * @param {Function} dispatch
  */
-export const networkUnavailable = (dispatch) =>
+export const networkUnavailable = (dispatch, getState) =>
   new Promise(async (resolve) => {
     await dispatch({ type: NETWORK_UNAVAILABLE });
-    await changeView(dispatch, { viewName: 'networkUnavailable' });
+    await changeView(dispatch, getState, { viewName: 'networkUnavailable' });
     resolve();
   });
 

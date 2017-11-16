@@ -2,7 +2,8 @@ export const SET_ADDRESS = 'set_address';
 
 // PERMANENT
 export const ACCEPT_NOTICE = 'accept_notice';
-export const CLEAR_REGISTER_USER = 'clear_registering_user';
+export const CLEAR_REGISTERING_USER = 'clear_registering_user';
+export const SEEN_DASH = 'seen_dash';
 
 // KEYSTORE
 export const UNLOCK = 'unlock';

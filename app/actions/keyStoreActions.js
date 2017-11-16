@@ -47,19 +47,19 @@ export const getPwDerivedKey = (ks, password) =>
  *
  * @param {Function} dispatch
  */
-export const clearPassword = (dispatch) => {
+export const clearPassword = (dispatch, getState) => {
   clearTimeout(lockTimeout);
   dispatch({ type: CLEAR_PASSWORD });
-  changeView(dispatch, { viewName: 'unlockAccount' });
+  changeView(dispatch, getState, { viewName: 'unlockAccount' });
 };
 
 /**
  *  Sets timeout to clear password after the user has created or unlocked the account
  */
-export const passwordReloader = (dispatch) => {
+export const passwordReloader = (dispatch, getState) => {
   lockTimeout = setTimeout(() => {
     dispatch({ type: CLEAR_PASSWORD });
-    changeView(dispatch, { viewName: 'unlockAccount' });
+    changeView(dispatch, getState, { viewName: 'unlockAccount' });
   }, LOCK_INTERVAL);
 };
 
@@ -94,7 +94,7 @@ export const createWallet = (web3, engine, dispatch, getState, password) => {
 
     await dispatch({ type: CREATE_WALLET, payload });
 
-    changeView(dispatch, { viewName: 'copySeed' });
+    changeView(dispatch, getState, { viewName: 'copySeed' });
     pollForBalance(web3, engine, dispatch, getState);
   });
 };
@@ -111,8 +111,8 @@ export const checkIfPasswordValid = async (getState, dispatch, password) => {
 
     await dispatch({ type: UNLOCK, payload: password });
     await dispatch({ type: UNLOCK_SUCCESS });
-    changeView(dispatch, { viewName: 'dashboard' });
-    passwordReloader(dispatch);
+    changeView(dispatch, getState, { viewName: 'dashboard' });
+    passwordReloader(dispatch, getState);
   } catch(err) {
     dispatch({ type: UNLOCK_ERROR });
   }

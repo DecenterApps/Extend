@@ -62,7 +62,7 @@ const handleChangeNetwork = (Web3, contractConfig, dispatch, getState) =>
 
       if (state.account.transactions.length > 0) accountActions.pollPendingTxs(web3, engine, dispatch, getState);
       if (state.keyStore.address) accountActions.pollForBalance(web3, engine, dispatch, getState);
-      if (state.keyStore.password) keyStoreActions.passwordReloader(dispatch);
+      if (state.keyStore.password) keyStoreActions.passwordReloader(dispatch, getState);
 
       resolve({ web3, contracts, engine });
     } catch(err) {

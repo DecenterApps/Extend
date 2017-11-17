@@ -32,7 +32,7 @@ const Header = ({ view, generatedVault, copiedSeed, password, networkActive }) =
             (view === 'showPrivacy'))
           && <span>Terms of agreement</span>
         }
-        { (view === 'createAccount') && <span>Chose passphrase</span> }
+        { (view === 'createAccount') && <span>Choose passphrase</span> }
         { (view === 'copySeed') && <span>Copy recovery phrase</span> }
         { (view === 'dashboard') && <span styleName="logo-wrapper"><Logo /></span> }
         { (view === 'unlockAccount') && <span>Unlock account</span> }

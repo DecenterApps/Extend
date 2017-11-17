@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-// import Tooltip from 'react-tooltip-lite';
 import Tooltip from '../../../../commonComponents/Tooltip/Tooltip';
 import { toggleModalMessage } from '../../../../messages/modalsActionsMessages';
 import TipIcon from '../../../../commonComponents/Decorative/TipIcon';

@@ -237,7 +237,6 @@ export const openAuthWindow = (payload, dispatch) => {
 export const networkUnavailable = (dispatch, getState) =>
   new Promise(async (resolve) => {
     await dispatch({ type: NETWORK_UNAVAILABLE });
-    await changeView(dispatch, getState, { viewName: 'networkUnavailable' });
     resolve();
   });
 

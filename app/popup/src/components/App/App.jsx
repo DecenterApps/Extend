@@ -16,19 +16,34 @@ import '../../../../commonComponents/general.scss';
 
 const App = ({ acceptedNotice, generatedVault, copiedSeed, seed, password, view, networkActive }) => (
   <div styleName="popup-wrapper">
-    <Header view={view} password={password} copiedSeed={copiedSeed} generatedVault={generatedVault} />
+    <Header
+      networkActive={networkActive}
+      view={view}
+      password={password}
+      copiedSeed={copiedSeed}
+      generatedVault={generatedVault}
+    />
 
-    { view === 'privacyNotice' && <PrivacyNotice acceptedNotice={acceptedNotice} /> }
-    { view === 'showPrivacy' && <PrivacyNotice acceptedNotice={acceptedNotice} /> }
-    { (view === 'createAccount') && !generatedVault && acceptedNotice && <GenerateNewPassword /> }
-    { (view === 'copySeed') && generatedVault && !copiedSeed && <CopySeed copiedSeed={copiedSeed} seed={seed} /> }
-    { (view === 'showSeed') && generatedVault && copiedSeed && <CopySeed copiedSeed={copiedSeed} seed={seed} /> }
-    { (view === 'dashboard') && generatedVault && acceptedNotice && copiedSeed && password && <Dashboard /> }
-    { (view === 'unlockAccount') && generatedVault && acceptedNotice && copiedSeed && !password && <TypeInPassword /> }
-    { (view === 'send') && <Send /> }
-    { (view === 'networkUnavailable') && !networkActive && <NetworkUnavailable /> }
-    { (view === 'refund') && <Refund /> }
-    { (view === 'showInfo') && <ExtensionInfo /> }
+    { !networkActive && <NetworkUnavailable /> }
+
+    {
+      networkActive &&
+      <div>
+        { view === 'privacyNotice' && <PrivacyNotice acceptedNotice={acceptedNotice} /> }
+        { view === 'showPrivacy' && <PrivacyNotice acceptedNotice={acceptedNotice} /> }
+        { (view === 'createAccount') && !generatedVault && acceptedNotice && <GenerateNewPassword /> }
+        { (view === 'copySeed') && generatedVault && !copiedSeed && <CopySeed copiedSeed={copiedSeed} seed={seed} /> }
+        { (view === 'showSeed') && generatedVault && copiedSeed && <CopySeed copiedSeed={copiedSeed} seed={seed} /> }
+        { (view === 'dashboard') && generatedVault && acceptedNotice && copiedSeed && password && <Dashboard /> }
+        {
+          (view === 'unlockAccount') && generatedVault && acceptedNotice && copiedSeed && !password &&
+          <TypeInPassword />
+        }
+        { (view === 'send') && <Send /> }
+        { (view === 'refund') && <Refund /> }
+        { (view === 'showInfo') && <ExtensionInfo /> }
+      </div>
+    }
   </div>
 );
 

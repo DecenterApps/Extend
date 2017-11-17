@@ -24,6 +24,7 @@ let getState = null;
 let web3 = null;
 let contracts = null;
 let engine = null;
+let networkPollingStarted = false;
 
 const startApp = () =>
   new Promise(async (resolve, reject) => {
@@ -47,8 +48,10 @@ const startApp = () =>
     appLoaded = true;
   });
 
-Promise.resolve(startApp()).then((err) => {
-  if (err) return;
+const onAppStart = (err) => {
+  if (err || networkPollingStarted) return;
+
+  networkPollingStarted = true;
 
   setInterval(() => {
     web3.version.getNetwork(async (error) => {
@@ -65,10 +68,11 @@ Promise.resolve(startApp()).then((err) => {
       }
     });
   }, 2000);
-});
+};
+
+Promise.resolve(startApp()).then(onAppStart);
 
 chrome.runtime.onMessage.addListener(async (msg, sender) => {
-  // TODO add type to msg
   if (!msg.handler) return false;
   if (!appLoaded || getState().user.disconnected) return false;
 
@@ -81,6 +85,7 @@ chrome.runtime.onMessage.addListener(async (msg, sender) => {
 
     try {
       await startApp();
+      onAppStart(false);
       userActions.connectingAgainSuccess(dispatch);
     } catch(err) {
       userActions.connectingAgainError(dispatch);

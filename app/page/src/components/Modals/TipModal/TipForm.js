@@ -57,8 +57,9 @@ class TipForm extends Component {
         {
           (this.props.isVerified === false) &&
           <div styleName="info-wrapper">
-            The user you are trying to tip is not using Extend yet. You can still tip him after which we will send him a
-            message explaining how to claim the tip (Our smart contract will hold the funds in the meantime).
+            The user you are trying to tip is not using Extend yet. However, you can still send him a tip which he
+            will then be able to claim after verifying his username. In the meantime, our smart contract will store
+            the funds securely.
           </div>
         }
 

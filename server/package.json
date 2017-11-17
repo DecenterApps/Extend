@@ -1,0 +1,29 @@
+{
+  "name": "rcr-example",
+  "version": "0.0.1",
+  "private": true,
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tyler Shaddix",
+  "dependencies": {
+    "amqplib": "^0.5.1",
+    "base-64": "^0.1.0",
+    "bn.js": "^4.8.0",
+    "child_process": "^1.0.2",
+    "create-hash": "^1.1.2",
+    "crypto": "^1.0.1",
+    "ethjs-util": "^0.1.4",
+    "fs": "^0.0.1-security",
+    "js-base64": "^2.3.2",
+    "jsencrypt": "^2.3.1",
+    "keccak": "^1.0.2",
+    "mongodb": "^2.2.33",
+    "node-forge": "^0.7.1",
+    "rlp": "^2.0.0",
+    "safe-buffer": "^5.1.1",
+    "secp256k1": "^3.0.1",
+    "web3": "^0.20.2"
+  }
+}

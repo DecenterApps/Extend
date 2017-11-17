@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import connect from '../../../../customRedux/connect';
 import Tooltip from '../../../../commonComponents/Tooltip/Tooltip';
-import { getEtherScanLinkByNetwork, createRedditLink } from '../../../../actions/utils';
+import { getEtherScanLink, createRedditLink } from '../../../../actions/utils';
 import { changeViewMessage } from '../../../../messages/permanentActionsMessages';
 import Tabs from '../Tabs/Tabs';
 import RegisterForm from '../RegisterForm/RegisterForm';
@@ -25,7 +25,7 @@ const Dashboard = ({
     <div styleName="account-info-wrapper">
       <div styleName="small-section">
         <a
-          href={getEtherScanLinkByNetwork('kovan', address)}
+          href={getEtherScanLink(address)}
           target="_blank"
           rel="noopener noreferrer"
         >

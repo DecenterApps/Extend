@@ -2,7 +2,6 @@ import EthereumTx from 'ethereumjs-tx';
 import { getPwDerivedKey, getPrivateKey } from '../actions/keyStoreActions';
 import { GAS_LIMIT_MODIFIER } from '../constants/general';
 import AbstractWatcher from '../modules/AbstractWatcher';
-import { isEmptyAddress } from '../actions/utils';
 
 /* STANDARD FUNCTIONS REQUIRED TO SEND TRANSACTIONS */
 
@@ -351,7 +350,7 @@ export const getTipsFromEvent = (web3, contracts, address, hexUsername) =>
           return {
             to: web3.toUtf8(tx.args.username),
             val: web3.fromWei(tx.args.val.toString()),
-            from: isEmptyAddress(username) ? tx.args.from : username
+            from: username || tx.args.from
           };
         }));
 
@@ -378,7 +377,7 @@ export const listenForTips = async (web3, contracts, dispatch, address, hexUsern
       const val = web3.fromWei(tip.val.toString());
 
       let from = web3.toUtf8(await _getUsernameForAddress(web3, contracts.func, tip.from));
-      from = isEmptyAddress(from) ? tip.from : from;
+      from = from || tip.from;
 
       callback({ to, val, from });
     };
@@ -403,7 +402,7 @@ export const getGoldFromEvent = (web3, contracts, address, hexUsername) =>
           return {
             to: web3.toUtf8(tx.args.to),
             val: web3.fromWei(tx.args.price.toString()),
-            from: isEmptyAddress(username) ? tx.args.from : username,
+            from: username || tx.args.from,
             months: tx.args.months
           };
         }));
@@ -431,7 +430,7 @@ export const listenForGold = async (web3, contracts, dispatch, address, hexUsern
       const months = gold.months;
 
       let from = web3.toUtf8(await _getUsernameForAddress(web3, contracts.func, gold.from));
-      from = isEmptyAddress(from) ? gold.from : from;
+      from = from || gold.from;
 
       callback({ to, val, from, months });
     };

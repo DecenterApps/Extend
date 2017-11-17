@@ -46,8 +46,6 @@ export const getValOfEthInUsd = () =>
     resolve(parseFloat(data.USD));
   });
 
-export const isEmptyAddress = (address) => (address === '0x0000000000000000000000000000000000000000');
-
 /**
  * Checks if a address checksum is valid
  *
@@ -104,25 +102,21 @@ export const isJson = (str) => {
 /**
  * Return a link to the address on a correct network on etherscan
  *
- * @param {String} network
  * @param {String} address
  * @return {String} link to the address on a correct network on etherscan
  */
-export const getEtherScanLinkByNetwork = (network, address) => {
-  if (network === 'unknown') return '';
-  if (network === 'mainnet') return `https://etherscan.io/address/${address}`;
-
-  return `https://${network}.etherscan.io/address/${address}`;
-};
-
-export const getEtherScanTxByNetwork = (network, txHash) => {
-  if (network === 'unknown') return '';
-  if (network === 'mainnet') return `https://etherscan.io/tx/${txHash}`;
-
-  return `https://${network}.etherscan.io/tx/${txHash}`;
-};
+// TODO replace this with main when live
+export const getEtherScanLink = (address) => (`https://kovan.etherscan.io/address/${address}`);
 
 export const createRedditLink = ((user) => (`https://www.reddit.com/user/${user}`));
+
+export const getLinkForFrom = (from) => {
+  if (isValidAddress(from)) {
+    return getEtherScanLink(from);
+  }
+
+  return createRedditLink(from);
+};
 
 /**
  * Formats small numbers example: 0.0000000001 number to 0.0000000001 string instead of the

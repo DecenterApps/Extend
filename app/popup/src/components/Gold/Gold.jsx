@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import SentIcon from '../../../../commonComponents/Decorative/SentIcon';
 import ReceivedIcon from '../../../../commonComponents/Decorative/ReceivedIcon';
 import connect from '../../../../customRedux/connect';
-import { createRedditLink, getEtherScanLinkByNetwork } from '../../../../actions/utils';
+import { createRedditLink, getLinkForFrom } from '../../../../actions/utils';
 
 import './gold.scss';
 
@@ -61,7 +61,7 @@ const Gold = ({ gettingGold, gettingGoldError, golds }) => (
                       <div styleName="item-section first">
                         <ReceivedIcon />
                         <a
-                          href={getEtherScanLinkByNetwork('kovan', gold.from)}
+                          href={getLinkForFrom(gold.from)}
                           target="_blank"
                           rel="noopener noreferrer"
                         >

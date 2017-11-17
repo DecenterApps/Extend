@@ -69,6 +69,7 @@ class buyGoldForm extends Component {
 
         <GasPriceField
           name="gasPrice"
+          min="1"
           showErrorText
           showLabel
           labelText="Gas price (Gwei):"

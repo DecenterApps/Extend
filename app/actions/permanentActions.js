@@ -1,5 +1,6 @@
 import { ACCEPT_NOTICE, COPIED_SEED, CHANGE_VIEW, SET_DISCONNECTED, SEEN_DASH } from '../constants/actionTypes';
 import { passwordReloader } from './keyStoreActions';
+import { clearSendValues, clearRefundValues } from './accountActions';
 
 export const checkIfSeenDashboard = (dispatch, getState) =>
   new Promise(async (resolve) => {
@@ -13,7 +14,10 @@ export const checkIfSeenDashboard = (dispatch, getState) =>
 
 export const changeView = (dispatch, getState, payload) =>
   new Promise(async (resolve) => {
+    const state = getState();
     await checkIfSeenDashboard(dispatch, getState);
+    if (state.permanent.view === 'send') await clearSendValues(dispatch);
+    if (state.permanent.view === 'refund') await clearRefundValues(dispatch);
 
     await dispatch({ type: CHANGE_VIEW, payload });
     resolve();

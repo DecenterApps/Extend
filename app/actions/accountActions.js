@@ -86,9 +86,17 @@ export const pollForBalance = (web3, engine, dispatch, getState) => {
   poller.poll();
 };
 
-export const clearRefundValues = (dispatch) => { dispatch({ type: CLEAR_REFUND_VALUES }); };
+export const clearRefundValues = (dispatch) =>
+  new Promise(async (resolve) => {
+    dispatch({ type: CLEAR_REFUND_VALUES });
+    resolve();
+  });
 
-export const clearSendValues = (dispatch) => { dispatch({ type: CLEAR_SEND_VALUES }); };
+export const clearSendValues = (dispatch) =>
+  new Promise(async (resolve) => {
+    dispatch({ type: CLEAR_SEND_VALUES });
+    resolve();
+  });
 
 export const refund = async (web3, getState, dispatch, contracts) => {
   const state = getState();

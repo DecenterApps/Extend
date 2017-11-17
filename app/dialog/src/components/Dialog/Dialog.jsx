@@ -26,7 +26,7 @@ class Dialog extends Component {
               !this.props.registeringError &&
               <h2>
                 A reddit authentication window will pop up prompting you to log in. <br />
-                This will link your reddit username to your Extend Ethereum address.
+                This will link your reddit username to your ΞXTΞND Ethereum address.
               </h2>
             }
           </div>
@@ -37,7 +37,7 @@ class Dialog extends Component {
           <div>
             <h1 styleName="success">Authentication successful!</h1>
             <h2>
-              Your reddit details have been submitted to the Extend smart contract for verification. <br />
+              Your reddit details have been submitted to the ΞXTΞND smart contract for verification. <br />
               This might take a few minutes.
             </h2>
           </div>

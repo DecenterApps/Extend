@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import connect from '../../../../../customRedux/connect';
 import createForm from '../../../../../customRedux/createForm';
+import Tooltip from '../../../../../commonComponents/Tooltip/Tooltip';
 import createField from '../../../../../customRedux/createField';
 import InputFormField from '../../../../../commonComponents/InputFormField';
 import tipFormValidator from './tipFormValidator';
@@ -48,6 +49,9 @@ class TipForm extends Component {
     const AmountField = this.AmountField;
     const GasPriceField = this.GasPriceField;
 
+    const submitDisabled = this.props.pristine || this.props.invalid ||
+      this.props.sendingTip || (!this.props.invalid && this.props.insufficientBalance);
+
     return (
       <form
         styleName="form-wrapper-2"
@@ -57,7 +61,7 @@ class TipForm extends Component {
         {
           (this.props.isVerified === false) &&
           <div styleName="info-wrapper">
-            The user you are trying to tip is not using Extend yet. However, you can still send him a tip which he
+            The user you are trying to tip is not using ΞXTΞND yet. However, you can still send him a tip which he
             will then be able to claim after verifying his username. In the meantime, our smart contract will store
             the funds securely.
           </div>
@@ -122,12 +126,23 @@ class TipForm extends Component {
           <button
             className={formStyle['submit-button']}
             type="submit"
-            disabled={
-              this.props.pristine || this.props.invalid ||
-              this.props.sendingTip || this.props.insufficientBalance
-            }
+            disabled={submitDisabled}
           >
-            { this.props.sendingTip ? 'Sending' : 'Send' }
+            <Tooltip
+              content={(
+                <div>
+                  { this.props.pristine && 'Fill out missing form fields' }
+                  { !this.props.pristine && this.props.invalid && 'Form is incomplete or has errors' }
+                  { !this.props.invalid && this.props.insufficientBalance && 'Insufficient balance for transaction' }
+                </div>
+              )}
+              useHover={
+                this.props.pristine || this.props.invalid || (!this.props.invalid && this.props.insufficientBalance)
+              }
+              useDefaultStyles
+            >
+              { this.props.sendingTip ? 'Sending' : 'Send' }
+            </Tooltip>
           </button>
         }
       </form>

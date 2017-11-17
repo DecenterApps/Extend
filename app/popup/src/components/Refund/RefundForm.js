@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import connect from '../../../../customRedux/connect';
 import createForm from '../../../../customRedux/createForm';
 import createField from '../../../../customRedux/createField';
+import Tooltip from '../../../../commonComponents/Tooltip/Tooltip';
 import InputFormField from '../../../../commonComponents/InputFormField';
 import refundFormValidator from './refundFormValidator';
 import { setRefundFormTxPriceMessage } from '../../../../messages/formsActionsMessages';
@@ -36,6 +37,9 @@ class RefundForm extends Component {
 
   render() {
     const GasPriceField = this.GasPriceField;
+
+    const submitDisabled = this.props.pristine || this.props.invalid || this.props.refunding ||
+      !this.props.refundAvailable || (!this.props.invalid && this.props.insufficientBalance);
 
     return (
       <div>
@@ -104,12 +108,23 @@ class RefundForm extends Component {
           <button
             className={formStyle['submit-button']}
             type="submit"
-            disabled={
-              this.props.pristine || this.props.invalid || this.props.refunding || !this.props.refundAvailable ||
-              this.props.insufficientBalance
-            }
+            disabled={submitDisabled}
           >
-            { this.props.refunding ? 'Refunding' : 'Refund' }
+            <Tooltip
+              content={(
+                <div>
+                  { this.props.pristine && 'Fill out missing form fields' }
+                  { !this.props.pristine && this.props.invalid && 'Form is incomplete or has errors' }
+                  { !this.props.invalid && this.props.insufficientBalance && 'Insufficient balance for transaction' }
+                </div>
+              )}
+              useHover={
+                this.props.pristine || this.props.invalid || (!this.props.invalid && this.props.insufficientBalance)
+              }
+              useDefaultStyles
+            >
+              { this.props.refunding ? 'Refunding' : 'Refund' }
+            </Tooltip>
           </button>
         </form>
       </div>

@@ -61,10 +61,10 @@ class GenerateNewPasswordForm extends Component {
         >
           <Tooltip
             content={(
-              <span>
-                { this.props.pristine && 'Form has not been touched' }
-                { this.props.invalid && 'Form is not valid, check errors' }
-              </span>
+              <div>
+                { this.props.pristine && 'Fill out missing form fields' }
+                { !this.props.pristine && this.props.invalid && 'Form is incomplete or has errors' }
+              </div>
             )}
             useHover={this.props.pristine || this.props.invalid}
             useDefaultStyles

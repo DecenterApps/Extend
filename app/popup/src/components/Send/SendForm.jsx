@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import connect from '../../../../customRedux/connect';
+import Tooltip from '../../../../commonComponents/Tooltip/Tooltip';
 import createForm from '../../../../customRedux/createForm';
 import createField from '../../../../customRedux/createField';
 import InputFormField from '../../../../commonComponents/InputFormField';
@@ -43,6 +44,9 @@ class SendForm extends Component {
     const AddressField = this.AddressField;
     const AmountField = this.AmountField;
     const GasPriceField = this.GasPriceField;
+
+    const submitDisabled = this.props.pristine || this.props.invalid || this.props.sending ||
+      (!this.props.invalid && this.props.insufficientBalance);
 
     return (
       <div>
@@ -119,11 +123,23 @@ class SendForm extends Component {
           <button
             className={formStyle['submit-button']}
             type="submit"
-            disabled={
-              this.props.pristine || this.props.invalid || this.props.sending || this.props.insufficientBalance
-            }
+            disabled={submitDisabled}
           >
-            { this.props.sending ? 'Transferring' : 'Transfer' }
+            <Tooltip
+              content={(
+                <div>
+                  { this.props.pristine && 'Fill out missing form fields' }
+                  { !this.props.pristine && this.props.invalid && 'Form is incomplete or has errors' }
+                  { !this.props.invalid && this.props.insufficientBalance && 'Insufficient balance for transaction' }
+                </div>
+              )}
+              useHover={
+                this.props.pristine || this.props.invalid || (!this.props.invalid && this.props.insufficientBalance)
+              }
+              useDefaultStyles
+            >
+              { this.props.sending ? 'Transferring' : 'Transfer' }
+            </Tooltip>
           </button>
         </form>
       </div>

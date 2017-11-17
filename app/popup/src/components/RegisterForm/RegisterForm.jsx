@@ -36,6 +36,8 @@ class RegisterForm extends Component {
 
   render() {
     const GasPriceField = this.GasPriceField;
+    const submitDisabled = this.props.pristine || this.props.invalid ||
+      (!this.props.invalid && this.props.insufficientBalance);
 
     return (
       <div>
@@ -71,21 +73,17 @@ class RegisterForm extends Component {
           <button
             className={formStyle['submit-button']}
             type="submit"
-            disabled={
-              this.props.pristine || this.props.invalid || this.props.insufficientBalance
-            }
+            disabled={submitDisabled}
           >
             <Tooltip
               content={(
                 <div>
-                  { this.props.pristine && 'Form has not been touched' }
-                  { this.props.invalid && 'Form is not valid, check errors' }
+                  { this.props.pristine && 'Fill out missing form fields' }
+                  { !this.props.pristine && this.props.invalid && 'Form is incomplete or has errors' }
                   { !this.props.invalid && this.props.insufficientBalance && 'Insufficient balance for transaction' }
                 </div>
               )}
-              useHover={
-                this.props.pristine || this.props.invalid || (!this.props.invalid && this.props.insufficientBalance)
-              }
+              useHover={submitDisabled}
               useDefaultStyles
             >
               VERIFY USERNAME

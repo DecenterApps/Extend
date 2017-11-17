@@ -73,7 +73,7 @@ export const setRefundFormTxPrice = async (web3, contract, dispatch, getState) =
   const value = 0;
   const contractMethod = contract.refundMoneyForUser;
   const usdPerEth = await getValOfEthInUsd();
-  const username = state.user.refundTipUsername;
+  const username = state.account.refundTipUsername;
 
   const isAvailable = await _checkIfRefundAvailable(web3, contract, username);
 

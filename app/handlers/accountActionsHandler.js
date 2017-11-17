@@ -3,6 +3,7 @@ import * as accountActions from '../actions/accountActions';
 const accountActionsHandler = (web3, engine, contracts, getState, dispatch, funcName, payload) => {
   switch (funcName) {
     case 'setBalance':
+    case 'setRefundFormValues':
       return accountActions[funcName](dispatch, payload);
     case 'clearRefundValues':
     case 'clearSendValues':

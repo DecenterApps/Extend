@@ -1,10 +1,10 @@
 import lightwallet from 'eth-lightwallet';
 import {
   SET_BALANCE, SET_GAS_PRICE, SEND, SEND_ERROR, SEND_SUCCESS, REFUND, REFUND_ERROR,
-  REFUND_SUCCESS, CLEAR_REFUND_VALUES, CLEAR_SEND_VALUES
+  REFUND_SUCCESS, CLEAR_REFUND_VALUES, CLEAR_SEND_VALUES, SET_REFUND_FORM_VALUES
 } from '../constants/actionTypes';
 import {
-  getBalanceForAddress, getGasPrice, transfer, getNonceForAddress, sendTransaction, listenForRefundSuccessful
+  getBalanceForAddress, getGasPrice, transfer, getNonceForAddress, sendTransaction
 } from '../modules/ethereumService';
 import AbstractPoller from '../modules/AbstractPoller';
 
@@ -102,26 +102,21 @@ export const refund = async (web3, getState, dispatch, contracts) => {
   const state = getState();
   const formData = state.forms.refundForm;
   const gasPrice = web3.toWei(formData.gasPrice.value, 'gwei');
-  const username = web3.toHex(state.user.refundTipUsername);
+  const username = web3.toHex(state.account.refundTipUsername);
   const address = state.keyStore.address;
   const ks = keyStore.deserialize(state.keyStore.keyStore);
   const password = state.keyStore.password;
-
-  const cb = async (err, event, eventInstance) => {
-    if (web3.toUtf8(event.args.username) !== formData.username.value) return;
-
-    eventInstance.stopWatching(() => {});
-
-    dispatch({ type: REFUND_SUCCESS });
-  };
+  const contractMethod = contracts.func.refundMoneyForUser;
 
   dispatch({ type: REFUND });
 
   try {
-    const hash = await sendTransaction(web3, contracts.func.refundMoneyForUser, ks, address, password, [username], 0, gasPrice); // eslint-disable-line
-    console.log('LISTENING FOR REFUNCD', hash);
-    listenForRefundSuccessful(web3, contracts.events, username, cb);
+    await sendTransaction(web3, contractMethod, ks, address, password, [username], 0, gasPrice);
+
+    dispatch({ type: REFUND_SUCCESS });
   } catch(err) {
     dispatch({ type: REFUND_ERROR });
   }
 };
+
+export const setRefundFormValues = (dispatch, payload) => { dispatch({ type: SET_REFUND_FORM_VALUES, payload }); };

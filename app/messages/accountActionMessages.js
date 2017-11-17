@@ -14,3 +14,5 @@ export const refundMessage = () => {
 
 export const clearRefundValuesMessage = () => { pm({ action: 'clearRefundValues' }); };
 export const clearSendValuesMessage = () => { pm({ action: 'clearSendValues' }); };
+
+export const setRefundFormValuesMessage = (payload) => { pm({ action: 'setRefundFormValues', payload }); };

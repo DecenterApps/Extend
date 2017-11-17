@@ -61,6 +61,7 @@ export const REFUND_UNAVAILABLE = 'refund_unavailable';
 export const REFUND_AVAILABLE = 'refund_available';
 export const REFUND_SUCCESS = 'refund_success';
 export const CLEAR_REFUND_VALUES = 'clear_refund_values';
+export const SET_REFUND_FORM_VALUES = 'set_refund_form_values';
 
 // MODAL
 export const TOGGLE_MODAL = 'toggle_modal';

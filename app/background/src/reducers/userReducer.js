@@ -22,8 +22,6 @@ const INITIAL_STATE = {
   sendingTip: false,
   sendingTipError: '',
   sendingTipSuccess: false,
-  refundTipIndex: '',
-  refundTipUsername: '',
   activeTab: TABS[0].slug,
   gettingTips: false,
   gettingTipsError: '',

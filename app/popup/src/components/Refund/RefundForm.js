@@ -71,7 +71,7 @@ class RefundForm extends Component {
             !this.props.invalid &&
             this.props.refundAvailable &&
             <div styleName="tx-info">
-              <span>Max transaction fee:</span>
+              <span>Max transaction cost:</span>
               <div>
                 <span>{ this.props.currentFormTxCost.eth } ETH</span>
                 <span styleName="second-price">{ this.props.currentFormTxCost.usd } USD</span>
@@ -95,7 +95,7 @@ class RefundForm extends Component {
 
           {
             this.props.refundingSuccess &&
-            <div styleName="submit-success">
+            <div styleName="submit-success margin">
               Refund request successfully sent to the contract
             </div>
           }
@@ -141,7 +141,7 @@ const mapStateToProps = (state) => ({
   refundAvailable: state.account.refundAvailable,
   form: state.forms[FORM_NAME],
   currentFormTxCost: state.forms.currentFormTxCost,
-  refundTipUsername: state.user.refundTipUsername,
+  refundTipUsername: state.account.refundTipUsername,
   balance: state.account.balance,
   insufficientBalance: state.forms.insufficientBalance,
 });

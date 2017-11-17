@@ -6,6 +6,7 @@ import { changeView } from './permanentActions';
 import { LOCK_INTERVAL } from '../constants/general';
 
 let lockTimeout = null;
+let reloaderActive = false;
 
 const keyStore = lightwallet.keystore;
 
@@ -57,7 +58,12 @@ export const clearPassword = (dispatch, getState) => {
  *  Sets timeout to clear password after the user has created or unlocked the account
  */
 export const passwordReloader = (dispatch, getState) => {
+  if (reloaderActive) return;
+
+  reloaderActive = true;
+
   lockTimeout = setTimeout(() => {
+    reloaderActive = false;
     dispatch({ type: CLEAR_PASSWORD });
     changeView(dispatch, getState, { viewName: 'unlockAccount' });
   }, LOCK_INTERVAL);

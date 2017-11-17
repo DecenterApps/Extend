@@ -72,7 +72,15 @@ const handleReducerFinish = (reducersFinished, reducers, resolved, resolve, stat
     chrome.runtime.sendMessage({ type: 'dispatch', state });
 
     if (state.user.tabsIds.length > 0) {
-      state.user.tabsIds.forEach((tabId) => chrome.tabs.sendMessage(tabId, { type: 'dispatch', state }));
+      chrome.tabs.query({}, (_tabs) => {
+        const tabs = _tabs.map((tab) => tab.id);
+
+        state.user.tabsIds.forEach((tabId) => {
+          if (!tabs.includes(tabId)) return;
+
+          chrome.tabs.sendMessage(tabId, { type: 'dispatch', state });
+        });
+      });
     }
 
     resolve(state[reducerName]);

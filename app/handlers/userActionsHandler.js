@@ -15,7 +15,7 @@ const userActionsHandler = (web3, engine, contracts, getState, dispatch, funcNam
       return userActions[funcName](dispatch, payload);
 
     case 'addTabId':
-      return userActions[funcName](dispatch, sender.tab.id);
+      return userActions[funcName](dispatch, getState, sender.tab.id);
 
     default:
       throw Error('Function in handler not defined', funcName);

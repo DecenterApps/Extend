@@ -219,5 +219,10 @@ export const connectAgain = (dispatch) => { dispatch({ type: CONNECT_AGAIN }); }
 export const connectingAgainError = (dispatch) => { dispatch({ type: CONNECT_AGAIN_ERROR }); };
 export const connectingAgainSuccess = (dispatch) => { dispatch({ type: CONNECT_AGAIN_SUCCESS }); };
 
-export const addTabId = (dispatch, payload) => { dispatch({ type: ADD_TAB_ID, payload }); };
+export const addTabId = (dispatch, getState, payload) => {
+  if (getState().user.tabsIds.includes(payload)) return;
+
+  dispatch({ type: ADD_TAB_ID, payload });
+};
+
 export const removeTabId = (dispatch, payload) => { dispatch({ type: REMOVE_TAB_ID, payload }); };

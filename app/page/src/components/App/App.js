@@ -15,7 +15,6 @@ class App extends Component {
 
   componentWillMount() {
     this.loadComponents(this.props);
-    addTabIdMessage();
   }
 
   componentWillReceiveProps(newProps) {
@@ -24,6 +23,8 @@ class App extends Component {
 
   loadComponents(newProps) {
     if (!window.location.pathname.includes('/comments/')) return;
+
+    addTabIdMessage();
 
     if (newProps.generatedVault && newProps.copiedSeed && !this.added) {
       insertPageComponents();

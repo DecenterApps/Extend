@@ -100,22 +100,7 @@ export const reducer = (state, action) => {
         gettingTipsError: 'An error occurred while getting tips, please try again.'
       };
     case ADD_NEW_TIP: {
-      const tips = [...state.tips];
-      const tip = payload.tip;
-
-      if ((tip.from === payload.address) || (tip.from === payload.username)) {
-        const sentTip = Object.assign({}, tip);
-        sentTip.type = 'sent';
-        tips.unshift(sentTip);
-      }
-
-      if (tip.to === payload.username) {
-        const receivedTip = Object.assign({}, tip);
-        receivedTip.type = 'received';
-        tips.unshift(receivedTip);
-      }
-
-      return { ...state, tips };
+      return { ...state, tips: payload };
     }
 
     case GET_GOLD:
@@ -135,22 +120,7 @@ export const reducer = (state, action) => {
       };
 
     case ADD_NEW_GOLD: {
-      const golds = [...state.golds];
-      const gold = payload.gold;
-
-      if ((gold.from === payload.address) || (gold.from === payload.gold)) {
-        const sentGold = Object.assign({}, gold);
-        sentGold.type = 'sent';
-        golds.unshift(sentGold);
-      }
-
-      if (gold.to === payload.username) {
-        const receivedGold = Object.assign({}, gold);
-        receivedGold.type = 'received';
-        golds.unshift(receivedGold);
-      }
-
-      return { ...state, golds };
+      return { ...state, golds: payload };
     }
 
     case CONNECT_AGAIN:

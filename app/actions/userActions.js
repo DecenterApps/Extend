@@ -101,7 +101,23 @@ export const handleTips = (web3, contracts, getState, dispatch) => {
   const username = state.user.verifiedUsername;
 
   const handleNewTip = (tip) => {
-    dispatch({ type: ADD_NEW_TIP, payload: { tip, address, username } });
+    const tips = [...getState().user.tips];
+
+    if ((tip.from === address) || (tip.from === username)) {
+      const sentTip = Object.assign({}, tip);
+      sentTip.type = 'sent';
+      tips.unshift(sentTip);
+    }
+
+    if (tip.to === username) {
+      const receivedTip = Object.assign({}, tip);
+      receivedTip.type = 'received';
+      tips.unshift(receivedTip);
+    }
+
+    if (JSON.stringify(getState().user.tips) === JSON.stringify(tips)) return;
+
+    dispatch({ type: ADD_NEW_TIP, payload: tips });
   };
 
   getTips(web3, contracts, dispatch, getState);
@@ -114,7 +130,23 @@ export const handleGold = (web3, contracts, getState, dispatch) => {
   const username = state.user.verifiedUsername;
 
   const handleNewGold = (gold) => {
-    dispatch({ type: ADD_NEW_GOLD, payload: { gold, address, username } });
+    const golds = [...getState().user.golds];
+
+    if ((gold.from === address) || (gold.from === username)) {
+      const sentGold = Object.assign({}, gold);
+      sentGold.type = 'sent';
+      golds.unshift(sentGold);
+    }
+
+    if (gold.to === username) {
+      const receivedGold = Object.assign({}, gold);
+      receivedGold.type = 'received';
+      golds.unshift(receivedGold);
+    }
+
+    if (JSON.stringify(getState().user.golds) === JSON.stringify(golds)) return;
+
+    dispatch({ type: ADD_NEW_GOLD, payload: golds });
   };
 
   getGold(web3, contracts, dispatch, getState);

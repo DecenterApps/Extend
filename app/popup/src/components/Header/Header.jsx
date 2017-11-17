@@ -13,7 +13,7 @@ const Header = ({ view, generatedVault, copiedSeed, password, networkActive }) =
 
     {
       networkActive &&
-      <div>
+      <div styleName="header-wrapper">
         {
           (
             (view === 'refund') ||

@@ -129,6 +129,7 @@ export const setBuyGoldFormTxPrice = async (web3, contract, dispatch, getState) 
   const params = [
     web3.toHex(author), // bytes32 _to
     months, // string _months
+    id, // string _commentId
     data.priceInUsd.toString(), // string _priceUsd
     data.nonce.toString(), // string _nonce
     data.signature, // string _signature

@@ -65,6 +65,7 @@ export const buyGold = async (web3, contract, dispatch, getState) => {
       web3.toHex(author), // bytes32 _to
       months, // string _months
       data.priceInUsd.toString(), // string _priceUsd
+      id, // string _commentId
       data.nonce.toString(), // string _nonce
       data.signature, // string _signature
     ];

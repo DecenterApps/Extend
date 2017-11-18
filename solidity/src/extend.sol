@@ -114,17 +114,19 @@ contract Extend is usingOraclize {
      * @param _to reddit username for user
      * @param _months for using gold
      * @param _priceUsd price returned from server
+     * @param _commentId comment on reddit
      * @param _nonce server sent
      * @param _signature server sent
      */
     function buyGold(bytes32 _to,  
                      string _months, 
-                     string _priceUsd, 
+                     string _priceUsd,
+                     string _commentId, 
                      string _nonce, 
                      string _signature) public payable {
 
         owner.transfer(msg.value);
-        events.goldBought(msg.value, msg.sender, _to, _months, _priceUsd, _nonce,  _signature);  
+        events.goldBought(msg.value, msg.sender, _to, _months, _priceUsd, _commentId, _nonce,  _signature);  
     }
 
     /**

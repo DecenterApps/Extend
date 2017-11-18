@@ -12,10 +12,8 @@ export const setActiveTabMessage = (tabSlug) => {
   pm({ action: 'setTab', payload: tabSlug });
 };
 
-export const changeViewMessage = (viewName, additionalChanges) => {
-  pm({ action: 'changeView', payload: { viewName, additionalChanges } });
-};
-
 export const checkRefundForSentTipsMessage = () => { pm({ action: 'checkRefundForSentTips' }); };
 
 export const connectAgainMessage = () => { pm({ action: 'connectAgain' }); };
+
+export const addTabIdMessage = () => { pm({ action: 'addTabId' }); };

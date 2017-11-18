@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Tooltip from 'react-tooltip-lite';
+import Tooltip from '../commonComponents/Tooltip/Tooltip';
 import connect from '../customRedux/connect';
 import createForm from '../customRedux/createForm';
 import createField from '../customRedux/createField';
 import InputFormField from './InputFormField';
 import typeInPasswordFormValidator from './typeInPasswordFormValidator';
-import { checkIfPasswordValidMessage } from '../messages/accountActionMessages';
+import { checkIfPasswordValidMessage } from '../messages/keyStoreActionMessages';
 
 import formStyle from './forms.scss';
 
@@ -72,7 +72,7 @@ TypeInPasswordForm.propTypes = {
 
 const mapStateToProps = (state) => ({
   unlockError: state.account.unlockError,
-  test: state.account.address
+  test: state.keyStore.address
 });
 
 const ExportComponent = createForm(

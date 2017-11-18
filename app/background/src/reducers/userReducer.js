@@ -1,13 +1,13 @@
 import {
-  REGISTER_USER, REGISTER_USER_ERROR, VERIFIED_USER,
-  NETWORK_UNAVAILABLE, ADD_NEW_TIP,
+  NETWORK_UNAVAILABLE, ADD_NEW_TIP, VERIFIED_USER,
   SEND_TIP, SEND_TIP_SUCCESS, SEND_TIP_ERROR, SET_ACTIVE_TAB,
-  GET_TIPS, GET_TIPS_SUCCESS, GET_TIPS_ERROR, CHANGE_VIEW, CLEAR_TIP_PENDING,
-  CLEAR_PENDING, CONNECT_AGAIN, CONNECT_AGAIN_SUCCESS, CONNECT_AGAIN_ERROR,
+  GET_TIPS, GET_TIPS_SUCCESS, GET_TIPS_ERROR, CLEAR_TIP_PENDING,
+  CONNECT_AGAIN, CONNECT_AGAIN_SUCCESS, CONNECT_AGAIN_ERROR,
   BUY_GOLD, BUY_GOLD_SUCCESS, BUY_GOLD_ERROR, GET_GOLD, GET_GOLD_ERROR, CLEAR_GOLD_PENDING,
-  GET_GOLD_SUCCESS, ADD_NEW_GOLD, SET_DISCONNECTED, SET_REFUND_TIPS, DIALOG_OPEN
+  GET_GOLD_SUCCESS, ADD_NEW_GOLD, SET_REFUND_TIPS, DIALOG_OPEN, ADD_TAB_ID, REMOVE_TAB_ID,
+  CLEAR_REGISTERING_ERROR, REGISTER_USER_ERROR
 } from '../../../constants/actionTypes';
-import { NETWORK_URL, TABS, VIEWS } from '../../../constants/general';
+import { NETWORK_URL, TABS } from '../../../constants/general';
 
 export const reducerName = 'user';
 
@@ -15,24 +15,17 @@ export const reducerName = 'user';
 // Verifying is when he is waiting for a response from Oreclize
 
 const INITIAL_STATE = {
-  networkActive: true,
-  acceptedNotice: false,
-  registering: false,
   registeringError: '',
-  verified: false,
   verifiedUsername: '',
-  registeringUsername: '',
+  networkActive: true,
   networkUrl: NETWORK_URL,
   sendingTip: false,
   sendingTipError: '',
   sendingTipSuccess: false,
-  refundTipIndex: '',
-  refundTipUsername: '',
   activeTab: TABS[0].slug,
   gettingTips: false,
   gettingTipsError: '',
   tips: [],
-  view: VIEWS[0],
   connectingAgain: false,
   connectingAgainError: '',
   buyingGold: false,
@@ -41,54 +34,14 @@ const INITIAL_STATE = {
   golds: [],
   gettingGold: false,
   gettingGoldError: '',
-  disconnected: false,
   dialogWindowId: 0,
+  tabsIds: []
 };
 
 export const reducer = (state, action) => {
   const payload = action.payload;
 
   switch (action.type) {
-    case `${CLEAR_PENDING}-${reducerName}`:
-      return {
-        ...state,
-        sendingTip: false,
-        sendingTipError: '',
-        sendingTipSuccess: false,
-        gettingSentTips: false,
-        gettingSentTipsError: '',
-        gettingTips: false,
-        gettingTipsError: '',
-        buyingGold: false,
-        buyingGoldError: '',
-        buyingGoldSuccess: false,
-        connectingAgain: false,
-        connectingAgainError: '',
-      };
-
-    case REGISTER_USER:
-      return {
-        ...state,
-        registering: true,
-        registeringUsername: payload.username,
-        registeringError: ''
-      };
-    case VERIFIED_USER:
-      return {
-        ...state,
-        registering: false,
-        verified: true,
-        registeringUsername: '',
-        verifiedUsername: state.registeringUsername,
-      };
-
-    case REGISTER_USER_ERROR:
-      return {
-        ...state,
-        registering: false,
-        registeringError: action.message,
-      };
-
     case DIALOG_OPEN:
       return {
         ...state,
@@ -100,6 +53,15 @@ export const reducer = (state, action) => {
 
     case NETWORK_UNAVAILABLE:
       return { ...state, networkActive: false };
+
+    case VERIFIED_USER:
+      return { ...state, verifiedUsername: payload };
+
+    case REGISTER_USER_ERROR:
+      return { ...state, registeringError: action.message, };
+
+    case CLEAR_REGISTERING_ERROR:
+      return { ...state, registeringError: '' };
 
     case SEND_TIP:
       return { ...state, sendingTip: true };
@@ -136,22 +98,7 @@ export const reducer = (state, action) => {
         gettingTipsError: 'An error occurred while getting tips, please try again.'
       };
     case ADD_NEW_TIP: {
-      const tips = [...state.tips];
-      const tip = payload.tip;
-
-      if (tip.from === payload.address) {
-        const sentTip = Object.assign({}, tip);
-        sentTip.type = 'sent';
-        tips.unshift(sentTip);
-      }
-
-      if (tip.to === payload.username) {
-        const receivedTip = Object.assign({}, tip);
-        receivedTip.type = 'received';
-        tips.unshift(receivedTip);
-      }
-
-      return { ...state, tips };
+      return { ...state, tips: payload };
     }
 
     case GET_GOLD:
@@ -171,26 +118,8 @@ export const reducer = (state, action) => {
       };
 
     case ADD_NEW_GOLD: {
-      const golds = [...state.golds];
-      const gold = payload.gold;
-
-      if (gold.from === payload.address) {
-        const sentGold = Object.assign({}, gold);
-        sentGold.type = 'sent';
-        golds.unshift(sentGold);
-      }
-
-      if (gold.to === payload.username) {
-        const receivedGold = Object.assign({}, gold);
-        receivedGold.type = 'received';
-        golds.unshift(receivedGold);
-      }
-
-      return { ...state, golds };
+      return { ...state, golds: payload };
     }
-
-    case CHANGE_VIEW:
-      return { ...state, view: payload.viewName, ...payload.additionalChanges };
 
     case CONNECT_AGAIN:
       return { ...state, connectingAgain: true };
@@ -222,11 +151,20 @@ export const reducer = (state, action) => {
         buyingGoldError: ''
       };
 
-    case SET_DISCONNECTED:
-      return { ...state, disconnected: payload };
-
     case SET_REFUND_TIPS:
       return { ...state, tips: payload };
+
+    case ADD_TAB_ID:
+      return { ...state, tabsIds: [...state.tabsIds, payload] };
+
+    case REMOVE_TAB_ID: {
+      let allTabIds = [state.tabsIds];
+      const tabIndex = allTabIds.findIndex((id) => id === payload);
+      allTabIds = allTabIds.splice(tabIndex, 1);
+
+      return { ...state, tabsIds: allTabIds };
+    }
+
 
     default:
       return false;
@@ -236,5 +174,6 @@ export const reducer = (state, action) => {
 export const data = {
   name: reducerName,
   initialState: INITIAL_STATE,
-  handle: reducer
+  handle: reducer,
+  async: false
 };

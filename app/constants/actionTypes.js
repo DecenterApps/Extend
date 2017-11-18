@@ -1,5 +1,12 @@
 export const SET_ADDRESS = 'set_address';
-export const CLEAR_PENDING = 'clear_pending';
+
+// PERMANENT
+export const ACCEPT_NOTICE = 'accept_notice';
+export const CLEAR_REGISTERING_USER = 'clear_registering_user';
+export const SEEN_DASH = 'seen_dash';
+
+// KEYSTORE
+export const UNLOCK = 'unlock';
 
 // USER
 export const REGISTER_USER = 'register_user';
@@ -22,6 +29,9 @@ export const CONNECT_AGAIN_ERROR = 'connect_again_error';
 export const SET_DISCONNECTED = 'set_disconnected';
 export const SET_REFUND_TIPS = 'set_refund_tips';
 export const DIALOG_OPEN = 'dialog_open';
+export const ADD_TAB_ID = 'add_tab_id';
+export const REMOVE_TAB_ID = 'remove_tab_id';
+export const CLEAR_REGISTERING_ERROR = 'clear_registering_error';
 
 // NETWORK
 export const TOGGLE_DROPDOWN = 'toggle_dropdown';
@@ -37,20 +47,21 @@ export const SET_TX_COST = 'set_tx_cost';
 export const CREATE_WALLET = 'create_wallet';
 export const COPIED_SEED = 'copied_seed';
 export const CLEAR_PASSWORD = 'clear_password';
-export const UNLOCK = 'unlock';
 export const UNLOCK_ERROR = 'unlock_error';
+export const UNLOCK_SUCCESS = 'unlock_success';
 export const SET_BALANCE = 'set_balance';
 export const SET_GAS_PRICE = 'set_gas_price';
 export const SEND = 'send';
 export const SEND_ERROR = 'send_error';
 export const SEND_SUCCESS = 'send_success';
-export const CHANGE_TX_STATE = 'change_tx_state';
+export const CLEAR_SEND_VALUES = 'clear_send_values';
 export const REFUND = 'refund';
 export const REFUND_ERROR = 'refund_error';
 export const REFUND_UNAVAILABLE = 'refund_unavailable';
 export const REFUND_AVAILABLE = 'refund_available';
 export const REFUND_SUCCESS = 'refund_success';
 export const CLEAR_REFUND_VALUES = 'clear_refund_values';
+export const SET_REFUND_FORM_VALUES = 'set_refund_form_values';
 
 // MODAL
 export const TOGGLE_MODAL = 'toggle_modal';

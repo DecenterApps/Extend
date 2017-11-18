@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import connect from '../../../../customRedux/connect';
 import ModalRoot from '../Modals/ModalRoot';
-import addTipToPostsAndComments from '../Tip/addTipToPostsAndComments';
-import addGoldToPostsAndComments from '../BuyGold/addGoldToPostsAndComments';
-import addUserVerifiedToPostsAndComments from '../UserVerified/addUserVerifiedToPostsAndComments';
+import insertPageComponents from './insertPageComponents';
+import { addTabIdMessage } from '../../../../messages/userActionsMessages';
 
 class App extends Component {
   constructor() {
@@ -25,10 +24,10 @@ class App extends Component {
   loadComponents(newProps) {
     if (!window.location.pathname.includes('/comments/')) return;
 
+    addTabIdMessage();
+
     if (newProps.generatedVault && newProps.copiedSeed && !this.added) {
-      addTipToPostsAndComments();
-      addGoldToPostsAndComments();
-      addUserVerifiedToPostsAndComments();
+      insertPageComponents();
       this.added = true;
     }
   }
@@ -41,9 +40,9 @@ class App extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  generatedVault: state.account.created,
-  password: state.account.password,
-  copiedSeed: state.account.copiedSeed,
+  generatedVault: state.keyStore.created,
+  password: state.keyStore.password,
+  copiedSeed: state.permanent.copiedSeed,
 });
 
 export default connect(App, mapStateToProps);

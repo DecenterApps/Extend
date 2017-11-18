@@ -16,17 +16,9 @@ export const updateFieldError = (dispatch, payload) => {
   dispatch({ type: UPDATE_FIELD_ERROR, payload });
 };
 
-const setTxValues = (web3, dispatch, value, gas, gasPrice, usdPerEth, balance, addVal = true) => {
-  let txCostEth = null;
-  let insufficientBalance = false;
-
-  if (addVal) {
-    txCostEth = web3.fromWei((gas * gasPrice) + parseFloat(value));
-    insufficientBalance = (parseFloat(balance) - parseFloat(txCostEth)) < 0;
-  } else {
-    txCostEth = web3.fromWei(gas * gasPrice);
-    insufficientBalance = (parseFloat(balance) - (parseFloat(txCostEth) + parseFloat(web3.fromWei(value)))) < 0;
-  }
+const setTxValues = (web3, dispatch, value, gas, gasPrice, usdPerEth, balance) => {
+  const txCostEth = web3.fromWei((gas * gasPrice) + parseFloat(value));
+  const insufficientBalance = (parseFloat(balance) - parseFloat(txCostEth)) < 0;
 
   dispatch({
     type: SET_TX_COST,
@@ -81,7 +73,7 @@ export const setRefundFormTxPrice = async (web3, contract, dispatch, getState) =
   const value = 0;
   const contractMethod = contract.refundMoneyForUser;
   const usdPerEth = await getValOfEthInUsd();
-  const username = state.user.refundTipUsername;
+  const username = state.account.refundTipUsername;
 
   const isAvailable = await _checkIfRefundAvailable(web3, contract, username);
 
@@ -98,7 +90,7 @@ export const setRefundFormTxPrice = async (web3, contract, dispatch, getState) =
 
   const gas = await estimateGasForTx(web3, contractMethod, params, value);
 
-  setTxValues(web3, dispatch, value, gas, gasPrice, usdPerEth, balance, false);
+  setTxValues(web3, dispatch, value, gas, gasPrice, usdPerEth, balance);
 };
 
 export const setTipFormTxPrice = async (web3, contract, dispatch, getState) => {
@@ -123,11 +115,12 @@ export const setBuyGoldFormTxPrice = async (web3, contract, dispatch, getState) 
   const months = form.months.value.toString();
   const contractMethod = contract.buyGold;
   const author = state.modals.modalProps.author;
+  const id = state.modals.modalProps.id;
   const usdPerEth = await getValOfEthInUsd();
-  const address = state.account.address;
+  const address = state.keyStore.address;
 
   const res = await fetch(
-    `https://reddapp.decenter.com/gold.php?months=${months}&toUsername=${author}&fromAddress=${address}`
+    `https://reddapp.decenter.com/gold.php?months=${months}&toUsername=${author}&fromAddress=${address}&id=${id}`
   );
   const data = await res.json();
 
@@ -136,6 +129,7 @@ export const setBuyGoldFormTxPrice = async (web3, contract, dispatch, getState) 
   const params = [
     web3.toHex(author), // bytes32 _to
     months, // string _months
+    id, // string _commentId
     data.priceInUsd.toString(), // string _priceUsd
     data.nonce.toString(), // string _nonce
     data.signature, // string _signature

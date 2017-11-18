@@ -1,6 +1,5 @@
 import PQueue from 'p-queue';
 import { get, set, clearReducer } from './store';
-import { CLEAR_PENDING } from '../constants/actionTypes';
 
 const queue = new PQueue({ concurrency: 1 });
 
@@ -10,7 +9,7 @@ const queue = new PQueue({ concurrency: 1 });
  *
  * @param reducerData Object that has reducer name initial state and handle function
  */
-const initReducer = async (reducerData) =>
+const initAsyncReducer = async (reducerData) =>
   new Promise(async (resolve) => {
     // await clearReducer(reducerData.name); // remove when finished
 
@@ -19,9 +18,9 @@ const initReducer = async (reducerData) =>
     if (existingReducerState === undefined) {
       await set(reducerData.name, reducerData.initialState);
       resolve(reducerData.initialState);
+    } else {
+      resolve(existingReducerState);
     }
-
-    resolve(existingReducerState);
   });
 
 /**
@@ -39,10 +38,19 @@ const combineReducers = (reducersData) =>
     };
 
     reducersData.forEach(async (reducerData, index) => {
-      store.state[reducerData.name] = await initReducer(reducerData);
+      // If the reducer is saved locally check if there is already saved state
+      // else serve new reducer instance
+      if (reducerData.async) {
+        store.state[reducerData.name] = await initAsyncReducer(reducerData);
+      } else {
+        store.state[reducerData.name] = reducerData.initialState;
+      }
+
       store.reducers[reducerData.name] = reducerData.handle;
 
-      if (index === reducersData.length - 1) resolve(store);
+      if (index === reducersData.length - 1) {
+        resolve(store);
+      }
     });
   });
 
@@ -61,17 +69,32 @@ const handleReducerFinish = (reducersFinished, reducers, resolved, resolve, stat
   if (reducersFinished !== Object.keys(reducers).length) return;
 
   if (resolved) {
-    resolve(state[reducerName]);
-  } else {
-    if (action.type.includes(CLEAR_PENDING)) {
-      resolve();
-      return;
+    chrome.runtime.sendMessage({ type: 'dispatch', state });
+
+    if (state.user.tabsIds.length > 0) {
+      chrome.tabs.query({}, (_tabs) => {
+        const tabs = _tabs.map((tab) => tab.id);
+
+        state.user.tabsIds.forEach((tabId) => {
+          if (!tabs.includes(tabId)) return;
+
+          chrome.tabs.sendMessage(tabId, { type: 'dispatch', state });
+        });
+      });
     }
 
-    throw Error('Dispatch was not handled in any reducer', action);
+    resolve(state[reducerName]);
+    return;
   }
+
+  throw Error('Dispatch was not handled in any reducer', action);
 };
 
+const combinedReducersByAsync = (reducersArr) => {
+  const reducersByAsync = {};
+  reducersArr.forEach((reducer) => { reducersByAsync[reducer.name] = reducer.async; });
+  return reducersByAsync;
+};
 
 // TODO Try to clean this code up
 /**
@@ -86,6 +109,13 @@ const createStore = (reducersData) =>
 
     let state = combinedReducers.state;
     const reducers = combinedReducers.reducers;
+    const reducersByAsync = combinedReducersByAsync(reducersData);
+
+    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+      if (request.type !== 'getState') return;
+
+      sendResponse(state);
+    });
 
     resolve({
       getState: () => state,
@@ -107,10 +137,18 @@ const createStore = (reducersData) =>
                 return;
               }
 
-              const setResult = await set(reducerName, newReducerState);
-              console.log('ACTION', action);
+              let setResult = {};
+
+              if (reducersByAsync[reducerName]) {
+                setResult = await set(reducerName, newReducerState);
+              } else {
+                setResult = newReducerState;
+              }
+
               resolved = true;
               state[reducerName] = setResult;
+
+              console.log('ACTION', action);
 
               reducersFinished++;
               handleReducerFinish(reducersFinished, reducers, resolved, dispatchResolve, state, action, reducerName);

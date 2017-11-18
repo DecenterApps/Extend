@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import connect from '../../../../customRedux/connect';
-import { getEtherScanLinkByNetwork, createRedditLink } from '../../../../actions/utils';
-import { changeViewMessage } from '../../../../messages/userActionsMessages';
+import Tooltip from '../../../../commonComponents/Tooltip/Tooltip';
+import { getEtherScanLink, createRedditLink } from '../../../../actions/utils';
+import { changeViewMessage } from '../../../../messages/permanentActionsMessages';
 import Tabs from '../Tabs/Tabs';
 import RegisterForm from '../RegisterForm/RegisterForm';
 import Onboarding from '../Onboarding/Onboarding';
@@ -15,7 +16,7 @@ const copyAddress = () => {
 };
 
 const Dashboard = ({
-  address, balance, verifiedUsername, registering, registeringError, registeringUsername, onboardingUnVerified,
+  address, balance, verifiedUsername, registeringError, registeringUsername, onboardingUnVerified,
   onboardingUnVerifiedStep
 }) => (
   <div styleName="dashboard-wrapper">
@@ -24,22 +25,42 @@ const Dashboard = ({
     <div styleName="account-info-wrapper">
       <div styleName="small-section">
         <a
-          href={getEtherScanLinkByNetwork('kovan', address)}
+          href={getEtherScanLink(address)}
           target="_blank"
           rel="noopener noreferrer"
         >
           { address }
         </a>
         <input type="text" id="user-address" styleName="user-address" defaultValue={address} />
-        <button styleName="copy" onClick={copyAddress} />
+        <Tooltip
+          tagName="span"
+          content="Copied"
+          eventOn="onClick"
+          eventOff="onMouseMove"
+          useDefaultStyles
+        >
+          <button styleName="copy" onClick={copyAddress} />
+        </Tooltip>
         <div styleName="small-section-title">Address</div>
       </div>
 
       <div styleName="small-section">
         <div>
-          { !registering && !registeringError && !verifiedUsername && <span styleName="error">Not verified</span> }
-          { !registering && registeringError && <span styleName="error">There was an error, try again</span> }
-          { registering &&
+          {
+            !registeringUsername &&
+            !registeringError &&
+            !verifiedUsername &&
+            <span styleName="error">Not verified</span>
+          }
+
+          {
+            !registeringUsername &&
+            registeringError &&
+            !verifiedUsername &&
+            <span styleName="error">{ registeringError }</span>
+          }
+
+          { registeringUsername &&
             <span styleName="pending">
               Verifying
               <a
@@ -51,9 +72,11 @@ const Dashboard = ({
               </a>
             </span>
           }
+
           {
             verifiedUsername &&
             <span>
+              <span styleName="success">Verified</span>
               <a
                 href={createRedditLink(verifiedUsername)}
                 target="_blank"
@@ -83,17 +106,18 @@ const Dashboard = ({
     </div>
 
     {
-      !registering &&
+      !registeringUsername &&
       !verifiedUsername &&
       <div styleName="register-btn-wrapper">
         <RegisterForm />
       </div>
     }
     {
-      registering && <div styleName="registering-info">Username is currently being verified. Please wait...</div>
+      registeringUsername &&
+      <div styleName="registering-info">Username is currently being verified. Please wait...</div>
     }
     {
-      !registering &&
+      !registeringUsername &&
       verifiedUsername &&
       <Tabs />
     }
@@ -105,19 +129,17 @@ Dashboard.propTypes = {
   balance: PropTypes.string.isRequired,
   verifiedUsername: PropTypes.string.isRequired,
   registeringError: PropTypes.string.isRequired,
-  registering: PropTypes.bool.isRequired,
   registeringUsername: PropTypes.string.isRequired,
   onboardingUnVerified: PropTypes.bool.isRequired,
   onboardingUnVerifiedStep: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({
-  address: state.account.address,
+  address: state.keyStore.address,
   balance: state.account.balance,
   verifiedUsername: state.user.verifiedUsername,
-  registering: state.user.registering,
   registeringError: state.user.registeringError,
-  registeringUsername: state.user.registeringUsername,
+  registeringUsername: state.permanent.registeringUsername,
   onboardingUnVerified: state.onboarding.onboardingUnVerified,
   onboardingUnVerifiedStep: state.onboarding.onboardingUnVerifiedStep,
 });

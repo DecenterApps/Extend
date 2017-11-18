@@ -1,17 +1,13 @@
 import {
   NETWORK_UNAVAILABLE, VERIFIED_USER, REGISTER_USER_ERROR, SET_ACTIVE_TAB, GET_TIPS, GET_TIPS_SUCCESS,
-  GET_TIPS_ERROR, CHANGE_VIEW, CONNECT_AGAIN, CONNECT_AGAIN_SUCCESS, CONNECT_AGAIN_ERROR, ADD_NEW_TIP,
-  ADD_NEW_GOLD, GET_GOLD, GET_GOLD_ERROR, GET_GOLD_SUCCESS, SET_DISCONNECTED, SET_REFUND_TIPS, DIALOG_OPEN
+  GET_TIPS_ERROR, CONNECT_AGAIN, CONNECT_AGAIN_SUCCESS, CONNECT_AGAIN_ERROR, ADD_NEW_TIP,
+  ADD_NEW_GOLD, GET_GOLD, GET_GOLD_ERROR, GET_GOLD_SUCCESS, SET_REFUND_TIPS, DIALOG_OPEN, ADD_TAB_ID,
+  REMOVE_TAB_ID, CLEAR_REGISTERING_ERROR, CLEAR_REGISTERING_USER
 } from '../constants/actionTypes';
 import {
   verifiedUserEvent, listenForTips, getTipsFromEvent, listenForGold, getGoldFromEvent, _checkIfRefundAvailable
 } from '../modules/ethereumService';
-
-export const changeView = (dispatch, payload) =>
-  new Promise(async (resolve) => {
-    await dispatch({ type: CHANGE_VIEW, payload });
-    resolve();
-  });
+import { changeView } from './permanentActions';
 
 export const checkRefundForSentTips = async (web3, contract, getState, dispatch) => {
   const tips = [...getState().user.tips];
@@ -33,20 +29,20 @@ export const checkRefundForSentTips = async (web3, contract, getState, dispatch)
   dispatch({ type: SET_REFUND_TIPS, payload: result });
 };
 
-const getTips = async (web3, contract, dispatch, getState) => {
+const getTips = async (web3, contracts, dispatch, getState) => {
   const state = getState();
-  const address = state.account.address;
+  const address = state.keyStore.address;
   const username = state.user.verifiedUsername;
 
   dispatch({ type: GET_TIPS });
 
   try {
-    const tipsFromEvent = await getTipsFromEvent(web3, contract, address, web3.toHex(username));
+    const tipsFromEvent = await getTipsFromEvent(web3, contracts, address, web3.toHex(username));
     const tips = [];
 
     if (tipsFromEvent.length > 0) {
       tipsFromEvent.forEach((tipParam) => {
-        if (tipParam.from === address) {
+        if ((tipParam.from === address) || (tipParam.from === username)) {
           const tip = Object.assign({}, tipParam);
           tip.type = 'sent';
           tips.push(tip);
@@ -68,7 +64,7 @@ const getTips = async (web3, contract, dispatch, getState) => {
 
 const getGold = async (web3, contract, dispatch, getState) => {
   const state = getState();
-  const address = state.account.address;
+  const address = state.keyStore.address;
   const username = state.user.verifiedUsername;
 
   dispatch({ type: GET_GOLD });
@@ -79,7 +75,7 @@ const getGold = async (web3, contract, dispatch, getState) => {
 
     if (goldsFromEvent.length > 0) {
       goldsFromEvent.forEach((goldParam) => {
-        if (goldParam.from === address) {
+        if ((goldParam.from === address) || (goldParam.from === username)) {
           const gold = Object.assign({}, goldParam);
           gold.type = 'sent';
           golds.push(gold);
@@ -101,28 +97,60 @@ const getGold = async (web3, contract, dispatch, getState) => {
 
 export const handleTips = (web3, contracts, getState, dispatch) => {
   const state = getState();
-  const address = state.account.address;
+  const address = state.keyStore.address;
   const username = state.user.verifiedUsername;
 
   const handleNewTip = (tip) => {
-    dispatch({ type: ADD_NEW_TIP, payload: { tip, address, username } });
+    const tips = [...getState().user.tips];
+
+    if ((tip.from === address) || (tip.from === username)) {
+      const sentTip = Object.assign({}, tip);
+      sentTip.type = 'sent';
+      tips.unshift(sentTip);
+    }
+
+    if (tip.to === username) {
+      const receivedTip = Object.assign({}, tip);
+      receivedTip.type = 'received';
+      tips.unshift(receivedTip);
+    }
+
+    if (JSON.stringify(getState().user.tips) === JSON.stringify(tips)) return;
+
+    dispatch({ type: ADD_NEW_TIP, payload: tips });
   };
 
-  getTips(web3, contracts.events, dispatch, getState);
-  listenForTips(web3, contracts.events, dispatch, address, web3.toHex(username), handleNewTip);
+  getTips(web3, contracts, dispatch, getState);
+  listenForTips(web3, contracts, dispatch, address, web3.toHex(username), handleNewTip);
 };
 
 export const handleGold = (web3, contracts, getState, dispatch) => {
   const state = getState();
-  const address = state.account.address;
+  const address = state.keyStore.address;
   const username = state.user.verifiedUsername;
 
   const handleNewGold = (gold) => {
-    dispatch({ type: ADD_NEW_GOLD, payload: { gold, address, username } });
+    const golds = [...getState().user.golds];
+
+    if ((gold.from === address) || (gold.from === username)) {
+      const sentGold = Object.assign({}, gold);
+      sentGold.type = 'sent';
+      golds.unshift(sentGold);
+    }
+
+    if (gold.to === username) {
+      const receivedGold = Object.assign({}, gold);
+      receivedGold.type = 'received';
+      golds.unshift(receivedGold);
+    }
+
+    if (JSON.stringify(getState().user.golds) === JSON.stringify(golds)) return;
+
+    dispatch({ type: ADD_NEW_GOLD, payload: golds });
   };
 
-  getGold(web3, contracts.events, dispatch, getState);
-  listenForGold(web3, contracts.events, dispatch, address, web3.toHex(username), handleNewGold);
+  getGold(web3, contracts, dispatch, getState);
+  listenForGold(web3, contracts, dispatch, address, web3.toHex(username), handleNewGold);
 };
 
 /**
@@ -140,8 +168,10 @@ export const setTab = (dispatch, selectedTab) => {
  *
  * @param {Function} dispatch
  */
-export const verifiedUser = async (web3, contracts, getState, dispatch) => {
-  await dispatch({ type: VERIFIED_USER });
+export const verifiedUser = async (web3, contracts, getState, dispatch, verifiedUsername) => {
+  if (getState().permanent.registeringUsername) await dispatch({ type: CLEAR_REGISTERING_USER });
+
+  await dispatch({ type: VERIFIED_USER, payload: verifiedUsername });
   handleTips(web3, contracts, getState, dispatch);
   handleGold(web3, contracts, getState, dispatch);
 };
@@ -158,18 +188,20 @@ export const listenForVerifiedUser = (web3, contracts, dispatch, getState) => {
   console.log('LISTENING FOR VERIFIED USER');
 
   const verifiedCallback = (err, event, verifiedEvent, noMatchEvent) => {
-    if (web3.toUtf8(event.args.username) !== getState().user.registeringUsername) return;
+    const registeringUsername = getState().permanent.registeringUsername;
 
-    verifiedUser(web3, contracts, getState, dispatch);
+    if (web3.toUtf8(event.args.username) !== registeringUsername) return;
+
+    verifiedUser(web3, contracts, getState, dispatch, registeringUsername);
 
     verifiedEvent.stopWatching(() => {});
     noMatchEvent.stopWatching(() => {});
   };
 
   const noMatchCallback = (err, event, verifiedEvent, noMatchEvent) => {
-    if (web3.toUtf8(event.args.neededUsername) !== getState().user.registeringUsername) return;
+    if (web3.toUtf8(event.args.neededUsername) !== getState().permanent.registeringUsername) return;
 
-    dispatch({ type: REGISTER_USER_ERROR, message: 'Verified username does not match Reddit username.' });
+    dispatch({ type: REGISTER_USER_ERROR, message: 'Verified username does not match reddit username.' });
 
     verifiedEvent.stopWatching(() => {});
     noMatchEvent.stopWatching(() => {});
@@ -180,9 +212,9 @@ export const listenForVerifiedUser = (web3, contracts, dispatch, getState) => {
 
 export const openAuthWindow = (payload, dispatch) => {
   const width = 400;
-  const height = 300;
-  const left = (payload.screenWidth / 2) - (width / 2);
-  const top = (payload.screenHeight / 2) - (height / 2);
+  const height = 250;
+  const left = 25;
+  const top = 25;
 
   chrome.windows.create({
     url: chrome.extension.getURL('dialog.html'),
@@ -194,7 +226,6 @@ export const openAuthWindow = (payload, dispatch) => {
     top
   }, (window) => {
     dispatch({ type: DIALOG_OPEN, id: window.id });
-
   });
 };
 
@@ -203,10 +234,15 @@ export const openAuthWindow = (payload, dispatch) => {
  *
  * @param {Function} dispatch
  */
-export const networkUnavailable = (dispatch) =>
+export const networkUnavailable = (dispatch, getState) =>
   new Promise(async (resolve) => {
     await dispatch({ type: NETWORK_UNAVAILABLE });
-    await changeView(dispatch, { viewName: 'networkUnavailable' });
+    resolve();
+  });
+
+export const clearRegisteringError = (dispatch) =>
+  new Promise(async (resolve) => {
+    await dispatch({ type: CLEAR_REGISTERING_ERROR });
     resolve();
   });
 
@@ -214,8 +250,10 @@ export const connectAgain = (dispatch) => { dispatch({ type: CONNECT_AGAIN }); }
 export const connectingAgainError = (dispatch) => { dispatch({ type: CONNECT_AGAIN_ERROR }); };
 export const connectingAgainSuccess = (dispatch) => { dispatch({ type: CONNECT_AGAIN_SUCCESS }); };
 
-export const setDisconnected = (dispatch, payload) =>
-  new Promise(async (resolve) => {
-    await dispatch({ type: SET_DISCONNECTED, payload });
-    resolve();
-  });
+export const addTabId = (dispatch, getState, payload) => {
+  if (getState().user.tabsIds.includes(payload)) return;
+
+  dispatch({ type: ADD_TAB_ID, payload });
+};
+
+export const removeTabId = (dispatch, payload) => { dispatch({ type: REMOVE_TAB_ID, payload }); };

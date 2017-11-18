@@ -1,10 +1,7 @@
 import EthereumTx from 'ethereumjs-tx';
-import { getPwDerivedKey, getPrivateKey } from '../actions/accountActions';
-import { CHANGE_TX_STATE } from '../constants/actionTypes';
+import { getPwDerivedKey, getPrivateKey } from '../actions/keyStoreActions';
 import { GAS_LIMIT_MODIFIER } from '../constants/general';
 import AbstractWatcher from '../modules/AbstractWatcher';
-import AbstractPoller from '../modules/AbstractPoller';
-import config from './config.json';
 
 /* STANDARD FUNCTIONS REQUIRED TO SEND TRANSACTIONS */
 
@@ -105,35 +102,6 @@ const getTransactionReceipt = (web3, txHash) =>
       resolve(result);
     });
   });
-
-/**
- * Polls for Tx receipt and then dispatches action to change tx state
- *
- */
-const handleTransactionReceipt = async (web3, dispatch, getState, txHash, stopPollerFunc) => {
-  const result = await getTransactionReceipt(web3, txHash);
-
-  if (!result) return;
-  stopPollerFunc();
-
-  const transactions = getState().account.transactions;
-  const txIndex = transactions.findIndex((tx) => tx.hash === txHash);
-
-  dispatch({ type: CHANGE_TX_STATE, payload: txIndex });
-};
-
-/**
- * Polls for Tx receipt and then dispatches action to change tx state
- *
- * @param {Object} web3
- * @param {Function} dispatch
- * @param {Function} getState
- * @param {String} txHash
- */
-export const pollForReceipt = async (web3, engine, dispatch, getState, txHash) => {
-  const poller = new AbstractPoller(handleTransactionReceipt, engine, web3, dispatch, getState, txHash);
-  poller.poll();
-};
 
 const sendRawTransaction = (web3, transactionParams, privateKey) =>
   new Promise((resolve, reject) => {
@@ -297,6 +265,15 @@ export const _checkUsernameVerified = (web3, contract, username) =>
     });
   });
 
+export const _getUsernameForAddress = (web3, contract, address) =>
+  new Promise((resolve, reject) => {
+    contract.getUsernameForAddress(address, (error, result) => {
+      if (error) return reject(error);
+
+      return resolve(result);
+    });
+  });
+
 export const _checkIfRefundAvailable = (web3, contract, username) =>
   new Promise((resolve, reject) => {
     contract.checkIfRefundAvailable(username, (error, result) => {
@@ -361,27 +338,35 @@ export const listenForRefundSuccessful = async (web3, contract, username, callba
   RefundSuccessfulInstance.watch();
 };
 
-export const getTipsFromEvent = (web3, contract, address, hexUsername) =>
+export const getTipsFromEvent = (web3, contracts, address, hexUsername) =>
   new Promise((resolve, reject) => {
-    contract.UserTipped([{ from: address }, { to: hexUsername }], { fromBlock: 4447379, toBlock: 'latest' })
-      .get((error, result) => {
+    contracts.events.UserTipped([{ from: address }, { to: hexUsername }], { fromBlock: 4447379, toBlock: 'latest' })
+      .get(async (error, result) => {
         if (error) reject(error);
 
-        const tips = result.map((tx) => ({
-          to: web3.toUtf8(tx.args.username), val: web3.fromWei(tx.args.val.toString()), from: tx.args.from
+        const tips = await Promise.all(result.map(async (tx) => {
+          const username = web3.toUtf8(await _getUsernameForAddress(web3, contracts.func, tx.args.from));
+
+          return {
+            to: web3.toUtf8(tx.args.username),
+            val: web3.fromWei(tx.args.val.toString()),
+            from: username || tx.args.from
+          };
         }));
 
         resolve(tips.reverse());
       });
   });
 
-export const listenForTips = async (web3, contract, dispatch, address, hexUsername, callback) => {
+
+export const listenForTips = async (web3, contracts, dispatch, address, hexUsername, callback) => {
   try {
     const fromBlock = await getBlockNumber(web3);
 
-    const UserTipped = contract.UserTipped([{ from: address }, { to: hexUsername }], { fromBlock, toBlock: 'latest' });
+    const UserTipped =
+      contracts.events.UserTipped([{ from: address }, { to: hexUsername }], { fromBlock, toBlock: 'latest' });
 
-    const UserTippedWatcherCb = (error, event) => {
+    const UserTippedWatcherCb = async (error, event) => {
       if (error) {
         callback(error);
         return;
@@ -390,7 +375,9 @@ export const listenForTips = async (web3, contract, dispatch, address, hexUserna
       const tip = event.args;
       const to = web3.toUtf8(tip.username);
       const val = web3.fromWei(tip.val.toString());
-      const from = tip.from;
+
+      let from = web3.toUtf8(await _getUsernameForAddress(web3, contracts.func, tip.from));
+      from = from || tip.from;
 
       callback({ to, val, from });
     };
@@ -403,30 +390,35 @@ export const listenForTips = async (web3, contract, dispatch, address, hexUserna
   }
 };
 
-export const getGoldFromEvent = (web3, contract, address, hexUsername) =>
+export const getGoldFromEvent = (web3, contracts, address, hexUsername) =>
   new Promise((resolve, reject) => {
-    contract.GoldBought([{ from: address }, { to: hexUsername }], { fromBlock: 4447379, toBlock: 'latest' })
-      .get((error, result) => {
+    contracts.events.GoldBought([{ from: address }, { to: hexUsername }], { fromBlock: 4447379, toBlock: 'latest' })
+      .get(async (error, result) => {
         if (error) reject(error);
 
-        const allGold = result.map((tx) => ({
-          to: web3.toUtf8(tx.args.to),
-          val: web3.fromWei(tx.args.price.toString()),
-          from: tx.args.from,
-          months: tx.args.months
+        const allGold = await Promise.all(result.map(async (tx) => {
+          const username = web3.toUtf8(await _getUsernameForAddress(web3, contracts.func, tx.args.from));
+
+          return {
+            to: web3.toUtf8(tx.args.to),
+            val: web3.fromWei(tx.args.price.toString()),
+            from: username || tx.args.from,
+            months: tx.args.months
+          };
         }));
 
         resolve(allGold.reverse());
       });
   });
 
-export const listenForGold = async (web3, contract, dispatch, address, hexUsername, callback) => {
+export const listenForGold = async (web3, contracts, dispatch, address, hexUsername, callback) => {
   try {
     const fromBlock = await getBlockNumber(web3);
 
-    const GoldBought = contract.GoldBought([{ from: address }, { to: hexUsername }], { fromBlock, toBlock: 'latest' });
+    const GoldBought =
+      contracts.events.GoldBought([{ from: address }, { to: hexUsername }], { fromBlock, toBlock: 'latest' });
 
-    const GoldBoughtdWatcherCb = (error, event) => {
+    const GoldBoughtdWatcherCb = async (error, event) => {
       if (error) {
         callback(error);
         return;
@@ -435,8 +427,10 @@ export const listenForGold = async (web3, contract, dispatch, address, hexUserna
       const gold = event.args;
       const to = web3.toUtf8(gold.to);
       const val = web3.fromWei(gold.price.toString());
-      const from = gold.from;
       const months = gold.months;
+
+      let from = web3.toUtf8(await _getUsernameForAddress(web3, contracts.func, gold.from));
+      from = from || gold.from;
 
       callback({ to, val, from, months });
     };

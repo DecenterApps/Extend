@@ -19,8 +19,13 @@ const Onboarding = ({ onboardingUnVerified, onboardingUnVerifiedStep }) => (
         </div>
 
         <div styleName="buttons-wrapper">
-          <button styleName="skip-button" onClick={skipUnVerifiedOnboardingMessage}>SKIP</button>
-          <button styleName="next-step-button" onClick={switchToNextUnverifiedStepMessage}>NEXT</button>
+          {
+            onboardingUnVerifiedStep.slug !== 'final' &&
+              <button styleName="skip-button" onClick={skipUnVerifiedOnboardingMessage}>SKIP</button>
+          }
+          <button styleName="next-step-button" onClick={switchToNextUnverifiedStepMessage}>
+            { onboardingUnVerifiedStep.slug === 'final' ? 'FINISH' : 'NEXT' }
+          </button>
         </div>
       </div>
     }

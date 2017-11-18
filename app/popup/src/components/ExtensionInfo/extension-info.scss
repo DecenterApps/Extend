@@ -1,0 +1,25 @@
+.extension-info-wrapper {
+  padding: 25px;
+  font-size: 16px;
+  line-height: 25px;
+
+  .middle-section {
+    margin: 15px 0;
+  }
+
+  .bottom-section {
+    margin-top: 15px;
+  }
+
+  a {
+    font-weight: 600;
+    text-decoration: none;
+    color: #444444;
+    transition: 0.2s ease-in;
+    margin-left: 7px;
+
+    &:hover {
+      color: #a1A1A1;
+    }
+  }
+}

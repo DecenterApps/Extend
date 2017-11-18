@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Tooltip from 'react-tooltip-lite';
+import Tooltip from '../../../../../commonComponents/Tooltip/Tooltip';
 import connect from '../../../../../customRedux/connect';
 import createForm from '../../../../../customRedux/createForm';
 import createField from '../../../../../customRedux/createField';
@@ -15,9 +15,12 @@ const FORM_NAME = 'buyGoldForm';
 
 class buyGoldForm extends Component {
   componentWillMount() {
-    this.props.formData.setNumOfFields(1);
+    this.props.formData.setNumOfFields(2);
     this.MonthsField = createField(InputFormField, this.props.formData);
     this.GasPriceField = createField(InputFormField, this.props.formData);
+  }
+
+  componentDidMount() {
     setBuyGoldFormTxPriceMessage();
   }
 
@@ -28,7 +31,8 @@ class buyGoldForm extends Component {
 
     if (
       (newProps.form.gasPrice.value !== this.props.form.gasPrice.value) ||
-      (newProps.form.months.value !== this.props.form.months.value)
+      (newProps.form.months.value !== this.props.form.months.value) ||
+      (newProps.balance !== this.props.balance)
     ) {
       setBuyGoldFormTxPriceMessage();
     }
@@ -45,6 +49,9 @@ class buyGoldForm extends Component {
     const MonthsField = this.MonthsField;
     const GasPriceField = this.GasPriceField;
 
+    const submitDisabled = this.props.pristine || this.props.invalid || this.props.buyingGold ||
+      (!this.props.invalid && this.props.insufficientBalance);
+
     return (
       <form
         styleName="form-wrapper-2"
@@ -53,6 +60,7 @@ class buyGoldForm extends Component {
 
         <MonthsField
           name="months"
+          min="1"
           showErrorText
           showLabel
           labelText="Number of Months:"
@@ -65,6 +73,7 @@ class buyGoldForm extends Component {
 
         <GasPriceField
           name="gasPrice"
+          min="1"
           showErrorText
           showLabel
           labelText="Gas price (Gwei):"
@@ -100,7 +109,7 @@ class buyGoldForm extends Component {
         {
           this.props.buyingGoldSuccess &&
           <div styleName="submit-success">
-            Tip successfully sent to the contract.
+            Buy gold request successfully sent to the contract.
           </div>
         }
 
@@ -110,25 +119,22 @@ class buyGoldForm extends Component {
           <button
             className={formStyle['submit-button']}
             type="submit"
-            disabled={
-              this.props.pristine ||
-              this.props.invalid ||
-              this.props.buyingGold ||
-              this.props.insufficientBalance
-            }
+            disabled={submitDisabled}
           >
             <Tooltip
               content={(
-                <span>
-                  {this.props.pristine && 'Form has not been touched'}
-                  {this.props.invalid && 'Form is not valid, check errors'}
-                  {this.props.buyingGold && 'Sending transaction'}
-                </span>
+                <div>
+                  { this.props.pristine && 'Fill out missing form fields' }
+                  { !this.props.pristine && this.props.invalid && 'Form is incomplete or has errors' }
+                  { !this.props.invalid && this.props.insufficientBalance && 'Insufficient balance for transaction' }
+                </div>
               )}
-              useHover={this.props.pristine || this.props.invalid || this.props.buyingGold}
+              useHover={
+                this.props.pristine || this.props.invalid || (!this.props.invalid && this.props.insufficientBalance)
+              }
               useDefaultStyles
             >
-              {this.props.buyingGold ? 'Submitting' : 'Submit'}
+              {this.props.buyingGold ? 'Buying' : 'Buy'}
             </Tooltip>
           </button>
         }
@@ -150,6 +156,7 @@ buyGoldForm.propTypes = {
   buyingGoldSuccess: PropTypes.bool.isRequired,
   insufficientBalance: PropTypes.bool.isRequired,
   closeModal: PropTypes.func.isRequired,
+  balance: PropTypes.string.isRequired
 };
 
 const mapStateToProps = (state) => ({
@@ -159,7 +166,8 @@ const mapStateToProps = (state) => ({
   currentFormTxCost: state.forms.currentFormTxCost,
   form: state.forms[FORM_NAME],
   buyingGoldSuccess: state.user.buyingGoldSuccess,
-  insufficientBalance: state.forms.insufficientBalance
+  insufficientBalance: state.forms.insufficientBalance,
+  balance: state.account.balance
 });
 
 const ExportComponent = createForm(

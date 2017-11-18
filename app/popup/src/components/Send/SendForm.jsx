@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import connect from '../../../../customRedux/connect';
+import Tooltip from '../../../../commonComponents/Tooltip/Tooltip';
 import createForm from '../../../../customRedux/createForm';
 import createField from '../../../../customRedux/createField';
 import InputFormField from '../../../../commonComponents/InputFormField';
@@ -20,6 +21,10 @@ class SendForm extends Component {
     this.GasPriceField = createField(InputFormField, this.props.formData);
   }
 
+  componentDidMount() {
+    setSendFormTxPriceMessage();
+  }
+
   componentWillReceiveProps(newProps) {
     if (newProps.invalid) return;
     if (!this.props.form) return;
@@ -28,7 +33,8 @@ class SendForm extends Component {
     if (
       (newProps.form.gasPrice.value !== this.props.form.gasPrice.value) ||
       (newProps.form.to.value !== this.props.form.to.value) ||
-      (newProps.form.amount.value !== this.props.form.amount.value)
+      (newProps.form.amount.value !== this.props.form.amount.value) ||
+      (newProps.balance !== this.props.balance)
     ) {
       setSendFormTxPriceMessage();
     }
@@ -38,6 +44,9 @@ class SendForm extends Component {
     const AddressField = this.AddressField;
     const AmountField = this.AmountField;
     const GasPriceField = this.GasPriceField;
+
+    const submitDisabled = this.props.pristine || this.props.invalid || this.props.sending ||
+      (!this.props.invalid && this.props.insufficientBalance);
 
     return (
       <div>
@@ -71,6 +80,7 @@ class SendForm extends Component {
 
           <GasPriceField
             name="gasPrice"
+            min="1"
             showErrorText
             showLabel
             labelText="Gas price (Gwei):"
@@ -103,14 +113,33 @@ class SendForm extends Component {
             <div styleName="submit-error">Insufficient balance for transaction</div>
           }
 
+          {
+            this.props.sendingSuccess &&
+            <div styleName="submit-success margin">
+              Transaction successfully sent.
+            </div>
+          }
+
           <button
             className={formStyle['submit-button']}
             type="submit"
-            disabled={
-              this.props.pristine || this.props.invalid || this.props.sending || this.props.insufficientBalance
-            }
+            disabled={submitDisabled}
           >
-            { this.props.sending ? 'Transferring' : 'Transfer' }
+            <Tooltip
+              content={(
+                <div>
+                  { this.props.pristine && 'Fill out missing form fields' }
+                  { !this.props.pristine && this.props.invalid && 'Form is incomplete or has errors' }
+                  { !this.props.invalid && this.props.insufficientBalance && 'Insufficient balance for transaction' }
+                </div>
+              )}
+              useHover={
+                this.props.pristine || this.props.invalid || (!this.props.invalid && this.props.insufficientBalance)
+              }
+              useDefaultStyles
+            >
+              { this.props.sending ? 'Transferring' : 'Transfer' }
+            </Tooltip>
           </button>
         </form>
       </div>
@@ -128,7 +157,9 @@ SendForm.propTypes = {
   sendingError: PropTypes.string.isRequired,
   form: PropTypes.object.isRequired,
   currentFormTxCost: PropTypes.object.isRequired,
-  insufficientBalance: PropTypes.bool.isRequired
+  insufficientBalance: PropTypes.bool.isRequired,
+  balance: PropTypes.string.isRequired,
+  sendingSuccess: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = (state) => ({
@@ -137,7 +168,9 @@ const mapStateToProps = (state) => ({
   sendingError: state.account.sendingError,
   form: state.forms[FORM_NAME],
   currentFormTxCost: state.forms.currentFormTxCost,
-  insufficientBalance: state.forms.insufficientBalance
+  insufficientBalance: state.forms.insufficientBalance,
+  balance: state.account.balance,
+  sendingSuccess: state.account.sendingSuccess
 });
 
 const ExportComponent = createForm(FORM_NAME, SendForm, sendFormValidator);

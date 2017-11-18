@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import SentIcon from '../../../../commonComponents/Decorative/SentIcon';
 import ReceivedIcon from '../../../../commonComponents/Decorative/ReceivedIcon';
 import connect from '../../../../customRedux/connect';
-import { createRedditLink, getEtherScanLinkByNetwork } from '../../../../actions/utils';
+import { createRedditLink, getLinkForFrom } from '../../../../actions/utils';
 
 import './gold.scss';
 
@@ -35,7 +35,7 @@ const Gold = ({ gettingGold, gettingGoldError, golds }) => (
                   {
                     (gold.type === 'sent') &&
                     <span styleName="content-wrapper">
-                      <div styleName="item-section first">
+                      <div styleName="info">
                         <SentIcon />
                         <a
                           href={createRedditLink(gold.to)}
@@ -45,37 +45,25 @@ const Gold = ({ gettingGold, gettingGoldError, golds }) => (
                           /u/{ gold.to }
                         </a>
                       </div>
-                      <div styleName="item-section">
-                        <span>Months:</span>
-                        <span>{ gold.months }</span>
-                      </div>
-                      <div styleName="item-section">
-                        <span>Amount: </span>
-                        <span>{ gold.val } ETH</span>
-                      </div>
+
+                      <div styleName="val-section">{ gold.months } { gold.months === '1' ? 'Month' : 'Months' }</div>
                     </span>
                   }
                   {
                     (gold.type === 'received') &&
                     <span styleName="content-wrapper">
-                      <div styleName="item-section first">
+                      <div styleName="info">
                         <ReceivedIcon />
                         <a
-                          href={getEtherScanLinkByNetwork('kovan', gold.from)}
+                          href={getLinkForFrom(gold.to)}
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          { gold.from }
+                          /u/{ gold.from }
                         </a>
                       </div>
-                      <div styleName="item-section">
-                        <span>Months:</span>
-                        <span>{ gold.months }</span>
-                      </div>
-                      <div styleName="item-section">
-                        <span>Amount: </span>
-                        <span>{ gold.val } ETH</span>
-                      </div>
+
+                      <div styleName="val-section">{ gold.months } { gold.months === '1' ? 'Month' : 'Months' }</div>
                     </span>
                   }
                 </div>
@@ -85,8 +73,8 @@ const Gold = ({ gettingGold, gettingGoldError, golds }) => (
             {
               golds.length === 0 &&
               <div>
-                You did not send or receive any gold <br />
-                (It might take a minute or two until new transactions are displayed)
+                <div styleName="info-line">You did not send or receive any gold yet.</div>
+                It might take a minute or two until new transactions are displayed
               </div>
             }
           </div>

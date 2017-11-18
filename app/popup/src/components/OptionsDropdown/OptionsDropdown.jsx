@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import connect from '../../../../customRedux/connect';
 import OutsideAlerter from '../../../../commonComponents/OutsideAlerter';
 import { toggleDropdownMessage } from '../../../../messages/dropdownActionMessages';
-import { clearPasswordMessage } from '../../../../messages/accountActionMessages';
+import { clearPasswordMessage } from '../../../../messages/keyStoreActionMessages';
+import { changeViewMessage } from '../../../../messages/permanentActionsMessages';
 import DotsMenu from '../DotsMenu/DotsMenu';
 
 import './options-dropdown.scss';
@@ -23,6 +24,9 @@ const OptionsDropdown = ({ optionsDropdownItems, dropdownVisible }) => (
               optionsDropdownItems.map((item) => {
                 let itemOnClick = null;
                 if (item.id === 'lock_acc') { itemOnClick = clearPasswordMessage; }
+                if (item.id === 'show_seed') { itemOnClick = () => { changeViewMessage('showSeed'); }; }
+                if (item.id === 'show_terms') { itemOnClick = () => { changeViewMessage('showPrivacy'); }; }
+                if (item.id === 'ext_info') { itemOnClick = () => { changeViewMessage('showInfo'); }; }
 
                 return (
                   <span

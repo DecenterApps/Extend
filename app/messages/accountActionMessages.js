@@ -4,22 +4,6 @@ const pm = (actionParam) => {
   chrome.runtime.sendMessage(action);
 };
 
-export const createWalletMessage = (fields) => {
-  pm({ action: 'createWallet', payload: fields.password.value });
-};
-
-export const copiedSeedMessage = () => {
-  pm({ action: 'copiedSeed' });
-};
-
-export const checkIfPasswordValidMessage = (fields) => {
-  pm({ action: 'checkIfPasswordValid', payload: fields.password.value });
-};
-
-export const clearPasswordMessage = () => {
-  pm({ action: 'clearPassword' });
-};
-
 export const sendMessage = () => {
   pm({ action: 'send' });
 };
@@ -28,6 +12,7 @@ export const refundMessage = () => {
   pm({ action: 'refund' });
 };
 
-export const clearRefundValuesMessage = () => {
-  pm({ action: 'clearRefundValues' });
-};
+export const clearRefundValuesMessage = () => { pm({ action: 'clearRefundValues' }); };
+export const clearSendValuesMessage = () => { pm({ action: 'clearSendValues' }); };
+
+export const setRefundFormValuesMessage = (payload) => { pm({ action: 'setRefundFormValues', payload }); };

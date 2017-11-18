@@ -1,14 +1,14 @@
+import lightwallet from 'eth-lightwallet';
 import { REGISTER_USER, REGISTER_USER_ERROR } from '../constants/actionTypes';
 import { CLIENT_ID } from '../constants/config.local';
-import lightwallet from '../modules/eth-lightwallet/lightwallet';
 import { getParameterByName, encryptTokenOreclize } from '../actions/utils';
 import { sendTransaction, getOraclizePrice } from '../modules/ethereumService';
-import { listenForVerifiedUser } from './userActions';
+import { listenForVerifiedUser, clearRegisteringError } from './userActions';
 
 const keyStore = lightwallet.keystore;
 
 /**
- * Opens Reddit oauth window and receives user access_token. Access_token and
+ * Opens reddit oauth window and receives user access_token. Access_token and
  * user address are sent to the contract
  *
  * @param {Array} contracts
@@ -18,10 +18,10 @@ const keyStore = lightwallet.keystore;
  */
 export const handleUserAuthentication = (contracts, web3, getState, dispatch) => {
   const redirectUri = chrome.identity.getRedirectURL('oauth2');
-  const account = getState().account;
-  const ks = keyStore.deserialize(account.keyStore);
-  const address = account.address;
-  const password = account.password;
+  const keyStoreState = getState().keyStore;
+  const ks = keyStore.deserialize(keyStoreState.keyStore);
+  const address = keyStoreState.address;
+  const password = keyStoreState.password;
 
   chrome.identity.launchWebAuthFlow({
     url: `https://www.reddit.com/api/v1/authorize?client_id=${CLIENT_ID}&response_type=token&state=asdf&redirect_uri=${redirectUri}&scope=identity`, // eslint-disable-line
@@ -56,6 +56,7 @@ export const handleUserAuthentication = (contracts, web3, getState, dispatch) =>
 
       await sendTransaction(web3, contracMethod, ks, address, password, params, value, gasPrice);
 
+      await clearRegisteringError(dispatch);
       await dispatch({
         type: REGISTER_USER,
         payload: { username: me.name }

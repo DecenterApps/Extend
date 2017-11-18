@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Tooltip from 'react-tooltip-lite';
+import Tooltip from '../../../../commonComponents/Tooltip/Tooltip';
 import createForm from '../../../../customRedux/createForm';
 import createField from '../../../../customRedux/createField';
 import InputFormField from '../../../../commonComponents/InputFormField';
 import generateNewPasswordFormValidator from './generateNewPasswordFormValidator';
-import { createWalletMessage } from '../../../../messages/accountActionMessages';
+import { createWalletMessage } from '../../../../messages/keyStoreActionMessages';
 
 import formStyle from '../../../../commonComponents/forms.scss';
 
@@ -61,10 +61,10 @@ class GenerateNewPasswordForm extends Component {
         >
           <Tooltip
             content={(
-              <span>
-                { this.props.pristine && 'Form has not been touched' }
-                { this.props.invalid && 'Form is not valid, check errors' }
-              </span>
+              <div>
+                { this.props.pristine && 'Fill out missing form fields' }
+                { !this.props.pristine && this.props.invalid && 'Form is incomplete or has errors' }
+              </div>
             )}
             useHover={this.props.pristine || this.props.invalid}
             useDefaultStyles

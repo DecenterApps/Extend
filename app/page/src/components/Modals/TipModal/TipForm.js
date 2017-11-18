@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import connect from '../../../../../customRedux/connect';
 import createForm from '../../../../../customRedux/createForm';
+import Tooltip from '../../../../../commonComponents/Tooltip/Tooltip';
 import createField from '../../../../../customRedux/createField';
 import InputFormField from '../../../../../commonComponents/InputFormField';
 import tipFormValidator from './tipFormValidator';
@@ -19,6 +20,10 @@ class TipForm extends Component {
     this.GasPriceField = createField(InputFormField, this.props.formData);
   }
 
+  componentDidMount() {
+    setTipFormTxPriceMessage();
+  }
+
   componentWillReceiveProps(newProps) {
     if (newProps.invalid) return;
     if (!this.props.form) return;
@@ -26,7 +31,8 @@ class TipForm extends Component {
 
     if (
       (newProps.form.gasPrice.value !== this.props.form.gasPrice.value) ||
-      (newProps.form.amount.value !== this.props.form.amount.value)
+      (newProps.form.amount.value !== this.props.form.amount.value) ||
+      (newProps.balance !== this.props.balance)
     ) {
       setTipFormTxPriceMessage();
     }
@@ -43,11 +49,23 @@ class TipForm extends Component {
     const AmountField = this.AmountField;
     const GasPriceField = this.GasPriceField;
 
+    const submitDisabled = this.props.pristine || this.props.invalid ||
+      this.props.sendingTip || (!this.props.invalid && this.props.insufficientBalance);
+
     return (
       <form
         styleName="form-wrapper-2"
         onSubmit={(e) => { this.props.handleSubmit(e, tipMessage); }}
       >
+
+        {
+          (this.props.isVerified === false) &&
+          <div styleName="info-wrapper">
+            The user you are trying to tip is not using ΞXTΞND yet. However, you can still send him a tip which he
+            will then be able to claim after verifying his username. In the meantime, our smart contract will store
+            the funds securely.
+          </div>
+        }
 
         <AmountField
           name="amount"
@@ -63,6 +81,7 @@ class TipForm extends Component {
 
         <GasPriceField
           name="gasPrice"
+          min="1"
           showErrorText
           showLabel
           labelText="Gas price (Gwei):"
@@ -107,12 +126,23 @@ class TipForm extends Component {
           <button
             className={formStyle['submit-button']}
             type="submit"
-            disabled={
-              this.props.pristine || this.props.invalid ||
-              this.props.sendingTip || this.props.insufficientBalance
-            }
+            disabled={submitDisabled}
           >
-            { this.props.sendingTip ? 'Sending' : 'Send' }
+            <Tooltip
+              content={(
+                <div>
+                  { this.props.pristine && 'Fill out missing form fields' }
+                  { !this.props.pristine && this.props.invalid && 'Form is incomplete or has errors' }
+                  { !this.props.invalid && this.props.insufficientBalance && 'Insufficient balance for transaction' }
+                </div>
+              )}
+              useHover={
+                this.props.pristine || this.props.invalid || (!this.props.invalid && this.props.insufficientBalance)
+              }
+              useDefaultStyles
+            >
+              { this.props.sendingTip ? 'Sending' : 'Send' }
+            </Tooltip>
           </button>
         }
       </form>
@@ -132,7 +162,9 @@ TipForm.propTypes = {
   currentFormTxCost: PropTypes.object.isRequired,
   sendingTipSuccess: PropTypes.bool.isRequired,
   insufficientBalance: PropTypes.bool.isRequired,
+  isVerified: PropTypes.bool.isRequired,
   closeModal: PropTypes.func.isRequired,
+  balance: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -142,7 +174,9 @@ const mapStateToProps = (state) => ({
   form: state.forms[FORM_NAME],
   currentFormTxCost: state.forms.currentFormTxCost,
   sendingTipSuccess: state.user.sendingTipSuccess,
-  insufficientBalance: state.forms.insufficientBalance
+  insufficientBalance: state.forms.insufficientBalance,
+  balance: state.account.balance,
+  isVerified: state.modals.modalProps.isVerified
 });
 
 const ExportComponent = createForm(FORM_NAME, TipForm, tipFormValidator);

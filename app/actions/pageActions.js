@@ -1,4 +1,4 @@
-import lightwallet from '../modules/eth-lightwallet/lightwallet';
+import lightwallet from 'eth-lightwallet';
 import { _checkUsernameVerified, sendTransaction } from '../modules/ethereumService';
 import {
   SEND_TIP, SEND_TIP_ERROR, SEND_TIP_SUCCESS, CLEAR_TIP_PENDING,
@@ -24,9 +24,9 @@ export const tip = async (web3, contract, dispatch, getState) => {
   const amount = web3.toWei(state.forms.tipForm.amount.value);
   const gasPrice = web3.toWei(state.forms.tipForm.gasPrice.value, 'gwei');
   const author = state.modals.modalProps.author;
-  const ks = keyStore.deserialize(state.account.keyStore);
-  const address = state.account.address;
-  const password = state.account.password;
+  const ks = keyStore.deserialize(state.keyStore.keyStore);
+  const address = state.keyStore.address;
+  const password = state.keyStore.password;
   const contractMethod = contract.tipUser;
 
   try {
@@ -45,16 +45,17 @@ export const buyGold = async (web3, contract, dispatch, getState) => {
   const gasPrice = web3.toWei(state.forms.buyGoldForm.gasPrice.value, 'gwei');
   const months = state.forms.buyGoldForm.months.value.toString();
   const author = state.modals.modalProps.author;
-  const ks = keyStore.deserialize(state.account.keyStore);
-  const address = state.account.address;
-  const password = state.account.password;
+  const id = state.modals.modalProps.id;
+  const ks = keyStore.deserialize(state.keyStore.keyStore);
+  const address = state.keyStore.address;
+  const password = state.keyStore.password;
   const contractMethod = contract.buyGold;
 
   dispatch({ type: BUY_GOLD });
 
   try {
     const res = await fetch(
-      `https://reddapp.decenter.com/gold.php?months=${months}&toUsername=${author}&fromAddress=${address}`
+      `https://reddapp.decenter.com/gold.php?months=${months}&toUsername=${author}&fromAddress=${address}&id=${id}`
     );
     const data = await res.json();
 
@@ -64,6 +65,7 @@ export const buyGold = async (web3, contract, dispatch, getState) => {
       web3.toHex(author), // bytes32 _to
       months, // string _months
       data.priceInUsd.toString(), // string _priceUsd
+      id, // string _commentId
       data.nonce.toString(), // string _nonce
       data.signature, // string _signature
     ];

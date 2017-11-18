@@ -4,6 +4,14 @@
 .form-wrapper-2 {
   width: 100%;
 
+  .info-wrapper {
+    font-size: 12px;
+    margin-bottom: 25px;
+    line-height: 25px;
+    border-bottom: 1px solid #e6e6e6;
+    padding-bottom: 10px;
+  }
+
   .form-item-wrapper {
     position: relative;
     display: flex;
@@ -80,6 +88,10 @@
     color: $green;
     text-align: center;
     font-weight: 600;
+
+    &.margin {
+      margin-bottom: 20px;
+    }
   }
 
   .submit-button {

@@ -143,7 +143,10 @@ chrome.runtime.onConnect.addListener((_port) => {
     const state = getState();
 
     permanentActions.checkIfSeenDashboard(dispatch, getState);
-    if (state.permanent.view === 'refund') accountActions.clearRefundValues(dispatch);
+    if (state.permanent.view === 'refund') {
+      accountActions.clearRefundValues(dispatch);
+      permanentActions.changeView(dispatch, getState, { viewName: 'dashboard' });
+    }
     if (state.permanent.view === 'send') accountActions.clearSendValues(dispatch);
 
     port = null;

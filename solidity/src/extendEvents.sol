@@ -12,7 +12,7 @@ contract ExtendEvents {
     event WithdrawSuccessful(bytes32 username);
     event CheckAddressVerified(address userAddress);
     event RefundSuccessful(address from, bytes32 username);
-    event GoldBought(uint price, address from, bytes32 to, string months, string priceUsd, string nonce, string signature);
+    event GoldBought(uint price, address from, bytes32 to, string months, string priceUsd, string commentId, string nonce, string signature);
 
     mapping(address => bool) owners;
 
@@ -38,10 +38,11 @@ contract ExtendEvents {
                         bytes32 _to, 
                         string _months,
                         string _priceUsd, 
+                        string _commentId,
                         string _nonce, 
                         string _signature) onlyOwners {
                             
-        GoldBought(_price, _from, _to, _months, _priceUsd, _nonce, _signature);
+        GoldBought(_price, _from, _to, _months, _priceUsd, _commentId, _nonce, _signature);
     }
 
     function createdUser(bytes32 _username) onlyOwners {

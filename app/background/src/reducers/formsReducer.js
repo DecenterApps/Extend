@@ -1,20 +1,28 @@
 import {
-  ADD_FORM, UPDATE_FIELD_META, UPDATE_FIELD_ERROR, SET_TX_COST
+  ADD_FORM, UPDATE_FIELD_META, UPDATE_FIELD_ERROR, SET_TX_COST, UPDATE_FORM
 } from '../../../constants/actionTypes';
 
 const reducerName = 'forms';
 
-const INITIAL_STATE = {
-  currentFormTxCost: {},
-  insufficientBalance: false
-};
+const INITIAL_STATE = {};
 
 export const reducer = (state, action) => {
   const payload = action.payload;
 
   switch (action.type) {
     case ADD_FORM:
-      return { ...state, [payload.name]: payload.state };
+      return {
+        ...state,
+        [payload]: {
+          currentFormTxCost: {
+            eth: '',
+            usd: '',
+          },
+          insufficientBalance: true
+        }
+      };
+    case UPDATE_FORM:
+      return { ...state, [payload.name]: { ...state[payload.name], ...payload.state } };
 
     case UPDATE_FIELD_META: {
       let currentForm = state[payload.formName];
@@ -35,8 +43,11 @@ export const reducer = (state, action) => {
     case SET_TX_COST:
       return {
         ...state,
-        currentFormTxCost: payload.currentFormTxCost,
-        insufficientBalance: payload.insufficientBalance
+        [payload.formName]: {
+          ...state[payload.formName],
+          currentFormTxCost: payload.currentFormTxCost,
+          insufficientBalance: payload.insufficientBalance
+        }
       };
 
     default:

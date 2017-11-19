@@ -26,20 +26,25 @@ class RefundForm extends Component {
 
   componentWillReceiveProps(newProps) {
     if (newProps.invalid) return;
-    if (!this.props.form) return;
-    if (Object.keys(this.props.form).length === 0) return;
+
+    const currentForm = this.props.forms[FORM_NAME];
+    const newForm = newProps.forms[FORM_NAME];
+
     if (
-      (newProps.form.gasPrice.value !== this.props.form.gasPrice.value) ||
-      (newProps.balance !== this.props.balance)) {
+      (Object.keys(newForm).length > 2 && Object.keys(currentForm).length > 2) &&
+      ((newForm.gasPrice.value !== currentForm.gasPrice.value) ||
+        (newProps.balance !== this.props.balance))) {
       setRefundFormTxPriceMessage();
     }
   }
 
   render() {
+    const { currentFormTxCost, insufficientBalance } = this.props.forms[FORM_NAME];
+
     const GasPriceField = this.GasPriceField;
 
     const submitDisabled = this.props.pristine || this.props.invalid || this.props.refunding ||
-      !this.props.refundAvailable || (!this.props.invalid && this.props.insufficientBalance);
+      !this.props.refundAvailable || (!this.props.invalid && insufficientBalance);
 
     return (
       <div>
@@ -78,8 +83,8 @@ class RefundForm extends Component {
             <div styleName="tx-info">
               <span>Max transaction cost:</span>
               <div>
-                <span>{ this.props.currentFormTxCost.eth } ETH</span>
-                <span styleName="second-price">{ this.props.currentFormTxCost.usd } USD</span>
+                <span>{ currentFormTxCost.eth } ETH</span>
+                <span styleName="second-price">{ currentFormTxCost.usd } USD</span>
               </div>
             </div>
           }
@@ -94,7 +99,7 @@ class RefundForm extends Component {
           }
           {
             !this.props.invalid &&
-            this.props.insufficientBalance &&
+            insufficientBalance &&
             <div styleName="submit-error">Insufficient balance for transaction</div>
           }
 
@@ -115,11 +120,11 @@ class RefundForm extends Component {
                 <div>
                   { this.props.pristine && 'Fill out missing form fields' }
                   { !this.props.pristine && this.props.invalid && 'Form is incomplete or has errors' }
-                  { !this.props.invalid && this.props.insufficientBalance && 'Insufficient balance for transaction' }
+                  { !this.props.invalid && insufficientBalance && 'Insufficient balance for transaction' }
                 </div>
               )}
               useHover={
-                this.props.pristine || this.props.invalid || (!this.props.invalid && this.props.insufficientBalance)
+                this.props.pristine || this.props.invalid || (!this.props.invalid && insufficientBalance)
               }
               useDefaultStyles
             >
@@ -142,10 +147,8 @@ RefundForm.propTypes = {
   refundingError: PropTypes.string.isRequired,
   refundingSuccess: PropTypes.bool.isRequired,
   refundAvailable: PropTypes.bool.isRequired,
-  form: PropTypes.object.isRequired,
-  currentFormTxCost: PropTypes.object.isRequired,
+  forms: PropTypes.object.isRequired,
   refundTipUsername: PropTypes.string.isRequired,
-  insufficientBalance: PropTypes.bool.isRequired,
   balance: PropTypes.string.isRequired
 };
 
@@ -155,11 +158,8 @@ const mapStateToProps = (state) => ({
   refundingError: state.account.refundingError,
   refundingSuccess: state.account.refundingSuccess,
   refundAvailable: state.account.refundAvailable,
-  form: state.forms[FORM_NAME],
-  currentFormTxCost: state.forms.currentFormTxCost,
   refundTipUsername: state.account.refundTipUsername,
   balance: state.account.balance,
-  insufficientBalance: state.forms.insufficientBalance,
 });
 
 const ExportComponent = createForm(FORM_NAME, RefundForm, refundFormValidator);

@@ -3,6 +3,7 @@ import * as formsActions from '../actions/formsActions';
 const formsActionsHandler = (web3, engine, contracts, getState, dispatch, funcName, payload) => {
   switch (funcName) {
     case 'addForm':
+    case 'updateForm':
     case 'updateFieldMeta':
     case 'updateFieldError':
       return formsActions[funcName](dispatch, payload);

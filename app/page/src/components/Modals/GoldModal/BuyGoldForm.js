@@ -26,14 +26,15 @@ class buyGoldForm extends Component {
 
   componentWillReceiveProps(newProps) {
     if (newProps.invalid) return;
-    if (!this.props.form) return;
-    if (Object.keys(this.props.form).length === 0) return;
+
+    const currentForm = this.props.forms[FORM_NAME];
+    const newForm = newProps.forms[FORM_NAME];
 
     if (
-      (newProps.form.gasPrice.value !== this.props.form.gasPrice.value) ||
-      (newProps.form.months.value !== this.props.form.months.value) ||
-      (newProps.balance !== this.props.balance)
-    ) {
+      (Object.keys(newForm).length > 2 && Object.keys(currentForm).length > 2) &&
+      ((newForm.gasPrice.value !== currentForm.gasPrice.value) ||
+        (newForm.months.value !== currentForm.months.value) ||
+        (newProps.balance !== this.props.balance))) {
       setBuyGoldFormTxPriceMessage();
     }
 
@@ -46,11 +47,13 @@ class buyGoldForm extends Component {
   }
 
   render() {
+    const { currentFormTxCost, insufficientBalance } = this.props.forms[FORM_NAME];
+
     const MonthsField = this.MonthsField;
     const GasPriceField = this.GasPriceField;
 
     const submitDisabled = this.props.pristine || this.props.invalid || this.props.buyingGold ||
-      (!this.props.invalid && this.props.insufficientBalance);
+      (!this.props.invalid && insufficientBalance);
 
     return (
       <form
@@ -89,8 +92,8 @@ class buyGoldForm extends Component {
           <div styleName="tx-info">
             <span>Max transaction cost:</span>
             <div>
-              <span>{ this.props.currentFormTxCost.eth } ETH</span>
-              <span styleName="second-price">{ this.props.currentFormTxCost.usd } USD</span>
+              <span>{ currentFormTxCost.eth } ETH</span>
+              <span styleName="second-price">{ currentFormTxCost.usd } USD</span>
             </div>
           </div>
         }
@@ -102,7 +105,7 @@ class buyGoldForm extends Component {
 
         {
           !this.props.invalid &&
-          this.props.insufficientBalance &&
+          insufficientBalance &&
           <div styleName="submit-error">Insufficient balance for transaction</div>
         }
 
@@ -126,11 +129,11 @@ class buyGoldForm extends Component {
                 <div>
                   { this.props.pristine && 'Fill out missing form fields' }
                   { !this.props.pristine && this.props.invalid && 'Form is incomplete or has errors' }
-                  { !this.props.invalid && this.props.insufficientBalance && 'Insufficient balance for transaction' }
+                  { !this.props.invalid && insufficientBalance && 'Insufficient balance for transaction' }
                 </div>
               )}
               useHover={
-                this.props.pristine || this.props.invalid || (!this.props.invalid && this.props.insufficientBalance)
+                this.props.pristine || this.props.invalid || (!this.props.invalid && insufficientBalance)
               }
               useDefaultStyles
             >
@@ -151,10 +154,8 @@ buyGoldForm.propTypes = {
   gasPrice: PropTypes.number.isRequired,
   buyingGold: PropTypes.bool.isRequired,
   buyingGoldError: PropTypes.string.isRequired,
-  currentFormTxCost: PropTypes.object.isRequired,
-  form: PropTypes.object.isRequired,
+  forms: PropTypes.object.isRequired,
   buyingGoldSuccess: PropTypes.bool.isRequired,
-  insufficientBalance: PropTypes.bool.isRequired,
   closeModal: PropTypes.func.isRequired,
   balance: PropTypes.string.isRequired
 };
@@ -163,10 +164,7 @@ const mapStateToProps = (state) => ({
   gasPrice: state.account.gasPrice,
   buyingGold: state.user.buyingGold,
   buyingGoldError: state.user.buyingGoldError,
-  currentFormTxCost: state.forms.currentFormTxCost,
-  form: state.forms[FORM_NAME],
   buyingGoldSuccess: state.user.buyingGoldSuccess,
-  insufficientBalance: state.forms.insufficientBalance,
   balance: state.account.balance
 });
 

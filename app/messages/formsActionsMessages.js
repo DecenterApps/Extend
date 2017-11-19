@@ -4,9 +4,8 @@ const pm = (actionParam) => {
   chrome.runtime.sendMessage(action);
 };
 
-export const addFormMessage = (payload) => {
-  pm({ action: 'addForm', payload });
-};
+export const addFormMessage = (payload) => { pm({ action: 'addForm', payload }); };
+export const updateFormMessage = (payload) => { pm({ action: 'updateForm', payload }); };
 
 export const updateFieldMetaMessage = (payload) => {
   pm({ action: 'updateFieldMeta', payload });

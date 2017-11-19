@@ -26,14 +26,15 @@ class TipForm extends Component {
 
   componentWillReceiveProps(newProps) {
     if (newProps.invalid) return;
-    if (!this.props.form) return;
-    if (Object.keys(this.props.form).length === 0) return;
+
+    const currentForm = this.props.forms[FORM_NAME];
+    const newForm = newProps.forms[FORM_NAME];
 
     if (
-      (newProps.form.gasPrice.value !== this.props.form.gasPrice.value) ||
-      (newProps.form.amount.value !== this.props.form.amount.value) ||
-      (newProps.balance !== this.props.balance)
-    ) {
+      (Object.keys(newForm).length > 2 && Object.keys(currentForm).length > 2) &&
+      ((newForm.gasPrice.value !== currentForm.gasPrice.value) ||
+        (newForm.amount.value !== currentForm.amount.value) ||
+        (newProps.balance !== this.props.balance))) {
       setTipFormTxPriceMessage();
     }
 
@@ -46,11 +47,13 @@ class TipForm extends Component {
   }
 
   render() {
+    const { currentFormTxCost, insufficientBalance } = this.props.forms[FORM_NAME];
+
     const AmountField = this.AmountField;
     const GasPriceField = this.GasPriceField;
 
     const submitDisabled = this.props.pristine || this.props.invalid ||
-      this.props.sendingTip || (!this.props.invalid && this.props.insufficientBalance);
+      this.props.sendingTip || (!this.props.invalid && insufficientBalance);
 
     return (
       <form
@@ -97,8 +100,8 @@ class TipForm extends Component {
           <div styleName="tx-info">
             <span>Max transaction cost:</span>
             <div>
-              <span>{ this.props.currentFormTxCost.eth } ETH</span>
-              <span styleName="second-price">{ this.props.currentFormTxCost.usd } USD</span>
+              <span>{ currentFormTxCost.eth } ETH</span>
+              <span styleName="second-price">{ currentFormTxCost.usd } USD</span>
             </div>
           </div>
         }
@@ -110,7 +113,7 @@ class TipForm extends Component {
 
         {
           !this.props.invalid &&
-          this.props.insufficientBalance &&
+          insufficientBalance &&
           <div styleName="submit-error">Insufficient balance for transaction</div>
         }
 
@@ -133,11 +136,11 @@ class TipForm extends Component {
                 <div>
                   { this.props.pristine && 'Fill out missing form fields' }
                   { !this.props.pristine && this.props.invalid && 'Form is incomplete or has errors' }
-                  { !this.props.invalid && this.props.insufficientBalance && 'Insufficient balance for transaction' }
+                  { !this.props.invalid && insufficientBalance && 'Insufficient balance for transaction' }
                 </div>
               )}
               useHover={
-                this.props.pristine || this.props.invalid || (!this.props.invalid && this.props.insufficientBalance)
+                this.props.pristine || this.props.invalid || (!this.props.invalid && insufficientBalance)
               }
               useDefaultStyles
             >
@@ -158,10 +161,8 @@ TipForm.propTypes = {
   sendingTip: PropTypes.bool.isRequired,
   sendingTipError: PropTypes.string.isRequired,
   gasPrice: PropTypes.number.isRequired,
-  form: PropTypes.object.isRequired,
-  currentFormTxCost: PropTypes.object.isRequired,
+  forms: PropTypes.object.isRequired,
   sendingTipSuccess: PropTypes.bool.isRequired,
-  insufficientBalance: PropTypes.bool.isRequired,
   isVerified: PropTypes.bool.isRequired,
   closeModal: PropTypes.func.isRequired,
   balance: PropTypes.string.isRequired,
@@ -171,10 +172,7 @@ const mapStateToProps = (state) => ({
   gasPrice: state.account.gasPrice,
   sendingTipError: state.user.sendingTipError,
   sendingTip: state.user.sendingTip,
-  form: state.forms[FORM_NAME],
-  currentFormTxCost: state.forms.currentFormTxCost,
   sendingTipSuccess: state.user.sendingTipSuccess,
-  insufficientBalance: state.forms.insufficientBalance,
   balance: state.account.balance,
   isVerified: state.modals.modalProps.isVerified
 });

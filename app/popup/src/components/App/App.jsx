@@ -26,6 +26,8 @@ const App = ({ acceptedNotice, generatedVault, copiedSeed, seed, password, view,
 
     { !networkActive && <NetworkUnavailable /> }
 
+    { generatedVault && acceptedNotice && !password && <TypeInPassword /> }
+
     {
       networkActive &&
       <div>
@@ -35,10 +37,6 @@ const App = ({ acceptedNotice, generatedVault, copiedSeed, seed, password, view,
         { (view === 'copySeed') && generatedVault && !copiedSeed && <CopySeed copiedSeed={copiedSeed} seed={seed} /> }
         { (view === 'showSeed') && generatedVault && copiedSeed && <CopySeed copiedSeed={copiedSeed} seed={seed} /> }
         { (view === 'dashboard') && generatedVault && acceptedNotice && copiedSeed && password && <Dashboard /> }
-        {
-          (view === 'unlockAccount') && generatedVault && acceptedNotice && copiedSeed && !password &&
-          <TypeInPassword />
-        }
         { (view === 'send') && <Send /> }
         { (view === 'refund') && <Refund /> }
         { (view === 'showInfo') && <ExtensionInfo /> }

@@ -9,7 +9,7 @@
 
 ### Development build
 
- - Build local config for development file with `gulp init-dev`
+ - Build local config file for development  with `gulp init-dev`
  - Build the unoptimized project to the `./build/` folder with `gulp`.
  - Optionally, to rebuild on file changes, run `gulp watch`.
 

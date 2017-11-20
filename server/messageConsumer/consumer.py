@@ -8,7 +8,7 @@ from web3 import Web3, HTTPProvider, __version__
 
 config = json.load(open('../config.json', 'r'))
 
-web3 = Web3(HTTPProvider('http://kovan.decenter.com'))
+web3 = Web3(HTTPProvider('http://mainnet.decenter.com'))
 abi = config['func']['abi']
 contract = web3.eth.contract(abi, config['func']['contractAddress'])
 

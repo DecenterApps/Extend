@@ -26,7 +26,7 @@ const getBlockNumber = (web3) =>
   });
 
 const getWeb3 = async () => {
-    let web3 = new Web3(new Web3.providers.HttpProvider('http://kovan.decenter.com'));
+    let web3 = new Web3(new Web3.providers.HttpProvider('http://mainnet.decenter.com'));
 
     const contract = web3.eth.contract(config.events.abi).at(config.events.contractAddress);
 

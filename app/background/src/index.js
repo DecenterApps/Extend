@@ -41,7 +41,7 @@ const startApp = () =>
 
       resolve();
     } catch (err) {
-      await userActions.networkUnavailable(dispatch, getState);
+      await userActions.networkUnavailable(dispatch);
       reject(err);
     }
 

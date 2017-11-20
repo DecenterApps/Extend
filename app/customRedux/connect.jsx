@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { getState, subscribe, unsubscribe } from './store';
 
 const connect = (WrappedComponent, mapStateToProps) => (
   class Connect extends Component {

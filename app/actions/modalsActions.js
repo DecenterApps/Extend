@@ -1,6 +1,14 @@
 import { TOGGLE_MODAL } from '../constants/actionTypes';
 import { clearTipPending, clearGoldPending } from '../actions/pageActions';
 
+/**
+ * Dispatches action to toggle modal. Dispatches on close modal function with a delay if they are defined
+ * for the modal type
+ *
+ * @param {Function} dispatch
+ * @param {Function} getState
+ * @param {Boolean} payload - to close or to open
+ */
 export const toggleModal = (dispatch, getState, payload) => {
   const { modalType, modalProps, action } = payload;
 
@@ -16,7 +24,7 @@ export const toggleModal = (dispatch, getState, payload) => {
           clearGoldPending(dispatch);
           break;
         default:
-          console.log('Modal does not have form or clear function not defined');
+          break;
       }
     }, 350);
   }

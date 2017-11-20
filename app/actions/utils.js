@@ -2,42 +2,11 @@ let cryptoSha3 = require('crypto-js/sha3');
 
 const sha3 = (value) => (cryptoSha3(value, { outputLength: 256 }).toString());
 
-const swap = (arr, i, j) => {
-  let temp = arr[i];
-  arr[i] = arr[j]; // eslint-disable-line
-  arr[j] = temp; // eslint-disable-line
-};
-
-const partition = (arr, pivot, left, right) => {
-  let pivotValue = arr[pivot];
-  let partitionIndex = left;
-
-  for (let i = left; i < right; i++) {
-    if (arr[i] < pivotValue) {
-      swap(arr, i, partitionIndex);
-      partitionIndex++;
-    }
-  }
-  swap(arr, right, partitionIndex);
-  return partitionIndex;
-};
-
-
-export const quickSort = (arr, left, right) => {
-  let pivot;
-  let partitionIndex;
-
-  if (left < right) {
-    pivot = right;
-    partitionIndex = partition(arr, pivot, left, right);
-
-    quickSort(arr, left, partitionIndex - 1);
-    quickSort(arr, partitionIndex + 1, right);
-  }
-
-  return arr;
-};
-
+/**
+ * Gets the price of ETH in USD from the server
+ *
+ * @return {Promise}
+ */
 export const getValOfEthInUsd = () =>
   new Promise(async (resolve) => {
     const res = await fetch('https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD&e=Coinbase');
@@ -59,7 +28,6 @@ const isValidChecksumAddress = (addressParam) => {
   let addressHash = sha3(address.toLowerCase());
 
   for (let i = 0; i < 40; i++) {
-    // The nth letter should be uppercase if the nth digit of casemap is 1
     if ((parseInt(addressHash[i], 16) > 7 && address[i].toUpperCase() !== address[i]) ||
       (parseInt(addressHash[i], 16) <= 7 && address[i].toLowerCase() !== address[i])) {
       return false;
@@ -108,37 +76,26 @@ export const isJson = (str) => {
 // TODO replace this with main when live
 export const getEtherScanLink = (address) => (`https://kovan.etherscan.io/address/${address}`);
 
+/**
+ * Return a link to the reddit based on the username given
+ *
+ * @param {String} user
+ * @return {String}
+ */
 export const createRedditLink = ((user) => (`https://www.reddit.com/user/${user}`));
 
+/**
+ * Returns a reddit link if receiver is an username (verified) or returns etherscan link if it is an address
+ *
+ * @param {String} from
+ * @return {String}
+ */
 export const getLinkForFrom = (from) => {
   if (isValidAddress(from)) {
     return getEtherScanLink(from);
   }
 
   return createRedditLink(from);
-};
-
-/**
- * Formats small numbers example: 0.0000000001 number to 0.0000000001 string instead of the
- * usual JS conversion to 1e-9
- *
- * @param {Number} incomingOutput
- * @return {String}
- */
-export const formatLargeNumber = (incomingOutput) => {
-  if (!incomingOutput) return incomingOutput.toString();
-
-  let output = incomingOutput;
-  let n = Math.log(output) / Math.LN10;
-  let decimalPoints = 0;
-  let m = 10 ** decimalPoints;
-
-  n = (n >= 0 ? Math.ceil(n * m) : Math.floor(n * m)) / m;
-
-  let x = 0 - Math.ceil(n);
-  if (x < 0) x = 0;
-
-  return output.toFixed(x);
 };
 
 /**

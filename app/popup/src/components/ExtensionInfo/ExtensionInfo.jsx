@@ -18,7 +18,7 @@ const ExtensionInfo = () => (
 
     <div styleName="bottom-section">
       If you notice any bugs, feel free submit an issue on our
-      <a href="https://github.com/DecenterApps" target="_blank" rel="noopener noreferrer">Github repo</a>.
+      <a href="https://github.com/DecenterApps/Extend" target="_blank" rel="noopener noreferrer">Github repo</a>.
       If you want to get in touch for some other reason, you can drop us an email at extend@decenter.com
     </div>
   </div>

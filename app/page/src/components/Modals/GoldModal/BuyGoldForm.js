@@ -122,7 +122,7 @@ class buyGoldForm extends Component {
         {
           this.props.buyingGoldSuccess &&
           <div styleName="submit-success">
-            Buy gold request successfully sent to the contract.
+            Gold request successfully sent!
           </div>
         }
 

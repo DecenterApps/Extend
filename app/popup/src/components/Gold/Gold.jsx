@@ -63,7 +63,9 @@ const Gold = ({ gettingGold, gettingGoldError, golds }) => (
                         </a>
                       </div>
 
-                      <div styleName="val-section">{ gold.months } { gold.months === '1' ? 'Month' : 'Months' }</div>
+                      <div styleName="val-section">
+                        { gold.months }&nbsp;{ gold.months === '1' ? 'month' : 'months' }
+                      </div>
                     </span>
                   }
                 </div>

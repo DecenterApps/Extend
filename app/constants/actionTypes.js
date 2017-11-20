@@ -39,6 +39,7 @@ export const NETWORK_UNAVAILABLE = 'network_unavailable';
 
 // FORMS
 export const ADD_FORM = 'add_form';
+export const UPDATE_FORM = 'update_form';
 export const UPDATE_FIELD_META = 'update_field_meta';
 export const UPDATE_FIELD_ERROR = 'update_field_error';
 export const SET_TX_COST = 'set_tx_cost';

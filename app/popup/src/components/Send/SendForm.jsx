@@ -27,26 +27,29 @@ class SendForm extends Component {
 
   componentWillReceiveProps(newProps) {
     if (newProps.invalid) return;
-    if (!this.props.form) return;
-    if (Object.keys(this.props.form).length === 0) return;
+
+    const currentForm = this.props.forms[FORM_NAME];
+    const newForm = newProps.forms[FORM_NAME];
 
     if (
-      (newProps.form.gasPrice.value !== this.props.form.gasPrice.value) ||
-      (newProps.form.to.value !== this.props.form.to.value) ||
-      (newProps.form.amount.value !== this.props.form.amount.value) ||
-      (newProps.balance !== this.props.balance)
-    ) {
+      (Object.keys(newForm).length > 2 && Object.keys(currentForm).length > 2) &&
+      ((newForm.gasPrice.value !== currentForm.gasPrice.value) ||
+       (newForm.to.value !== currentForm.to.value) ||
+        (newForm.amount.value !== currentForm.amount.value) ||
+        (newProps.balance !== this.props.balance))) {
       setSendFormTxPriceMessage();
     }
   }
 
   render() {
+    const { currentFormTxCost, insufficientBalance } = this.props.forms[FORM_NAME];
+
     const AddressField = this.AddressField;
     const AmountField = this.AmountField;
     const GasPriceField = this.GasPriceField;
 
     const submitDisabled = this.props.pristine || this.props.invalid || this.props.sending ||
-      (!this.props.invalid && this.props.insufficientBalance);
+      (!this.props.invalid && insufficientBalance);
 
     return (
       <div>
@@ -96,8 +99,8 @@ class SendForm extends Component {
             <div styleName="tx-info">
               <span>Max transaction cost:</span>
               <div>
-                <span>{ this.props.currentFormTxCost.eth } ETH</span>
-                <span styleName="second-price">{ this.props.currentFormTxCost.usd } USD</span>
+                <span>{ currentFormTxCost.eth } ETH</span>
+                <span styleName="second-price">{ currentFormTxCost.usd } USD</span>
               </div>
             </div>
           }
@@ -109,7 +112,7 @@ class SendForm extends Component {
 
           {
             !this.props.invalid &&
-            this.props.insufficientBalance &&
+            insufficientBalance &&
             <div styleName="submit-error">Insufficient balance for transaction</div>
           }
 
@@ -130,11 +133,11 @@ class SendForm extends Component {
                 <div>
                   { this.props.pristine && 'Fill out missing form fields' }
                   { !this.props.pristine && this.props.invalid && 'Form is incomplete or has errors' }
-                  { !this.props.invalid && this.props.insufficientBalance && 'Insufficient balance for transaction' }
+                  { !this.props.invalid && insufficientBalance && 'Insufficient balance for transaction' }
                 </div>
               )}
               useHover={
-                this.props.pristine || this.props.invalid || (!this.props.invalid && this.props.insufficientBalance)
+                this.props.pristine || this.props.invalid || (!this.props.invalid && insufficientBalance)
               }
               useDefaultStyles
             >
@@ -155,20 +158,15 @@ SendForm.propTypes = {
   gasPrice: PropTypes.number.isRequired,
   sending: PropTypes.bool.isRequired,
   sendingError: PropTypes.string.isRequired,
-  form: PropTypes.object.isRequired,
-  currentFormTxCost: PropTypes.object.isRequired,
-  insufficientBalance: PropTypes.bool.isRequired,
   balance: PropTypes.string.isRequired,
-  sendingSuccess: PropTypes.bool.isRequired
+  sendingSuccess: PropTypes.bool.isRequired,
+  forms: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state) => ({
   gasPrice: state.account.gasPrice,
   sending: state.account.sending,
   sendingError: state.account.sendingError,
-  form: state.forms[FORM_NAME],
-  currentFormTxCost: state.forms.currentFormTxCost,
-  insufficientBalance: state.forms.insufficientBalance,
   balance: state.account.balance,
   sendingSuccess: state.account.sendingSuccess
 });

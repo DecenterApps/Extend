@@ -25,19 +25,24 @@ class RegisterForm extends Component {
 
   componentWillReceiveProps(newProps) {
     if (newProps.invalid) return;
-    if (!this.props.form) return;
-    if (Object.keys(this.props.form).length === 0) return;
+
+    const currentForm = this.props.forms[FORM_NAME];
+    const newForm = newProps.forms[FORM_NAME];
+
     if (
-      (newProps.form.gasPrice.value !== this.props.form.gasPrice.value) ||
-      (newProps.balance !== this.props.balance)) {
+      (Object.keys(newForm).length > 2 && Object.keys(currentForm).length > 2) &&
+      ((newForm.gasPrice.value !== currentForm.gasPrice.value) ||
+      (newProps.balance !== this.props.balance))) {
       setRegisterFormTxPriceMessage();
     }
   }
 
   render() {
+    const { currentFormTxCost, insufficientBalance } = this.props.forms[FORM_NAME];
+
     const GasPriceField = this.GasPriceField;
     const submitDisabled = this.props.pristine || this.props.invalid ||
-      (!this.props.invalid && this.props.insufficientBalance);
+      (!this.props.invalid && insufficientBalance);
 
     return (
       <div>
@@ -64,8 +69,8 @@ class RegisterForm extends Component {
             <div styleName="tx-info">
               <span>Max transaction cost:</span>
               <div>
-                <span>{ this.props.currentFormTxCost.eth } ETH</span>
-                <span styleName="second-price">{ this.props.currentFormTxCost.usd } USD</span>
+                <span>{ currentFormTxCost.eth } ETH</span>
+                <span styleName="second-price">{ currentFormTxCost.usd } USD</span>
               </div>
             </div>
           }
@@ -80,7 +85,7 @@ class RegisterForm extends Component {
                 <div>
                   { this.props.pristine && 'Fill out missing form fields' }
                   { !this.props.pristine && this.props.invalid && 'Form is incomplete or has errors' }
-                  { !this.props.invalid && this.props.insufficientBalance && 'Insufficient balance for transaction' }
+                  { !this.props.invalid && insufficientBalance && 'Insufficient balance for transaction' }
                 </div>
               )}
               useHover={submitDisabled}
@@ -101,17 +106,12 @@ RegisterForm.propTypes = {
   pristine: PropTypes.bool.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   gasPrice: PropTypes.number.isRequired,
-  currentFormTxCost: PropTypes.object.isRequired,
-  form: PropTypes.object.isRequired,
-  insufficientBalance: PropTypes.bool.isRequired,
+  forms: PropTypes.object.isRequired,
   balance: PropTypes.string.isRequired
 };
 
 const mapStateToProps = (state) => ({
-  currentFormTxCost: state.forms.currentFormTxCost,
   gasPrice: state.account.gasPrice,
-  form: state.forms[FORM_NAME],
-  insufficientBalance: state.forms.insufficientBalance,
   balance: state.account.balance
 });
 

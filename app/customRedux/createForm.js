@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {
-  addFormMessage, updateFieldMetaMessage, updateFieldErrorMessage }
+import { addFormMessage, updateFormMessage, updateFieldMetaMessage, updateFieldErrorMessage }
   from '../messages/formsActionsMessages';
 import { generateDataForFormValidator } from '../actions/utils';
 import connect from '../customRedux/connect';
@@ -34,6 +33,10 @@ const createForm = (formName, WrappedComponent, validator) => {
     }
 
     componentWillMount() {
+      if (this.props.forms[formName] === undefined) {
+        addFormMessage(formName);
+      }
+
       this.updateMergedProps();
     }
 
@@ -85,7 +88,7 @@ const createForm = (formName, WrappedComponent, validator) => {
       this.fields[field.name] = field;
 
       if (Object.keys(this.fields).length === this.numFields) {
-        addFormMessage({ name: formName, state: this.fields });
+        updateFormMessage({ name: formName, state: this.fields });
       }
 
       this.updateMergedProps();
@@ -161,7 +164,10 @@ const createForm = (formName, WrappedComponent, validator) => {
     }
 
     render() {
-      if (this.state.mergedProps === null) {
+      if (
+        (this.state.mergedProps === null) ||
+        (this.state.mergedProps.forms[formName] === undefined)
+      ) {
         return <div />;
       }
 

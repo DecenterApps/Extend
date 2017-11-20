@@ -15,7 +15,7 @@ const reducer = (state, action) => {
       const close = !payload.action;
 
       if (close) {
-        return INITIAL_STATE;
+        return { ...state, modalType: '' };
       }
 
       return {

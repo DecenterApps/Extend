@@ -1,12 +1,12 @@
 import {
-  ADD_FORM, UPDATE_FIELD_META, UPDATE_FIELD_ERROR, SET_TX_COST, REFUND_UNAVAILABLE, REFUND_AVAILABLE
+  ADD_FORM, UPDATE_FIELD_META, UPDATE_FIELD_ERROR, SET_TX_COST, REFUND_UNAVAILABLE, REFUND_AVAILABLE,
+  UPDATE_FORM
 } from '../constants/actionTypes';
 import { getValOfEthInUsd } from '../actions/utils';
 import { estimateGasForTx, getOraclizePrice, estimateGas, _checkIfRefundAvailable } from '../modules/ethereumService';
 
-export const addForm = async (dispatch, payload) => {
-  dispatch({ type: ADD_FORM, payload });
-};
+export const addForm = async (dispatch, payload) => { dispatch({ type: ADD_FORM, payload }); };
+export const updateForm = async (dispatch, payload) => { dispatch({ type: UPDATE_FORM, payload }); };
 
 export const updateFieldMeta = (dispatch, payload) => {
   dispatch({ type: UPDATE_FIELD_META, payload });
@@ -16,7 +16,7 @@ export const updateFieldError = (dispatch, payload) => {
   dispatch({ type: UPDATE_FIELD_ERROR, payload });
 };
 
-const setTxValues = (web3, dispatch, value, gas, gasPrice, usdPerEth, balance) => {
+const setTxValues = (web3, dispatch, value, gas, gasPrice, usdPerEth, balance, formName, additionalData = null) => {
   const txCostEth = web3.fromWei((gas * gasPrice) + parseFloat(value));
   const insufficientBalance = (parseFloat(balance) - parseFloat(txCostEth)) < 0;
 
@@ -27,7 +27,9 @@ const setTxValues = (web3, dispatch, value, gas, gasPrice, usdPerEth, balance) =
         eth: txCostEth,
         usd: (txCostEth * usdPerEth).toFixed(2),
       },
-      insufficientBalance
+      insufficientBalance,
+      formName,
+      additionalData
     }
   });
 };
@@ -49,7 +51,7 @@ export const setRegisterFormTxPrice = async (web3, contract, dispatch, getState)
   const gas = await estimateGasForTx(web3, contractMethod, params, value);
   const gasPrice = parseFloat(web3.toWei(state.forms.registerForm.gasPrice.value, 'gwei'));
 
-  setTxValues(web3, dispatch, value, gas, gasPrice, usdPerEth, balance);
+  setTxValues(web3, dispatch, value, gas, gasPrice, usdPerEth, balance, 'registerForm');
 };
 
 export const setSendFormTxPrice = async (web3, contract, dispatch, getState) => {
@@ -63,7 +65,7 @@ export const setSendFormTxPrice = async (web3, contract, dispatch, getState) => 
   const gas = await estimateGas(web3, { to, value });
   const gasPrice = parseFloat(web3.toWei(form.gasPrice.value, 'gwei'));
 
-  setTxValues(web3, dispatch, value, gas, gasPrice, usdPerEth, balance);
+  setTxValues(web3, dispatch, value, gas, gasPrice, usdPerEth, balance, 'sendForm');
 };
 
 export const setRefundFormTxPrice = async (web3, contract, dispatch, getState) => {
@@ -75,7 +77,7 @@ export const setRefundFormTxPrice = async (web3, contract, dispatch, getState) =
   const usdPerEth = await getValOfEthInUsd();
   const username = state.account.refundTipUsername;
 
-  const isAvailable = await _checkIfRefundAvailable(web3, contract, username);
+  const isAvailable = await _checkIfRefundAvailable(web3, contract, username, 'refundForm');
 
   if (!isAvailable) {
     dispatch({ type: REFUND_UNAVAILABLE });
@@ -105,7 +107,7 @@ export const setTipFormTxPrice = async (web3, contract, dispatch, getState) => {
   const gas = await estimateGasForTx(web3, contractMethod, [web3.toHex(author)], value);
   const gasPrice = parseFloat(web3.toWei(form.gasPrice.value, 'gwei'));
 
-  setTxValues(web3, dispatch, value, gas, gasPrice, usdPerEth, balance);
+  setTxValues(web3, dispatch, value, gas, gasPrice, usdPerEth, balance, 'tipForm');
 };
 
 export const setBuyGoldFormTxPrice = async (web3, contract, dispatch, getState) => {
@@ -138,5 +140,5 @@ export const setBuyGoldFormTxPrice = async (web3, contract, dispatch, getState) 
   const gas = await estimateGasForTx(web3, contractMethod, params, value);
   const gasPrice = parseFloat(web3.toWei(form.gasPrice.value, 'gwei'));
 
-  setTxValues(web3, dispatch, value, gas, gasPrice, usdPerEth, balance);
+  setTxValues(web3, dispatch, value, gas, gasPrice, usdPerEth, balance, 'buyGoldForm', { months });
 };

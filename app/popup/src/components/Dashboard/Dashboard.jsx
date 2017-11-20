@@ -62,7 +62,6 @@ const Dashboard = ({
 
           { registeringUsername &&
             <span styleName="pending">
-              Verifying
               <a
                 href={createRedditLink(registeringUsername)}
                 target="_blank"
@@ -70,13 +69,14 @@ const Dashboard = ({
               >
                 /u/{registeringUsername }
               </a>
+
+              Verifying
             </span>
           }
 
           {
             verifiedUsername &&
             <span>
-              <span styleName="success">Verified</span>
               <a
                 href={createRedditLink(verifiedUsername)}
                 target="_blank"
@@ -84,6 +84,8 @@ const Dashboard = ({
               >
                 /u/{verifiedUsername }
               </a>
+
+              <span styleName="success">Verified</span>
             </span>
           }
         </div>

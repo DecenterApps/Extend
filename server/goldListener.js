@@ -47,7 +47,7 @@ const getWeb3 = async () => {
             fs.mkdirSync("verification" + nonce);
             fs.writeFileSync("verification" + nonce + "/data.txt", data);
             fs.writeFileSync("verification"  + nonce + "/sig.sha256", Buffer.from(signature, 'base64'));
-            await exec("openssl dgst -sha256 -verify  <(openssl x509 -in \"cert.crt\"  -pubkey -noout) -signature verification" + nonce + "/sig.sha256 verification" + nonce + "/data.txt", {"shell": "/bin/bash"}, (error, stdout, stderr) => {
+            await exec("openssl dgst -sha256 -verify public.key -signature verification" + nonce + "/sig.sha256 verification" + nonce + "/data.txt", {"shell": "/bin/bash"}, (error, stdout, stderr) => {
                 console.log(stderr);
                 console.log(error);
                 if (stdout === "Verified OK\n") {

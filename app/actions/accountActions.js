@@ -10,6 +10,14 @@ import AbstractPoller from '../modules/AbstractPoller';
 
 const keyStore = lightwallet.keystore;
 
+/**
+ * Handles transfer form submit action
+ *
+ * @param {Object} web3
+ * @param {Object} engine
+ * @param {Function} getState
+ * @param {Function} dispatch
+ */
 export const send = async (web3, engine, getState, dispatch) => {
   const state = getState();
   const formData = state.forms.sendForm;
@@ -50,9 +58,10 @@ export const setGasPrice = async (web3, dispatch, getState) => {
 };
 
 /**
- * Checks the median gas price by using web3 every minute and sets it if the value has changed
+ * Checks the median gas price by using web3 every block and sets it if the value has changed
  *
  * @param {Object} web3
+ * @param {Object} engine
  * @param {Function} dispatch
  * @param {Function} getState
  */
@@ -61,6 +70,13 @@ export const pollForGasPrice = async (web3, engine, dispatch, getState) => {
   poller.poll();
 };
 
+/**
+ * Dispatches action to set the balance to the value from web3
+ *
+ * @param {Object} web3
+ * @param {Function} dispatch
+ * @param {Function} getState
+ */
 const setBalance = async (web3, dispatch, getState) => {
   const state = getState();
   let currentBalance = state.account.balance;
@@ -75,9 +91,10 @@ const setBalance = async (web3, dispatch, getState) => {
 };
 
 /**
- * Checks the balance by using web3 every second and sets it if the value has changed
+ * Checks the balance by using web3 every block and sets it if the value has changed
  *
  * @param {Object} web3
+ * @param {Object} engine
  * @param {Function} dispatch
  * @param {Function} getState
  */
@@ -86,18 +103,38 @@ export const pollForBalance = (web3, engine, dispatch, getState) => {
   poller.poll();
 };
 
+/**
+ * Dispatches action to clear refund form values after closing popup/changing views
+ *
+ * @param {Function} dispatch
+ * @return {Promise}
+ */
 export const clearRefundValues = (dispatch) =>
   new Promise(async (resolve) => {
     dispatch({ type: CLEAR_REFUND_VALUES });
     resolve();
   });
 
+/**
+ * Dispatches action to clear send form values after closing popup/changing views
+ *
+ * @param {Function} dispatch
+ * @return {Promise}
+ */
 export const clearSendValues = (dispatch) =>
   new Promise(async (resolve) => {
     dispatch({ type: CLEAR_SEND_VALUES });
     resolve();
   });
 
+/**
+ * Handles refund form submit action
+ *
+ * @param {Object} web3
+ * @param {Function} getState
+ * @param {Function} dispatch
+ * @param {Object} contracts
+ */
 export const refund = async (web3, getState, dispatch, contracts) => {
   const state = getState();
   const formData = state.forms.refundForm;
@@ -119,4 +156,10 @@ export const refund = async (web3, getState, dispatch, contracts) => {
   }
 };
 
+/**
+ * Dispatches action to set values needed for refund form to function
+ *
+ * @param {Function} dispatch
+ * @param {String} payload - username of the user that the refund is taken from
+ */
 export const setRefundFormValues = (dispatch, payload) => { dispatch({ type: SET_REFUND_FORM_VALUES, payload }); };

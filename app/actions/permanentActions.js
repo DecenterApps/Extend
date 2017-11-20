@@ -2,6 +2,14 @@ import { ACCEPT_NOTICE, COPIED_SEED, CHANGE_VIEW, SET_DISCONNECTED, SEEN_DASH } 
 import { passwordReloader } from './keyStoreActions';
 import { clearSendValues, clearRefundValues } from './accountActions';
 
+/**
+ * Checks if the user has been to the dashboard after verification at least once. Dispatches
+ * action that confirms that the user has seen the dashboard
+ *
+ * @param {Function} dispatch
+ * @param {Function} getState
+ * @return {Promise}
+ */
 export const checkIfSeenDashboard = (dispatch, getState) =>
   new Promise(async (resolve) => {
     const state = getState();
@@ -12,6 +20,15 @@ export const checkIfSeenDashboard = (dispatch, getState) =>
     resolve();
   });
 
+/**
+ * Dispatches action to change the current view. Here are dispatched certain actions that need to be fired
+ * when switching from a certain view
+ *
+ * @param {Function} dispatch
+ * @param {Function} getState
+ * @param {Object} payload -  { viewName }
+ * @return {Promise}
+ */
 export const changeView = (dispatch, getState, payload) =>
   new Promise(async (resolve) => {
     const state = getState();
@@ -23,12 +40,18 @@ export const changeView = (dispatch, getState, payload) =>
     resolve();
   });
 
+/**
+ * Dispatches action to accept that the user has read the TOA
+ *
+ * @param {Function} dispatch
+ */
 export const acceptNotice = (dispatch) => { dispatch({ type: ACCEPT_NOTICE }); };
 
 /**
- * Dispatches action that the user has copied the seed
+ * Dispatches action that the user has copied the seed phrase and initiates the password reloader
  *
  * @param {Function} dispatch
+ * @param {Function} getState
  */
 export const copiedSeed = (dispatch, getState) => {
   dispatch({ type: COPIED_SEED });
@@ -36,6 +59,13 @@ export const copiedSeed = (dispatch, getState) => {
   passwordReloader(dispatch, getState);
 };
 
+/**
+ * Dispatches action that the user cannot or can interact with the blockchain
+ *
+ * @param {Function} dispatch
+ * @param {Boolean} payload
+ * @return {Promise}
+ */
 export const setDisconnected = (dispatch, payload) =>
   new Promise(async (resolve) => {
     await dispatch({ type: SET_DISCONNECTED, payload });

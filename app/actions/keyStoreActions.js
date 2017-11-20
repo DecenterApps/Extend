@@ -47,6 +47,7 @@ export const getPwDerivedKey = (ks, password) =>
  * Clears password timeout and dispatches action to clear password
  *
  * @param {Function} dispatch
+ * @param {Function} getState
  */
 export const clearPassword = (dispatch, getState) => {
   clearTimeout(lockTimeout);
@@ -56,6 +57,9 @@ export const clearPassword = (dispatch, getState) => {
 
 /**
  *  Sets timeout to clear password after the user has created or unlocked the account
+ *
+ * @param {Function} dispatch
+ * @param {Function} getState
  */
 export const passwordReloader = (dispatch, getState) => {
   if (reloaderActive) return;
@@ -73,6 +77,7 @@ export const passwordReloader = (dispatch, getState) => {
  * Create a new key store with the users password
  *
  * @param {Object} web3
+ * @param {Object} engine
  * @param {Function} dispatch
  * @param {Function} getState
  * @param {String} password
@@ -106,7 +111,12 @@ export const createWallet = (web3, engine, dispatch, getState, password) => {
 };
 
 /**
- *  Checks if the unlock account password matches the key store
+ *  Checks if the unlock account password matches the key store and dispatches action to unlock
+ *  it if it is
+ *
+ *  @param {Function} getState
+ *  @param {Function} dispatch
+ *  @param {String} password
  */
 export const checkIfPasswordValid = async (getState, dispatch, password) => {
   const ks = keyStore.deserialize(getState().keyStore.keyStore);

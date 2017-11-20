@@ -7,8 +7,16 @@ import {
 import {
   verifiedUserEvent, listenForTips, getTipsFromEvent, listenForGold, getGoldFromEvent, _checkIfRefundAvailable
 } from '../modules/ethereumService';
-import { changeView } from './permanentActions';
 
+/**
+ * Every time the user comes to the tips history tab in the main view
+ * this function checks if any of the tips can be refunded
+ *
+ * @param {Object} web3
+ * @param {Object} contract
+ * @param {Function} getState
+ * @param {Function} dispatch
+ */
 export const checkRefundForSentTips = async (web3, contract, getState, dispatch) => {
   const tips = [...getState().user.tips];
 
@@ -29,6 +37,14 @@ export const checkRefundForSentTips = async (web3, contract, getState, dispatch)
   dispatch({ type: SET_REFUND_TIPS, payload: result });
 };
 
+/**
+ * Gets all the tips for the user from the event and dispatches action to set them
+ *
+ * @param {Object} web3
+ * @param {Object} contracts
+ * @param {Function} dispatch
+ * @param {Function} getState
+ */
 const getTips = async (web3, contracts, dispatch, getState) => {
   const state = getState();
   const address = state.keyStore.address;
@@ -62,7 +78,15 @@ const getTips = async (web3, contracts, dispatch, getState) => {
   }
 };
 
-const getGold = async (web3, contract, dispatch, getState) => {
+/**
+ * Gets all the gold transactions for the user from the event and dispatches action to set them
+ *
+ * @param {Object} web3
+ * @param {Object} contracts
+ * @param {Function} dispatch
+ * @param {Function} getState
+ */
+const getGold = async (web3, contracts, dispatch, getState) => {
   const state = getState();
   const address = state.keyStore.address;
   const username = state.user.verifiedUsername;
@@ -70,7 +94,7 @@ const getGold = async (web3, contract, dispatch, getState) => {
   dispatch({ type: GET_GOLD });
 
   try {
-    const goldsFromEvent = await getGoldFromEvent(web3, contract, address, web3.toHex(username));
+    const goldsFromEvent = await getGoldFromEvent(web3, contracts, address, web3.toHex(username));
     const golds = [];
 
     if (goldsFromEvent.length > 0) {
@@ -95,6 +119,15 @@ const getGold = async (web3, contract, dispatch, getState) => {
   }
 };
 
+/**
+ * Handles tips logic when the user is verified or on app start/restart. Gets current tips
+ * and initiates the new tips listener
+ *
+ * @param {Object} web3
+ * @param {Object} contracts
+ * @param {Function} dispatch
+ * @param {Function} getState
+ */
 export const handleTips = (web3, contracts, getState, dispatch) => {
   const state = getState();
   const address = state.keyStore.address;
@@ -124,6 +157,16 @@ export const handleTips = (web3, contracts, getState, dispatch) => {
   listenForTips(web3, contracts, dispatch, address, web3.toHex(username), handleNewTip);
 };
 
+
+/**
+ * Handles gold logic when the user is verified or on app start/restart. Gets current golds
+ * and initiates the new gold listener
+ *
+ * @param {Object} web3
+ * @param {Object} contracts
+ * @param {Function} dispatch
+ * @param {Function} getState
+ */
 export const handleGold = (web3, contracts, getState, dispatch) => {
   const state = getState();
   const address = state.keyStore.address;
@@ -159,14 +202,16 @@ export const handleGold = (web3, contracts, getState, dispatch) => {
  * @param {Function} dispatch
  * @param {String} selectedTab
  */
-export const setTab = (dispatch, selectedTab) => {
-  dispatch({ type: SET_ACTIVE_TAB, payload: selectedTab });
-};
+export const setTab = (dispatch, selectedTab) => { dispatch({ type: SET_ACTIVE_TAB, payload: selectedTab }); };
 
 /**
- * Dispatches action to set that the address is verified
+ * Dispatches action to set that the address is verified. Calls the gold and tips handlers.
  *
+ * @param {Object} web3
+ * @param {Object} contracts
+ * @param {Function} getState
  * @param {Function} dispatch
+ * @param {String} verifiedUsername - the new verified username
  */
 export const verifiedUser = async (web3, contracts, getState, dispatch, verifiedUsername) => {
   if (getState().permanent.registeringUsername) await dispatch({ type: CLEAR_REGISTERING_USER });
@@ -177,7 +222,7 @@ export const verifiedUser = async (web3, contracts, getState, dispatch, verified
 };
 
 /**
- * Listens for new verified users and checks if the current user is verified
+ * Listens for new verified users and checks if the current registering username is verified
  *
  * @param {Object} web3
  * @param {Array} contracts
@@ -185,8 +230,6 @@ export const verifiedUser = async (web3, contracts, getState, dispatch, verified
  * @param {Function} getState
  */
 export const listenForVerifiedUser = (web3, contracts, dispatch, getState) => {
-  console.log('LISTENING FOR VERIFIED USER');
-
   const verifiedCallback = (err, event, verifiedEvent, noMatchEvent) => {
     const registeringUsername = getState().permanent.registeringUsername;
 
@@ -210,6 +253,12 @@ export const listenForVerifiedUser = (web3, contracts, dispatch, getState) => {
   verifiedUserEvent(web3, contracts.events, verifiedCallback, noMatchCallback);
 };
 
+/**
+ * Opens the apps authentication window that opens the reddit authentication window
+ *
+ * @param {Object} payload - { screenWidth, screenHeight }
+ * @param {Function} dispatch
+ */
 export const openAuthWindow = (payload, dispatch) => {
   const width = 400;
   const height = 250;
@@ -233,27 +282,64 @@ export const openAuthWindow = (payload, dispatch) => {
  * Dispatches action to set that web3 could not connect to the network
  *
  * @param {Function} dispatch
+ * @return {Promise}
  */
-export const networkUnavailable = (dispatch, getState) =>
+export const networkUnavailable = (dispatch) =>
   new Promise(async (resolve) => {
     await dispatch({ type: NETWORK_UNAVAILABLE });
     resolve();
   });
 
+/**
+ * Dispatches action to clear error received from reddit authentication window.
+ *
+ * @param {Function} dispatch
+ * @return {Promise}
+ */
 export const clearRegisteringError = (dispatch) =>
   new Promise(async (resolve) => {
     await dispatch({ type: CLEAR_REGISTERING_ERROR });
     resolve();
   });
 
+/**
+ * Dispatches action to update the state that the user is trying to connect to the network
+ *
+ * @param {Function} dispatch
+ */
 export const connectAgain = (dispatch) => { dispatch({ type: CONNECT_AGAIN }); };
+
+/**
+ * Dispatches action set that the user could not connect to the network
+ *
+ * @param {Function} dispatch
+ */
 export const connectingAgainError = (dispatch) => { dispatch({ type: CONNECT_AGAIN_ERROR }); };
+
+/**
+ * Dispatches action set that the user was successful in connecting to the network
+ *
+ * @param {Function} dispatch
+ */
 export const connectingAgainSuccess = (dispatch) => { dispatch({ type: CONNECT_AGAIN_SUCCESS }); };
 
+/**
+ * Dispatches action to add a new tab id (content script tab id) if it is not already added
+ *
+ * @param {Function} dispatch
+ * @param {Function} getState
+ * @param {Number} payload
+ */
 export const addTabId = (dispatch, getState, payload) => {
   if (getState().user.tabsIds.includes(payload)) return;
 
   dispatch({ type: ADD_TAB_ID, payload });
 };
 
+/**
+ * Dispatches action to remove a ab id (content script tab id)
+ *
+ * @param {Function} dispatch
+ * @param {Number} payload
+ */
 export const removeTabId = (dispatch, payload) => { dispatch({ type: REMOVE_TAB_ID, payload }); };

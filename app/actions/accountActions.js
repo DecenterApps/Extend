@@ -50,7 +50,7 @@ export const setGasPrice = async (web3, dispatch, getState) => {
   let currentGasPrice = getState().account.gasPrice;
 
   let newGasPrice = await getGasPrice(web3);
-  newGasPrice = parseFloat(web3.fromWei(newGasPrice.toString(), 'gwei'));
+  newGasPrice = Math.round(parseFloat(web3.fromWei(newGasPrice.toString(), 'gwei')));
 
   if (currentGasPrice === newGasPrice) return;
 

@@ -20,26 +20,24 @@ def send(to_username, from_username, eth_amount=None, months=None):
                     user_agent='bot')
 
     try:
-        print("Sending message to", to_username)
+        if from_username:
+            from_username = '[/u/' + from_username + '](https://reddit.com/user/' + from_username + ')'
+        else:
+            from_username = 'anonymous user'
 
+        print(from_username)
         if months:
             r.redditor(to_username).message('Hey',
-                                           messages_template.BOUGHT_GOLD.format(toUsername=to_username,
-                                                                                fromUsername=from_username,
-                                                                                months=str(months) + ' month' if months == 1 else str(months) + ' months',
-                                                                                blogpost='https://blog.decenter.com/2017/11/14/extend/',
-                                                                                github='https://github.com/DecenterApps/Extend',
-                                                                                website='https://decenter.com',
-                                                                                webstore='https://webstore.com'))
+                                           messages_template.BOUGHT_GOLD.format(to_username='[/u/' + to_username + '](https://reddit.com/user/' + to_username + ')',
+                                                                                from_username=from_username,
+                                                                                months=months + ' month' if months == '1' else months + ' months',
+                                                                                github='https://github.com/DecenterApps/Extend'))
         else:
             r.redditor(to_username).message('Hey',
-                                           messages_template.USER_TIPPED.format(toUsername=to_username,
-                                                                                fromUsername=from_username,
+                                           messages_template.USER_TIPPED.format(to_username=to_username,
+                                                                                from_username=from_username,
                                                                                 ethAmount=eth_amount,
-                                                                                blogpost='https://blog.decenter.com/2017/11/14/extend/',
-                                                                                github='https://github.com/DecenterApps/Extend',
-                                                                                website='https://decenter.com',
-                                                                                webstore='https://webstore.com'))
+                                                                                github='https://github.com/DecenterApps/Extend'))
 
         print("Sent")
     except requests.exceptions.ConnectionError as e:

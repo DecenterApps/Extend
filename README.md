@@ -1,5 +1,6 @@
-# Reddapp
-Chrome extension that lets users integrate with smart contract for upvoting/downvoting posts/comments
+# ΞXTΞND
+
+ΞXTΞND is a Chrome browser extension that aims to bring the power of Ethereum blockchain to various social websites such as reddit. This is accomplished by making slight modifications to certain web pages (such as adding “tip” button to reddit posts) while having an Ethereum light client integrated into the extension. In the initial release, a user can send tips to other reddit users or buy them reddit gold with ETH directly.
 
 ## To Run
 Clone or download this repo.

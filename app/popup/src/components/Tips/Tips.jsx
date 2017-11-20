@@ -63,7 +63,7 @@ class Tips extends Component {
                               target="_blank"
                               rel="noopener noreferrer"
                             >
-                              /u/{ tip.to }
+                              { tip.to }
                             </a>
                           </span>
                           <span styleName="val-section">

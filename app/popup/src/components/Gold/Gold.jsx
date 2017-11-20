@@ -42,7 +42,7 @@ const Gold = ({ gettingGold, gettingGoldError, golds }) => (
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          /u/{ gold.to }
+                          { gold.to }
                         </a>
                       </div>
 
@@ -59,7 +59,7 @@ const Gold = ({ gettingGold, gettingGoldError, golds }) => (
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          /u/{ gold.from }
+                          { gold.from }
                         </a>
                       </div>
 

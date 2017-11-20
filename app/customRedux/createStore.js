@@ -148,8 +148,6 @@ const createStore = (reducersData) =>
               resolved = true;
               state[reducerName] = setResult;
 
-              console.log('ACTION', action);
-
               reducersFinished++;
               handleReducerFinish(reducersFinished, reducers, resolved, dispatchResolve, state, action, reducerName);
             });

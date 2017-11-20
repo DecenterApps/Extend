@@ -60,7 +60,7 @@ class RefundForm extends Component {
               target="_blank"
               rel="noopener noreferrer"
             >
-              /u/{ this.props.refundTipUsername }
+              { this.props.refundTipUsername }
             </a>
           </div>
 

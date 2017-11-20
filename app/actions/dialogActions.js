@@ -1,6 +1,6 @@
 import lightwallet from 'eth-lightwallet';
 import { REGISTER_USER, REGISTER_USER_ERROR } from '../constants/actionTypes';
-import { CLIENT_ID } from '../constants/config.local';
+import { CLIENT_ID } from '../constants/config.js';
 import { getParameterByName, encryptTokenOreclize } from '../actions/utils';
 import { sendTransaction, _getOraclizePrice } from '../modules/ethereumService';
 import { listenForVerifiedUser, clearRegisteringError } from './userActions';

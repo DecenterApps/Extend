@@ -2,6 +2,7 @@ import EthereumTx from 'ethereumjs-tx';
 import { getPwDerivedKey, getPrivateKey } from '../actions/keyStoreActions';
 import { GAS_LIMIT_MODIFIER } from '../constants/general';
 import AbstractWatcher from '../modules/AbstractWatcher';
+import { CONTRACTS } from '../constants/config';
 
 /* STANDARD FUNCTIONS REQUIRED TO SEND TRANSACTIONS */
 /**
@@ -360,7 +361,9 @@ export const verifiedUserEvent = async (web3, contract, verifiedCallback, noMatc
 
 export const getTipsFromEvent = (web3, contracts, address, hexUsername) =>
   new Promise((resolve, reject) => {
-    contracts.events.UserTipped([{ from: address }, { to: hexUsername }], { fromBlock: 4447379, toBlock: 'latest' })
+    contracts.events.UserTipped(
+      [{ from: address }, { to: hexUsername }],
+      { fromBlock: CONTRACTS.events.startingBlock, toBlock: 'latest' })
       .get(async (error, result) => {
         if (error) reject(error);
 
@@ -411,7 +414,8 @@ export const listenForTips = async (web3, contracts, dispatch, address, hexUsern
 
 export const getGoldFromEvent = (web3, contracts, address, hexUsername) =>
   new Promise((resolve, reject) => {
-    contracts.events.GoldBought([{ from: address }, { to: hexUsername }], { fromBlock: 4447379, toBlock: 'latest' })
+    contracts.events.GoldBought([{ from: address }, { to: hexUsername }],
+      { fromBlock: CONTRACTS.events.startingBlock, toBlock: 'latest' })
       .get(async (error, result) => {
         if (error) reject(error);
 

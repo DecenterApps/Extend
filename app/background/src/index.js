@@ -1,6 +1,6 @@
 import createStore from '../../customRedux/createStore';
 import combinedReducers from './reducers/index';
-import contractConfig from '../../modules/config.json';
+import { CONTRACTS } from '../../constants/config.js';
 import * as userActions from '../../actions/userActions';
 import * as permanentActions from '../../actions/permanentActions';
 import * as accountActions from '../../actions/accountActions';
@@ -33,7 +33,7 @@ const startApp = () =>
     getState = store.getState;
 
     try {
-      let networkData = await handleChangeNetwork(Web3, contractConfig, dispatch, getState);
+      let networkData = await handleChangeNetwork(Web3, CONTRACTS, dispatch, getState);
 
       web3 = networkData.web3;
       contracts = networkData.contracts;

@@ -1,2 +1,0 @@
-export const NETWORK = 'kovan';
-export const CLIENT_ID = 'NQJiytWj1aJkWA';

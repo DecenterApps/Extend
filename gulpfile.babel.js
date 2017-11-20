@@ -15,22 +15,22 @@ import contentWebpackProdConfig from './app/page/webpack.prod.config';
 import dialogWebpackProdConfig from './app/dialog/webpack.prod.config';
 
 const plugins = loadPlugins();
-/*
-  config.js.dev & config.js.prod are default configs.
-  Initially, copy config.js.dev to config.local.js and edit for local development.
-  The copy-config[-prod] task will copy the appropriate config to config.js.
-  In the code, reference config.js.
- */
-gulp.task('init', () => {
-  gulp.src('./app/constants/config.js.dev')
+gulp.task('init-dev', () => {
+  gulp.src('./app/constants/config.dev.js')
     .pipe(rename('config.local.js'))
     .pipe(gulp.dest('./app/constants/'))
     .pipe(rename('config.js'))
     .pipe(gulp.dest('./app/constants/'));
 });
 
+gulp.task('init-prod', () => {
+  gulp.src('./app/constants/config.prod.js')
+    .pipe(rename('config.js'))
+    .pipe(gulp.dest('./app/constants/'));
+});
+
 gulp.task('copy-config-prod', () => {
-  gulp.src('./app/constants/config.js.prod')
+  gulp.src('./app/constants/config.prod.js')
     .pipe(rename('config.js'))
     .pipe(gulp.dest('./app/constants/'));
 });

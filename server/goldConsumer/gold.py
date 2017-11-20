@@ -25,9 +25,14 @@ def give(to_username, from_address, months, id=None):
                     user_agent='bot')
 
     try:
-        comment = r.comment(id=id[3:])
-        print(comment)
-        comment.gild()
+        if id[1] == '1':
+            gildableThing = r.comment(id=id[3:])
+        elif id[1] == '3':
+            gildableThing = r.submission(id=id[3:])
+        else:
+            raise Exception
+
+        gildableThing.gild()
         print("gilded")
 
         if months != '1':

@@ -1,3 +1,5 @@
+import { NETWORK } from '../constants/config';
+
 let cryptoSha3 = require('crypto-js/sha3');
 
 const sha3 = (value) => (cryptoSha3(value, { outputLength: 256 }).toString());
@@ -73,8 +75,13 @@ export const isJson = (str) => {
  * @param {String} address
  * @return {String} link to the address on a correct network on etherscan
  */
-// TODO replace this with main when live
-export const getEtherScanLink = (address) => (`https://kovan.etherscan.io/address/${address}`);
+export const getEtherScanLink = (address) => {
+  if (NETWORK === 'main') {
+    return `https://etherscan.io/address/${address}`;
+  }
+
+  return `https://${NETWORK}.etherscan.io/address/${address}`;
+};
 
 /**
  * Return a link to the reddit based on the username given

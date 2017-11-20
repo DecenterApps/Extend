@@ -63,7 +63,7 @@ class Tips extends Component {
                               target="_blank"
                               rel="noopener noreferrer"
                             >
-                              /u/{ tip.to }
+                              { tip.to }
                             </a>
                           </span>
                           <span styleName="val-section">
@@ -113,7 +113,7 @@ class Tips extends Component {
                   this.props.tips.length === 0 &&
                   <div>
                     <div styleName="info-line">You did not send or receive any tips yet.</div>
-                    It might take a minute or two until new transactions are displayed
+                    It might take a minute or two until new transactions are displayed.
                   </div>
                 }
               </div>

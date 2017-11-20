@@ -48,6 +48,11 @@
         right: 25px;
         outline: none;
         cursor: pointer;
+        transition: 0.2s ease-in;
+
+        &:hover {
+          opacity: 0.6;
+        }
 
         svg {
           fill: #FFF;

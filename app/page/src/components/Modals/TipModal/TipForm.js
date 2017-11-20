@@ -120,7 +120,7 @@ class TipForm extends Component {
         {
           this.props.sendingTipSuccess &&
           <div styleName="submit-success">
-            Tip successfully sent to the contract.
+            Tip successfully sent to the { this.props.isVerified ? 'user!' : 'contract.' }
           </div>
         }
 

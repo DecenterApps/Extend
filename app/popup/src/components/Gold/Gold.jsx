@@ -42,7 +42,7 @@ const Gold = ({ gettingGold, gettingGoldError, golds }) => (
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          /u/{ gold.to }
+                          { gold.to }
                         </a>
                       </div>
 
@@ -59,11 +59,13 @@ const Gold = ({ gettingGold, gettingGoldError, golds }) => (
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          /u/{ gold.from }
+                          { gold.from }
                         </a>
                       </div>
 
-                      <div styleName="val-section">{ gold.months } { gold.months === '1' ? 'Month' : 'Months' }</div>
+                      <div styleName="val-section">
+                        { gold.months }&nbsp;{ gold.months === '1' ? 'month' : 'months' }
+                      </div>
                     </span>
                   }
                 </div>
@@ -74,7 +76,7 @@ const Gold = ({ gettingGold, gettingGoldError, golds }) => (
               golds.length === 0 &&
               <div>
                 <div styleName="info-line">You did not send or receive any gold yet.</div>
-                It might take a minute or two until new transactions are displayed
+                It might take a minute or two until new transactions are displayed.
               </div>
             }
           </div>

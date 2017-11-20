@@ -7,7 +7,8 @@ import {
   GET_GOLD_SUCCESS, ADD_NEW_GOLD, SET_REFUND_TIPS, DIALOG_OPEN, ADD_TAB_ID, REMOVE_TAB_ID,
   CLEAR_REGISTERING_ERROR, REGISTER_USER_ERROR
 } from '../../../constants/actionTypes';
-import { NETWORK_URL, TABS } from '../../../constants/general';
+import { TABS } from '../../../constants/general';
+import { NETWORK_URL } from '../../../constants/config';
 
 export const reducerName = 'user';
 

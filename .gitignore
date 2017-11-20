@@ -1,5 +1,6 @@
 yarn.lock
 app/constants/config.local.js
+app/constants/config.js
 .DS_Store
 .idea/
 build/

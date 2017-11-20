@@ -60,7 +60,7 @@ class RefundForm extends Component {
               target="_blank"
               rel="noopener noreferrer"
             >
-              /u/{ this.props.refundTipUsername }
+              { this.props.refundTipUsername }
             </a>
           </div>
 
@@ -106,7 +106,7 @@ class RefundForm extends Component {
           {
             this.props.refundingSuccess &&
             <div styleName="submit-success margin">
-              Refund request successfully sent to the contract
+              Refund request successfully sent to the contract.
             </div>
           }
 

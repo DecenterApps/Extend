@@ -67,7 +67,7 @@ const Dashboard = ({
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                /u/{registeringUsername }
+                {registeringUsername }
               </a>
 
               Verifying
@@ -82,7 +82,7 @@ const Dashboard = ({
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                /u/{verifiedUsername }
+                {verifiedUsername }
               </a>
 
               <span styleName="success">Verified</span>

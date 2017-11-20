@@ -4,6 +4,4 @@ import App from './components/App/App';
 
 chrome.runtime.connect({ name: 'popup' });
 
-render(
-  <App />, document.getElementById('app')
-);
+setTimeout(() => { render(<App />, document.getElementById('app')); }, 100);

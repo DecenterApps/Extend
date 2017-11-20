@@ -1,7 +1,7 @@
 /* eslint-disable */
 export const NETWORK = 'main';
 export const NETWORK_URL = 'https://mainnet.infura.io/9yl24EhEjqjMG3uAR0oR';
-export const CLIENT_ID = 'NQJiytWj1aJkWA';
+export const CLIENT_ID = 'XKMXhAWBnRdDsg';
 
 export const CONTRACTS = {
   "events": {

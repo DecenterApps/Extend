@@ -16,7 +16,7 @@ export const updateFieldError = (dispatch, payload) => {
   dispatch({ type: UPDATE_FIELD_ERROR, payload });
 };
 
-const setTxValues = (web3, dispatch, value, gas, gasPrice, usdPerEth, balance, formName) => {
+const setTxValues = (web3, dispatch, value, gas, gasPrice, usdPerEth, balance, formName, additionalData = null) => {
   const txCostEth = web3.fromWei((gas * gasPrice) + parseFloat(value));
   const insufficientBalance = (parseFloat(balance) - parseFloat(txCostEth)) < 0;
 
@@ -28,7 +28,8 @@ const setTxValues = (web3, dispatch, value, gas, gasPrice, usdPerEth, balance, f
         usd: (txCostEth * usdPerEth).toFixed(2),
       },
       insufficientBalance,
-      formName
+      formName,
+      additionalData
     }
   });
 };
@@ -139,5 +140,5 @@ export const setBuyGoldFormTxPrice = async (web3, contract, dispatch, getState) 
   const gas = await estimateGasForTx(web3, contractMethod, params, value);
   const gasPrice = parseFloat(web3.toWei(form.gasPrice.value, 'gwei'));
 
-  setTxValues(web3, dispatch, value, gas, gasPrice, usdPerEth, balance, 'buyGoldForm');
+  setTxValues(web3, dispatch, value, gas, gasPrice, usdPerEth, balance, 'buyGoldForm', { months });
 };

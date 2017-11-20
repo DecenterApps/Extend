@@ -15,6 +15,9 @@ const FORM_NAME = 'buyGoldForm';
 
 class buyGoldForm extends Component {
   componentWillMount() {
+    this.currentFormTxCost = {};
+    this.insufficientBalance = true;
+
     this.props.formData.setNumOfFields(2);
     this.MonthsField = createField(InputFormField, this.props.formData);
     this.GasPriceField = createField(InputFormField, this.props.formData);
@@ -30,12 +33,17 @@ class buyGoldForm extends Component {
     const currentForm = this.props.forms[FORM_NAME];
     const newForm = newProps.forms[FORM_NAME];
 
-    if (
-      (Object.keys(newForm).length > 2 && Object.keys(currentForm).length > 2) &&
-      ((newForm.gasPrice.value !== currentForm.gasPrice.value) ||
+    if (Object.keys(newForm).length > 2 && Object.keys(currentForm).length > 2) {
+      if ((newForm.gasPrice.value !== currentForm.gasPrice.value) ||
         (newForm.months.value !== currentForm.months.value) ||
-        (newProps.balance !== this.props.balance))) {
-      setBuyGoldFormTxPriceMessage();
+        (newProps.balance !== this.props.balance)) {
+        setBuyGoldFormTxPriceMessage();
+      }
+
+      if (newForm.currentFormTxCost.months === newForm.months.value) {
+        this.currentFormTxCost = newForm.currentFormTxCost;
+        this.insufficientBalance = newForm.insufficientBalance;
+      }
     }
 
     if (
@@ -47,7 +55,7 @@ class buyGoldForm extends Component {
   }
 
   render() {
-    const { currentFormTxCost, insufficientBalance } = this.props.forms[FORM_NAME];
+    const { insufficientBalance, currentFormTxCost } = this;
 
     const MonthsField = this.MonthsField;
     const GasPriceField = this.GasPriceField;
@@ -89,6 +97,7 @@ class buyGoldForm extends Component {
 
         {
           !this.props.invalid &&
+          Object.keys(currentFormTxCost).length > 2 &&
           <div styleName="tx-info">
             <span>Max transaction cost:</span>
             <div>
@@ -105,6 +114,7 @@ class buyGoldForm extends Component {
 
         {
           !this.props.invalid &&
+          currentFormTxCost.eth &&
           insufficientBalance &&
           <div styleName="submit-error">Insufficient balance for transaction</div>
         }

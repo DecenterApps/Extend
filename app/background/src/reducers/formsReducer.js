@@ -45,7 +45,7 @@ export const reducer = (state, action) => {
         ...state,
         [payload.formName]: {
           ...state[payload.formName],
-          currentFormTxCost: payload.currentFormTxCost,
+          currentFormTxCost: { ...payload.currentFormTxCost, ...payload.additionalData },
           insufficientBalance: payload.insufficientBalance
         }
       };

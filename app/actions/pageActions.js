@@ -7,6 +7,15 @@ import {
 
 const keyStore = lightwallet.keystore;
 
+/**
+ * Checks if a certain reddit username is verified and send message back to the tab
+ * that requested the data
+ *
+ * @param {Object} web3
+ * @param {Object} contract
+ * @param {Object} payload - { username, index, type }
+ * @param {Number} tabId
+ */
 export const checkIfUsernameVerified = async (web3, contract, payload, tabId) => {
   const isVerified = await _checkUsernameVerified(web3, contract, web3.toHex(payload.username));
 
@@ -16,9 +25,28 @@ export const checkIfUsernameVerified = async (web3, contract, payload, tabId) =>
   chrome.tabs.sendMessage(tabId, { type: 'checkIfUsernameVerified', payload: newPayload });
 };
 
+/**
+ * Dispatches action to clear tip form values after closing popup/changing views
+ *
+ * @param {Function} dispatch
+ */
 export const clearTipPending = (dispatch) => { dispatch({ type: CLEAR_TIP_PENDING }); };
+
+/**
+ * Dispatches action to clear buy gold form values after closing popup/changing views
+ *
+ * @param {Function} dispatch
+ */
 export const clearGoldPending = (dispatch) => { dispatch({ type: CLEAR_GOLD_PENDING }); };
 
+/**
+ * Handles tip form submit action
+ *
+ * @param {Object} web3
+ * @param {Object} contract
+ * @param {Function} dispatch
+ * @param {Function} getState
+ */
 export const tip = async (web3, contract, dispatch, getState) => {
   const state = getState();
   const amount = web3.toWei(state.forms.tipForm.amount.value);
@@ -40,6 +68,14 @@ export const tip = async (web3, contract, dispatch, getState) => {
   }
 };
 
+/**
+ * Handles buy gold form submit action
+ *
+ * @param {Object} web3
+ * @param {Object} contract
+ * @param {Function} dispatch
+ * @param {Function} getState
+ */
 export const buyGold = async (web3, contract, dispatch, getState) => {
   const state = getState();
   const gasPrice = web3.toWei(state.forms.buyGoldForm.gasPrice.value, 'gwei');

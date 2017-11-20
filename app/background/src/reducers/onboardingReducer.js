@@ -10,8 +10,6 @@ const INITIAL_STATE = {
 };
 
 export const reducer = (state, action) => {
-  const payload = action.payload;
-
   switch (action.type) {
     case SWITCH_UNVERIFIED_STEP: {
       const nextStepIndex = state.onboardingUnVerifiedIndex + 1;

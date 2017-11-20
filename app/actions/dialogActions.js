@@ -2,14 +2,14 @@ import lightwallet from 'eth-lightwallet';
 import { REGISTER_USER, REGISTER_USER_ERROR } from '../constants/actionTypes';
 import { CLIENT_ID } from '../constants/config.local';
 import { getParameterByName, encryptTokenOreclize } from '../actions/utils';
-import { sendTransaction, getOraclizePrice } from '../modules/ethereumService';
+import { sendTransaction, _getOraclizePrice } from '../modules/ethereumService';
 import { listenForVerifiedUser, clearRegisteringError } from './userActions';
 
 const keyStore = lightwallet.keystore;
 
 /**
  * Opens reddit oauth window and receives user access_token. Access_token and
- * user address are sent to the contract
+ * user address are then sent to the contract
  *
  * @param {Array} contracts
  * @param {Object} web3
@@ -49,7 +49,7 @@ export const handleUserAuthentication = (contracts, web3, getState, dispatch) =>
 
       const gasPrice = web3.toWei(getState().forms.registerForm.gasPrice.value, 'gwei');
       const contracMethod = contracts.func.createUser;
-      const oreclizeTransactionCost = await getOraclizePrice(contracts.func);
+      const oreclizeTransactionCost = await _getOraclizePrice(contracts.func);
       const value = oreclizeTransactionCost.toString();
       const encryptedToken = await encryptTokenOreclize(accessToken);
       const params = [web3.toHex(me.name), encryptedToken];

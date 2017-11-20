@@ -3,19 +3,54 @@ import {
   UPDATE_FORM
 } from '../constants/actionTypes';
 import { getValOfEthInUsd } from '../actions/utils';
-import { estimateGasForTx, getOraclizePrice, estimateGas, _checkIfRefundAvailable } from '../modules/ethereumService';
+import { estimateGasForTx, estimateGas, _getOraclizePrice, _checkIfRefundAvailable } from '../modules/ethereumService';
 
+/**
+ * Dispatches action to register form in reducer before it loads
+ *
+ * @param {Function} dispatch
+ * @param {String} payload - form name
+ */
 export const addForm = async (dispatch, payload) => { dispatch({ type: ADD_FORM, payload }); };
+
+/**
+ * Dispatches action to update form with new fields
+ *
+ * @param {Function} dispatch
+ * @param {Object} payload - { name, state }
+ */
 export const updateForm = async (dispatch, payload) => { dispatch({ type: UPDATE_FORM, payload }); };
 
-export const updateFieldMeta = (dispatch, payload) => {
-  dispatch({ type: UPDATE_FIELD_META, payload });
-};
+/**
+ * Dispatches action to set a certain fields metadata
+ *
+ * @param {Function} dispatch
+ * @param {Object} payload - { formName, meta: { error, touched, value } }
+ */
+export const updateFieldMeta = (dispatch, payload) => { dispatch({ type: UPDATE_FIELD_META, payload }); };
 
-export const updateFieldError = (dispatch, payload) => {
-  dispatch({ type: UPDATE_FIELD_ERROR, payload });
-};
+/**
+ * Dispatches action to set a certain fields error metadata
+ *
+ * @param {Function} dispatch
+ * @param {Object} payload - { formName, name: fieldName, error: errorsParam[fieldName] }
+ */
+export const updateFieldError = (dispatch, payload) => { dispatch({ type: UPDATE_FIELD_ERROR, payload }); };
 
+/**
+ * Calculates if the user has enough ETH in balance to pay for a certain form submit that interacts
+ * with the contract. Dispatches action to set a certain forms tx cost and insufficient balance valuation
+ *
+ * @param {Object} web3
+ * @param {Function} dispatch
+ * @param {String} value - additional value to be sent to contract in wei
+ * @param {Number} gas
+ * @param {Number} gasPrice
+ * @param {Number} usdPerEth - current USD/ETH exchange rate from the server
+ * @param {String} balance
+ * @param {String} formName
+ * @param {Object} additionalData - data to be included into currentFormTxCost for versioning
+ */
 const setTxValues = (web3, dispatch, value, gas, gasPrice, usdPerEth, balance, formName, additionalData = null) => {
   const txCostEth = web3.fromWei((gas * gasPrice) + parseFloat(value));
   const insufficientBalance = (parseFloat(balance) - parseFloat(txCostEth)) < 0;
@@ -34,15 +69,24 @@ const setTxValues = (web3, dispatch, value, gas, gasPrice, usdPerEth, balance, f
   });
 };
 
+/**
+ * Calculates the data needed for setTxValues for the registerForm. Mocks data because can't estimate with
+ * dynamic values.
+ *
+ * @param {Object} web3
+ * @param {Object} contract
+ * @param {Function} dispatch - dispatch
+ * @param {Function} getState - dispatch
+ */
 export const setRegisterFormTxPrice = async (web3, contract, dispatch, getState) => {
   const state = getState();
   const balance = state.account.balance;
-  const oreclizeTransactionCost = await getOraclizePrice(contract);
+  const oreclizeTransactionCost = await _getOraclizePrice(contract);
   const value = oreclizeTransactionCost.toString();
   const contractMethod = contract.createUser;
   const usdPerEth = await getValOfEthInUsd();
 
-  // mockup data here to give rough estimate of tx fee
+  // Mockup data here to give rough estimate of tx fee
   const params = [
     web3.toHex('J0EVFGVE2PCVAS3'),
     'BDk8K1PX/vOHQD1LqY+hMeEvDN0qIkv3N1UM6ly3TsltWus4jWj9CrNr1YRwIQuyV85kJhpqrtXRuuJQ7766DzggzthKyqEu5P/cM9xWkPycmoqROpwMgByolfYeE4eqWtY4vlGE/twjJ/' // eslint-disable-line
@@ -54,6 +98,14 @@ export const setRegisterFormTxPrice = async (web3, contract, dispatch, getState)
   setTxValues(web3, dispatch, value, gas, gasPrice, usdPerEth, balance, 'registerForm');
 };
 
+/**
+ * Calculates the data needed for setTxValues for the send form
+ *
+ * @param {Object} web3
+ * @param {Object} contract
+ * @param {Function} dispatch - dispatch
+ * @param {Function} getState - dispatch
+ */
 export const setSendFormTxPrice = async (web3, contract, dispatch, getState) => {
   const state = getState();
   const form = state.forms.sendForm;
@@ -68,6 +120,14 @@ export const setSendFormTxPrice = async (web3, contract, dispatch, getState) => 
   setTxValues(web3, dispatch, value, gas, gasPrice, usdPerEth, balance, 'sendForm');
 };
 
+/**
+ * Calculates the data needed for setTxValues for the refund form
+ *
+ * @param {Object} web3
+ * @param {Object} contract
+ * @param {Function} dispatch - dispatch
+ * @param {Function} getState - dispatch
+ */
 export const setRefundFormTxPrice = async (web3, contract, dispatch, getState) => {
   const state = getState();
   const form = state.forms.refundForm;
@@ -95,6 +155,14 @@ export const setRefundFormTxPrice = async (web3, contract, dispatch, getState) =
   setTxValues(web3, dispatch, value, gas, gasPrice, usdPerEth, balance);
 };
 
+/**
+ * Calculates the data needed for setTxValues for the tip form
+ *
+ * @param {Object} web3
+ * @param {Object} contract
+ * @param {Function} dispatch - dispatch
+ * @param {Function} getState - dispatch
+ */
 export const setTipFormTxPrice = async (web3, contract, dispatch, getState) => {
   const state = getState();
   const balance = state.account.balance;
@@ -110,6 +178,14 @@ export const setTipFormTxPrice = async (web3, contract, dispatch, getState) => {
   setTxValues(web3, dispatch, value, gas, gasPrice, usdPerEth, balance, 'tipForm');
 };
 
+/**
+ * Calculates the data needed for setTxValues for the buy gold form
+ *
+ * @param {Object} web3
+ * @param {Object} contract
+ * @param {Function} dispatch - dispatch
+ * @param {Function} getState - dispatch
+ */
 export const setBuyGoldFormTxPrice = async (web3, contract, dispatch, getState) => {
   const state = getState();
   const balance = state.account.balance;

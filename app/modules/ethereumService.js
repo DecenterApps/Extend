@@ -4,7 +4,13 @@ import { GAS_LIMIT_MODIFIER } from '../constants/general';
 import AbstractWatcher from '../modules/AbstractWatcher';
 
 /* STANDARD FUNCTIONS REQUIRED TO SEND TRANSACTIONS */
-
+/**
+ * Gets balance for an address
+ *
+ * @param {Object} web3
+ * @param {String} address
+ * @return {Promise}
+ */
 export const getBalanceForAddress = (web3, address) =>
   new Promise((resolve) => {
     web3.eth.getBalance(address, (err, balance) => {
@@ -13,8 +19,9 @@ export const getBalanceForAddress = (web3, address) =>
   });
 
 /**
- * Gets te current block number
+ * Gets the current block number
  *
+ * @param {Object} web3
  * @return {Promise}
  */
 export const getBlockNumber = (web3) =>
@@ -29,6 +36,7 @@ export const getBlockNumber = (web3) =>
 /**
  * Gets te current average gas price for the current network
  *
+ * @param {Object} web3
  * @return {Promise}
  */
 export const getGasPrice = (web3) =>
@@ -57,7 +65,7 @@ export const getNonceForAddress = (web3, address) =>
   });
 
 /**
- * Returns the to and data properties required for sendRawTransaction
+ * Returns the "to" and "data" properties required for sendRawTransaction
  *
  * @param {Object} contractMethod - Function defined on the smart contract
  * @param {Array} params - smart contract function parameters
@@ -90,19 +98,13 @@ export const estimateGas = (web3, paramsObj) =>
   });
 
 /**
- * Gets transaction receipt for transaction hash
+ * Sends raw transaction based on a tx params and private key
  *
  * @param {Object} web3
- * @param {String} txHash
+ * @param {Object} transactionParams
+ * @param {String} privateKey
  * @return {Promise}
  */
-const getTransactionReceipt = (web3, txHash) =>
-  new Promise((resolve) => {
-    web3.eth.getTransactionReceipt(txHash, (err, result) => {
-      resolve(result);
-    });
-  });
-
 const sendRawTransaction = (web3, transactionParams, privateKey) =>
   new Promise((resolve, reject) => {
     const tx = new EthereumTx(transactionParams);
@@ -118,17 +120,8 @@ const sendRawTransaction = (web3, transactionParams, privateKey) =>
     });
   });
 
-export const getOraclizePrice = (contract) =>
-  new Promise((resolve, reject) => {
-    contract.getOraclizePrice({}, (err, result) => {
-      if (err) reject(err);
-
-      resolve(result);
-    });
-  });
-
 /**
- * Sends raw transaction to transfer ETH to another address
+ * Sends raw transaction to transfer ETH from the users address to another specified address
  *
  * @param {Object} web3
  * @param {String} from - sender address
@@ -138,7 +131,7 @@ export const getOraclizePrice = (contract) =>
  * @param {Object} ks
  * @param {String} password
  * @param {String} nonceParam
- * @return {Promise.<void>}
+ * @return {Promise}
  */
 export const transfer = (web3, from, to, valueParam, gasPriceParam, ks, password, nonceParam) =>
   new Promise(async (resolve, reject) => {
@@ -161,12 +154,19 @@ export const transfer = (web3, from, to, valueParam, gasPriceParam, ks, password
     }
   });
 
+/**
+ * Estimates gas for transaction
+ *
+ * @param {Object} web3
+ * @param {Object} contractMethod
+ * @param {Array} params
+ * @param {Number} valueParam - amount of wei to send
+ * @return {Number} gas
+ */
 export const estimateGasForTx = async (web3, contractMethod, params = null, valueParam = 0) => {
   const value = web3.toHex(valueParam);
-  let gas = null;
+
   let encParamsData = null;
-  let to = null;
-  let data = null;
 
   if (params !== null) {
     encParamsData = getEncodedParams(contractMethod, params);
@@ -174,10 +174,10 @@ export const estimateGasForTx = async (web3, contractMethod, params = null, valu
     encParamsData = getEncodedParams(contractMethod);
   }
 
-  to = encParamsData.to;
-  data = encParamsData.data;
+  const to = encParamsData.to;
+  const data = encParamsData.data;
 
-  gas = await estimateGas(web3, { to, data, value });
+  const gas = await estimateGas(web3, { to, data, value });
 
   return gas;
 };
@@ -203,8 +203,6 @@ export const sendTransaction =
         let gasPrice = null;
         let gas = null;
         let encParamsData = null;
-        let to = null;
-        let data = null;
 
         const pwDerivedKey = await getPwDerivedKey(ks, password);
         const privateKey = new Buffer(getPrivateKey(ks, from, pwDerivedKey), 'hex');
@@ -215,8 +213,8 @@ export const sendTransaction =
           encParamsData = getEncodedParams(contractMethod);
         }
 
-        to = encParamsData.to;
-        data = encParamsData.data;
+        const to = encParamsData.to;
+        const data = encParamsData.data;
 
         const nonce = web3.toHex(await getNonceForAddress(web3, from));
 
@@ -246,7 +244,27 @@ export const sendTransaction =
     });
 
 /* CONTRACT SPECIFIC FUNCTIONS */
+/**
+ * Gets the oreclize verification cost in wei
+ *
+ * @return {Promise}
+ */
+export const _getOraclizePrice = (contract) =>
+  new Promise((resolve, reject) => {
+    contract.getOraclizePrice({}, (err, result) => {
+      if (err) reject(err);
 
+      resolve(result);
+    });
+  });
+
+/**
+ * Checks if the users address is verified
+ *
+ * @param {Object} web3
+ * @param {Object} contract
+ * @return {Promise}
+ */
 export const _checkAddressVerified = (web3, contract) =>
   new Promise((resolve, reject) => {
     contract.checkAddressVerified((error, result) => {
@@ -256,6 +274,14 @@ export const _checkAddressVerified = (web3, contract) =>
     });
   });
 
+/**
+ * Checks if a certain username is verified
+ *
+ * @param {Object} web3
+ * @param {Object} contract
+ * @param {String} username
+ * @return {Promise}
+ */
 export const _checkUsernameVerified = (web3, contract, username) =>
   new Promise((resolve, reject) => {
     contract.checkUsernameVerified(username, (error, result) => {
@@ -265,6 +291,15 @@ export const _checkUsernameVerified = (web3, contract, username) =>
     });
   });
 
+/**
+ * Gets a username for a scpecific address. Will return an empty address if the provided
+ * is not verified
+ *
+ * @param {Object} web3
+ * @param {Object} contract
+ * @param {String} address
+ * @return {Promise}
+ */
 export const _getUsernameForAddress = (web3, contract, address) =>
   new Promise((resolve, reject) => {
     contract.getUsernameForAddress(address, (error, result) => {
@@ -274,6 +309,14 @@ export const _getUsernameForAddress = (web3, contract, address) =>
     });
   });
 
+/**
+ * Checks if a certain username has not been verified in 2 weeks
+ *
+ * @param {Object} web3
+ * @param {Object} contract
+ * @param {String} username
+ * @return {Promise}
+ */
 export const _checkIfRefundAvailable = (web3, contract, username) =>
   new Promise((resolve, reject) => {
     contract.checkIfRefundAvailable(username, (error, result) => {
@@ -283,7 +326,7 @@ export const _checkIfRefundAvailable = (web3, contract, username) =>
     });
   });
 
-/* EVENT LISTENERS */
+/* FUNCTIONS THAT GET DATA/LISTEN FROM/TO EVENTS */
 export const verifiedUserEvent = async (web3, contract, verifiedCallback, noMatchCallback) => {
   let latestBlock = 0;
 
@@ -315,29 +358,6 @@ export const verifiedUserEvent = async (web3, contract, verifiedCallback, noMatc
   UsernameDoesNotMatchWatcherInstance.watch();
 };
 
-export const listenForRefundSuccessful = async (web3, contract, username, callback) => {
-  let latestBlock = 0;
-
-  try {
-    latestBlock = await getBlockNumber(web3);
-  } catch (err) {
-    callback(err, null);
-    return;
-  }
-
-  const RefundSuccessful = contract.RefundSuccessful({ username }, { fromBlock: latestBlock, toBlock: 'latest' });
-
-  const RefundSuccessfulWatcherCb = (error, event) => {
-    if (error) return callback(error);
-
-    return callback(null, event, RefundSuccessful);
-  };
-
-  const RefundSuccessfulInstance = new AbstractWatcher(RefundSuccessful, RefundSuccessfulWatcherCb);
-
-  RefundSuccessfulInstance.watch();
-};
-
 export const getTipsFromEvent = (web3, contracts, address, hexUsername) =>
   new Promise((resolve, reject) => {
     contracts.events.UserTipped([{ from: address }, { to: hexUsername }], { fromBlock: 4447379, toBlock: 'latest' })
@@ -357,7 +377,6 @@ export const getTipsFromEvent = (web3, contracts, address, hexUsername) =>
         resolve(tips.reverse());
       });
   });
-
 
 export const listenForTips = async (web3, contracts, dispatch, address, hexUsername, callback) => {
   try {

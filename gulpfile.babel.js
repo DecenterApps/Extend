@@ -2,6 +2,7 @@ import gulp from 'gulp';
 import loadPlugins from 'gulp-load-plugins';
 import webpack from 'webpack';
 import rimraf from 'rimraf';
+import rename from 'gulp-rename';
 
 import popupWebpackConfig from './app/popup/webpack.config';
 import eventWebpackConfig from './app/background/webpack.config';
@@ -14,6 +15,31 @@ import contentWebpackProdConfig from './app/page/webpack.prod.config';
 import dialogWebpackProdConfig from './app/dialog/webpack.prod.config';
 
 const plugins = loadPlugins();
+/*
+  config.js.dev & config.js.prod are default configs.
+  Initially, copy config.js.dev to config.local.js and edit for local development.
+  The copy-config[-prod] task will copy the appropriate config to config.js.
+  In the code, reference config.js.
+ */
+gulp.task('init', () => {
+  gulp.src('./app/constants/config.js.dev')
+    .pipe(rename('config.local.js'))
+    .pipe(gulp.dest('./app/constants/'))
+    .pipe(rename('config.js'))
+    .pipe(gulp.dest('./app/constants/'));
+});
+
+gulp.task('copy-config-prod', () => {
+  gulp.src('./app/constants/config.js.prod')
+    .pipe(rename('config.js'))
+    .pipe(gulp.dest('./app/constants/'));
+});
+
+gulp.task('copy-config', () => {
+  gulp.src('./app/constants/config.local.js')
+    .pipe(rename('config.js'))
+    .pipe(gulp.dest('./app/constants/'));
+});
 
 gulp.task('popup-js', (cb) => {
   webpack(popupWebpackConfig, (err, stats) => {
@@ -116,7 +142,8 @@ gulp.task('clean', (cb) => {
 });
 
 gulp.task('build', [
-  'clean', 'copy-icons', 'copy-manifest', 'copy-jquery', 'copy-web3', 'popup-js', 'event-js', 'content-js', 'dialog-js'
+  'clean', 'copy-config', 'copy-icons', 'copy-manifest', 'copy-jquery', 'copy-web3',
+  'popup-js', 'event-js', 'content-js', 'dialog-js'
 ]);
 
 gulp.task('watch', ['build'], () => {
@@ -142,7 +169,7 @@ gulp.task('watch', ['build'], () => {
 gulp.task('default', ['build']);
 
 gulp.task('prod', [
-  'clean', 'copy-icons', 'copy-manifest', 'copy-jquery', 'copy-web3', 'popup-prod-js',
-  'event-prod-js', 'content-prod-js', 'dialog-prod-js'
+  'clean', 'copy-config-prod', 'copy-icons', 'copy-manifest', 'copy-jquery', 'copy-web3',
+  'popup-prod-js', 'event-prod-js', 'content-prod-js', 'dialog-prod-js'
 ]);
 

@@ -20,8 +20,8 @@ export const onboardingComponents = {
     </div>
   ),
   'address': () => (
-    <div>This is an address associeted with the Ethereum wallet that we have created for you. You can load it by
-      sending Eher to it.</div>
+    <div>This is an address associated with the Ethereum wallet that we have created for you. You can load it by
+      sending Ether to it.</div>
   ),
   'component': () => (
     <div>

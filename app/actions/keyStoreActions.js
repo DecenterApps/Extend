@@ -1,7 +1,10 @@
 import lightwallet from 'eth-lightwallet';
 import { isJson } from '../actions/utils';
-import { CREATE_WALLET, CLEAR_PASSWORD, UNLOCK_ERROR, UNLOCK, CLEAR_UNLOCK_ERROR } from '../constants/actionTypes';
+import {
+  CREATE_WALLET, CLEAR_PASSWORD, UNLOCK_ERROR, UNLOCK, CLEAR_UNLOCK_ERROR, CLEAR_SEEN_DASH
+} from '../constants/actionTypes';
 import { pollForBalance } from './accountActions';
+import { handleUserVerification } from './userActions';
 import { changeView, copiedSeed } from './permanentActions';
 import { LOCK_INTERVAL } from '../constants/general';
 
@@ -81,9 +84,10 @@ export const passwordReloader = (dispatch, getState) => {
  * @param {Function} dispatch
  * @param {Function} getState
  * @param {String} payload
+ * @param {Object} contracts
  * @param {Boolean} [getSeed = false] - is the user creating a new account or importing one
  */
-export const createWallet = (web3, engine, dispatch, getState, payload, getSeed = false) => {
+export const createWallet = (web3, engine, dispatch, getState, payload, contracts, getSeed = false) => {
   const { password } = payload;
 
   keyStore.createVault({
@@ -110,12 +114,13 @@ export const createWallet = (web3, engine, dispatch, getState, payload, getSeed 
     // when the user has already typed in the seed to recover the account there is no need
     // to show him the seed words again
     if (getSeed) {
+      await dispatch({ type: CLEAR_SEEN_DASH });
+      await handleUserVerification(web3, dispatch, getState, contracts);
       copiedSeed(dispatch, getState);
     } else {
       changeView(dispatch, getState, { viewName: 'copySeed' });
+      pollForBalance(web3, engine, dispatch, getState);
     }
-
-    pollForBalance(web3, engine, dispatch, getState);
   });
 };
 

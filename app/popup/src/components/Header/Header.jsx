@@ -51,7 +51,8 @@ const Header = ({ view, generatedVault, copiedSeed, password, networkActive }) =
         }
         { (view === 'choseAccount') && <span>Choose account</span> }
         { (view === 'createAccount') && <span>Choose passphrase</span> }
-        { (view === 'importAccount') && <span>Import account</span> }
+        { (!generatedVault && (view === 'importAccount')) && <span>Import account</span> }
+        { (generatedVault && (view === 'importAccount')) && <span>Unlock from recovery phrase</span> }
         { (view === 'copySeed') && <span>Copy recovery phrase</span> }
         { (view === 'dashboard') && <span styleName="logo-wrapper"><Logo /></span> }
         { (view === 'unlockAccount') && <span>Unlock account</span> }

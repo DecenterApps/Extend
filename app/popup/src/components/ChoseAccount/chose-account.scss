@@ -1,0 +1,22 @@
+@import "../../../../commonComponents/buttons";
+
+.chose-account-wrapper {
+  padding: 25px;
+
+  button {
+    margin-bottom: 25px;
+    @include btn;
+  }
+
+  div {
+    text-align: center;
+    font-size: 16px;
+    color: #444;
+    transition: 0.2s ease-in;
+    cursor: pointer;
+
+    &:hover {
+      color: #a1A1A1;
+    }
+  }
+}

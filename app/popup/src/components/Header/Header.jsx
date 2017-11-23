@@ -28,11 +28,23 @@ const Header = ({ view, generatedVault, copiedSeed, password, networkActive }) =
         }
 
         {
+          (
+            (view === 'createAccount') ||
+            (view === 'importAccount')
+          ) &&
+          <span styleName="back" onClick={() => { changeViewMessage('choseAccount'); }}>
+            <BackIcon />
+          </span>
+        }
+
+        {
           ((view === 'privacyNotice') ||
             (view === 'showPrivacy'))
           && <span>Terms of agreement</span>
         }
+        { (view === 'choseAccount') && <span>Choose account</span> }
         { (view === 'createAccount') && <span>Choose passphrase</span> }
+        { (view === 'importAccount') && <span>Import account</span> }
         { (view === 'copySeed') && <span>Copy recovery phrase</span> }
         { (view === 'dashboard') && <span styleName="logo-wrapper"><Logo /></span> }
         { (view === 'unlockAccount') && <span>Unlock account</span> }

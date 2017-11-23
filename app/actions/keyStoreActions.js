@@ -4,6 +4,7 @@ import {
   CREATE_WALLET, CLEAR_PASSWORD, UNLOCK_ERROR, UNLOCK, CLEAR_UNLOCK_ERROR, CLEAR_SEEN_DASH
 } from '../constants/actionTypes';
 import { pollForBalance } from './accountActions';
+import { skipUnVerifiedOnboarding } from './onboardingActions';
 import { handleUserVerification } from './userActions';
 import { changeView, copiedSeed } from './permanentActions';
 import { LOCK_INTERVAL } from '../constants/general';
@@ -116,9 +117,13 @@ export const createWallet = (web3, engine, dispatch, getState, payload, contract
     if (getSeed) {
       await dispatch({ type: CLEAR_SEEN_DASH });
       await handleUserVerification(web3, dispatch, getState, contracts);
+      await skipUnVerifiedOnboarding(dispatch);
       copiedSeed(dispatch, getState);
     } else {
       changeView(dispatch, getState, { viewName: 'copySeed' });
+    }
+
+    if (!payload.generatedVault) {
       pollForBalance(web3, engine, dispatch, getState);
     }
   });

@@ -8,12 +8,13 @@ export const createWalletMessage = (fields) => {
   pm({ action: 'createWallet', payload: { password: fields.password.value } });
 };
 
-export const importAccountMessage = (fields) => {
+export const importAccountMessage = (fields, generatedVault) => {
   pm({
     action: 'importAccount',
     payload: {
       password: fields.password.value,
-      seed: fields.seed.value
+      seed: fields.seed.value,
+      generatedVault
     }
   });
 };

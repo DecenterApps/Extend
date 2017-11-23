@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Tooltip from '../../../../commonComponents/Tooltip/Tooltip';
 import createForm from '../../../../customRedux/createForm';
+import connect from '../../../../customRedux/connect';
 import createField from '../../../../customRedux/createField';
 import InputFormField from '../../../../commonComponents/InputFormField';
 import importAccountFormValidator from './importAccountFormValidator';
@@ -25,7 +26,9 @@ class ImportAccountForm extends Component {
     return (
       <form
         styleName="form-wrapper-2"
-        onSubmit={(e) => { this.props.handleSubmit(e, importAccountMessage); }}
+        onSubmit={(e) => {
+          this.props.handleSubmit(e, importAccountMessage, this.props.generatedVault);
+        }}
       >
         <SeedField
           name="seed"
@@ -76,12 +79,19 @@ class ImportAccountForm extends Component {
 }
 
 ImportAccountForm.propTypes = {
+  generatedVault: PropTypes.bool.isRequired,
   formData: PropTypes.object.isRequired,
   invalid: PropTypes.bool.isRequired,
   pristine: PropTypes.bool.isRequired,
   handleSubmit: PropTypes.func.isRequired
 };
 
-export default createForm(
+const mapStateToProps = (state) => ({
+  generatedVault: state.keyStore.created
+});
+
+const ExportComponent = createForm(
   FORM_NAME, ImportAccountForm, importAccountFormValidator
 );
+
+export default connect(ExportComponent, mapStateToProps);

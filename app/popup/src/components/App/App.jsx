@@ -28,7 +28,7 @@ const App = ({ acceptedNotice, generatedVault, copiedSeed, seed, password, view,
 
     { !networkActive && <NetworkUnavailable /> }
 
-    { generatedVault && acceptedNotice && !password && <TypeInPassword /> }
+    { generatedVault && acceptedNotice && !password && (view !== 'importAccount') && <TypeInPassword /> }
 
     {
       networkActive &&
@@ -36,7 +36,7 @@ const App = ({ acceptedNotice, generatedVault, copiedSeed, seed, password, view,
         { view === 'privacyNotice' && <PrivacyNotice acceptedNotice={acceptedNotice} /> }
         { view === 'showPrivacy' && <PrivacyNotice acceptedNotice={acceptedNotice} /> }
         { (view === 'choseAccount') && !generatedVault && acceptedNotice && <ChoseAccount /> }
-        { (view === 'importAccount') && !generatedVault && acceptedNotice && <ImportAccount /> }
+        { (view === 'importAccount') && acceptedNotice && <ImportAccount /> }
         { (view === 'createAccount') && !generatedVault && acceptedNotice && <GenerateNewPassword /> }
         { (view === 'copySeed') && generatedVault && !copiedSeed && <CopySeed copiedSeed={copiedSeed} seed={seed} /> }
         { (view === 'showSeed') && generatedVault && copiedSeed && <CopySeed copiedSeed={copiedSeed} seed={seed} /> }

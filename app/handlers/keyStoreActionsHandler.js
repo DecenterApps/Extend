@@ -7,6 +7,10 @@ const keyStoreActionsHandler = (web3, engine, contracts, getState, dispatch, fun
 
     case 'createWallet':
       return keyStoreActions[funcName](web3, engine, dispatch, getState, payload);
+
+    case 'importAccount':
+      return keyStoreActions.createWallet(web3, engine, dispatch, getState, payload, true);
+
     case 'checkIfPasswordValid':
       return keyStoreActions[funcName](getState, dispatch, payload);
 

@@ -12,6 +12,7 @@ import NetworkUnavailable from '../NetworkUnavailable/NetworkUnavailable';
 import Refund from '../Refund/Refund';
 import ExtensionInfo from '../ExtensionInfo/ExtensionInfo';
 import ChoseAccount from '../ChoseAccount/ChoseAccount';
+import ImportAccount from '../ImportAccount/ImportAccount';
 
 import '../../../../commonComponents/general.scss';
 
@@ -35,6 +36,7 @@ const App = ({ acceptedNotice, generatedVault, copiedSeed, seed, password, view,
         { view === 'privacyNotice' && <PrivacyNotice acceptedNotice={acceptedNotice} /> }
         { view === 'showPrivacy' && <PrivacyNotice acceptedNotice={acceptedNotice} /> }
         { (view === 'choseAccount') && !generatedVault && acceptedNotice && <ChoseAccount /> }
+        { (view === 'importAccount') && !generatedVault && acceptedNotice && <ImportAccount /> }
         { (view === 'createAccount') && !generatedVault && acceptedNotice && <GenerateNewPassword /> }
         { (view === 'copySeed') && generatedVault && !copiedSeed && <CopySeed copiedSeed={copiedSeed} seed={seed} /> }
         { (view === 'showSeed') && generatedVault && copiedSeed && <CopySeed copiedSeed={copiedSeed} seed={seed} /> }

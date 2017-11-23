@@ -2,7 +2,7 @@ import lightwallet from 'eth-lightwallet';
 import { isJson } from '../actions/utils';
 import { CREATE_WALLET, CLEAR_PASSWORD, UNLOCK_ERROR, UNLOCK, UNLOCK_SUCCESS } from '../constants/actionTypes';
 import { pollForBalance } from './accountActions';
-import { changeView } from './permanentActions';
+import { changeView, copiedSeed } from './permanentActions';
 import { LOCK_INTERVAL } from '../constants/general';
 
 let lockTimeout = null;
@@ -80,13 +80,16 @@ export const passwordReloader = (dispatch, getState) => {
  * @param {Object} engine
  * @param {Function} dispatch
  * @param {Function} getState
- * @param {String} password
+ * @param {String} payload
+ * @param {Boolean} [getSeed = false] - is the user creating a new account or importing one
  */
-export const createWallet = (web3, engine, dispatch, getState, password) => {
+export const createWallet = (web3, engine, dispatch, getState, payload, getSeed = false) => {
+  const { password } = payload;
+
   keyStore.createVault({
     password,
     hdPathString: 'm/44\'/60\'/0\'/0',
-    seedPhrase: keyStore.generateRandomSeed()
+    seedPhrase: getSeed ? payload.seed : keyStore.generateRandomSeed()
   }, async (err, ks) => {
     const pwDerivedKey = await getPwDerivedKey(ks, password);
     const seed = ks.getSeed(pwDerivedKey);
@@ -99,13 +102,19 @@ export const createWallet = (web3, engine, dispatch, getState, password) => {
 
     web3.eth.defaultAccount = address; // eslint-disable-line
 
-    const payload = {
-      seed, password, address, keyStore: searializedKeyStore
-    };
+    await dispatch({
+      type: CREATE_WALLET,
+      payload: { seed, password, address, keyStore: searializedKeyStore }
+    });
 
-    await dispatch({ type: CREATE_WALLET, payload });
+    // when the user has already typed in the seed to recover the account there is no need
+    // to show him the seed words again
+    if (getSeed) {
+      copiedSeed(dispatch, getState);
+    } else {
+      changeView(dispatch, getState, { viewName: 'copySeed' });
+    }
 
-    changeView(dispatch, getState, { viewName: 'copySeed' });
     pollForBalance(web3, engine, dispatch, getState);
   });
 };

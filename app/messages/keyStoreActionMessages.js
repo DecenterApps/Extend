@@ -5,7 +5,17 @@ const pm = (actionParam) => {
 };
 
 export const createWalletMessage = (fields) => {
-  pm({ action: 'createWallet', payload: fields.password.value });
+  pm({ action: 'createWallet', payload: { password: fields.password.value } });
+};
+
+export const importAccountMessage = (fields) => {
+  pm({
+    action: 'importAccount',
+    payload: {
+      password: fields.password.value,
+      seed: fields.seed.value
+    }
+  });
 };
 
 export const checkIfPasswordValidMessage = (fields) => {

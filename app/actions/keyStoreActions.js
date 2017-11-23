@@ -1,6 +1,6 @@
 import lightwallet from 'eth-lightwallet';
 import { isJson } from '../actions/utils';
-import { CREATE_WALLET, CLEAR_PASSWORD, UNLOCK_ERROR, UNLOCK, UNLOCK_SUCCESS } from '../constants/actionTypes';
+import { CREATE_WALLET, CLEAR_PASSWORD, UNLOCK_ERROR, UNLOCK, CLEAR_UNLOCK_ERROR } from '../constants/actionTypes';
 import { pollForBalance } from './accountActions';
 import { changeView, copiedSeed } from './permanentActions';
 import { LOCK_INTERVAL } from '../constants/general';
@@ -135,7 +135,7 @@ export const checkIfPasswordValid = async (getState, dispatch, password) => {
     getPrivateKey(ks, getState().keyStore.address, pwDerivedKey);
 
     await dispatch({ type: UNLOCK, payload: password });
-    await dispatch({ type: UNLOCK_SUCCESS });
+    await dispatch({ type: CLEAR_UNLOCK_ERROR });
     changeView(dispatch, getState, { viewName: 'dashboard' });
     passwordReloader(dispatch, getState);
   } catch(err) {

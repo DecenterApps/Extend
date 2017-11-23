@@ -30,9 +30,16 @@ const Header = ({ view, generatedVault, copiedSeed, password, networkActive }) =
         {
           (
             (view === 'createAccount') ||
-            (view === 'importAccount')
+            (!generatedVault && (view === 'importAccount'))
           ) &&
           <span styleName="back" onClick={() => { changeViewMessage('choseAccount'); }}>
+            <BackIcon />
+          </span>
+        }
+
+        {
+          (generatedVault && (view === 'importAccount')) &&
+          <span styleName="back" onClick={() => { changeViewMessage('unlockAccount'); }}>
             <BackIcon />
           </span>
         }

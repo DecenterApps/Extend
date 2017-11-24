@@ -38,6 +38,7 @@ contract Extend is usingOraclize {
     mapping(address => User) public users;
 
     address public owner;
+    uint public goldBalance;
 
     ExtendOld public oldContract;
 
@@ -121,7 +122,7 @@ contract Extend is usingOraclize {
      */
     function createOldUser() public {
         bytes32 oldUsername = oldContract.getUsernameForAddress(msg.sender);
-        if (oldUsername == 0x0) return;
+        require(oldUsername != 0x0);
 
         users[msg.sender] = User({
                 username: oldUsername,
@@ -133,7 +134,9 @@ contract Extend is usingOraclize {
         CreatedUser(oldUsername);
         VerifiedUser(oldUsername);
 
-        sendTip(oldUsername, balances[oldUsername]);
+        if (balances[oldUsername] > 0) {
+            sendTip(oldUsername, balances[oldUsername]);
+        }
     }
 
     /**
@@ -190,8 +193,15 @@ contract Extend is usingOraclize {
                      string _nonce, 
                      string _signature) public payable {
 
-        owner.transfer(msg.value);
+        goldBalance += msg.value;
         GoldBought(msg.value, msg.sender, _to, _months, _priceUsd, _commentId, _nonce,  _signature);  
+    }
+
+    function withdrawGoldMoney() public {
+        require(owner == msg.sender);
+
+        owner.transfer(msg.value);
+        goldBalance = 0;
     }
 
     /**
@@ -216,7 +226,9 @@ contract Extend is usingOraclize {
 
         VerifiedUser(usernameFromAddress);
 
-        sendTip(usernameFromAddress, balances[usernameFromAddress]);
+        if (balances[usernameFromAddress] > 0) {
+            sendTip(usernameFromAddress, balances[usernameFromAddress]);
+        }
     }
 
     /**

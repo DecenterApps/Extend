@@ -6,39 +6,47 @@ import Tip from '../Tip/Tip';
 import BuyGold from '../BuyGold/BuyGold';
 
 const insertComponentsToPosts = () => {
-  $('.sitetable.linklisting .thing .flat-list.buttons').append(`
+  const elem = $('.sitetable.linklisting .thing:not(.added) .flat-list.buttons');
+
+  elem.append(`
     <li class="extend-tip-post"></li>
     <li class="extend-gold-post"></li>
     <li class="extend-verified-post"></li>
-   `);
+  `);
 
-  const authors = $('.sitetable.linklisting .thing .tagline').map((i, el) => ($(el).find('.author').text()));
+  const authors = $('.sitetable.linklisting .thing:not(.added) .tagline').map((i, e) => ($(e).find('.author').text()));
   const idElements = authors.map((key, val) => ($('.sitetable.linklisting').find(`[data-author='${val}']`)));
   const ids = idElements.map((key, val) => val.attr('id').substring(6));
 
-  const tipDivs = document.getElementsByClassName('extend-tip-post');
-  const goldDivs = document.getElementsByClassName('extend-gold-post');
-  const verifiedDivs = document.getElementsByClassName('extend-verified-post');
+  const tipDivs = elem.find('.extend-tip-post').toArray();
+  const goldDivs = elem.find('.extend-gold-post').toArray();
+  const verifiedDivs = elem.find('.extend-verified-post').toArray();
 
   authors.each((i, author) => { checkIfUsernameVerifiedMessage(author, i, 'post'); });
+
+  $('.sitetable.linklisting .thing:not(.added)').addClass('added');
 
   return { tipDivs, goldDivs, verifiedDivs, authors, ids };
 };
 
 const insertComponentsToComments = () => {
-  $(".commentarea .comment .flat-list:contains('permalink')").append(`
+  const elem = $(".commentarea .comment:not(.added) .flat-list:contains('permalink')");
+
+  elem.append(`
     <li class="extend-tip-comment"></li>
     <li class="extend-gold-comment"></li>
     <li class="extend-verified-comment"></li>
-   `);
+  `);
 
-  const authors = $('.commentarea .comment .tagline .author').map((i, el) => (el.textContent));
+  const authors = $('.commentarea .comment:not(.added) .tagline .author').map((i, el) => (el.textContent));
   const idElements = authors.map((key, val) => ($('.commentarea').find(`[data-author='${val}']`)));
   const ids = idElements.map((key, val) => val.attr('id').substring(6));
 
-  const tipDivs = document.getElementsByClassName('extend-tip-comment');
-  const goldDivs = document.getElementsByClassName('extend-gold-comment');
-  const verifiedDivs = document.getElementsByClassName('extend-verified-comment');
+  const tipDivs = elem.find('.extend-tip-comment').toArray();
+  const goldDivs = elem.find('.extend-gold-comment').toArray();
+  const verifiedDivs = elem.find('.extend-verified-comment').toArray();
+
+  $('.commentarea .comment:not(.added)').addClass('added');
 
   authors.each((i, author) => { checkIfUsernameVerifiedMessage(author, i, 'comment'); });
 
@@ -49,12 +57,12 @@ export default () => {
   const postDivs = insertComponentsToPosts();
   const commentDivs = insertComponentsToComments();
 
-  chrome.runtime.onMessage.addListener((message) => {
+  const cb = (message) => {
     if (message.type !== 'checkIfUsernameVerified') return;
 
     const { index, isVerified, type } = message.payload;
 
-    if (type === 'post') {
+    if (type === 'post' && postDivs.tipDivs.length > 0) {
       const author = postDivs.authors[index];
       const id = postDivs.ids[index];
 
@@ -69,7 +77,7 @@ export default () => {
       render(<UserVerified isVerified={isVerified} />, postDivs.verifiedDivs[index]);
     }
 
-    if (type === 'comment') {
+    if (type === 'comment' && commentDivs.tipDivs.length > 0) {
       const author = commentDivs.authors[index];
       const id = commentDivs.ids[index];
 
@@ -83,5 +91,8 @@ export default () => {
       render(<BuyGold author={author} id={id} />, commentDivs.goldDivs[index]);
       render(<UserVerified isVerified={isVerified} />, commentDivs.verifiedDivs[index]);
     }
-  });
+  };
+
+  chrome.runtime.onMessage.removeListener(cb);
+  chrome.runtime.onMessage.addListener(cb);
 };

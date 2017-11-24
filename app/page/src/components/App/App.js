@@ -2,23 +2,32 @@ import React, { Component } from 'react';
 import connect from '../../../../customRedux/connect';
 import ModalRoot from '../Modals/ModalRoot';
 import insertPageComponents from './insertPageComponents';
+import addEventListenersToMoreComments from './addEventListenersToMoreComments';
 import { addTabIdMessage } from '../../../../messages/userActionsMessages';
 
 class App extends Component {
   constructor() {
     super();
 
-    this.added = false;
+    this.addComponents = true;
 
     this.loadComponents = this.loadComponents.bind(this);
+    this.loadComponentsCallback = this.loadComponentsCallback.bind(this);
   }
 
   componentWillMount() {
     this.loadComponents(this.props);
+
+    addEventListenersToMoreComments(this.loadComponentsCallback);
   }
 
   componentWillReceiveProps(newProps) {
     this.loadComponents(newProps);
+  }
+
+  loadComponentsCallback() {
+    this.addComponents = true;
+    this.loadComponents(this.props);
   }
 
   loadComponents(newProps) {
@@ -26,9 +35,9 @@ class App extends Component {
 
     addTabIdMessage();
 
-    if (newProps.generatedVault && newProps.copiedSeed && !this.added) {
+    if (newProps.generatedVault && newProps.copiedSeed && this.addComponents) {
       insertPageComponents();
-      this.added = true;
+      this.addComponents = false;
     }
   }
 

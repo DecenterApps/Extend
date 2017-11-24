@@ -1,4 +1,3 @@
-import { _checkAddressVerified, _getUsernameForAddress } from './ethereumService';
 import * as userActions from '../actions/userActions';
 import * as accountActions from '../actions/accountActions';
 import * as keyStoreActions from '../actions/keyStoreActions';
@@ -16,31 +15,6 @@ const getProviderSpecs = (url) => (
   })
 );
 
-const handleUserVerification = (web3, dispatch, getState, state, contracts) =>
-  new Promise(async (resolve, reject) => {
-    try {
-      if (!state.keyStore.address) {
-        resolve();
-        return;
-      }
-
-      const verified = await _checkAddressVerified(web3, contracts.func);
-
-      if (verified) {
-        const verifiedUsername = await _getUsernameForAddress(web3, contracts.func, state.keyStore.address);
-        userActions.verifiedUser(web3, contracts, getState, dispatch, web3.toUtf8(verifiedUsername));
-      }
-
-      if (!verified && state.permanent.registeringUsername) {
-        userActions.listenForVerifiedUser(web3, contracts, dispatch, getState);
-      }
-
-      resolve();
-    } catch(err) {
-      reject(err);
-    }
-  });
-
 const handleChangeNetwork = (Web3, contractConfig, dispatch, getState) =>
   new Promise(async (resolve, reject) => {
     const state = getState();
@@ -56,7 +30,7 @@ const handleChangeNetwork = (Web3, contractConfig, dispatch, getState) =>
 
       web3.eth.defaultAccount = state.keyStore.address; //eslint-disable-line
 
-      await handleUserVerification(web3, dispatch, getState, state, contracts);
+      await userActions.handleUserVerification(web3, dispatch, getState, contracts);
 
       accountActions.pollForGasPrice(web3, engine, dispatch, getState);
 

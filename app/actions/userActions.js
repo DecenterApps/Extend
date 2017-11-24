@@ -2,10 +2,11 @@ import {
   NETWORK_UNAVAILABLE, VERIFIED_USER, REGISTER_USER_ERROR, SET_ACTIVE_TAB, GET_TIPS, GET_TIPS_SUCCESS,
   GET_TIPS_ERROR, CONNECT_AGAIN, CONNECT_AGAIN_SUCCESS, CONNECT_AGAIN_ERROR, ADD_NEW_TIP,
   ADD_NEW_GOLD, GET_GOLD, GET_GOLD_ERROR, GET_GOLD_SUCCESS, SET_REFUND_TIPS, DIALOG_OPEN, ADD_TAB_ID,
-  REMOVE_TAB_ID, CLEAR_REGISTERING_ERROR, CLEAR_REGISTERING_USER
+  REMOVE_TAB_ID, CLEAR_REGISTERING_ERROR, CLEAR_REGISTERING_USER, CLEAR_VERIFIED
 } from '../constants/actionTypes';
 import {
-  verifiedUserEvent, listenForTips, getTipsFromEvent, listenForGold, getGoldFromEvent, _checkIfRefundAvailable
+  verifiedUserEvent, listenForTips, getTipsFromEvent, listenForGold, getGoldFromEvent, _checkIfRefundAvailable,
+  _checkAddressVerified, _getUsernameForAddress
 } from '../modules/ethereumService';
 
 /**
@@ -343,3 +344,40 @@ export const addTabId = (dispatch, getState, payload) => {
  * @param {Number} payload
  */
 export const removeTabId = (dispatch, payload) => { dispatch({ type: REMOVE_TAB_ID, payload }); };
+
+/**
+ * Checks if user is verified or registering and loads state accordingly
+ *
+ * @param {Object} web3
+ * @param {Function} dispatch
+ * @param {Function} getState
+ * @param {Object} contracts
+ */
+export const handleUserVerification = (web3, dispatch, getState, contracts) =>
+  new Promise(async (resolve, reject) => {
+    const state = getState();
+
+    try {
+      if (!state.keyStore.address) {
+        resolve();
+        return;
+      }
+
+      const verified = await _checkAddressVerified(web3, contracts.func);
+
+      if (verified) {
+        const verifiedUsername = await _getUsernameForAddress(web3, contracts.func, state.keyStore.address);
+        verifiedUser(web3, contracts, getState, dispatch, web3.toUtf8(verifiedUsername));
+      } else {
+        dispatch({ type: CLEAR_VERIFIED });
+      }
+
+      if (!verified && state.permanent.registeringUsername) {
+        listenForVerifiedUser(web3, contracts, dispatch, getState);
+      }
+
+      resolve();
+    } catch(err) {
+      reject(err);
+    }
+  });

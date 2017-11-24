@@ -11,6 +11,8 @@ import Send from '../Send/Send';
 import NetworkUnavailable from '../NetworkUnavailable/NetworkUnavailable';
 import Refund from '../Refund/Refund';
 import ExtensionInfo from '../ExtensionInfo/ExtensionInfo';
+import ChoseAccount from '../ChoseAccount/ChoseAccount';
+import ImportAccount from '../ImportAccount/ImportAccount';
 
 import '../../../../commonComponents/general.scss';
 
@@ -26,13 +28,15 @@ const App = ({ acceptedNotice, generatedVault, copiedSeed, seed, password, view,
 
     { !networkActive && <NetworkUnavailable /> }
 
-    { generatedVault && acceptedNotice && !password && <TypeInPassword /> }
+    { generatedVault && acceptedNotice && !password && (view !== 'importAccount') && <TypeInPassword /> }
 
     {
       networkActive &&
       <div>
         { view === 'privacyNotice' && <PrivacyNotice acceptedNotice={acceptedNotice} /> }
         { view === 'showPrivacy' && <PrivacyNotice acceptedNotice={acceptedNotice} /> }
+        { (view === 'choseAccount') && !generatedVault && acceptedNotice && <ChoseAccount /> }
+        { (view === 'importAccount') && acceptedNotice && <ImportAccount /> }
         { (view === 'createAccount') && !generatedVault && acceptedNotice && <GenerateNewPassword /> }
         { (view === 'copySeed') && generatedVault && !copiedSeed && <CopySeed copiedSeed={copiedSeed} seed={seed} /> }
         { (view === 'showSeed') && generatedVault && copiedSeed && <CopySeed copiedSeed={copiedSeed} seed={seed} /> }

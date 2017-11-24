@@ -1,5 +1,5 @@
 import {
-  NETWORK_UNAVAILABLE, ADD_NEW_TIP, VERIFIED_USER,
+  NETWORK_UNAVAILABLE, ADD_NEW_TIP, VERIFIED_USER, CLEAR_VERIFIED,
   SEND_TIP, SEND_TIP_SUCCESS, SEND_TIP_ERROR, SET_ACTIVE_TAB,
   GET_TIPS, GET_TIPS_SUCCESS, GET_TIPS_ERROR, CLEAR_TIP_PENDING,
   CONNECT_AGAIN, CONNECT_AGAIN_SUCCESS, CONNECT_AGAIN_ERROR,
@@ -57,6 +57,8 @@ export const reducer = (state, action) => {
 
     case VERIFIED_USER:
       return { ...state, verifiedUsername: payload };
+    case CLEAR_VERIFIED:
+      return { ...state, verifiedUsername: '', tips: [], golds: [] };
 
     case REGISTER_USER_ERROR:
       return { ...state, registeringError: action.message, };

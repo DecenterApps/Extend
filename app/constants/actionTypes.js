@@ -4,6 +4,7 @@ export const SET_ADDRESS = 'set_address';
 export const ACCEPT_NOTICE = 'accept_notice';
 export const CLEAR_REGISTERING_USER = 'clear_registering_user';
 export const SEEN_DASH = 'seen_dash';
+export const CLEAR_SEEN_DASH = 'clear_seen_dash';
 
 // KEYSTORE
 export const UNLOCK = 'unlock';
@@ -12,6 +13,7 @@ export const UNLOCK = 'unlock';
 export const REGISTER_USER = 'register_user';
 export const REGISTER_USER_ERROR = 'register_user_error';
 export const VERIFIED_USER = 'verified_user';
+export const CLEAR_VERIFIED = 'clear_verified_user';
 export const SET_ACTIVE_TAB = 'set_active_tab';
 export const SET_IS_USER_VERIFIED = 'set_is_user_verified';
 export const GET_TIPS = 'get_tips';
@@ -49,7 +51,7 @@ export const CREATE_WALLET = 'create_wallet';
 export const COPIED_SEED = 'copied_seed';
 export const CLEAR_PASSWORD = 'clear_password';
 export const UNLOCK_ERROR = 'unlock_error';
-export const UNLOCK_SUCCESS = 'unlock_success';
+export const CLEAR_UNLOCK_ERROR = 'clear_unlock_error';
 export const SET_BALANCE = 'set_balance';
 export const SET_GAS_PRICE = 'set_gas_price';
 export const SEND = 'send';

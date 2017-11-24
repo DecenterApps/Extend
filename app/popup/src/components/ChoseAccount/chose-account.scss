@@ -1,8 +1,14 @@
-.type-in-password-wrapper {
+@import "../../../../commonComponents/buttons";
+
+.chose-account-wrapper {
   padding: 25px;
 
-  .import {
-    margin-top: 25px;
+  button {
+    margin-bottom: 25px;
+    @include btn;
+  }
+
+  div {
     text-align: center;
     font-size: 16px;
     color: #444;

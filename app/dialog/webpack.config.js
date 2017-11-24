@@ -107,8 +107,6 @@ module.exports = {
   },
   plugins: [
     HtmlWebpackPluginConfig,
-    new webpack.DefinePlugin({
-      process: { env: '"development"' }
-    })
+    new webpack.DefinePlugin({ 'process.env.NODE_ENV': '"development"' })
   ]
 };

@@ -13,19 +13,36 @@ class InputFormField extends Component {
     const {
       input, placeholder, wrapperClassName, inputClassName, errorClassName, showErrorText, min,
       type, id, showLabel, labelText, labelClass, meta: { touched, error }, value, autoFocus,
+      inputType
     } = this.props;
     return (
       <div className={wrapperClassName}>
-        <input
-          {...input}
-          defaultValue={value}
-          placeholder={placeholder}
-          id={id}
-          className={`${inputClassName} ${touched && error ? errorClassName : ''}`}
-          type={type}
-          autoFocus={autoFocus}
-          min={min}
-        />
+        {
+          inputType === 'input' &&
+          <input
+            {...input}
+            defaultValue={value}
+            placeholder={placeholder}
+            id={id}
+            className={`${inputClassName} ${touched && error ? errorClassName : ''}`}
+            type={type}
+            autoFocus={autoFocus}
+            min={min}
+          />
+        }
+        {
+          inputType === 'textarea' &&
+          <textarea
+            {...input}
+            style={{ resize: 'none' }}
+            defaultValue={value}
+            placeholder={placeholder}
+            id={id}
+            className={`${inputClassName} ${touched && error ? errorClassName : ''}`}
+            autoFocus={autoFocus}
+          />
+        }
+
         {showLabel && <label className={labelClass} htmlFor={id || ''}>{ labelText }</label>}
         {touched && ((error && showErrorText && <div className={errorClassName}>{error}</div>))}
       </div>
@@ -42,7 +59,9 @@ InputFormField.defaultProps = {
   placeholder: '',
   showErrorText: false,
   autoFocus: false,
-  min: ''
+  min: '',
+  type: 'text',
+  inputType: 'input'
 };
 
 InputFormField.propTypes = {
@@ -52,7 +71,7 @@ InputFormField.propTypes = {
   wrapperClassName: PropTypes.string.isRequired,
   inputClassName: PropTypes.string.isRequired,
   errorClassName: PropTypes.string.isRequired,
-  type: PropTypes.string.isRequired,
+  type: PropTypes.string,
   id: PropTypes.string,
   showLabel: PropTypes.bool,
   labelText: PropTypes.string,
@@ -60,7 +79,8 @@ InputFormField.propTypes = {
   meta: PropTypes.object.isRequired,
   showErrorText: PropTypes.bool,
   autoFocus: PropTypes.bool,
-  min: PropTypes.string
+  min: PropTypes.string,
+  inputType: PropTypes.string
 };
 
 export default InputFormField;

@@ -11,5 +11,10 @@ export const switchToNextUnverifiedStep = (dispatch) => { dispatch({ type: SWITC
  * Dispatches action to end the onboarding process
  *
  * @param {Function} dispatch
+ * @return {Promise}
  */
-export const skipUnVerifiedOnboarding = (dispatch) => { dispatch({ type: SKIP_UNVERIFIED_ONBOARDING }); };
+export const skipUnVerifiedOnboarding = (dispatch) =>
+  new Promise(async (resolve) => {
+    await dispatch({ type: SKIP_UNVERIFIED_ONBOARDING });
+    resolve();
+  });

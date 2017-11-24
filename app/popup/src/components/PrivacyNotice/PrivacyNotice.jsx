@@ -5,7 +5,7 @@ import { acceptNoticeMessage, changeViewMessage } from '../../../../messages/per
 import './privacy-notice.scss';
 
 const acceptPrivacyNotice = () => {
-  changeViewMessage('createAccount');
+  changeViewMessage('choseAccount');
   acceptNoticeMessage();
 };
 

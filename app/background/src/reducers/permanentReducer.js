@@ -1,5 +1,6 @@
 import {
-  REGISTER_USER, ACCEPT_NOTICE, COPIED_SEED, CHANGE_VIEW, SET_DISCONNECTED, CLEAR_REGISTERING_USER, SEEN_DASH
+  REGISTER_USER, ACCEPT_NOTICE, COPIED_SEED, CHANGE_VIEW, SET_DISCONNECTED, CLEAR_REGISTERING_USER, SEEN_DASH,
+  CLEAR_SEEN_DASH
 } from '../../../constants/actionTypes';
 import { VIEWS } from '../../../constants/general';
 
@@ -35,6 +36,9 @@ export const reducer = (state, action) => {
 
     case SEEN_DASH:
       return { ...state, seenDash: true };
+
+    case CLEAR_SEEN_DASH:
+      return { ...state, seenDash: false };
 
     case SET_DISCONNECTED:
       return { ...state, disconnected: payload };

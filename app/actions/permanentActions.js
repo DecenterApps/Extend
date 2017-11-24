@@ -1,4 +1,6 @@
-import { ACCEPT_NOTICE, COPIED_SEED, CHANGE_VIEW, SET_DISCONNECTED, SEEN_DASH } from '../constants/actionTypes';
+import {
+  ACCEPT_NOTICE, COPIED_SEED, CHANGE_VIEW, SET_DISCONNECTED, SEEN_DASH, CLEAR_UNLOCK_ERROR
+} from '../constants/actionTypes';
 import { passwordReloader } from './keyStoreActions';
 import { clearSendValues, clearRefundValues } from './accountActions';
 
@@ -35,6 +37,9 @@ export const changeView = (dispatch, getState, payload) =>
     await checkIfSeenDashboard(dispatch, getState);
     if (state.permanent.view === 'send') await clearSendValues(dispatch);
     if (state.permanent.view === 'refund') await clearRefundValues(dispatch);
+    if (state.keyStore.created && (state.permanent.view === 'importAccount')) {
+      await dispatch({ type: CLEAR_UNLOCK_ERROR });
+    }
 
     await dispatch({ type: CHANGE_VIEW, payload });
     resolve();

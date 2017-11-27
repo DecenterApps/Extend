@@ -2,6 +2,7 @@ import * as pageActions from '../actions/pageActions';
 
 const pageHandler = (web3, engine, contracts, getState, dispatch, funcName, payload, tabId) => {
   switch (funcName) {
+    case 'getBalanceForComponents':
     case 'checkIfUsernameVerified':
       return pageActions[funcName](web3, contracts.func, payload, tabId);
     case 'tip':

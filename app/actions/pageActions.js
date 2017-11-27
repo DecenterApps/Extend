@@ -1,5 +1,7 @@
 import lightwallet from 'eth-lightwallet';
-import { _checkUsernameVerified, sendTransaction } from '../modules/ethereumService';
+import {
+  _checkUsernameVerified, sendTransaction, getReceivedEthForComponents
+} from '../modules/ethereumService';
 import {
   SEND_TIP, SEND_TIP_ERROR, SEND_TIP_SUCCESS, CLEAR_TIP_PENDING,
   BUY_GOLD, BUY_GOLD_SUCCESS, BUY_GOLD_ERROR, CLEAR_GOLD_PENDING
@@ -8,7 +10,7 @@ import {
 const keyStore = lightwallet.keystore;
 
 /**
- * Checks if a certain reddit username is verified and send message back to the tab
+ * Checks if a certain reddit username is verified and sends a message back to the tab
  * that requested the data
  *
  * @param {Object} web3
@@ -17,12 +19,27 @@ const keyStore = lightwallet.keystore;
  * @param {Number} tabId
  */
 export const checkIfUsernameVerified = async (web3, contract, payload, tabId) => {
-  const isVerified = await _checkUsernameVerified(web3, contract, web3.toHex(payload.username));
+  const isVerified = await _checkUsernameVerified(web3, contract, payload.username);
 
   const newPayload = payload;
   newPayload.isVerified = isVerified;
 
   chrome.tabs.sendMessage(tabId, { type: 'checkIfUsernameVerified', payload: newPayload });
+};
+
+/**
+ * Gets the amount of sent ETH to all component ids that are in the payload and sends a
+ * message back to the tab that requested the data
+ *
+ * @param {Object} web3
+ * @param {Object} contract
+ * @param {Array} payload - array of component Ids
+ * @param {Number} tabId
+ */
+export const getBalanceForComponents = async (web3, contract, payload, tabId) => {
+  const newPayload = await getReceivedEthForComponents(web3, contract, payload);
+
+  chrome.tabs.sendMessage(tabId, { type: 'getBalanceForComponents', payload: newPayload });
 };
 
 /**

@@ -3,6 +3,7 @@ import { getPwDerivedKey, getPrivateKey } from '../actions/keyStoreActions';
 import { GAS_LIMIT_MODIFIER } from '../constants/general';
 import AbstractWatcher from '../modules/AbstractWatcher';
 import { CONTRACTS } from '../constants/config';
+import { formatLargeNumber } from '../actions/utils';
 
 /* STANDARD FUNCTIONS REQUIRED TO SEND TRANSACTIONS */
 /**
@@ -285,7 +286,7 @@ export const _checkAddressVerified = (web3, contract) =>
  */
 export const _checkUsernameVerified = (web3, contract, username) =>
   new Promise((resolve, reject) => {
-    contract.checkUsernameVerified(username, (error, result) => {
+    contract.checkUsernameVerified(web3.toHex(username), (error, result) => {
       if (error) return reject(error);
 
       return resolve(result);
@@ -465,3 +466,39 @@ export const listenForGold = async (web3, contracts, dispatch, address, hexUsern
     callback(err);
   }
 };
+
+/**
+ * Gets every tipped event and returns an array of formatted Objects { id, txVal }
+ * based on if the event has a commentId that matches one of the provided componentIds
+ *
+ * @param {Object} web3
+ * @param {Object} contract
+ * @param {Array} componentIds - array of component Ids
+ * @return {Promise}
+ */
+export const getReceivedEthForComponents = (web3, contract, componentIds) =>
+  new Promise(async (resolve, reject) => {
+    contract.UserTipped({}, { fromBlock: CONTRACTS.events.startingBlock, toBlock: 'latest' })
+      .get(async (error, result) => {
+        if (error) reject(error);
+
+        resolve(result.reduce((arr, tx) => {
+          const id = web3.toUtf8(tx.args.comentId);
+
+          if (componentIds.includes(id)) {
+            const duplicateIndex = arr.findIndex((data) => id === data.id);
+
+            if (duplicateIndex !== -1) {
+              let existingElem = arr[duplicateIndex];
+              existingElem.val =
+                formatLargeNumber(Number(web3.fromWei(parseFloat(existingElem.val) + parseFloat(tx.args.val))));
+              arr.splice(duplicateIndex, 1, existingElem);
+            } else {
+              arr.push({ id, val: formatLargeNumber(Number(web3.fromWei(tx.args.val))) });
+            }
+          }
+
+          return arr;
+        }, []));
+      });
+  });

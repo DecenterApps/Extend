@@ -1,9 +1,12 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { checkIfUsernameVerifiedMessage } from '../../../../messages/pageActionsMessages';
+import {
+  checkIfUsernameVerifiedMessage, getBalanceForComponentsMessage
+} from '../../../../messages/pageActionsMessages';
 import UserVerified from '../UserVerified/UserVerified';
 import Tip from '../Tip/Tip';
 import BuyGold from '../BuyGold/BuyGold';
+import TipsEth from '../TipsEth/TipsEth';
 
 const postConfig = {
   targetElem: '.sitetable.linklisting .thing:not(.added) .flat-list.buttons',
@@ -55,12 +58,17 @@ const renderNotVerified = (author, id, targetForTips, targetForGold) => {
 };
 
 const renderVerified = (author, id, targetForTips, targetForGold, targetForVerified) => {
-  render(<Tip author={author} id={id} isVerified />, targetForTips);
-  render(<BuyGold author={author} id={id} />, targetForGold);
   render(<UserVerified isVerified />, targetForVerified);
-  return false;
+  return renderNotVerified(author, id, targetForTips, targetForGold);
 };
 
+/**
+ * Formats data needed to render tip, gold and verified user components
+ *
+ * @param {Object} data
+ * @param {Number} index
+ * @return {Object}
+ */
 const getValuesForRender = (data, index) => {
   const author = data.authors[index];
   const id = data.ids[index];
@@ -71,26 +79,58 @@ const getValuesForRender = (data, index) => {
   return { author, id, targetForTips, targetForGold, targetForVerified };
 };
 
+/**
+ * Handle response from background for the checkIfUsernameVerified message,
+ * renders the tip and gold icons
+ *
+ * @param {Object} message
+ * @param {Object} postData - { author, id, targetForTips, targetForGold, targetForVerified }
+ * @param {Object} commentData - { author, id, targetForTips, targetForGold, targetForVerified }
+ */
+const handleCheckIfUsernameVerified = (message, postData, commentData) => {
+  let dataForRender = null;
+  const { index, isVerified, type } = message.payload;
+
+  if (type === 'post') dataForRender = postData;
+  if (type === 'comment') dataForRender = commentData;
+
+  if (dataForRender.tipDivs.length === 0) return false;
+
+  const { author, id, targetForTips, targetForGold, targetForVerified } = getValuesForRender(dataForRender, index);
+
+  if (!isVerified) return renderNotVerified(author, id, targetForTips, targetForGold);
+
+  return renderVerified(author, id, targetForTips, targetForGold, targetForVerified);
+};
+
+/**
+ * Handle response from background for the getBalanceForComponents message,
+ * inserts the amount of eth the post/comment received into the dom
+ *
+ * @param {Object} message
+ */
+const handleGetBalanceForComponents = (message) => {
+  message.payload.forEach((data) => {
+    const parent = $($(`#thing_${data.id}`).find('[class^="extend-tip"]').parent()[0]);
+
+    parent.append('<li class="extend-tip-val" />');
+
+    render(<TipsEth val={data.val} />, parent.find('.extend-tip-val')[0]);
+  });
+};
+
+/**
+ * Inserts page components into the DOM and listens to incoming messages from the background
+ */
 export default () => {
   const postData = insertComponentIntoPage(postConfig);
   const commentData = insertComponentIntoPage(commentConfig);
 
+  getBalanceForComponentsMessage([...postData.ids, ...commentData.ids]);
+
   const cb = (message) => {
-    if (message.type !== 'checkIfUsernameVerified') return false;
-
-    let dataForRender = null;
-    const { index, isVerified, type } = message.payload;
-
-    if (type === 'post') dataForRender = postData;
-    if (type === 'comment') dataForRender = commentData;
-
-    if (dataForRender.tipDivs.length === 0) return false;
-
-    const { author, id, targetForTips, targetForGold, targetForVerified } = getValuesForRender(dataForRender, index);
-
-    if (!isVerified) return renderNotVerified(author, id, targetForTips, targetForGold);
-
-    return renderVerified(author, id, targetForTips, targetForGold, targetForVerified);
+    if (message.type === 'checkIfUsernameVerified') handleCheckIfUsernameVerified(message, postData, commentData);
+    if (message.type === 'getBalanceForComponents') handleGetBalanceForComponents(message);
   };
 
   chrome.runtime.onMessage.removeListener(cb);

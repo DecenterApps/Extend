@@ -165,3 +165,26 @@ export const encryptTokenOreclize = (token) =>
       reject(err);
     }
   });
+
+/**
+ * Formats small numbers example: 0.0000000001 number to 0.0000000001 string instead of the
+ * usual JS conversion to 1e-9
+ *
+ * @param {Number} incomingOutput
+ * @return {String}
+ */
+export const formatLargeNumber = (incomingOutput) => {
+  if (!incomingOutput) return incomingOutput.toString();
+
+  let output = incomingOutput;
+  let n = Math.log(output) / Math.LN10;
+  let decimalPoints = 0;
+  let m = 10 ** decimalPoints;
+
+  n = (n >= 0 ? Math.ceil(n * m) : Math.floor(n * m)) / m;
+
+  let x = 0 - Math.ceil(n);
+  if (x < 0) x = 0;
+
+  return output.toFixed(x);
+};

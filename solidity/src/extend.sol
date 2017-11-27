@@ -14,7 +14,7 @@ contract Extend is usingOraclize {
     event CreatedUser(bytes32 username);
     event UsernameDoesNotMatch(bytes32 username, bytes32 neededUsername);
     event VerifiedUser(bytes32 username);
-    event UserTipped(address from, bytes32 indexed username, uint val, bytes32 indexed comentId);
+    event UserTipped(address from, bytes32 indexed username, uint val, bytes32 indexed commentId);
     event WithdrawSuccessful(bytes32 username);
     event CheckAddressVerified(address userAddress);
     event RefundSuccessful(address from, bytes32 username);
@@ -134,6 +134,7 @@ contract Extend is usingOraclize {
         CreatedUser(oldUsername);
         VerifiedUser(oldUsername);
 
+        //if there is tip for that username, send it to user
         if (balances[oldUsername] > 0) {
             sendTip(oldUsername, balances[oldUsername]);
         }
@@ -200,8 +201,9 @@ contract Extend is usingOraclize {
     function withdrawGoldMoney() public {
         require(owner == msg.sender);
 
-        owner.transfer(msg.value);
+        uint toSend = goldBalance;
         goldBalance = 0;
+        owner.transfer(toSend);
     }
 
     /**

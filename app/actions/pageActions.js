@@ -52,15 +52,21 @@ export const tip = async (web3, contract, dispatch, getState) => {
   const amount = web3.toWei(state.forms.tipForm.amount.value);
   const gasPrice = web3.toWei(state.forms.tipForm.gasPrice.value, 'gwei');
   const author = state.modals.modalProps.author;
+  const id = state.modals.modalProps.id;
   const ks = keyStore.deserialize(state.keyStore.keyStore);
   const address = state.keyStore.address;
   const password = state.keyStore.password;
   const contractMethod = contract.tipUser;
 
+  const params = [
+    web3.toHex(author), // bytes32 _username
+    web3.toHex(id) // bytes32 _commentId
+  ];
+
   try {
     dispatch({ type: SEND_TIP });
 
-    await sendTransaction(web3, contractMethod, ks, address, password, [web3.toHex(author)], amount, gasPrice);
+    await sendTransaction(web3, contractMethod, ks, address, password, params, amount, gasPrice);
 
     dispatch({ type: SEND_TIP_SUCCESS });
   } catch (err) {
@@ -101,7 +107,7 @@ export const buyGold = async (web3, contract, dispatch, getState) => {
       web3.toHex(author), // bytes32 _to
       months, // string _months
       data.priceInUsd.toString(), // string _priceUsd
-      id, // string _commentId
+      web3.toHex(id), // bytes32 _commentId
       data.nonce.toString(), // string _nonce
       data.signature, // string _signature
     ];

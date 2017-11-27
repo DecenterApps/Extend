@@ -6,12 +6,12 @@ import TipIcon from '../../../../commonComponents/Decorative/TipIcon';
 
 import '../../../../commonComponents/pageIcons.scss';
 
-const openTipModal = (author, isVerified) => {
-  toggleModalMessage('tip_modal', { author, isVerified }, true);
+const openTipModal = (author, isVerified, id) => {
+  toggleModalMessage('tip_modal', { author, isVerified, id }, true);
 };
 
-const Tip = ({ author, isVerified }) => (
-  <a styleName="icon-wrapper" onClick={() => { openTipModal(author, isVerified); }}>
+const Tip = ({ author, isVerified, id }) => (
+  <a styleName="icon-wrapper" onClick={() => { openTipModal(author, isVerified, id); }}>
     <Tooltip
       content="Tip user with ETH"
     >
@@ -22,7 +22,8 @@ const Tip = ({ author, isVerified }) => (
 
 Tip.propTypes = {
   author: PropTypes.string.isRequired,
-  isVerified: PropTypes.bool.isRequired
+  isVerified: PropTypes.bool.isRequired,
+  id: PropTypes.string.isRequired
 };
 
 export default Tip;

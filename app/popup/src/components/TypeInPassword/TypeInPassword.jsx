@@ -8,7 +8,11 @@ const TypeInPassword = () => (
   <div styleName="type-in-password-wrapper">
     <TypeInPasswordForm />
 
-    <div styleName="import" onClick={() => { changeViewMessage('importAccount'); }}>Unlock from recovery phrase</div>
+    <div styleName="import-wrapper">
+      <span styleName="import" onClick={() => { changeViewMessage('importAccount'); }}>
+        Unlock from recovery phrase
+      </span>
+    </div>
   </div>
 );
 

@@ -6,7 +6,9 @@ import './chose-account.scss';
 const ChoseAccount = () => (
   <div styleName="chose-account-wrapper">
     <button onClick={() => { changeViewMessage('createAccount'); }}>Create new</button>
-    <div onClick={() => { changeViewMessage('importAccount'); }}>Import existing</div>
+    <div>
+      <span onClick={() => { changeViewMessage('importAccount'); }}>Import existing</span>
+    </div>
   </div>
 );
 

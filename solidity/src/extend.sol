@@ -13,7 +13,7 @@ contract Extend is usingOraclize {
     event LogNeededBalance(uint balance);
     event CreatedUser(bytes32 username);
     event UsernameDoesNotMatch(bytes32 username, bytes32 neededUsername);
-    event VerifiedUser(bytes32 username);
+    event VerifiedUser(bytes32 username, address userAddress);
     event UserTipped(address from, bytes32 indexed username, uint val, bytes32 indexed commentId);
     event WithdrawSuccessful(bytes32 username);
     event CheckAddressVerified(address userAddress);
@@ -132,7 +132,7 @@ contract Extend is usingOraclize {
         usernameToAddress[oldUsername] = msg.sender;
             
         CreatedUser(oldUsername);
-        VerifiedUser(oldUsername);
+        VerifiedUser(oldUsername, msg.sender);
 
         //if there is tip for that username, send it to user
         if (balances[oldUsername] > 0) {
@@ -226,7 +226,7 @@ contract Extend is usingOraclize {
         users[queryAddress].verified = true;
         usernameToAddress[usernameFromAddress] = queryAddress;
 
-        VerifiedUser(usernameFromAddress);
+        VerifiedUser(usernameFromAddress, queryAddress);
 
         if (balances[usernameFromAddress] > 0) {
             sendTip(usernameFromAddress, balances[usernameFromAddress]);

@@ -170,9 +170,15 @@ export const setTipFormTxPrice = async (web3, contract, dispatch, getState) => {
   const value = web3.toWei(form.amount.value);
   const contractMethod = contract.tipUser;
   const author = state.modals.modalProps.author;
+  const id = state.modals.modalProps.id;
   const usdPerEth = await getValOfEthInUsd();
 
-  const gas = await estimateGasForTx(web3, contractMethod, [web3.toHex(author)], value);
+  const params = [
+    web3.toHex(author), // bytes32 _username
+    web3.toHex(id) // bytes32 _commentId
+  ];
+
+  const gas = await estimateGasForTx(web3, contractMethod, params, value);
   const gasPrice = parseFloat(web3.toWei(form.gasPrice.value, 'gwei'));
 
   setTxValues(web3, dispatch, value, gas, gasPrice, usdPerEth, balance, 'tipForm');

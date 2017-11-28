@@ -1,5 +1,7 @@
 import lightwallet from 'eth-lightwallet';
-import { _checkUsernameVerified, sendTransaction } from '../modules/ethereumService';
+import {
+  _checkUsernameVerified, sendTransaction, getReceivedEthForComponents
+} from '../modules/ethereumService';
 import {
   SEND_TIP, SEND_TIP_ERROR, SEND_TIP_SUCCESS, CLEAR_TIP_PENDING,
   BUY_GOLD, BUY_GOLD_SUCCESS, BUY_GOLD_ERROR, CLEAR_GOLD_PENDING
@@ -8,7 +10,7 @@ import {
 const keyStore = lightwallet.keystore;
 
 /**
- * Checks if a certain reddit username is verified and send message back to the tab
+ * Checks if a certain reddit username is verified and sends a message back to the tab
  * that requested the data
  *
  * @param {Object} web3
@@ -17,12 +19,27 @@ const keyStore = lightwallet.keystore;
  * @param {Number} tabId
  */
 export const checkIfUsernameVerified = async (web3, contract, payload, tabId) => {
-  const isVerified = await _checkUsernameVerified(web3, contract, web3.toHex(payload.username));
+  const isVerified = await _checkUsernameVerified(web3, contract, payload.username);
 
   const newPayload = payload;
   newPayload.isVerified = isVerified;
 
   chrome.tabs.sendMessage(tabId, { type: 'checkIfUsernameVerified', payload: newPayload });
+};
+
+/**
+ * Gets the amount of sent ETH to all component ids that are in the payload and sends a
+ * message back to the tab that requested the data
+ *
+ * @param {Object} web3
+ * @param {Object} contract
+ * @param {Array} payload - array of component Ids
+ * @param {Number} tabId
+ */
+export const getBalanceForComponents = async (web3, contract, payload, tabId) => {
+  const newPayload = await getReceivedEthForComponents(web3, contract, payload);
+
+  chrome.tabs.sendMessage(tabId, { type: 'getBalanceForComponents', payload: newPayload });
 };
 
 /**
@@ -52,15 +69,21 @@ export const tip = async (web3, contract, dispatch, getState) => {
   const amount = web3.toWei(state.forms.tipForm.amount.value);
   const gasPrice = web3.toWei(state.forms.tipForm.gasPrice.value, 'gwei');
   const author = state.modals.modalProps.author;
+  const id = state.modals.modalProps.id;
   const ks = keyStore.deserialize(state.keyStore.keyStore);
   const address = state.keyStore.address;
   const password = state.keyStore.password;
   const contractMethod = contract.tipUser;
 
+  const params = [
+    web3.toHex(author), // bytes32 _username
+    web3.toHex(id) // bytes32 _commentId
+  ];
+
   try {
     dispatch({ type: SEND_TIP });
 
-    await sendTransaction(web3, contractMethod, ks, address, password, [web3.toHex(author)], amount, gasPrice);
+    await sendTransaction(web3, contractMethod, ks, address, password, params, amount, gasPrice);
 
     dispatch({ type: SEND_TIP_SUCCESS });
   } catch (err) {
@@ -101,7 +124,7 @@ export const buyGold = async (web3, contract, dispatch, getState) => {
       web3.toHex(author), // bytes32 _to
       months, // string _months
       data.priceInUsd.toString(), // string _priceUsd
-      id, // string _commentId
+      web3.toHex(id), // bytes32 _commentId
       data.nonce.toString(), // string _nonce
       data.signature, // string _signature
     ];

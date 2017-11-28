@@ -3,6 +3,7 @@ app/constants/config.local.js
 app/constants/config.js
 .DS_Store
 .idea/
+build/
 solidity/out
 node_modules/
 server/TSOTD.log

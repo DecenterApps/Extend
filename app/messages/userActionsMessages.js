@@ -17,3 +17,5 @@ export const checkRefundForSentTipsMessage = () => { pm({ action: 'checkRefundFo
 export const connectAgainMessage = () => { pm({ action: 'connectAgain' }); };
 
 export const addTabIdMessage = () => { pm({ action: 'addTabId' }); };
+
+export const createOldUserMessage = () => { pm({ action: 'createOldUser' }); };

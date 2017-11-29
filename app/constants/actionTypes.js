@@ -5,6 +5,8 @@ export const ACCEPT_NOTICE = 'accept_notice';
 export const CLEAR_REGISTERING_USER = 'clear_registering_user';
 export const SEEN_DASH = 'seen_dash';
 export const CLEAR_SEEN_DASH = 'clear_seen_dash';
+export const MIGRATE_USER = 'migrate_user';
+export const CLEAR_MIGRATING_USER = 'clear_migrating_user';
 
 // KEYSTORE
 export const UNLOCK = 'unlock';
@@ -34,6 +36,8 @@ export const DIALOG_OPEN = 'dialog_open';
 export const ADD_TAB_ID = 'add_tab_id';
 export const REMOVE_TAB_ID = 'remove_tab_id';
 export const CLEAR_REGISTERING_ERROR = 'clear_registering_error';
+export const SET_OLD_USER = 'set_old_user';
+export const CLEAR_OLD_USER = 'clear_old_user';
 
 // NETWORK
 export const TOGGLE_DROPDOWN = 'toggle_dropdown';

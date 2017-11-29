@@ -16,6 +16,7 @@ export const updateFieldErrorMessage = (payload) => {
 };
 
 export const setRegisterFormTxPriceMessage = () => { pm({ action: 'setRegisterFormTxPrice' }); };
+export const setOldUserFormTxPriceMessage = () => { pm({ action: 'setOldUserFormTxPrice' }); };
 export const setSendFormTxPriceMessage = () => { pm({ action: 'setSendFormTxPrice' }); };
 export const setRefundFormTxPriceMessage = () => { pm({ action: 'setRefundFormTxPrice' }); };
 export const setTipFormTxPriceMessage = () => { pm({ action: 'setTipFormTxPrice' }); };

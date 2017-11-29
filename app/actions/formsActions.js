@@ -99,6 +99,26 @@ export const setRegisterFormTxPrice = async (web3, contract, dispatch, getState)
 };
 
 /**
+ * Calculates the data needed for setTxValues for the old user form
+ *
+ * @param {Object} web3
+ * @param {Object} contract
+ * @param {Function} dispatch - dispatch
+ * @param {Function} getState - dispatch
+ */
+export const setOldUserFormTxPrice = async (web3, contract, dispatch, getState) => {
+  const state = getState();
+  const balance = state.account.balance;
+  const contractMethod = contract.createOldUser;
+  const usdPerEth = await getValOfEthInUsd();
+
+  const gas = await estimateGasForTx(web3, contractMethod, [], 0);
+  const gasPrice = parseFloat(web3.toWei(state.forms.oldUserForm.gasPrice.value, 'gwei'));
+
+  setTxValues(web3, dispatch, '0', gas, gasPrice, usdPerEth, balance, 'oldUserForm');
+};
+
+/**
  * Calculates the data needed for setTxValues for the send form
  *
  * @param {Object} web3

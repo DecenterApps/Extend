@@ -328,6 +328,22 @@ export const _checkIfRefundAvailable = (web3, contract, username) =>
     });
   });
 
+/**
+ * Checks if the current users address was verified on the old contract
+ *
+ * @param {Object} web3
+ * @param {Object} contract
+ * @return {Promise}
+ */
+export const _checkIfOldUser = (web3, contract) =>
+  new Promise((resolve, reject) => {
+    contract.checkIfOldUser({}, (error, result) => {
+      if (error) return reject(error);
+
+      return resolve(result);
+    });
+  });
+
 /* FUNCTIONS THAT GET DATA/LISTEN FROM/TO EVENTS */
 export const verifiedUserEvent = async (web3, contract, verifiedCallback, noMatchCallback) => {
   let latestBlock = 0;
@@ -483,7 +499,7 @@ export const getReceivedEthForComponents = (web3, contract, componentIds) =>
         if (error) reject(error);
 
         resolve(result.reduce((arr, tx) => {
-          const id = web3.toUtf8(tx.args.comentId);
+          const id = web3.toUtf8(tx.args.commentId);
 
           if (componentIds.includes(id)) {
             const duplicateIndex = arr.findIndex((data) => id === data.id);

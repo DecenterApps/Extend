@@ -1,13 +1,17 @@
+import lightwallet from 'eth-lightwallet';
 import {
   NETWORK_UNAVAILABLE, VERIFIED_USER, REGISTER_USER_ERROR, SET_ACTIVE_TAB, GET_TIPS, GET_TIPS_SUCCESS,
   GET_TIPS_ERROR, CONNECT_AGAIN, CONNECT_AGAIN_SUCCESS, CONNECT_AGAIN_ERROR, ADD_NEW_TIP,
   ADD_NEW_GOLD, GET_GOLD, GET_GOLD_ERROR, GET_GOLD_SUCCESS, SET_REFUND_TIPS, DIALOG_OPEN, ADD_TAB_ID,
-  REMOVE_TAB_ID, CLEAR_REGISTERING_ERROR, CLEAR_REGISTERING_USER, CLEAR_VERIFIED
+  REMOVE_TAB_ID, CLEAR_REGISTERING_ERROR, CLEAR_REGISTERING_USER, CLEAR_VERIFIED, SET_OLD_USER, CLEAR_OLD_USER,
+  MIGRATE_USER, CLEAR_MIGRATING_USER
 } from '../constants/actionTypes';
 import {
   verifiedUserEvent, listenForTips, getTipsFromEvent, listenForGold, getGoldFromEvent, _checkIfRefundAvailable,
-  _checkAddressVerified, _getUsernameForAddress
+  _checkAddressVerified, _getUsernameForAddress, _checkIfOldUser, sendTransaction
 } from '../modules/ethereumService';
+
+const keyStore = lightwallet.keystore;
 
 /**
  * Every time the user comes to the tips history tab in the main view
@@ -215,7 +219,9 @@ export const setTab = (dispatch, selectedTab) => { dispatch({ type: SET_ACTIVE_T
  * @param {String} verifiedUsername - the new verified username
  */
 export const verifiedUser = async (web3, contracts, getState, dispatch, verifiedUsername) => {
-  if (getState().permanent.registeringUsername) await dispatch({ type: CLEAR_REGISTERING_USER });
+  const permanentState = getState().permanent;
+  if (permanentState.registeringUsername) await dispatch({ type: CLEAR_REGISTERING_USER });
+  if (permanentState.migratingUsername) await dispatch({ type: CLEAR_MIGRATING_USER });
 
   await dispatch({ type: VERIFIED_USER, payload: verifiedUsername });
   handleTips(web3, contracts, getState, dispatch);
@@ -226,7 +232,7 @@ export const verifiedUser = async (web3, contracts, getState, dispatch, verified
  * Listens for new verified users and checks if the current registering username is verified
  *
  * @param {Object} web3
- * @param {Array} contracts
+ * @param {Object} contracts
  * @param {Function} dispatch
  * @param {Function} getState
  */
@@ -250,6 +256,32 @@ export const listenForVerifiedUser = (web3, contracts, dispatch, getState) => {
     verifiedEvent.stopWatching(() => {});
     noMatchEvent.stopWatching(() => {});
   };
+
+  verifiedUserEvent(web3, contracts.events, verifiedCallback, noMatchCallback);
+};
+
+/**
+ * Listens for new verified users when user is migrating verified username from old contract
+ * to the new contract
+ *
+ * @param {Object} web3
+ * @param {Object} contracts
+ * @param {Function} dispatch
+ * @param {Function} getState
+ */
+export const listenForMigratingUser = (web3, contracts, dispatch, getState) => {
+  const verifiedCallback = (err, event, verifiedEvent, noMatchEvent) => {
+    const migratingUsername = getState().permanent.migratingUsername;
+
+    if (web3.toUtf8(event.args.username) !== migratingUsername) return;
+
+    verifiedUser(web3, contracts, getState, dispatch, migratingUsername);
+
+    verifiedEvent.stopWatching(() => {});
+    noMatchEvent.stopWatching(() => {});
+  };
+
+  const noMatchCallback = () => {};
 
   verifiedUserEvent(web3, contracts.events, verifiedCallback, noMatchCallback);
 };
@@ -363,6 +395,7 @@ export const handleUserVerification = (web3, dispatch, getState, contracts) =>
         return;
       }
 
+      const oldUsername = web3.toUtf8(await _checkIfOldUser(web3, contracts.func));
       const verified = await _checkAddressVerified(web3, contracts.func);
 
       if (verified) {
@@ -376,8 +409,47 @@ export const handleUserVerification = (web3, dispatch, getState, contracts) =>
         listenForVerifiedUser(web3, contracts, dispatch, getState);
       }
 
+      if (oldUsername && !state.permanent.migratingUsername && !verified && !state.permanent.registeringUsername) {
+        dispatch({ type: SET_OLD_USER, payload: oldUsername });
+      } else {
+        dispatch({ type: CLEAR_OLD_USER });
+      }
+
+      if (oldUsername && state.permanent.migratingUsername) {
+        listenForMigratingUser(web3, contracts, dispatch, getState);
+      }
+
       resolve();
     } catch(err) {
       reject(err);
     }
   });
+
+/**
+ * Migrates verified username from old contract to the new one
+ *
+ * @param {Object} web3
+ * @param {Object} contracts
+ * @param {Function} dispatch
+ * @param {Function} getState
+ */
+export const createOldUser = async (web3, contracts, dispatch, getState) => {
+  const state = getState();
+  const keyStoreState = state.keyStore;
+  const ks = keyStore.deserialize(keyStoreState.keyStore);
+  const address = keyStoreState.address;
+  const password = keyStoreState.password;
+  const gasPrice = web3.toWei(state.forms.oldUserForm.gasPrice.value, 'gwei');
+  const contractMethod = contracts.func.createOldUser;
+
+  try {
+    await sendTransaction(web3, contractMethod, ks, address, password, null, 0, gasPrice);
+
+    await dispatch({ type: MIGRATE_USER, payload: state.user.oldUsername });
+    await dispatch({ type: CLEAR_OLD_USER });
+
+    listenForMigratingUser(web3, contracts, dispatch, getState);
+  } catch(err) {
+    throw Error(err);
+  }
+};

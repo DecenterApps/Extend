@@ -8,6 +8,9 @@ const userActionsHandler = (web3, engine, contracts, getState, dispatch, funcNam
     case 'openAuthWindow':
       return userActions[funcName](payload, dispatch);
 
+    case 'createOldUser':
+      return userActions[funcName](web3, contracts, dispatch, getState);
+
     case 'checkRefundForSentTips':
       return userActions[funcName](web3, contracts.func, getState, dispatch);
 

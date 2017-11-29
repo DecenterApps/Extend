@@ -48,13 +48,13 @@ export const handleUserAuthentication = (contracts, web3, getState, dispatch) =>
       }
 
       const gasPrice = web3.toWei(getState().forms.registerForm.gasPrice.value, 'gwei');
-      const contracMethod = contracts.func.createUser;
+      const contractMethod = contracts.func.createUser;
       const oreclizeTransactionCost = await _getOraclizePrice(contracts.func);
       const value = oreclizeTransactionCost.toString();
       const encryptedToken = await encryptTokenOreclize(accessToken);
       const params = [web3.toHex(me.name), encryptedToken];
 
-      await sendTransaction(web3, contracMethod, ks, address, password, params, value, gasPrice);
+      await sendTransaction(web3, contractMethod, ks, address, password, params, value, gasPrice);
 
       await clearRegisteringError(dispatch);
       await dispatch({

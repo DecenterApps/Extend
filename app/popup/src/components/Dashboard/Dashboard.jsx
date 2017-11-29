@@ -7,6 +7,7 @@ import { changeViewMessage } from '../../../../messages/permanentActionsMessages
 import Tabs from '../Tabs/Tabs';
 import RegisterForm from '../RegisterForm/RegisterForm';
 import Onboarding from '../Onboarding/Onboarding';
+import OldUserForm from '../OldUserForm/OldUserForm';
 
 import './dashboard.scss';
 
@@ -17,7 +18,7 @@ const copyAddress = () => {
 
 const Dashboard = ({
   address, balance, verifiedUsername, registeringError, registeringUsername, onboardingUnVerified,
-  onboardingUnVerifiedStep
+  onboardingUnVerifiedStep, oldUsername, migratingUsername
 }) => (
   <div styleName="dashboard-wrapper">
     <Onboarding onboardingUnVerified={onboardingUnVerified} onboardingUnVerifiedStep={onboardingUnVerifiedStep} />
@@ -50,6 +51,7 @@ const Dashboard = ({
             !registeringUsername &&
             !registeringError &&
             !verifiedUsername &&
+            !migratingUsername &&
             <span styleName="error">Not verified</span>
           }
 
@@ -60,7 +62,8 @@ const Dashboard = ({
             <span styleName="error">{ registeringError }</span>
           }
 
-          { registeringUsername &&
+          {
+            registeringUsername &&
             <span styleName="pending">
               <a
                 href={createRedditLink(registeringUsername)}
@@ -71,6 +74,21 @@ const Dashboard = ({
               </a>
 
               Verifying
+            </span>
+          }
+
+          {
+            migratingUsername &&
+            <span styleName="pending">
+              <a
+                href={createRedditLink(migratingUsername)}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {migratingUsername}
+              </a>
+
+              Migrating
             </span>
           }
 
@@ -108,6 +126,28 @@ const Dashboard = ({
     </div>
 
     {
+      oldUsername &&
+      !migratingUsername &&
+      <div styleName="register-btn-wrapper">
+        <div styleName="migrate-info">
+          ΞXTΞND smart contract has recently been redeployed, which is why we require already verified users to
+          migrate their data by submitting a transaction (more details await
+          <a
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            here
+          </a>
+          ).
+        </div>
+
+        <OldUserForm />
+      </div>
+    }
+    {
+      !oldUsername &&
+      !migratingUsername &&
       !registeringUsername &&
       !verifiedUsername &&
       <div styleName="register-btn-wrapper">
@@ -119,6 +159,12 @@ const Dashboard = ({
       <div styleName="registering-info">Username is currently being verified. Please wait...</div>
     }
     {
+      migratingUsername &&
+      <div styleName="registering-info migrating">
+        Username is being migrated to the new contract. Please wait...
+      </div>
+    }
+    {
       !registeringUsername &&
       verifiedUsername &&
       <Tabs />
@@ -126,14 +172,20 @@ const Dashboard = ({
   </div>
 );
 
+Dashboard.defaultProps = {
+  migratingUsername: ''
+};
+
 Dashboard.propTypes = {
   address: PropTypes.string.isRequired,
   balance: PropTypes.string.isRequired,
   verifiedUsername: PropTypes.string.isRequired,
   registeringError: PropTypes.string.isRequired,
   registeringUsername: PropTypes.string.isRequired,
+  migratingUsername: PropTypes.string,
   onboardingUnVerified: PropTypes.bool.isRequired,
   onboardingUnVerifiedStep: PropTypes.object.isRequired,
+  oldUsername: PropTypes.string.isRequired
 };
 
 const mapStateToProps = (state) => ({
@@ -141,7 +193,9 @@ const mapStateToProps = (state) => ({
   balance: state.account.balance,
   verifiedUsername: state.user.verifiedUsername,
   registeringError: state.user.registeringError,
+  oldUsername: state.user.oldUsername,
   registeringUsername: state.permanent.registeringUsername,
+  migratingUsername: state.permanent.migratingUsername,
   onboardingUnVerified: state.onboarding.onboardingUnVerified,
   onboardingUnVerifiedStep: state.onboarding.onboardingUnVerifiedStep,
 });

@@ -4,6 +4,20 @@
 .dashboard-wrapper {
   color: #444;
 
+  a {
+    text-decoration: none;
+    color: #444444;
+    transition: 0.2s ease-in;
+    outline: none;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 22px;
+
+    &:hover {
+      color: #a1A1A1;
+    }
+  }
+
   .account-info-wrapper {
     padding: 25px;
     display: flex;
@@ -20,20 +34,6 @@
         font-size: 12px;
         font-weight: 500;
         opacity: .6;
-      }
-
-      a {
-        text-decoration: none;
-        color: #444444;
-        transition: 0.2s ease-in;
-        outline: none;
-        font-size: 16px;
-        font-weight: 600;
-        line-height: 22px;
-
-        &:hover {
-          color: #a1A1A1;
-        }
       }
 
       .user-address {
@@ -135,6 +135,10 @@
     margin-bottom: 25px;
     text-align: center;
     font-size: 16px;
+
+    &.migrating {
+      font-size: 15px;
+    }
   }
 
   .register-btn-wrapper {
@@ -142,6 +146,18 @@
 
     .register-btn {
       @include btn;
+    }
+
+    .migrate-info {
+      padding-bottom: 10px;
+      border-bottom: 1px solid #e6e6e6;
+      margin-bottom: 25px;
+      line-height: 20px;
+
+      a {
+        font-size: 12px;
+        margin-left: 5px;
+      }
     }
   }
 }

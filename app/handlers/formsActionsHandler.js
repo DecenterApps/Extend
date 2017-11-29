@@ -9,6 +9,7 @@ const formsActionsHandler = (web3, engine, contracts, getState, dispatch, funcNa
       return formsActions[funcName](dispatch, payload);
 
     case 'setRegisterFormTxPrice':
+    case 'setOldUserFormTxPrice':
     case 'setSendFormTxPrice':
     case 'setRefundFormTxPrice':
     case 'setTipFormTxPrice':

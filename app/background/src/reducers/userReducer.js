@@ -5,7 +5,7 @@ import {
   CONNECT_AGAIN, CONNECT_AGAIN_SUCCESS, CONNECT_AGAIN_ERROR,
   BUY_GOLD, BUY_GOLD_SUCCESS, BUY_GOLD_ERROR, GET_GOLD, GET_GOLD_ERROR, CLEAR_GOLD_PENDING,
   GET_GOLD_SUCCESS, ADD_NEW_GOLD, SET_REFUND_TIPS, DIALOG_OPEN, ADD_TAB_ID, REMOVE_TAB_ID,
-  CLEAR_REGISTERING_ERROR, REGISTER_USER_ERROR
+  CLEAR_REGISTERING_ERROR, REGISTER_USER_ERROR, SET_OLD_USER, CLEAR_OLD_USER
 } from '../../../constants/actionTypes';
 import { TABS } from '../../../constants/general';
 import { NETWORK_URL } from '../../../constants/config';
@@ -36,7 +36,8 @@ const INITIAL_STATE = {
   gettingGold: false,
   gettingGoldError: '',
   dialogWindowId: 0,
-  tabsIds: []
+  tabsIds: [],
+  oldUsername: ''
 };
 
 export const reducer = (state, action) => {
@@ -167,6 +168,11 @@ export const reducer = (state, action) => {
 
       return { ...state, tabsIds: allTabIds };
     }
+
+    case SET_OLD_USER:
+      return { ...state, oldUsername: payload };
+    case CLEAR_OLD_USER:
+      return { ...state, oldUsername: '' };
 
 
     default:

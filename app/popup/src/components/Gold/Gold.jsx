@@ -4,6 +4,8 @@ import SentIcon from '../../../../commonComponents/Decorative/SentIcon';
 import ReceivedIcon from '../../../../commonComponents/Decorative/ReceivedIcon';
 import connect from '../../../../customRedux/connect';
 import { createRedditLink, getLinkForFrom } from '../../../../actions/utils';
+import Tooltip from '../../../../commonComponents/Tooltip/Tooltip';
+import TimeIcon from '../../../../commonComponents/Decorative/TimeIcon';
 
 import './gold.scss';
 
@@ -37,6 +39,9 @@ const Gold = ({ gettingGold, gettingGoldError, golds }) => (
                     <span styleName="content-wrapper">
                       <div styleName="info">
                         <SentIcon />
+                        <span styleName="time-icon">
+                          <Tooltip content={gold.time} useDefaultStyles><TimeIcon /></Tooltip>
+                        </span>
                         <a
                           href={createRedditLink(gold.to)}
                           target="_blank"
@@ -59,6 +64,9 @@ const Gold = ({ gettingGold, gettingGoldError, golds }) => (
                     <span styleName="content-wrapper">
                       <div styleName="info">
                         <ReceivedIcon />
+                        <span styleName="time-icon">
+                          <Tooltip content={gold.time} useDefaultStyles><TimeIcon /></Tooltip>
+                        </span>
                         <a
                           href={getLinkForFrom(gold.to)}
                           target="_blank"

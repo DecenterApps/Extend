@@ -8,8 +8,9 @@ import {
 } from '../constants/actionTypes';
 import {
   verifiedUserEvent, listenForTips, getTipsFromEvent, listenForGold, getGoldFromEvent, _checkIfRefundAvailable,
-  _checkAddressVerified, _getUsernameForAddress, _checkIfOldUser, sendTransaction
+  _checkAddressVerified, _getUsernameForAddress, _checkIfOldUser, sendTransaction, getBlock
 } from '../modules/ethereumService';
+import { formatTime } from './utils';
 
 const keyStore = lightwallet.keystore;
 
@@ -62,18 +63,19 @@ const getTips = async (web3, contracts, dispatch, getState) => {
     const tips = [];
 
     if (tipsFromEvent.length > 0) {
-      tipsFromEvent.forEach((tipParam) => {
-        if ((tipParam.from === address) || (tipParam.from === username)) {
-          const tip = Object.assign({}, tipParam);
-          tip.type = 'sent';
-          tips.push(tip);
-        }
+      tipsFromEvent.forEach(async (_tip) => {
+        let type = '';
 
-        if (tipParam.to === username) {
-          const tip = Object.assign({}, tipParam);
-          tip.type = 'received';
-          tips.push(tip);
-        }
+        if ((_tip.from === address) || (_tip.from === username)) type = 'sent';
+
+        if (_tip.to === username) type = 'received';
+
+        if (!type) return;
+
+        const tip = Object.assign({}, _tip);
+        tip.time = formatTime((await getBlock(web3, tip.block)).timestamp);
+        tip.type = type;
+        tips.push(tip);
       });
     }
 
@@ -103,18 +105,19 @@ const getGold = async (web3, contracts, dispatch, getState) => {
     const golds = [];
 
     if (goldsFromEvent.length > 0) {
-      goldsFromEvent.forEach((goldParam) => {
-        if ((goldParam.from === address) || (goldParam.from === username)) {
-          const gold = Object.assign({}, goldParam);
-          gold.type = 'sent';
-          golds.push(gold);
-        }
+      goldsFromEvent.forEach(async (_gold) => {
+        let type = '';
 
-        if (goldParam.to === username) {
-          const gold = Object.assign({}, goldParam);
-          gold.type = 'received';
-          golds.push(gold);
-        }
+        if ((_gold.from === address) || (_gold.from === username)) type = 'sent';
+
+        if (_gold.to === username) type = 'received';
+
+        if (!type) return;
+
+        const gold = Object.assign({}, _gold);
+        gold.time = formatTime((await getBlock(web3, gold.block)).timestamp);
+        gold.type = type;
+        golds.push(gold);
       });
     }
 

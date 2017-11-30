@@ -36,6 +36,22 @@ export const getBlockNumber = (web3) =>
   });
 
 /**
+ * Gets the current block
+ *
+ * @param {Object} web3
+ * @param {Number} blockNum
+ * @return {Promise}
+ */
+export const getBlock = (web3, blockNum) =>
+  new Promise((resolve, reject) => {
+    web3.eth.getBlock(blockNum, (error, latestBlock) => {
+      if (error) reject(error);
+
+      resolve(latestBlock);
+    });
+  });
+
+/**
  * Gets te current average gas price for the current network
  *
  * @param {Object} web3
@@ -390,7 +406,8 @@ export const getTipsFromEvent = (web3, contracts, address, hexUsername) =>
           return {
             to: web3.toUtf8(tx.args.username),
             val: web3.fromWei(tx.args.val.toString()),
-            from: username || tx.args.from
+            from: username || tx.args.from,
+            block: tx.blockNumber
           };
         }));
 
@@ -443,7 +460,8 @@ export const getGoldFromEvent = (web3, contracts, address, hexUsername) =>
             to: web3.toUtf8(tx.args.to),
             val: web3.fromWei(tx.args.price.toString()),
             from: username || tx.args.from,
-            months: tx.args.months
+            months: tx.args.months,
+            block: tx.blockNumber
           };
         }));
 

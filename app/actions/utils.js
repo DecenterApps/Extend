@@ -188,3 +188,21 @@ export const formatLargeNumber = (incomingOutput) => {
 
   return output.toFixed(x);
 };
+
+/**
+ * Formats block timestamp to readable time string
+ *
+ * @param {Number} timestamp
+ * @return {String}
+ */
+export const formatTime = (timestamp) => {
+  const date = new Date(timestamp * 1000);
+  let hours = date.getHours();
+  let minutes = date.getMinutes();
+  let ampm = hours >= 12 ? 'pm' : 'am';
+  hours %= 12;
+  hours = hours || 12;
+  minutes = minutes < 10 ? '0' + minutes : minutes;
+  let strTime = hours + ':' + minutes + ' ' + ampm;
+  return date.getMonth() + 1 + '-' + date.getDate() + '-' + date.getFullYear() + ' ' + strTime;
+}

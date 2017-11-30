@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Tooltip from '../../../../commonComponents/Tooltip/Tooltip';
 import connect from '../../../../customRedux/connect';
 import SentIcon from '../../../../commonComponents/Decorative/SentIcon';
+import TimeIcon from '../../../../commonComponents/Decorative/TimeIcon';
 import ReceivedIcon from '../../../../commonComponents/Decorative/ReceivedIcon';
 import RefundIcon from '../../../../commonComponents/Decorative/RefundIcon';
 import { checkRefundForSentTipsMessage } from '../../../../messages/userActionsMessages';
@@ -58,6 +59,9 @@ class Tips extends Component {
                         <span styleName="content-wrapper">
                           <span styleName="info">
                             <SentIcon />
+                            <span styleName="time-icon">
+                              <Tooltip content={tip.time} useDefaultStyles><TimeIcon /></Tooltip>
+                            </span>
                             <a
                               href={createRedditLink(tip.to)}
                               target="_blank"
@@ -94,6 +98,9 @@ class Tips extends Component {
                         <span styleName="content-wrapper">
                           <span styleName="info">
                             <ReceivedIcon />
+                            <span styleName="time-icon">
+                              <Tooltip content={tip.time} useDefaultStyles><TimeIcon /></Tooltip>
+                            </span>
                             <a
                               href={getLinkForFrom(tip.from)}
                               target="_blank"

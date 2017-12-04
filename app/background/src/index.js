@@ -67,7 +67,7 @@ const onAppStart = (err) => {
         await startApp();
       }
     });
-  }, 2000);
+  }, 800);
 };
 
 Promise.resolve(startApp()).then(onAppStart);

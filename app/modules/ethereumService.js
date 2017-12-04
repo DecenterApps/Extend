@@ -560,7 +560,7 @@ export const getReceivedMonthsForComponents = (web3, contract, componentIds) =>
 
             if (duplicateIndex !== -1) {
               let existingElem = arr[duplicateIndex];
-              existingElem.months = parseFloat(existingElem.months) + parseFloat(tx.args.months);
+              existingElem.months = parseFloat(existingElem.val) + parseFloat(tx.args.val);
               arr.splice(duplicateIndex, 1, existingElem);
             } else {
               arr.push({ id, months: Number(tx.args.months) });

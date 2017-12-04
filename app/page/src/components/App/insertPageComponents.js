@@ -1,12 +1,13 @@
 import React from 'react';
 import { render } from 'react-dom';
 import {
-  checkIfUsernameVerifiedMessage, getBalanceForComponentsMessage
+  checkIfUsernameVerifiedMessage, getBalanceForComponentsMessage, getGoldForComponentsMessage
 } from '../../../../messages/pageActionsMessages';
 import UserVerified from '../UserVerified/UserVerified';
 import Tip from '../Tip/Tip';
 import BuyGold from '../BuyGold/BuyGold';
 import TipsEth from '../TipsEth/TipsEth';
+import ComponentMonths from '../ComponentMonths/ComponentMonths';
 
 const postConfig = {
   targetElem: '.sitetable.linklisting .thing:not(.added) .flat-list.buttons',
@@ -120,17 +121,37 @@ const handleGetBalanceForComponents = (message) => {
 };
 
 /**
+ * Handle response from background for the getBalanceForComponents message,
+ * inserts the amount of eth the post/comment received into the dom
+ *
+ * @param {Object} message
+ */
+const handleGetGoldForComponents = (message) => {
+  message.payload.forEach((data) => {
+    const parent = $($(`#thing_${data.id}`).find('.tagline')[0]);
+
+    parent.append('<span class="extend-months-val" />');
+
+    render(<ComponentMonths months={data.months} />, parent.find('.extend-months-val')[0]);
+  });
+};
+
+/**
  * Inserts page components into the DOM and listens to incoming messages from the background
  */
 export default () => {
   const postData = insertComponentIntoPage(postConfig);
   const commentData = insertComponentIntoPage(commentConfig);
 
-  getBalanceForComponentsMessage([...postData.ids, ...commentData.ids]);
+  const postAndCommentIds = [...postData.ids, ...commentData.ids];
+
+  getBalanceForComponentsMessage(postAndCommentIds);
+  getGoldForComponentsMessage(postAndCommentIds);
 
   const cb = (message) => {
     if (message.type === 'checkIfUsernameVerified') handleCheckIfUsernameVerified(message, postData, commentData);
     if (message.type === 'getBalanceForComponents') handleGetBalanceForComponents(message);
+    if (message.type === 'getGoldForComponents') handleGetGoldForComponents(message);
   };
 
   chrome.runtime.onMessage.removeListener(cb);

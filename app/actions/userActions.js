@@ -73,7 +73,8 @@ const getTips = async (web3, contracts, dispatch, getState) => {
         if (!type) return;
 
         const tip = Object.assign({}, _tip);
-        tip.time = formatTime((await getBlock(web3, tip.block)).timestamp);
+        const block = await getBlock(web3, tip.block);
+        tip.time = formatTime(block.timestamp);
         tip.type = type;
         tips.push(tip);
       });
@@ -115,7 +116,8 @@ const getGold = async (web3, contracts, dispatch, getState) => {
         if (!type) return;
 
         const gold = Object.assign({}, _gold);
-        gold.time = formatTime((await getBlock(web3, gold.block)).timestamp);
+        const block = await getBlock(web3, gold.block);
+        gold.time = formatTime(block.timestamp);
         gold.type = type;
         golds.push(gold);
       });

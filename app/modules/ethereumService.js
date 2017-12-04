@@ -536,3 +536,38 @@ export const getReceivedEthForComponents = (web3, contract, componentIds) =>
         }, []));
       });
   });
+
+/**
+ * Gets every goldBough event and returns an array of formatted Objects { id, months }
+ * based on if the event has a commentId that matches one of the provided componentIds
+ *
+ * @param {Object} web3
+ * @param {Object} contract
+ * @param {Array} componentIds - array of component Ids
+ * @return {Promise}
+ */
+export const getReceivedMonthsForComponents = (web3, contract, componentIds) =>
+  new Promise(async (resolve, reject) => {
+    contract.GoldBought({}, { fromBlock: CONTRACTS.events.startingBlock, toBlock: 'latest' })
+      .get(async (error, result) => {
+        if (error) reject(error);
+
+        resolve(result.reduce((arr, tx) => {
+          const id = web3.toUtf8(tx.args.commentId);
+
+          if (componentIds.includes(id)) {
+            const duplicateIndex = arr.findIndex((data) => id === data.id);
+
+            if (duplicateIndex !== -1) {
+              let existingElem = arr[duplicateIndex];
+              existingElem.months = parseFloat(existingElem.months) + parseFloat(tx.args.months);
+              arr.splice(duplicateIndex, 1, existingElem);
+            } else {
+              arr.push({ id, months: Number(tx.args.months) });
+            }
+          }
+
+          return arr;
+        }, []));
+      });
+  });

@@ -205,4 +205,4 @@ export const formatTime = (timestamp) => {
   minutes = minutes < 10 ? '0' + minutes : minutes;
   let strTime = hours + ':' + minutes + ' ' + ampm;
   return date.getMonth() + 1 + '-' + date.getDate() + '-' + date.getFullYear() + ' ' + strTime;
-}
+};

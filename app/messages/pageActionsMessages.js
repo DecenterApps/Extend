@@ -9,6 +9,7 @@ export const checkIfUsernameVerifiedMessage = (username, index, type) => {
 };
 
 export const getBalanceForComponentsMessage = (payload) => { pm({ action: 'getBalanceForComponents', payload }); };
+export const getGoldForComponentsMessage = (payload) => { pm({ action: 'getGoldForComponents', payload }); };
 
 export const tipMessage = () => { pm({ action: 'tip' }); };
 

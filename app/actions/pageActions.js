@@ -1,6 +1,6 @@
 import lightwallet from 'eth-lightwallet';
 import {
-  _checkUsernameVerified, sendTransaction, getReceivedEthForComponents
+  _checkUsernameVerified, sendTransaction, getReceivedEthForComponents, getReceivedMonthsForComponents
 } from '../modules/ethereumService';
 import {
   SEND_TIP, SEND_TIP_ERROR, SEND_TIP_SUCCESS, CLEAR_TIP_PENDING,
@@ -40,6 +40,21 @@ export const getBalanceForComponents = async (web3, contract, payload, tabId) =>
   const newPayload = await getReceivedEthForComponents(web3, contract, payload);
 
   chrome.tabs.sendMessage(tabId, { type: 'getBalanceForComponents', payload: newPayload });
+};
+
+/**
+ * Gets the amount of bought months for all component ids that are in the payload and sends a
+ * message back to the tab that requested the data
+ *
+ * @param {Object} web3
+ * @param {Object} contract
+ * @param {Array} payload - array of component Ids
+ * @param {Number} tabId
+ */
+export const getGoldForComponents = async (web3, contract, payload, tabId) => {
+  const newPayload = await getReceivedMonthsForComponents(web3, contract, payload);
+
+  chrome.tabs.sendMessage(tabId, { type: 'getGoldForComponents', payload: newPayload });
 };
 
 /**

@@ -4,6 +4,7 @@ const pageHandler = (web3, engine, contracts, getState, dispatch, funcName, payl
   switch (funcName) {
     case 'getBalanceForComponents':
     case 'checkIfUsernameVerified':
+    case 'getGoldForComponents':
       return pageActions[funcName](web3, contracts.func, payload, tabId);
     case 'tip':
     case 'buyGold':

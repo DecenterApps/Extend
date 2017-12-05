@@ -6,14 +6,14 @@ class InputFormField extends Component {
   componentDidMount() {
     if (!this.props.value) return;
 
-    this.props.input.onInput({ target: { value: this.props.value } });
+    this.props.input.onChange({ target: { value: this.props.value } });
   }
 
   render() {
     const {
       input, placeholder, wrapperClassName, inputClassName, errorClassName, showErrorText, min,
       type, id, showLabel, labelText, labelClass, meta: { touched, error }, value, autoFocus,
-      inputType
+      inputType, checkBoxClass
     } = this.props;
     return (
       <div className={wrapperClassName}>
@@ -22,6 +22,7 @@ class InputFormField extends Component {
           <input
             {...input}
             defaultValue={value}
+            defaultChecked={value}
             placeholder={placeholder}
             id={id}
             className={`${inputClassName} ${touched && error ? errorClassName : ''}`}
@@ -30,6 +31,7 @@ class InputFormField extends Component {
             min={min}
           />
         }
+        { type === 'checkbox' && <label htmlFor={id || ''} className={checkBoxClass} /> }
         {
           inputType === 'textarea' &&
           <textarea
@@ -43,7 +45,14 @@ class InputFormField extends Component {
           />
         }
 
-        {showLabel && <label className={labelClass} htmlFor={id || ''}>{ labelText }</label>}
+        {
+          showLabel && type === 'checkbox' &&
+          <span className={labelClass}>{ labelText }</span>
+        }
+        {
+          showLabel && type !== 'checkbox' &&
+          <label className={labelClass} htmlFor={id || ''}>{ labelText }</label>
+        }
         {touched && ((error && showErrorText && <div className={errorClassName}>{error}</div>))}
       </div>
     );
@@ -61,7 +70,8 @@ InputFormField.defaultProps = {
   autoFocus: false,
   min: '',
   type: 'text',
-  inputType: 'input'
+  inputType: 'input',
+  checkBoxClass: ''
 };
 
 InputFormField.propTypes = {
@@ -80,7 +90,8 @@ InputFormField.propTypes = {
   showErrorText: PropTypes.bool,
   autoFocus: PropTypes.bool,
   min: PropTypes.string,
-  inputType: PropTypes.string
+  inputType: PropTypes.string,
+  checkBoxClass: PropTypes.string,
 };
 
 export default InputFormField;

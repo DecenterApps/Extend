@@ -7,7 +7,8 @@ import TipIcon from '../../../../commonComponents/Decorative/TipIcon';
 import '../../../../commonComponents/pageIcons.scss';
 
 const openTipModal = (author, isVerified, id) => {
-  toggleModalMessage('tip_modal', { author, isVerified, id }, true);
+  const type = id.substring(0, 2) === 't3' ? 'post' : 'comment';
+  toggleModalMessage('tip_modal', { author, isVerified, id, type }, true);
 };
 
 const Tip = ({ author, isVerified, id }) => (

@@ -188,6 +188,7 @@ export const setTipFormTxPrice = async (web3, contract, dispatch, getState) => {
   const balance = state.account.balance;
   const form = state.forms.tipForm;
   const value = web3.toWei(form.amount.value);
+  const reply = form.reply.value;
   const contractMethod = contract.tipUser;
   const author = state.modals.modalProps.author;
   const id = state.modals.modalProps.id;
@@ -195,7 +196,8 @@ export const setTipFormTxPrice = async (web3, contract, dispatch, getState) => {
 
   const params = [
     web3.toHex(author), // bytes32 _username
-    web3.toHex(id) // bytes32 _commentId
+    web3.toHex(id), // bytes32 _commentId
+    reply // bool _reply
   ];
 
   const gas = await estimateGasForTx(web3, contractMethod, params, value);
@@ -217,6 +219,7 @@ export const setBuyGoldFormTxPrice = async (web3, contract, dispatch, getState) 
   const balance = state.account.balance;
   const form = state.forms.buyGoldForm;
   const months = form.months.value.toString();
+  const reply = form.reply.value;
   const contractMethod = contract.buyGold;
   const author = state.modals.modalProps.author;
   const id = state.modals.modalProps.id;
@@ -236,7 +239,8 @@ export const setBuyGoldFormTxPrice = async (web3, contract, dispatch, getState) 
     data.priceInUsd.toString(), // string _priceUsd
     id, // string _commentId
     data.nonce.toString(), // string _nonce
-    data.signature, // string _signature
+    data.signature, // string _signature,
+    reply // bool _reply
   ];
 
   const gas = await estimateGasForTx(web3, contractMethod, params, value);

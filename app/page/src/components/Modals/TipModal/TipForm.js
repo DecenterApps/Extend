@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import connect from '../../../../../customRedux/connect';
 import createForm from '../../../../../customRedux/createForm';
 import Tooltip from '../../../../../commonComponents/Tooltip/Tooltip';
+import InfoIcon from '../../../../../commonComponents/Decorative/InfoIcon';
 import createField from '../../../../../customRedux/createField';
 import InputFormField from '../../../../../commonComponents/InputFormField';
 import tipFormValidator from './tipFormValidator';
@@ -15,9 +16,10 @@ const FORM_NAME = 'tipForm';
 
 class TipForm extends Component {
   componentWillMount() {
-    this.props.formData.setNumOfFields(2);
+    this.props.formData.setNumOfFields(3);
     this.AmountField = createField(InputFormField, this.props.formData);
     this.GasPriceField = createField(InputFormField, this.props.formData);
+    this.ReplyCheckbox = createField(InputFormField, this.props.formData, true);
   }
 
   componentDidMount() {
@@ -51,6 +53,7 @@ class TipForm extends Component {
 
     const AmountField = this.AmountField;
     const GasPriceField = this.GasPriceField;
+    const ReplyCheckbox = this.ReplyCheckbox;
 
     const submitDisabled = this.props.pristine || this.props.invalid ||
       this.props.sendingTip || (!this.props.invalid && insufficientBalance);
@@ -60,7 +63,6 @@ class TipForm extends Component {
         styleName="form-wrapper-2"
         onSubmit={(e) => { this.props.handleSubmit(e, tipMessage); }}
       >
-
         {
           (this.props.isVerified === false) &&
           <div styleName="info-wrapper">
@@ -94,6 +96,30 @@ class TipForm extends Component {
           inputClassName={formStyle['form-item']}
           errorClassName={formStyle['form-item-error']}
         />
+
+        <div styleName="notice-wrapper">
+          <Tooltip
+            content={`Uncheck if you do not want ${this.props.author} to receive a reply to the ${this.props.type}`}
+            useDefaultStyles
+          >
+            <div styleName="notice-icon"><InfoIcon /></div>
+          </Tooltip>
+
+          <ReplyCheckbox
+            name="reply"
+            id="reply"
+            showErrorText
+            showLabel
+            labelText={`Reply to ${this.props.type}:`}
+            labelClass={formStyle.label}
+            type="checkbox"
+            value="true"
+            checkBoxClass={formStyle.checkbox}
+            wrapperClassName={formStyle['form-item-wrapper']}
+            inputClassName={`${formStyle['form-item']} ${formStyle['form-item-checkbox']}`}
+            errorClassName={formStyle['form-item-error']}
+          />
+        </div>
 
         {
           !this.props.invalid &&
@@ -166,6 +192,8 @@ TipForm.propTypes = {
   isVerified: PropTypes.bool.isRequired,
   closeModal: PropTypes.func.isRequired,
   balance: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+  author: PropTypes.string.isRequired
 };
 
 const mapStateToProps = (state) => ({
@@ -174,7 +202,9 @@ const mapStateToProps = (state) => ({
   sendingTip: state.user.sendingTip,
   sendingTipSuccess: state.user.sendingTipSuccess,
   balance: state.account.balance,
-  isVerified: state.modals.modalProps.isVerified
+  isVerified: state.modals.modalProps.isVerified,
+  type: state.modals.modalProps.type,
+  author: state.modals.modalProps.author
 });
 
 const ExportComponent = createForm(FORM_NAME, TipForm, tipFormValidator);

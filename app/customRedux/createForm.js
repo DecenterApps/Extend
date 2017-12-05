@@ -105,6 +105,7 @@ const createForm = (formName, WrappedComponent, validator) => {
         if (this.fields[fieldName].error) invalid = true;
         if (this.fields[fieldName].touched) pristine = false;
         if (this.fields[fieldName].value) hasValue++;
+        if (!this.fields[fieldName].value && this.fields[fieldName].optional) hasValue++;
       });
 
       if (hasValue !== fields.length) invalid = true;

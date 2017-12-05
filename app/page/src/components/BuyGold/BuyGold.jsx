@@ -8,7 +8,8 @@ import GoldIcon from '../../../../commonComponents/Decorative/GoldIcon';
 import '../../../../commonComponents/pageIcons.scss';
 
 const openGoldModal = (author, id) => {
-  toggleModalMessage(GOLD_MODAL, { author, id }, true);
+  const type = id.substring(0, 2) === 't3' ? 'post' : 'comment';
+  toggleModalMessage(GOLD_MODAL, { author, id, type }, true);
 };
 
 const BuyGold = ({ author, id }) => (

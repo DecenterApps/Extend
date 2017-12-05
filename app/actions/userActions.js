@@ -74,6 +74,7 @@ const getTips = async (web3, contracts, dispatch, getState) => {
 
         const tip = Object.assign({}, _tip);
         const block = await getBlock(web3, tip.block);
+        console.log('block', block);
         tip.time = formatTime(block.timestamp);
         tip.type = type;
         tips.push(tip);

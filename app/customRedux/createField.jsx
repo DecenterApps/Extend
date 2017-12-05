@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-const createField = (WrappedComponent, formData) => {
+const createField = (WrappedComponent, formData, optional = false) => {
   class Field extends Component {
     constructor(props) {
       super(props);
@@ -12,12 +12,13 @@ const createField = (WrappedComponent, formData) => {
       this.meta = {
         value: '',
         error: '',
-        touched: false
+        touched: false,
+        optional
       };
 
       this.input = {
-        onInput: this.handleChange,
-        onBlur: this.handleBlur
+        onBlur: this.handleBlur,
+        onChange: this.handleChange
       };
 
       this.updateMergedProps = this.updateMergedProps.bind(this);
@@ -52,7 +53,12 @@ const createField = (WrappedComponent, formData) => {
     }
 
     handleChange(input) {
-      this.meta.value = input.target.value;
+      if (input.target.type === 'checkbox') {
+        this.meta.value = input.target.checked;
+      } else {
+        this.meta.value = input.target.value;
+      }
+
       this.updateMergedProps();
 
       formData.handleFieldChange({

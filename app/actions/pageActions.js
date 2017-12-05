@@ -83,6 +83,7 @@ export const tip = async (web3, contract, dispatch, getState) => {
   const state = getState();
   const amount = web3.toWei(state.forms.tipForm.amount.value);
   const gasPrice = web3.toWei(state.forms.tipForm.gasPrice.value, 'gwei');
+  const reply = state.forms.tipForm.reply.value;
   const author = state.modals.modalProps.author;
   const id = state.modals.modalProps.id;
   const ks = keyStore.deserialize(state.keyStore.keyStore);
@@ -92,7 +93,8 @@ export const tip = async (web3, contract, dispatch, getState) => {
 
   const params = [
     web3.toHex(author), // bytes32 _username
-    web3.toHex(id) // bytes32 _commentId
+    web3.toHex(id), // bytes32 _commentId,
+    reply // bool _reply
   ];
 
   try {
@@ -118,6 +120,7 @@ export const buyGold = async (web3, contract, dispatch, getState) => {
   const state = getState();
   const gasPrice = web3.toWei(state.forms.buyGoldForm.gasPrice.value, 'gwei');
   const months = state.forms.buyGoldForm.months.value.toString();
+  const reply = state.forms.buyGoldForm.reply.value;
   const author = state.modals.modalProps.author;
   const id = state.modals.modalProps.id;
   const ks = keyStore.deserialize(state.keyStore.keyStore);
@@ -142,6 +145,7 @@ export const buyGold = async (web3, contract, dispatch, getState) => {
       web3.toHex(id), // bytes32 _commentId
       data.nonce.toString(), // string _nonce
       data.signature, // string _signature
+      reply // bool _reply
     ];
 
     await sendTransaction(web3, contractMethod, ks, address, password, params, amount, gasPrice);

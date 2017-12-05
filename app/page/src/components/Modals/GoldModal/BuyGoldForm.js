@@ -4,6 +4,7 @@ import Tooltip from '../../../../../commonComponents/Tooltip/Tooltip';
 import connect from '../../../../../customRedux/connect';
 import createForm from '../../../../../customRedux/createForm';
 import createField from '../../../../../customRedux/createField';
+import InfoIcon from '../../../../../commonComponents/Decorative/InfoIcon';
 import InputFormField from '../../../../../commonComponents/InputFormField';
 import buyGoldFormValidator from './buyGoldFormValidator';
 import { buyGoldMessage } from '../../../../../messages/pageActionsMessages';
@@ -18,9 +19,10 @@ class buyGoldForm extends Component {
     this.currentFormTxCost = {};
     this.insufficientBalance = true;
 
-    this.props.formData.setNumOfFields(2);
+    this.props.formData.setNumOfFields(3);
     this.MonthsField = createField(InputFormField, this.props.formData);
     this.GasPriceField = createField(InputFormField, this.props.formData);
+    this.ReplyCheckbox = createField(InputFormField, this.props.formData, true);
   }
 
   componentDidMount() {
@@ -59,6 +61,7 @@ class buyGoldForm extends Component {
 
     const MonthsField = this.MonthsField;
     const GasPriceField = this.GasPriceField;
+    const ReplyCheckbox = this.ReplyCheckbox;
 
     const submitDisabled = this.props.pristine || this.props.invalid || this.props.buyingGold ||
       (!this.props.invalid && insufficientBalance);
@@ -94,6 +97,30 @@ class buyGoldForm extends Component {
           inputClassName={formStyle['form-item']}
           errorClassName={formStyle['form-item-error']}
         />
+
+        <div styleName="notice-wrapper">
+          <Tooltip
+            content={`Uncheck if you do not want ${this.props.author} to receive a reply to the ${this.props.type}`}
+            useDefaultStyles
+          >
+            <div styleName="notice-icon"><InfoIcon /></div>
+          </Tooltip>
+
+          <ReplyCheckbox
+            name="reply"
+            id="reply"
+            showErrorText
+            showLabel
+            labelText={`Reply to ${this.props.type}:`}
+            labelClass={formStyle.label}
+            type="checkbox"
+            value="true"
+            checkBoxClass={formStyle.checkbox}
+            wrapperClassName={formStyle['form-item-wrapper']}
+            inputClassName={`${formStyle['form-item']} ${formStyle['form-item-checkbox']}`}
+            errorClassName={formStyle['form-item-error']}
+          />
+        </div>
 
         {
           !this.props.invalid &&
@@ -167,7 +194,9 @@ buyGoldForm.propTypes = {
   forms: PropTypes.object.isRequired,
   buyingGoldSuccess: PropTypes.bool.isRequired,
   closeModal: PropTypes.func.isRequired,
-  balance: PropTypes.string.isRequired
+  balance: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+  author: PropTypes.string.isRequired
 };
 
 const mapStateToProps = (state) => ({
@@ -175,7 +204,9 @@ const mapStateToProps = (state) => ({
   buyingGold: state.user.buyingGold,
   buyingGoldError: state.user.buyingGoldError,
   buyingGoldSuccess: state.user.buyingGoldSuccess,
-  balance: state.account.balance
+  balance: state.account.balance,
+  type: state.modals.modalProps.type,
+  author: state.modals.modalProps.author
 });
 
 const ExportComponent = createForm(

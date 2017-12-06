@@ -10,25 +10,21 @@ import TipsEth from '../TipsEth/TipsEth';
 import ComponentMonths from '../ComponentMonths/ComponentMonths';
 
 const postConfig = {
-  targetElem: ".sitetable.linklisting .thing:not(.added):visible[id*='thing_'] .flat-list.buttons",
   type: 'post',
-  authorWrapper: ".sitetable.linklisting .thing:not(.added):visible[id*='thing_'] .tagline",
-  mapFunc: (i, e) => ($(e).find('.author').text()),
-  authorIdWrapper: '.sitetable.linklisting',
+  targetElem: ".sitetable.linklisting .thing:not(.added):visible[id*='thing_'] .flat-list.buttons",
+  idsWrapper: ".sitetable.linklisting .thing:not(.added):visible[id*='thing_']",
   typeWrapper: '.sitetable.linklisting .thing:not(.added)'
 };
 
 const commentConfig = {
-  targetElem: ".commentarea .comment:not(.added):visible[id*='thing_'] .flat-list:contains('permalink')",
   type: 'comment',
-  authorWrapper: ".commentarea .comment:not(.added):visible[id*='thing_'] .tagline .author",
-  mapFunc: (i, el) => (el.textContent),
-  authorIdWrapper: '.commentarea',
+  targetElem: ".commentarea .comment:not(.added):visible[id*='thing_'] .flat-list:contains('permalink')",
+  idsWrapper: ".commentarea .comment:not(.added):visible[id*='thing_']",
   typeWrapper: '.commentarea .comment:not(.added)'
 };
 
 const insertComponentIntoPage = (config) => {
-  const { targetElem, type, authorWrapper, mapFunc, authorIdWrapper, typeWrapper } = config;
+  const { targetElem, type, idsWrapper, typeWrapper } = config;
   const elem = $(targetElem);
 
   elem.append(`
@@ -37,9 +33,9 @@ const insertComponentIntoPage = (config) => {
     <li class="extend-verified-${type}"></li>
   `);
 
-  const authors = $(authorWrapper).map(mapFunc);
-  const idElements = authors.map((key, val) => ($(authorIdWrapper).find(`[data-author='${val}']`)));
-  const ids = idElements.map((key, val) => val.attr('id').substring(6));
+  let ids = $(idsWrapper).map((i, e) => ($(e).attr('id')));
+  const authors = ids.map((key, id) => $(`#${id}`).attr('data-author'));
+  ids = ids.map((key, id) => id.substring(6));
 
   const tipDivs = elem.find(`.extend-tip-${type}`).toArray();
   const goldDivs = elem.find(`.extend-gold-${type}`).toArray();

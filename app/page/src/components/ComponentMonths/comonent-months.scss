@@ -1,0 +1,13 @@
+.gold-icon-wrapper {
+
+  div {
+    display: inline-block;
+
+    &:first-child span {
+      cursor: pointer;
+      background: inherit !important;
+      border-radius: unset;
+      box-shadow: none;
+    }
+  }
+}

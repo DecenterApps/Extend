@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import '../../../../commonComponents/pageIcons.scss';
+import './tips-eth.scss';
 
 const TipsEth = ({ val }) => (
-  <span styleName="icon-wrapper">
-    { val } Eth
+  <span styleName="tips-eth-wrapper">
+    Total tips: {val} ETH
   </span>
 );
 

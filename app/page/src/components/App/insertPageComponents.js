@@ -10,18 +10,18 @@ import TipsEth from '../TipsEth/TipsEth';
 import ComponentMonths from '../ComponentMonths/ComponentMonths';
 
 const postConfig = {
-  targetElem: '.sitetable.linklisting .thing:not(.added) .flat-list.buttons',
+  targetElem: ".sitetable.linklisting .thing:not(.added):visible[id*='thing_'] .flat-list.buttons",
   type: 'post',
-  authorWrapper: '.sitetable.linklisting .thing:not(.added) .tagline',
+  authorWrapper: ".sitetable.linklisting .thing:not(.added):visible[id*='thing_'] .tagline",
   mapFunc: (i, e) => ($(e).find('.author').text()),
   authorIdWrapper: '.sitetable.linklisting',
   typeWrapper: '.sitetable.linklisting .thing:not(.added)'
 };
 
 const commentConfig = {
-  targetElem: ".commentarea .comment:not(.added) .flat-list:contains('permalink')",
+  targetElem: ".commentarea .comment:not(.added):visible[id*='thing_'] .flat-list:contains('permalink')",
   type: 'comment',
-  authorWrapper: '.commentarea .comment:not(.added) .tagline .author',
+  authorWrapper: ".commentarea .comment:not(.added):visible[id*='thing_'] .tagline .author",
   mapFunc: (i, el) => (el.textContent),
   authorIdWrapper: '.commentarea',
   typeWrapper: '.commentarea .comment:not(.added)'
@@ -112,9 +112,9 @@ const handleCheckIfUsernameVerified = (message, postData, commentData) => {
  */
 const handleGetBalanceForComponents = (message) => {
   message.payload.forEach((data) => {
-    const parent = $($(`#thing_${data.id}`).find('[class^="extend-tip"]').parent()[0]);
+    const parent = $($(`#thing_${data.id}`).find('.tagline')[0]);
 
-    parent.append('<li class="extend-tip-val" />');
+    parent.append('<span class="extend-tip-val" />');
 
     render(<TipsEth val={data.val} />, parent.find('.extend-tip-val')[0]);
   });
@@ -128,11 +128,14 @@ const handleGetBalanceForComponents = (message) => {
  */
 const handleGetGoldForComponents = (message) => {
   message.payload.forEach((data) => {
-    const parent = $($(`#thing_${data.id}`).find('.tagline')[0]);
+    const parent = $($(`#thing_${data.id}`).find('.tagline'));
+    const gildedIcon = parent.find('.gilded-icon')[0];
 
-    parent.append('<span class="extend-months-val" />');
+    if (!gildedIcon) return;
 
-    render(<ComponentMonths months={data.months} />, parent.find('.extend-months-val')[0]);
+    parent.find('.author').after('<span class="extend-months-val" />');
+
+    render(<ComponentMonths iconElem={gildedIcon} months={data.months} />, parent.find('.extend-months-val')[0]);
   });
 };
 

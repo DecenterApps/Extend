@@ -139,6 +139,11 @@ $duration: .2s;
 
   .notice-wrapper {
     display: flex;
+    margin-bottom: 35px;
+
+    .form-item-wrapper {
+      margin-bottom: 0;
+    }
   }
 
   .notice-icon {

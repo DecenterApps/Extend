@@ -75,6 +75,7 @@ class buyGoldForm extends Component {
         <MonthsField
           name="months"
           min="1"
+          id="months"
           showErrorText
           showLabel
           labelText="Number of Months:"
@@ -88,6 +89,7 @@ class buyGoldForm extends Component {
         <GasPriceField
           name="gasPrice"
           min="1"
+          id="gasPrice"
           showErrorText
           showLabel
           labelText="Gas price (Gwei):"

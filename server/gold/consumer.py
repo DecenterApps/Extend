@@ -27,18 +27,18 @@ def callback(ch, method, properties, body):
     if not gold_db:
         db.gold.insert_one({"signature": signature, "time": timestamp})
 
-        print("giving gold to: " + to_username)
+        print("giving gold to: " + to_username, flush=True)
         gold.give(to_username=to_username,
                   from_address=from_address,
                   months=months,
                   id=id)
     client.close()
 
-    print(" [x] Received %r" % body)
+    print(" [x] Received %r" % body, flush=True)
 
 channel.basic_consume(callback,
                       queue='gold',
                       no_ack=True)
 
-print(' [*] Waiting for messages. To exit press CTRL+C')
+print(' [*] Waiting for messages. To exit press CTRL+C', flush=True)
 channel.start_consuming()

@@ -14,7 +14,7 @@ const amqp = require('amqplib/callback_api');
 /*
 Config
  */
-const config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
+const config = JSON.parse(fs.readFileSync('../config.json', 'utf8'));
 
 const getBlockNumber = (web3) =>
   new Promise((resolve, reject) => {
@@ -26,7 +26,7 @@ const getBlockNumber = (web3) =>
   });
 
 const getWeb3 = async () => {
-    let web3 = new Web3(new Web3.providers.HttpProvider('http://mainnet.decenter.com'));
+    let web3 = new Web3(new Web3.providers.HttpProvider(config.httpProvider));
 
     const contract = web3.eth.contract(config.events.abi).at(config.events.contractAddress);
 
@@ -37,17 +37,21 @@ const getWeb3 = async () => {
             const username = web3.toUtf8(event.args.username);
             const val = web3.fromWei(event.args.val.toString());
             const fromAddress = event.args.from;
+            const reply = event.args.reply;
+            const commentId = web3.toUtf8(event.args.commentId);
 
-            try {
-                amqp.connect('amqp://localhost', (err, conn) => {
-                    conn.createChannel((err, ch) => {
-                        ch.assertQueue('message', {durable: false});
-                        ch.sendToQueue('message', new Buffer(JSON.stringify({'username': username, 'fromAddress': fromAddress, 'val': val})));
-                        console.log('Username: ' + username + " queued to messageQueue");
+            if (reply) {
+                try {
+                    amqp.connect('amqp://localhost', (err, conn) => {
+                        conn.createChannel((err, ch) => {
+                            ch.assertQueue('tip', {durable: false});
+                            ch.sendToQueue('tip', new Buffer(JSON.stringify({'username': username, 'fromAddress': fromAddress, 'amount': val, 'id': commentId})));
+                            console.log('Username ' + username + " queued to tipQueue");
+                        });
                     });
-                });
-            } catch (e) {
-                console.log('unable to queue message');
+                } catch (e) {
+                    console.log('Unable to queue message');
+                }
             }
         });
 };

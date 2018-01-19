@@ -10,18 +10,18 @@ config = json.load(open('../config.json'))
 connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
 channel = connection.channel()
 
-channel.queue_declare(queue='message')
+channel.queue_declare(queue='tip')
 
 logging.basicConfig(filename='gold.log',
                     level=logging.DEBUG,
                     format='%(asctime)s %(message)s')
 
-def give(to_username, from_address, months, id=None):
-    print("Logging in...")
-    r = praw.Reddit(client_id=config['reddit']['client_id'],
-                    client_secret=config['reddit']['client_secret'],
-                    username=config['reddit']['username'],
-                    password=config['reddit']['password'],
+def give(to_username, from_address, months, id):
+    print("Logging in...", flush=True)
+    r = praw.Reddit(client_id=config['redditGold']['client_id'],
+                    client_secret=config['redditGold']['client_secret'],
+                    username=config['redditGold']['username'],
+                    password=config['redditGold']['password'],
                     user_agent='bot')
 
     try:
@@ -30,21 +30,24 @@ def give(to_username, from_address, months, id=None):
         elif id[1] == '3':
             gildableThing = r.submission(id=id[3:])
         else:
+            print("Wrong id passed")
             raise Exception
 
-        gildableThing.gild()
-        print("gilded")
+        # gildableThing.gild()
+        print("gilded " + id, flush=True)
 
         if months != '1':
             r.redditor(to_username).gild(months=int(months) - 1)
 
-        print("Bought")
+        print("Bought", flush=True)
 
         channel.basic_publish(exchange='',
-                              routing_key='message',
+                              routing_key='tip',
                               body=json.dumps({'username': to_username,
                                                'fromAddress': from_address,
-                                               'months': months}))
+                                               'months': months,
+                                               'id': id}))
+        connection.close()
     except requests.exceptions.ConnectionError as e:
         print(e.response)
         return False
@@ -52,7 +55,7 @@ def give(to_username, from_address, months, id=None):
         print(e)
         return False
 
-    print("Sleeping...")
+    print("Sleeping...", flush=True)
     time.sleep(1)
 
 if __name__ == '__main__':

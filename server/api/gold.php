@@ -3,7 +3,7 @@
 const REDDIT_GOLD_ONE_MONTH = 3.99;
 const REDDIT_GOLD_ONE_YEAR = 29.99;
 
-$private_key = file_get_contents('private.key');
+$private_key = file_get_contents('../private.key');
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -46,4 +46,5 @@ echo json_encode([
     'nonce' => $nonce,
     'id' => $id,
     'signature' => base64_encode($signature),
+    'data' => $data,
 ]);

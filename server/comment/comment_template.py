@@ -17,3 +17,6 @@ but we thought you might want to learn more about ΞXTΞND,
 so we are including some relevant links below.
 \n[View code on Github]({github})
 \n[Install it from Chrome Web Store]({webstore})"""
+
+TIP_TEST_ENDPOINT = "https://hooks.slack.com/services/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"
+TIP_TEST_DATA = {'text': 'Tip test passed'}

@@ -18,7 +18,7 @@ logging.basicConfig(filename='tip.log',
                     level=logging.DEBUG,
                     format='%(asctime)s %(message)s')
 
-def comment(to_username, from_username, id, amount=None, months=None):
+def comment(to_username, from_username, id, amount=None, months=None, test=False):
     print("Logging in...", flush=True)
     r = praw.Reddit(client_id=config['reddit']['client_id'],
                     client_secret=config['reddit']['client_secret'],
@@ -40,6 +40,10 @@ def comment(to_username, from_username, id, amount=None, months=None):
         expire = r.ttl('comment')
 
         print('Current expire on comment: ' + str(expire), flush=True)
+
+        if test:
+            requests.post(comment_template.TIP_TEST_ENDPOINT, json=comment_template.TIP_TEST_DATA)
+            return
 
         if expire > 0:
             print("Pre sleeping :" + str(expire))

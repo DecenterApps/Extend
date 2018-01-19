@@ -53,7 +53,7 @@ const getWeb3 = async () => {
                         amqp.connect('amqp://localhost', (err, conn) => {
                             conn.createChannel((err, ch) => {
                                 ch.assertQueue('gold', {durable: false});
-                                ch.sendToQueue('gold', new Buffer(JSON.stringify({'toUsername': to, 'fromAddress': fromAddress, 'months': months, 'signature': signature, 'id': id})));
+                                ch.sendToQueue('gold', new Buffer(JSON.stringify({'toUsername': to, 'fromAddress': fromAddress, 'months': months, 'signature': signature, 'id': id, 'test': false})));
                                 console.log('Username: ' + to + ", fromAddress: " + fromAddress + ", id: " + id + " queued to goldQueue")
                             });
                         });

@@ -22,6 +22,9 @@ def callback(ch, method, properties, body):
     to_username = decoded_body['username']
     from_address = decoded_body['fromAddress']
     id = decoded_body['id']
+    test = decoded_body['test']
+
+    print("from_address  " + from_address, flush=True)
 
     from_username = contract.call().getUsernameForAddress(from_address).rstrip('\x00')
 
@@ -31,13 +34,15 @@ def callback(ch, method, properties, body):
         commenter.comment(to_username=to_username,
                           from_username=from_username,
                           id=id,
-                          amount=decoded_body['amount'])
+                          amount=decoded_body['amount'],
+                          test=test)
 
     if 'months' in decoded_body:
         commenter.comment(to_username=to_username,
                           from_username=from_username,
                           id=id,
-                          months=decoded_body['months'])
+                          months=decoded_body['months'],
+                          test=test)
 
 
     print(" [x] Received %r" % body, flush=True)

@@ -2,8 +2,10 @@
 import pika
 import json
 import gold
+import requests
 import pymongo
 import time
+import gold_curl
 
 connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
 channel = connection.channel()
@@ -18,6 +20,7 @@ def callback(ch, method, properties, body):
     to_username = decoded_body['toUsername']
     from_address = decoded_body['fromAddress']
     id = decoded_body['id']
+    test = decoded_body['test']
     timestamp = time.time()
 
     client = pymongo.MongoClient("localhost", 27017)
@@ -31,7 +34,17 @@ def callback(ch, method, properties, body):
         gold.give(to_username=to_username,
                   from_address=from_address,
                   months=months,
-                  id=id)
+                  id=id,
+                  test=test)
+
+        print("Sending results", flush=True)
+        if not test:
+            r = requests.get(gold_curl.GOLD_CURL)
+            requests.post(gold_curl.GOLD_WEBHOOK_ENDPOINT, json=gold_curl.GOLD_WEBHOOK_DATA.format(r))
+        else:
+            requests.post(gold_curl.TIP_TEST_ENDPOINT, json=gold_curl.TIP_TEST_DATA)
+
+
     client.close()
 
     print(" [x] Received %r" % body, flush=True)

@@ -45,7 +45,7 @@ const getWeb3 = async () => {
                     amqp.connect('amqp://localhost', (err, conn) => {
                         conn.createChannel((err, ch) => {
                             ch.assertQueue('tip', {durable: false});
-                            ch.sendToQueue('tip', new Buffer(JSON.stringify({'username': username, 'fromAddress': fromAddress, 'amount': val, 'id': commentId})));
+                            ch.sendToQueue('tip', new Buffer(JSON.stringify({'username': username, 'fromAddress': fromAddress, 'amount': val, 'id': commentId, 'test': false})));
                             console.log('Username ' + username + " queued to tipQueue");
                         });
                     });

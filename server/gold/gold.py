@@ -16,7 +16,7 @@ logging.basicConfig(filename='gold.log',
                     level=logging.DEBUG,
                     format='%(asctime)s %(message)s')
 
-def give(to_username, from_address, months, id):
+def give(to_username, from_address, months, id, test=False):
     print("Logging in...", flush=True)
     r = praw.Reddit(client_id=config['redditGold']['client_id'],
                     client_secret=config['redditGold']['client_secret'],
@@ -33,7 +33,8 @@ def give(to_username, from_address, months, id):
             print("Wrong id passed")
             raise Exception
 
-        # gildableThing.gild()
+        if not test:
+            gildableThing.gild()
         print("gilded " + id, flush=True)
 
         if months != '1':
@@ -46,7 +47,9 @@ def give(to_username, from_address, months, id):
                               body=json.dumps({'username': to_username,
                                                'fromAddress': from_address,
                                                'months': months,
-                                               'id': id}))
+                                               'id': id,
+                                               'test': test}))
+        print("Queued comment", flush=True)
         connection.close()
     except requests.exceptions.ConnectionError as e:
         print(e.response)

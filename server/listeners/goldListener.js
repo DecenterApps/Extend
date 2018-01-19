@@ -33,7 +33,7 @@ const getWeb3 = async () => {
 
     const latestBlock = await getBlockNumber(web3);
 
-    contract.GoldBought({}, { fromBlock: 4702321, toBlock: 'latest' })
+    contract.GoldBought({}, { fromBlock: latestBlock, toBlock: 'latest' })
         .watch(async (err, event) => {
             const to = web3.toUtf8(event.args.to);
             const months = event.args.months;

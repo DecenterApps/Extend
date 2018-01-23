@@ -1,9 +1,52 @@
-pragma solidity ^0.4.17;
+pragma solidity ^0.4.18;
 
-import './oraclize.sol';
-
-contract ExtendOld {
-    function getUsernameForAddress(address _address) public constant returns (bytes32){}
+contract OldData {
+    mapping(bytes32 => address) public oldUsers;
+    bytes32[] public allOldUsers;
+    
+    function OldData() public {
+        allOldUsers.push("anatalist");
+        allOldUsers.push("djoney_");
+        allOldUsers.push("Luit03");
+        allOldUsers.push("bquimper");
+        allOldUsers.push("oblomov1");
+        allOldUsers.push("myownman");
+        allOldUsers.push("saxis");
+        allOldUsers.push("bobanm");
+        allOldUsers.push("screaming_for_memes");
+        allOldUsers.push("playingethereum");
+        allOldUsers.push("eli0tz");
+        allOldUsers.push("BrBaumann");
+        allOldUsers.push("sunstrikuuu");
+        allOldUsers.push("RexetBlell");
+        allOldUsers.push("some_random_user_0");
+        allOldUsers.push("SterLu");
+        allOldUsers.push("besoisinovi");
+        allOldUsers.push("Matko95");
+        
+        oldUsers["anatalist"] = 0xC11B1890aE2c0F8FCf1ceD3917D92d652e5e7E11;
+        oldUsers["djoney_"] = 0x0400c514D8a63CF6e33B5C42994257e9F4f66dE0;
+        oldUsers["Luit03"] = 0x19DB8629bCCDd0EFc8F89cE1af298D31329320Ec;
+        oldUsers["bquimper"] = 0xaB001dAb0D919A9e9CafE79AeE6f6919845624f8;
+        oldUsers["oblomov1"] = 0xC471df16A1B1082F9Be13e70dAa07372C7AC355f;
+        oldUsers["myownman"] = 0x174252aE3327DD8cD16fE3883362D0BAB7Fb6f3b;
+        oldUsers["saxis"] = 0x27cb2A354E2907B0b5F03BB03d1B740a55A5a562;
+        oldUsers["bobanm"] = 0x45E0F19aDfeaD31eB091381FCE05C5DE4197DD9c;
+        oldUsers["screaming_for_memes"] = 0xfF3a0d4F244fe663F1a2E2d87D04FFbAC0910e0E;
+        oldUsers["playingethereum"] = 0x23dEd0678B7e41DC348D1D3F2259F2991cB21018;
+        oldUsers["eli0tz"] = 0x0b4F0F9CE55c3439Cf293Ee17d9917Eaf4803188;
+        oldUsers["BrBaumann"] = 0xE6AC244d854Ccd3de29A638a5A8F7124A508c61D;
+        oldUsers["sunstrikuuu"] = 0xf6246dfb1F6E26c87564C0BB739c1E237f5F621c;
+        oldUsers["RexetBlell"] = 0xc4C929484e16BD693d94f9903ecd5976E9FB4987;
+        oldUsers["some_random_user_0"] = 0x69CC780Bf4F63380c4bC745Ee338CB678752301a;
+        oldUsers["SterLu"] = 0xe07caB35275C4f0Be90D6F4900639EC301Fc9b69;
+        oldUsers["besoisinovi"] = 0xC834b38ba4470b43537169cd404FffB4d5615f12;
+        oldUsers["Matko95"] = 0xC26bf0FA0413d9a81470353589a50d4fb3f92a30;
+    }
+    
+    function getArrayLength() public view returns(uint) {
+        return allOldUsers.length;
+    }
 }
 
 contract Extend is usingOraclize {
@@ -14,11 +57,11 @@ contract Extend is usingOraclize {
     event CreatedUser(bytes32 username);
     event UsernameDoesNotMatch(bytes32 username, bytes32 neededUsername);
     event VerifiedUser(bytes32 username, address userAddress);
-    event UserTipped(address from, bytes32 indexed username, uint val, bytes32 indexed commentId);
+    event UserTipped(address from, bytes32 indexed username, uint val, bytes32 indexed commentId, bool reply);
     event WithdrawSuccessful(bytes32 username);
     event CheckAddressVerified(address userAddress);
     event RefundSuccessful(address from, bytes32 username);
-    event GoldBought(uint price, address from, bytes32 to, string months, string priceUsd, bytes32 indexed commentId, string nonce, string signature);
+    event GoldBought(uint price, address from, bytes32 to, string months, string priceUsd, bytes32 indexed commentId, string nonce, string signature, bool reply);
 
     modifier  onlyVerified() { 
         require(users[msg.sender].verified); 
@@ -40,11 +83,14 @@ contract Extend is usingOraclize {
     address public owner;
     uint public goldBalance;
 
-    ExtendOld public oldContract;
+    OldData public oldData;
 
-    function Extend() public {
+    function Extend(address _oldData) public {
+        oldData = OldData(_oldData);
         owner = msg.sender;
-        oldContract = ExtendOld(0x690508422D576eDb99D676320ea251036d164062);
+        oraclize_setProof(proofType_TLSNotary | proofStorage_IPFS);
+
+        createOldUsers();
     }
 
     function getOraclizePrice() public constant returns (uint) {
@@ -79,16 +125,6 @@ contract Extend is usingOraclize {
         return ((lastTip[msg.sender][_username] < (now - 2 weeks)) &&
                 (tips[msg.sender][_username] > 0));
     }
-
-    function checkIfOldUser() public constant returns (bool) {
-        bytes32 oldUsername = oldContract.getUsernameForAddress(msg.sender);
-
-        if (oldUsername == 0x0){
-            return false;
-        }
-
-        return true;
-    }
     
 
     /**
@@ -118,33 +154,40 @@ contract Extend is usingOraclize {
     }
 
     /**
-     * Creates user that already verified his account on old contract
+     * Function called when API gets results
+     * @param _myid query id.
+     * @param _result string returned from api, should be reddit username
+     * @param _proof oraclize proof for TLSNotary
      */
-    function createOldUser() public {
-        bytes32 oldUsername = oldContract.getUsernameForAddress(msg.sender);
-        require(oldUsername != 0x0);
+    function __callback(bytes32 _myid, string _result, bytes _proof) {
+        require(msg.sender == oraclize_cbAddress());
 
-        users[msg.sender] = User({
-                username: oldUsername,
-                verified: true
-            });            
+        address queryAddress = queryToAddress[_myid];
+        bytes32 usernameFromAddress = users[queryAddress].username;
+        bytes32 resultBytes = stringToBytes32(_result);
 
-        usernameToAddress[oldUsername] = msg.sender;
-            
-        CreatedUser(oldUsername);
-        VerifiedUser(oldUsername, msg.sender);
+        if (usernameFromAddress != resultBytes) {
+            UsernameDoesNotMatch(resultBytes, usernameFromAddress);
+            return;
+        }
 
-        //if there is tip for that username, send it to user
-        if (balances[oldUsername] > 0) {
-            sendTip(oldUsername, balances[oldUsername]);
+        users[queryAddress].verified = true;
+        usernameToAddress[usernameFromAddress] = queryAddress;
+
+        VerifiedUser(usernameFromAddress, queryAddress);
+
+        if (balances[usernameFromAddress] > 0) {
+            sendTip(usernameFromAddress, balances[usernameFromAddress]);
         }
     }
 
     /**
      * Tip user for his post/comment 
      * @param _username reddit username for user
+     * @param _commentId comment id
+     * @param _reply reply to reddit thread
      */
-    function tipUser(bytes32 _username, bytes32 _commentId) public payable {
+    function tipUser(bytes32 _username, bytes32 _commentId, bool _reply) public payable {
         //add tip from-to user
         tips[msg.sender][_username] += msg.value;
         //add balance for username
@@ -152,7 +195,7 @@ contract Extend is usingOraclize {
         //remember last tip time
         lastTip[msg.sender][_username] = now; 
         
-        UserTipped(msg.sender, _username, msg.value, _commentId);
+        UserTipped(msg.sender, _username, msg.value, _commentId, _reply);
 
         sendTip(_username, msg.value);
     }
@@ -186,18 +229,23 @@ contract Extend is usingOraclize {
      * @param _commentId comment on reddit
      * @param _nonce server sent
      * @param _signature server sent
+     * @param _reply reply to reddit thread
      */
     function buyGold(bytes32 _to,  
                      string _months, 
                      string _priceUsd,
                      bytes32 _commentId, 
                      string _nonce, 
-                     string _signature) public payable {
+                     string _signature,
+                     bool _reply) public payable {
 
         goldBalance += msg.value;
-        GoldBought(msg.value, msg.sender, _to, _months, _priceUsd, _commentId, _nonce,  _signature);  
+        GoldBought(msg.value, msg.sender, _to, _months, _priceUsd, _commentId, _nonce,  _signature, _reply);  
     }
 
+    /**
+     * Owner can withdraw ethers sent for buying gold on Reddit
+     */
     function withdrawGoldMoney() public {
         require(owner == msg.sender);
 
@@ -207,37 +255,10 @@ contract Extend is usingOraclize {
     }
 
     /**
-     * Function called when API gets results
-     * @param _myid query id.
-     * @param _result string returned from api, should be reddit username
-     */
-    function __callback(bytes32 _myid, string _result) {
-        require(msg.sender == oraclize_cbAddress());
-
-        address queryAddress = queryToAddress[_myid];
-        bytes32 usernameFromAddress = users[queryAddress].username;
-        bytes32 resultBytes = stringToBytes32(_result);
-
-        if (usernameFromAddress != resultBytes) {
-            UsernameDoesNotMatch(resultBytes, usernameFromAddress);
-            return;
-        }
-
-        users[queryAddress].verified = true;
-        usernameToAddress[usernameFromAddress] = queryAddress;
-
-        VerifiedUser(usernameFromAddress, queryAddress);
-
-        if (balances[usernameFromAddress] > 0) {
-            sendTip(usernameFromAddress, balances[usernameFromAddress]);
-        }
-    }
-
-    /**
      * Convert string to bytes32
      * @param _source string to convert
      */
-    function stringToBytes32(string memory _source) internal returns (bytes32 result) {
+    function stringToBytes32(string memory _source) private returns (bytes32 result) {
         bytes memory tempEmptyStringTest = bytes(_source);
         if (tempEmptyStringTest.length == 0) {
             return 0x0;
@@ -259,6 +280,28 @@ contract Extend is usingOraclize {
         if (userAddress != 0x0 && _value > 0) {
             balances[_username] = 0;
             userAddress.transfer(_value);
+        }
+    }
+
+    /**
+     * Create already verified users from old contract
+     */
+    function createOldUsers() private {
+        uint arrayLen = oldData.getArrayLength();
+
+        for (uint i=0; i<arrayLen; i++){
+            bytes32 oldUsername = oldData.allOldUsers(i);
+            address oldAddress = oldData.oldUsers(oldData.allOldUsers(i));
+            
+            users[oldAddress] = User({
+                username: oldUsername,
+                verified: true
+            });
+
+            usernameToAddress[oldUsername] = oldAddress;
+
+            CreatedUser(oldUsername);
+            VerifiedUser(oldUsername, oldAddress);
         }
     }
 

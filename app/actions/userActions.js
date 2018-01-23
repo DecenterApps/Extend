@@ -407,7 +407,7 @@ export const handleUserVerification = (web3, dispatch, getState, contracts) =>
         return;
       }
 
-      const oldUsername = web3.toUtf8(await _checkIfOldUser(web3, contracts.func));
+      // const oldUsername = web3.toUtf8(await _checkIfOldUser(web3, contracts.func));
       const verified = await _checkAddressVerified(web3, contracts.func);
 
       if (verified) {
@@ -421,15 +421,15 @@ export const handleUserVerification = (web3, dispatch, getState, contracts) =>
         listenForVerifiedUser(web3, contracts, dispatch, getState);
       }
 
-      if (oldUsername && !state.permanent.migratingUsername && !verified && !state.permanent.registeringUsername) {
-        dispatch({ type: SET_OLD_USER, payload: oldUsername });
-      } else {
-        dispatch({ type: CLEAR_OLD_USER });
-      }
-
-      if (oldUsername && state.permanent.migratingUsername) {
-        listenForMigratingUser(web3, contracts, dispatch, getState);
-      }
+      // if (oldUsername && !state.permanent.migratingUsername && !verified && !state.permanent.registeringUsername) {
+      //   dispatch({ type: SET_OLD_USER, payload: oldUsername });
+      // } else {
+      //   dispatch({ type: CLEAR_OLD_USER });
+      // }
+      //
+      // if (oldUsername && state.permanent.migratingUsername) {
+      //   listenForMigratingUser(web3, contracts, dispatch, getState);
+      // }
 
       resolve();
     } catch(err) {

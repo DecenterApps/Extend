@@ -76,6 +76,7 @@ class TipForm extends Component {
           name="amount"
           showErrorText
           type="text"
+          id="amount"
           showLabel
           labelText="Amount (ETH):"
           wrapperClassName={formStyle['form-item-wrapper']}
@@ -91,6 +92,7 @@ class TipForm extends Component {
           showLabel
           labelText="Gas price (Gwei):"
           type="number"
+          id="gasPrice"
           value={this.props.gasPrice}
           wrapperClassName={formStyle['form-item-wrapper']}
           inputClassName={formStyle['form-item']}

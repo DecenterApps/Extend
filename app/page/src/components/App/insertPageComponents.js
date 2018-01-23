@@ -18,7 +18,7 @@ const postConfig = {
 
 const commentConfig = {
   type: 'comment',
-  targetElem: ".commentarea .comment:not(.added):visible[id*='thing_'] .flat-list:contains('permalink')",
+  targetElem: ".commentarea .comment:not(.added):visible[id*='thing_'] .flat-list",
   idsWrapper: ".commentarea .comment:not(.added):visible[id*='thing_']",
   typeWrapper: '.commentarea .comment:not(.added)'
 };

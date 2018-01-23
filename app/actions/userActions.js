@@ -63,7 +63,7 @@ const getTips = async (web3, contracts, dispatch, getState) => {
     const tips = [];
 
     if (tipsFromEvent.length > 0) {
-      tipsFromEvent.forEach(async (_tip) => {
+      tipsFromEvent.forEach(async (_tip, i) => {
         let type = '';
 
         if ((_tip.from === address) || (_tip.from === username)) type = 'sent';
@@ -73,11 +73,14 @@ const getTips = async (web3, contracts, dispatch, getState) => {
         if (!type) return;
 
         const tip = Object.assign({}, _tip);
-        const block = await getBlock(web3, tip.block);
-        console.log('block', block);
-        tip.time = formatTime(block.timestamp);
-        tip.type = type;
-        tips.push(tip);
+
+        setTimeout(async () => {
+          const block = await getBlock(web3, tip.block);
+
+          tip.time = formatTime(block.timestamp);
+          tip.type = type;
+          tips.push(tip);
+        }, 100 * (i + 1));
       });
     }
 
@@ -107,7 +110,7 @@ const getGold = async (web3, contracts, dispatch, getState) => {
     const golds = [];
 
     if (goldsFromEvent.length > 0) {
-      goldsFromEvent.forEach(async (_gold) => {
+      goldsFromEvent.forEach(async (_gold, i) => {
         let type = '';
 
         if ((_gold.from === address) || (_gold.from === username)) type = 'sent';
@@ -117,10 +120,13 @@ const getGold = async (web3, contracts, dispatch, getState) => {
         if (!type) return;
 
         const gold = Object.assign({}, _gold);
-        const block = await getBlock(web3, gold.block);
-        gold.time = formatTime(block.timestamp);
-        gold.type = type;
-        golds.push(gold);
+
+        setTimeout(async () => {
+          const block = await getBlock(web3, gold.block);
+          gold.time = formatTime(block.timestamp);
+          gold.type = type;
+          golds.push(gold);
+        }, 100 * (i + 1));
       });
     }
 
@@ -401,7 +407,7 @@ export const handleUserVerification = (web3, dispatch, getState, contracts) =>
         return;
       }
 
-      const oldUsername = web3.toUtf8(await _checkIfOldUser(web3, contracts.func));
+      // const oldUsername = web3.toUtf8(await _checkIfOldUser(web3, contracts.func));
       const verified = await _checkAddressVerified(web3, contracts.func);
 
       if (verified) {
@@ -415,15 +421,15 @@ export const handleUserVerification = (web3, dispatch, getState, contracts) =>
         listenForVerifiedUser(web3, contracts, dispatch, getState);
       }
 
-      if (oldUsername && !state.permanent.migratingUsername && !verified && !state.permanent.registeringUsername) {
-        dispatch({ type: SET_OLD_USER, payload: oldUsername });
-      } else {
-        dispatch({ type: CLEAR_OLD_USER });
-      }
-
-      if (oldUsername && state.permanent.migratingUsername) {
-        listenForMigratingUser(web3, contracts, dispatch, getState);
-      }
+      // if (oldUsername && !state.permanent.migratingUsername && !verified && !state.permanent.registeringUsername) {
+      //   dispatch({ type: SET_OLD_USER, payload: oldUsername });
+      // } else {
+      //   dispatch({ type: CLEAR_OLD_USER });
+      // }
+      //
+      // if (oldUsername && state.permanent.migratingUsername) {
+      //   listenForMigratingUser(web3, contracts, dispatch, getState);
+      // }
 
       resolve();
     } catch(err) {

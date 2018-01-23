@@ -3,7 +3,7 @@ import { getPwDerivedKey, getPrivateKey } from '../actions/keyStoreActions';
 import { GAS_LIMIT_MODIFIER } from '../constants/general';
 import AbstractWatcher from '../modules/AbstractWatcher';
 import { CONTRACTS } from '../constants/config';
-import { formatLargeNumber } from '../actions/utils';
+import { formatLargeNumber, formatTime } from '../actions/utils';
 
 /* STANDARD FUNCTIONS REQUIRED TO SEND TRANSACTIONS */
 /**
@@ -431,11 +431,13 @@ export const listenForTips = async (web3, contracts, dispatch, address, hexUsern
       const tip = event.args;
       const to = web3.toUtf8(tip.username);
       const val = web3.fromWei(tip.val.toString());
+      const block = await getBlock(web3, event.blockNumber);
+      const time = formatTime(block.timestamp);
 
       let from = web3.toUtf8(await _getUsernameForAddress(web3, contracts.func, tip.from));
       from = from || tip.from;
 
-      callback({ to, val, from });
+      callback({ to, val, from, time });
     };
 
     const UserTippedInstance = new AbstractWatcher(UserTipped, UserTippedWatcherCb);
@@ -486,11 +488,13 @@ export const listenForGold = async (web3, contracts, dispatch, address, hexUsern
       const to = web3.toUtf8(gold.to);
       const val = web3.fromWei(gold.price.toString());
       const months = gold.months;
+      const block = await getBlock(web3, event.blockNumber);
+      const time = formatTime(block.timestamp);
 
       let from = web3.toUtf8(await _getUsernameForAddress(web3, contracts.func, gold.from));
       from = from || gold.from;
 
-      callback({ to, val, from, months });
+      callback({ to, val, from, months, time });
     };
 
     const GoldBoughtInstance = new AbstractWatcher(GoldBought, GoldBoughtdWatcherCb);

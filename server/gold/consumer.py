@@ -2,15 +2,18 @@
 import pika
 import json
 import gold
-import requests
 import pymongo
 import time
-import gold_curl
+import logger
+from subprocess import check_output
+
+config = json.load(open('../config.json'))
 
 connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
 channel = connection.channel()
 
 channel.queue_declare(queue='gold')
+
 
 def callback(ch, method, properties, body):
     decoded_body = json.loads(body.decode("utf-8"))
@@ -20,38 +23,43 @@ def callback(ch, method, properties, body):
     to_username = decoded_body['toUsername']
     from_address = decoded_body['fromAddress']
     id = decoded_body['id']
-    test = decoded_body['test']
+    reply = decoded_body['reply']
     timestamp = time.time()
 
-    client = pymongo.MongoClient("localhost", 27017)
-    db = client.extend
+    mongo_client = pymongo.MongoClient("localhost", 27017)
+    db = mongo_client.extend.gild
 
-    gold_db = db.gold.find_one({"signature": signature})
-    if not gold_db:
-        db.gold.insert_one({"signature": signature, "time": timestamp})
+    gild = db.find_one({"signature": signature})
 
-        print("giving gold to: " + to_username, flush=True)
+    if not gild['sent']:
+        db.gold.insert_one({
+            "signature": signature,
+            "time": timestamp,
+            'id': id,
+        })
+
+        logger.log("Giving gold to: " + to_username)
+
         gold.give(to_username=to_username,
                   from_address=from_address,
                   months=months,
                   id=id,
-                  test=test)
+                  reply=reply)
 
-        print("Sending results", flush=True)
-        if not test:
-            r = requests.get(gold_curl.GOLD_CURL)
-            requests.post(gold_curl.GOLD_WEBHOOK_ENDPOINT, json=gold_curl.GOLD_WEBHOOK_DATA.format(r))
-        else:
-            requests.post(gold_curl.TIP_TEST_ENDPOINT, json=gold_curl.TIP_TEST_DATA)
+        gild['sent'] = True
+        db.save(gild)
 
+        logger.log("Checking gold credits")
 
-    client.close()
+        response = check_output([config['goldCurl']], shell=True).decode("utf-8").rstrip()
 
-    print(" [x] Received %r" % body, flush=True)
+        logger.log(response, slack=True)
+
+    mongo_client.close()
+
 
 channel.basic_consume(callback,
                       queue='gold',
                       no_ack=True)
 
-print(' [*] Waiting for messages. To exit press CTRL+C', flush=True)
 channel.start_consuming()

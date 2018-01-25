@@ -1,19 +1,12 @@
 #!/usr/bin/env node
 
-/*
-Libraries
- */
 const Web3 = require('web3');
 const fs = require('fs');
-
-/*
-Producer
- */
 const amqp = require('amqplib/callback_api');
+const request = require('request');
+const MongoClient = require('mongodb').MongoClient;
+const url = "mongodb://localhost:27017/";
 
-/*
-Config
- */
 const config = JSON.parse(fs.readFileSync('../config.json', 'utf8'));
 
 const getBlockNumber = (web3) =>
@@ -38,15 +31,30 @@ const getWeb3 = async () => {
             const val = web3.fromWei(event.args.val.toString());
             const fromAddress = event.args.from;
             const reply = event.args.reply;
-            const commentId = web3.toUtf8(event.args.commentId);
+            const id = web3.toUtf8(event.args.commentId);
+
+            const message = "Username: " + username + ", fromAddress: " + fromAddress + ", id: " + id + ", reply: " + reply + " queued to tipdQueue";
+
+            console.log(new Date().toLocaleString() + ", message: " + message);
+            request.post({url: config.slackWebhook, json: {"text":message}, headers: {"Content-type": "application/json"}});
 
             if (reply) {
                 try {
                     amqp.connect('amqp://localhost', (err, conn) => {
                         conn.createChannel((err, ch) => {
-                            ch.assertQueue('tip', {durable: false});
-                            ch.sendToQueue('tip', new Buffer(JSON.stringify({'username': username, 'fromAddress': fromAddress, 'amount': val, 'id': commentId, 'test': false})));
-                            console.log('Username ' + username + " queued to tipQueue");
+                            const tip = {'username': username, 'fromAddress': fromAddress, 'amount': val, 'id': id};
+
+                            MongoClient.connect(url, function(err, db) {
+                                let extendDb = db.db("extend");
+
+                                tip.sent = false;
+                                tip.blockNumber = event.blockNumber;
+                                extendDb.collection("tip").insertOne(tip, () => {
+                                    ch.assertQueue('tip', {durable: false});
+                                    ch.sendToQueue('tip', new Buffer(JSON.stringify(tip)));
+                                    db.close();
+                                });
+                            });
                         });
                     });
                 } catch (e) {

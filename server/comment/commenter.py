@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import time
 import praw
 import logging
@@ -6,6 +7,8 @@ import pika
 import json
 import redis
 import comment_template
+import logger
+import thing
 
 config = json.load(open('../config.json'))
 
@@ -14,12 +17,15 @@ channel = connection.channel()
 
 channel.queue_declare(queue='tip')
 
+redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
+
 logging.basicConfig(filename='tip.log',
                     level=logging.DEBUG,
                     format='%(asctime)s %(message)s')
 
-def comment(to_username, from_username, id, amount=None, months=None, test=False):
-    print("Logging in...", flush=True)
+
+def comment(to_username, from_username, id, amount=None, months=None):
+    logger.log("Logging in...")
     r = praw.Reddit(client_id=config['reddit']['client_id'],
                     client_secret=config['reddit']['client_secret'],
                     username=config['reddit']['username'],
@@ -27,67 +33,44 @@ def comment(to_username, from_username, id, amount=None, months=None, test=False
                     user_agent='bot')
 
     try:
-        if id[1] == '1':
-            print('Finding comment', flush=True)
-            commentableThing = r.comment(id=id[3:])
-        elif id[1] == '3':
-            print('Finding submission', flush=True)
-            commentableThing = r.submission(id=id[3:])
-        else:
-            raise Exception
+        commentable_thing = thing.find_thing(id, r)
 
-        r = redis.StrictRedis(host='localhost', port=6379, db=0)
-        expire = r.ttl('comment')
-
-        print('Current expire on comment: ' + str(expire), flush=True)
-
-        if test:
-            requests.post(comment_template.TIP_TEST_ENDPOINT, json=comment_template.TIP_TEST_DATA)
-            return
+        expire = redis_client.ttl('comment')
 
         if expire > 0:
-            print("Pre sleeping :" + str(expire))
+            logger.log('Current expire on comment: ' + str(expire))
             time.sleep(expire)
-            expire = 0
 
-        r.set('comment', 1)
-        r.expire('comment', 602 + expire)
+        redis_client.set('comment', 1)
+        redis_client.expire('comment', 600)
 
-        if from_username:
-            from_username = '[/u/' + from_username + '](https://reddit.com/user/' + from_username + ')'
-        else:
-            from_username = 'anonymous user'
+        from_username = '[/u/' + from_username + '](https://reddit.com/user/' + from_username + ')' if from_username else 'anonymous user'
 
         if amount:
-            commentableThing.reply(comment_template.USER_TIPPED.format(to_username='[/u/' + to_username + '](https://reddit.com/user/' + to_username + ')',
-                                                                       from_username=from_username,
-                                                                       ethAmount=amount,
-                                                                       github='https://github.com/DecenterApps/Extend',
-                                                                       webstore='https://chrome.google.com/webstore/detail/extend/babconedajpngaajmlnnhpahcladpcna'))
-            print("commented " + id + ", " + from_username + " tipped " + amount + " " + to_username, flush=True)
+            commentable_thing.reply(comment_template.USER_TIPPED.format(
+                to_username='[/u/' + to_username + '](https://reddit.com/user/' + to_username + ')',
+                from_username=from_username,
+                ethAmount=amount,
+                github='https://github.com/DecenterApps/Extend',
+                webstore='https://chrome.google.com/webstore/detail/extend/babconedajpngaajmlnnhpahcladpcna'))
+
+            logger.log("Commented: " + id + ", " + from_username + " tipped " + amount + " " + to_username, slack=True)
         if months:
-            commentableThing.reply(comment_template.BOUGHT_GOLD.format(to_username='[/u/' + to_username + '](https://reddit.com/user/' + to_username + ')',
-                                                                       from_username=from_username,
-                                                                       months=months + ' month' if months == '1' else months + ' months',
-                                                                       github='https://github.com/DecenterApps/Extend',
-                                                                       webstore='https://chrome.google.com/webstore/detail/extend/babconedajpngaajmlnnhpahcladpcna'))
-            print("commented " + id + ", " + from_username + " gilded " + months + " " + to_username, flush=True)
+            commentable_thing.reply(comment_template.BOUGHT_GOLD.format(
+                to_username='[/u/' + to_username + '](https://reddit.com/user/' + to_username + ')',
+                from_username=from_username,
+                months=months + ' month' if months == '1' else months + ' months',
+                github='https://github.com/DecenterApps/Extend',
+                webstore='https://chrome.google.com/webstore/detail/extend/babconedajpngaajmlnnhpahcladpcna'))
 
-        print("Sleeping :" + str(602 + expire))
+            logger.log("Commented: " + id + ", " + from_username + " gilded " + months + " month(s) " + to_username,
+                       slack=True)
 
-        time.sleep(600 + expire)
-
+        return True
 
     except requests.exceptions.ConnectionError as e:
-        print(e.response, flush=True)
-        print("Sleeping...", flush=True)
-        time.sleep(600)
+        logger.exception(e.response)
         return False
     except Exception as e:
-        print(e, flush=True)
-        print("Sleeping...", flush=True)
-        time.sleep(600)
+        logger.exception(e)
         return False
-
-if __name__ == '__main__':
-    main()

@@ -6,6 +6,6 @@ app/constants/config.js
 build/
 solidity/out
 node_modules/
-server/TSOTD.log
-server/vendor/
-server/composer.phar/
+server/api/vendor/
+server/api/composer.phar/
+server/config.json

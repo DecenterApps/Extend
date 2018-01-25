@@ -51,13 +51,12 @@ const getWeb3 = async () => {
 
                         amqp.connect('amqp://localhost', (err, conn) => {
                             conn.createChannel((err, ch) => {
-                                const gild = {'toUsername': to, 'fromAddress': fromAddress, 'months': months, 'signature': signature, 'id': id, 'reply': reply};
+                                const gild = {'toUsername': to, 'fromAddress': fromAddress, 'months': months, 'signature': signature, 'id': id, 'reply': reply, 'blockNumber': event.blockNumber};
 
                                 MongoClient.connect(url, function(err, db) {
                                     let extendDb = db.db("extend");
 
                                     gild.sent = false;
-                                    gild.blockNumber = event.blockNumber;
                                     extendDb.collection("gild").insertOne(gild, () => {
                                         ch.assertQueue('gold', {durable: false});
                                         ch.sendToQueue('gold', new Buffer(JSON.stringify(gild)));

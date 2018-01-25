@@ -11,7 +11,7 @@ import thing
 config = json.load(open('../config.json'))
 
 
-def give(to_username, from_address, months, id, reply):
+def give(to_username, from_address, months, id, reply, block_number):
     logger.log("Logging in...")
     r = praw.Reddit(client_id=config['redditGold']['client_id'],
                     client_secret=config['redditGold']['client_secret'],
@@ -42,7 +42,8 @@ def give(to_username, from_address, months, id, reply):
                                   body=json.dumps({'username': to_username,
                                                    'fromAddress': from_address,
                                                    'months': months,
-                                                   'id': id}))
+                                                   'id': id,
+                                                   'blockNumber': block_number}))
             logger.log("Queued for commenting: " + id)
             connection.close()
 

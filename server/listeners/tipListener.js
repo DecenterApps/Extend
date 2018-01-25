@@ -42,13 +42,12 @@ const getWeb3 = async () => {
                 try {
                     amqp.connect('amqp://localhost', (err, conn) => {
                         conn.createChannel((err, ch) => {
-                            const tip = {'username': username, 'fromAddress': fromAddress, 'amount': val, 'id': id};
+                            const tip = {'username': username, 'fromAddress': fromAddress, 'amount': val, 'id': id, 'blockNumber': event.blockNumber};
 
                             MongoClient.connect(url, function(err, db) {
                                 let extendDb = db.db("extend");
 
                                 tip.sent = false;
-                                tip.blockNumber = event.blockNumber;
                                 extendDb.collection("tip").insertOne(tip, () => {
                                     ch.assertQueue('tip', {durable: false});
                                     ch.sendToQueue('tip', new Buffer(JSON.stringify(tip)));

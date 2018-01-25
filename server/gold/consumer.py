@@ -24,6 +24,7 @@ def callback(ch, method, properties, body):
     from_address = decoded_body['fromAddress']
     id = decoded_body['id']
     reply = decoded_body['reply']
+    block_number = decoded_body['blockNumber']
 
     mongo_client = pymongo.MongoClient("localhost", 27017)
     db = mongo_client.extend.gild
@@ -37,7 +38,8 @@ def callback(ch, method, properties, body):
                   from_address=from_address,
                   months=months,
                   id=id,
-                  reply=reply)
+                  reply=reply,
+                  block_number=block_number)
 
         gild['sent'] = True
         db.save(gild)

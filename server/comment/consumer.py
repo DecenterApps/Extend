@@ -25,11 +25,12 @@ def callback(ch, method, properties, body):
     to_username = decoded_body['username']
     from_address = decoded_body['fromAddress']
     id = decoded_body['id']
+    block_number = decoded_body['blockNumber']
 
     mongo_client = pymongo.MongoClient("localhost", 27017)
     db = mongo_client.extend.tip
 
-    tip = db.find_one({"fromAddress": from_address, "username": to_username, "id": id})
+    tip = db.find_one({"fromAddress": from_address, "username": to_username, "id": id, "blockNumber": block_number})
 
     if not tip['sent']:
         from_username = contract.call().getUsernameForAddress(from_address).rstrip('\x00')
@@ -52,6 +53,8 @@ def callback(ch, method, properties, body):
         db.save(tip)
 
         time.sleep(600)
+    else:
+        logger.log("Already commented: " + id, slack=True)
 
 
 channel.basic_consume(callback,

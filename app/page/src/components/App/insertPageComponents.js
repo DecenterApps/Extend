@@ -18,14 +18,20 @@ const postConfig = {
 
 const commentConfig = {
   type: 'comment',
-  targetElem: ".commentarea .comment:not(.added):visible[id*='thing_'] .flat-list",
-  idsWrapper: ".commentarea .comment:not(.added):visible[id*='thing_']",
-  typeWrapper: '.commentarea .comment:not(.added)'
+  targetElem: ".commentarea .comment[data-author]:not(.added):visible[id*='thing_']",
+  idsWrapper: ".commentarea .comment[data-author]:not(.added):visible[id*='thing_']",
+  typeWrapper: '.commentarea .comment[data-author]:not(.added)'
 };
 
 const insertComponentIntoPage = (config) => {
   const { targetElem, type, idsWrapper, typeWrapper } = config;
-  const elem = $(targetElem);
+  let elem = $(targetElem);
+
+  if (type === 'comment') {
+    elem = $($(targetElem).toArray().map((_elem) => (
+      $(_elem).find('.flat-list:first').get(0)
+    )));
+  }
 
   elem.append(`
     <li class="extend-tip-${type}"></li>

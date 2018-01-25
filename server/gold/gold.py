@@ -1,9 +1,12 @@
+#!/usr/bin/env python
 import time
 import praw
 import logging
 import requests
 import pika
 import json
+import logger
+import thing
 
 config = json.load(open('../config.json'))
 
@@ -16,8 +19,9 @@ logging.basicConfig(filename='gold.log',
                     level=logging.DEBUG,
                     format='%(asctime)s %(message)s')
 
-def give(to_username, from_address, months, id, test=False):
-    print("Logging in...", flush=True)
+
+def give(to_username, from_address, months, id, reply):
+    logger.log("Logging in...")
     r = praw.Reddit(client_id=config['redditGold']['client_id'],
                     client_secret=config['redditGold']['client_secret'],
                     username=config['redditGold']['username'],
@@ -25,41 +29,30 @@ def give(to_username, from_address, months, id, test=False):
                     user_agent='bot')
 
     try:
-        if id[1] == '1':
-            gildableThing = r.comment(id=id[3:])
-        elif id[1] == '3':
-            gildableThing = r.submission(id=id[3:])
-        else:
-            print("Wrong id passed")
-            raise Exception
+        gildable_thing = thing.find_thing(id, r)
 
-        if not test:
-            gildableThing.gild()
-        print("gilded " + id, flush=True)
+        # gildable_thing.gild()
 
         if months != '1':
             r.redditor(to_username).gild(months=int(months) - 1)
 
-        print("Bought", flush=True)
+        logger.log("Gilded: " + id + " " + from_address + " gilded " + months + " month(s) " + to_username, slack=True)
 
-        channel.basic_publish(exchange='',
-                              routing_key='tip',
-                              body=json.dumps({'username': to_username,
-                                               'fromAddress': from_address,
-                                               'months': months,
-                                               'id': id,
-                                               'test': test}))
-        print("Queued comment", flush=True)
-        connection.close()
+        if reply:
+            time.sleep(3)
+            channel.basic_publish(exchange='',
+                                  routing_key='tip',
+                                  body=json.dumps({'username': to_username,
+                                                   'fromAddress': from_address,
+                                                   'months': months,
+                                                   'id': id}))
+            logger.log("Queued for commenting: " + id)
+
     except requests.exceptions.ConnectionError as e:
-        print(e.response)
+        logger.exception(e.response)
         return False
     except Exception as e:
-        print(e)
+        logger.exception(e)
         return False
 
-    print("Sleeping...", flush=True)
     time.sleep(1)
-
-if __name__ == '__main__':
-    main()

@@ -1,20 +1,13 @@
 #!/usr/bin/env node
 
-/*
-Libraries
- */
 const Web3 = require('web3');
 const fs = require('fs');
 const exec = require('child_process').exec;
-
-/*
-Producer
- */
 const amqp = require('amqplib/callback_api');
+const request = require('request');
+const MongoClient = require('mongodb').MongoClient;
+const url = "mongodb://localhost:27017/";
 
-/*
-Config
- */
 const config = JSON.parse(fs.readFileSync('../config.json', 'utf8'));
 
 const getBlockNumber = (web3) =>
@@ -41,6 +34,7 @@ const getWeb3 = async () => {
             const nonce = event.args.nonce;
             const fromAddress = event.args.from;
             const signature = event.args.signature.toString();
+            const reply = event.args.reply;
 
             const data = web3.fromWei(event.args.price.toString()) + '-' + to + '-' + fromAddress + '-' + id + '-' + months + '-' + event.args.priceUsd + '-' + nonce;
 
@@ -50,11 +44,33 @@ const getWeb3 = async () => {
             await exec("openssl dgst -sha256 -verify ../public.key -signature verification" + nonce + "/sig.sha256 verification" + nonce + "/data.txt", {"shell": "/bin/bash"}, (error, stdout, stderr) => {
                 if (stdout === "Verified OK\n") {
                     try {
+                        const message = "Username: " + to + ", fromAddress: " + fromAddress + ", id: " + id + ", reply: " + reply + " queued to goldQueue";
+
+                        console.log(new Date().toLocaleString() + ", message: " + message);
+                        request.post({url: config.slackWebhook, json: {"text":message}, headers: {"Content-type": "application/json"}});
+
                         amqp.connect('amqp://localhost', (err, conn) => {
                             conn.createChannel((err, ch) => {
-                                ch.assertQueue('gold', {durable: false});
-                                ch.sendToQueue('gold', new Buffer(JSON.stringify({'toUsername': to, 'fromAddress': fromAddress, 'months': months, 'signature': signature, 'id': id, 'test': false})));
-                                console.log('Username: ' + to + ", fromAddress: " + fromAddress + ", id: " + id + " queued to goldQueue")
+                                const gild = {'toUsername': to, 'fromAddress': fromAddress, 'months': months, 'signature': signature, 'id': id, 'reply': reply};
+
+                                MongoClient.connect(url, function(err, db) {
+                                    let extendDb = db.db("extend");
+
+                                    gild.sent = false;
+                                    gild.blockNumber = event.blockNumber;
+                                    extendDb.collection("gild").insertOne(gild, () => {
+                                        ch.assertQueue('gold', {durable: false});
+                                        ch.sendToQueue('gold', new Buffer(JSON.stringify(gild)));
+                                        db.close();
+                                    });
+
+                                    if (reply) {
+                                        const tip = {'username': to, 'fromAddress': fromAddress, 'months': months, 'id': id, 'sent': false, 'blockNumber': event.blockNumber};
+                                        extendDb.collection("tip").insertOne(tip, () => {
+                                            db.close();
+                                        });
+                                    }
+                                });
                             });
                         });
                     } catch (e) {

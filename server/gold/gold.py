@@ -10,15 +10,6 @@ import thing
 
 config = json.load(open('../config.json'))
 
-connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
-channel = connection.channel()
-
-channel.queue_declare(queue='tip')
-
-logging.basicConfig(filename='gold.log',
-                    level=logging.DEBUG,
-                    format='%(asctime)s %(message)s')
-
 
 def give(to_username, from_address, months, id, reply):
     logger.log("Logging in...")
@@ -40,6 +31,12 @@ def give(to_username, from_address, months, id, reply):
 
         if reply:
             time.sleep(3)
+
+            connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+            channel = connection.channel()
+
+            channel.queue_declare(queue='tip')
+
             channel.basic_publish(exchange='',
                                   routing_key='tip',
                                   body=json.dumps({'username': to_username,
@@ -47,6 +44,7 @@ def give(to_username, from_address, months, id, reply):
                                                    'months': months,
                                                    'id': id}))
             logger.log("Queued for commenting: " + id)
+            connection.close()
 
     except requests.exceptions.ConnectionError as e:
         logger.exception(e.response)

@@ -19,10 +19,6 @@ channel.queue_declare(queue='tip')
 
 redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
 
-logging.basicConfig(filename='tip.log',
-                    level=logging.DEBUG,
-                    format='%(asctime)s %(message)s')
-
 
 def comment(to_username, from_username, id, amount=None, months=None):
     logger.log("Logging in...")

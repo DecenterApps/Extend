@@ -52,7 +52,8 @@ def comment(to_username, from_username, id, amount=None, months=None):
                 from_username=from_username,
                 ethAmount=amount,
                 github='https://github.com/DecenterApps/Extend',
-                webstore='https://chrome.google.com/webstore/detail/extend/babconedajpngaajmlnnhpahcladpcna'))
+                webstore='https://chrome.google.com/webstore/detail/extend/babconedajpngaajmlnnhpahcladpcna',
+                blog='https://blog.decenter.com/2017/11/14/extend/'))
 
             logger.log("Commented: " + id + ", " + from_username + " tipped " + amount + " " + to_username, slack=True)
         if months:
@@ -61,7 +62,8 @@ def comment(to_username, from_username, id, amount=None, months=None):
                 from_username=from_username,
                 months=months + ' month' if months == '1' else months + ' months',
                 github='https://github.com/DecenterApps/Extend',
-                webstore='https://chrome.google.com/webstore/detail/extend/babconedajpngaajmlnnhpahcladpcna'))
+                webstore='https://chrome.google.com/webstore/detail/extend/babconedajpngaajmlnnhpahcladpcna',
+                blog='https://blog.decenter.com/2017/11/14/extend/'))
 
             logger.log("Commented: " + id + ", " + from_username + " gilded " + months + " month(s) " + to_username,
                        slack=True)

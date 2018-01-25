@@ -24,7 +24,6 @@ def callback(ch, method, properties, body):
     from_address = decoded_body['fromAddress']
     id = decoded_body['id']
     reply = decoded_body['reply']
-    timestamp = time.time()
 
     mongo_client = pymongo.MongoClient("localhost", 27017)
     db = mongo_client.extend.gild
@@ -32,12 +31,6 @@ def callback(ch, method, properties, body):
     gild = db.find_one({"signature": signature})
 
     if not gild['sent']:
-        db.gold.insert_one({
-            "signature": signature,
-            "time": timestamp,
-            'id': id,
-        })
-
         logger.log("Giving gold to: " + to_username)
 
         gold.give(to_username=to_username,

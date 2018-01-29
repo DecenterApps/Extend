@@ -22,7 +22,7 @@ def give(to_username, from_address, months, id, reply, block_number):
     try:
         gildable_thing = thing.find_thing(id, r)
 
-        # gildable_thing.gild()
+        gildable_thing.gild()
 
         if months != '1':
             r.redditor(to_username).gild(months=int(months) - 1)

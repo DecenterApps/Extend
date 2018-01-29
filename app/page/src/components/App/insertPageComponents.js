@@ -18,8 +18,8 @@ const postConfig = {
 
 const commentConfig = {
   type: 'comment',
-  targetElem: ".commentarea .comment[data-author]:not(.added):visible[id*='thing_']",
-  idsWrapper: ".commentarea .comment[data-author]:not(.added):visible[id*='thing_']",
+  targetElem: ".commentarea .comment[data-author]:not(.added)[id*='thing_']",
+  idsWrapper: ".commentarea .comment[data-author]:not(.added)[id*='thing_']",
   typeWrapper: '.commentarea .comment[data-author]:not(.added)'
 };
 

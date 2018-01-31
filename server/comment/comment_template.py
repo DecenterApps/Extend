@@ -1,4 +1,4 @@
-USER_TIPPED = """"I'm a bot, bleep, bloop. 
+USER_TIPPED = """I'm a bot, bleep, bloop. 
 I just want to notify you that
 {from_username} has sent you a tip of {ethAmount} ETH via
 ΞXTΞND, a Chrome browser extension that creates a bridge

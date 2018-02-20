@@ -46,9 +46,9 @@ def callback(ch, method, properties, body):
 
         logger.log("Checking gold credits")
 
-        response = check_output([config['goldCurl']], shell=True).decode("utf-8").rstrip()
+        response = check_output([config['goldCurl']], shell=True).decode("utf-8").rstrip()[1:]
 
-        logger.log(response, slack=True)
+        logger.log(response, slack=True, channel=int(response.split(' ')[0]) < 6)
 
     mongo_client.close()
 

@@ -69,6 +69,7 @@ export const REFUND_AVAILABLE = 'refund_available';
 export const REFUND_SUCCESS = 'refund_success';
 export const CLEAR_REFUND_VALUES = 'clear_refund_values';
 export const SET_REFUND_FORM_VALUES = 'set_refund_form_values';
+export const TOGGLE_GENERATE_NEW_PASSWORD_SUBMIT = 'toggle_generate_new_password_submit';
 
 // MODAL
 export const TOGGLE_MODAL = 'toggle_modal';

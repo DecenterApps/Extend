@@ -1,7 +1,8 @@
 import lightwallet from 'eth-lightwallet';
 import { isJson } from '../actions/utils';
 import {
-  CREATE_WALLET, CLEAR_PASSWORD, UNLOCK_ERROR, UNLOCK, CLEAR_UNLOCK_ERROR, CLEAR_SEEN_DASH
+  CREATE_WALLET, CLEAR_PASSWORD, UNLOCK_ERROR, UNLOCK, CLEAR_UNLOCK_ERROR, CLEAR_SEEN_DASH,
+  TOGGLE_GENERATE_NEW_PASSWORD_SUBMIT
 } from '../constants/actionTypes';
 import { pollForBalance } from './accountActions';
 import { skipUnVerifiedOnboarding } from './onboardingActions';
@@ -88,8 +89,10 @@ export const passwordReloader = (dispatch, getState) => {
  * @param {Object} contracts
  * @param {Boolean} [getSeed = false] - is the user creating a new account or importing one
  */
-export const createWallet = (web3, engine, dispatch, getState, payload, contracts, getSeed = false) => {
+export const createWallet = async (web3, engine, dispatch, getState, payload, contracts, getSeed = false) => {
   const { password } = payload;
+
+  await dispatch({ type: TOGGLE_GENERATE_NEW_PASSWORD_SUBMIT });
 
   keyStore.createVault({
     password,
@@ -120,8 +123,10 @@ export const createWallet = (web3, engine, dispatch, getState, payload, contract
       await skipUnVerifiedOnboarding(dispatch);
       copiedSeed(dispatch, getState);
     } else {
-      changeView(dispatch, getState, { viewName: 'copySeed' });
+      await changeView(dispatch, getState, { viewName: 'copySeed' });
     }
+
+    await dispatch({ type: TOGGLE_GENERATE_NEW_PASSWORD_SUBMIT });
 
     if (!payload.generatedVault) {
       pollForBalance(web3, engine, dispatch, getState);

@@ -56,7 +56,7 @@ class GenerateNewPasswordForm extends Component {
           className={formStyle['submit-button']}
           type="submit"
           disabled={
-            this.props.pristine || this.props.invalid
+            this.props.pristine || this.props.invalid || this.props.submitted
           }
         >
           <Tooltip
@@ -78,6 +78,7 @@ class GenerateNewPasswordForm extends Component {
 }
 
 GenerateNewPasswordForm.propTypes = {
+  submitted: PropTypes.bool.isRequired,
   formData: PropTypes.object.isRequired,
   invalid: PropTypes.bool.isRequired,
   pristine: PropTypes.bool.isRequired,

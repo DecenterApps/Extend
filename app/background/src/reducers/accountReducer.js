@@ -1,7 +1,8 @@
 import {
   UNLOCK_ERROR, CLEAR_UNLOCK_ERROR, SET_BALANCE, SET_GAS_PRICE,
   SEND, SEND_ERROR, SEND_SUCCESS, CLEAR_REFUND_VALUES, REFUND_AVAILABLE,
-  REFUND, REFUND_ERROR, REFUND_SUCCESS, REFUND_UNAVAILABLE, CLEAR_SEND_VALUES, SET_REFUND_FORM_VALUES
+  REFUND, REFUND_ERROR, REFUND_SUCCESS, REFUND_UNAVAILABLE, CLEAR_SEND_VALUES, SET_REFUND_FORM_VALUES,
+  TOGGLE_GENERATE_NEW_PASSWORD_SUBMIT
 } from '../../../constants/actionTypes';
 
 const reducerName = 'account';
@@ -18,6 +19,7 @@ const INITIAL_STATE = {
   refundingSuccess: false,
   refundAvailable: true,
   refundTipUsername: '',
+  submittedGenerateNewPasswordForm: false,
 };
 
 export const reducer = (state, action) => {
@@ -75,6 +77,9 @@ export const reducer = (state, action) => {
       };
     case SET_REFUND_FORM_VALUES:
       return { ...state, refundTipUsername: payload };
+
+    case TOGGLE_GENERATE_NEW_PASSWORD_SUBMIT:
+      return { ...state, submittedGenerateNewPasswordForm: !state.submittedGenerateNewPasswordForm };
 
     default:
       return false;
